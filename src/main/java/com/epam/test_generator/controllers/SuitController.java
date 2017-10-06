@@ -28,8 +28,13 @@ public class SuitController {
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET)
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long id) {
+        SuitDTO suitDTO =  suitService.getSuit(id);
 
-        return new ResponseEntity<>(suitService.getSuit(id), HttpStatus.OK);
+        if (suitDTO != null) {
+            return new ResponseEntity<>(suitDTO, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/suits", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -40,16 +45,28 @@ public class SuitController {
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> editSuit(@PathVariable("suitId") long id, @RequestBody SuitDTO suitDTO) {
-        suitService.updateSuit(id, suitDTO);
+        SuitDTO checkSuitDTO = suitService.getSuit(id);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (checkSuitDTO != null) {
+            suitService.updateSuit(id, suitDTO);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long id) {
-        suitService.removeSuit(id);
+        SuitDTO suitDTO = suitService.getSuit(id);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (suitDTO != null) {
+            suitService.removeSuit(id);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/suits/{suitId}/featureFile", method = RequestMethod.POST, consumes = "application/json")

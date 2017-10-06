@@ -9,12 +9,12 @@ public class GeneralController {
 
     @RequestMapping(value = "/")
     public String getMainPage() {
-        return "/WEB-INF/static/views/newSuits";
+        return "/newSuits";
     }
 
     @RequestMapping(value = "/suggestion_manager")
     public String getStepSuggestionsPage() {
-        return "/WEB-INF/static/views/stepSuggestions";
+        return "/stepSuggestions";
     }
 
 }
