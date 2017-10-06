@@ -9,6 +9,7 @@ import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.file_generator.FileGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,30 +38,31 @@ public class SuitService {
 
     public List<SuitDTO> getSuits() {
         return suitDAO.findAll().stream().map(suit -> suitTransformer.toDto(suit))
-                                            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public SuitDTO getSuit(long id) {
         return suitTransformer.toDto(suitDAO.findOne(id));
     }
 
-    public SuitDTO updateSuit(SuitDTO suitDTO) {
+    public void updateSuit(Long id, SuitDTO suitDTO) {
+//      TODO fix logic to save updates in suitDTO (use ID)
         List<Case> cases = suitDAO.getOne(suitDTO.getId()).getCases();
         Suit suit = suitTransformer.fromDto(suitDTO);
-
         suit.setCases(cases);
 
-        return suitTransformer.toDto(suitDAO.save(suit));
+        suitTransformer.toDto(suitDAO.save(suit));
     }
 
     public void removeSuit(long id) {
         suitDAO.delete(id);
     }
 
-    public SuitDTO addSuit(SuitDTO suitDTO) {
+    public Long addSuit(SuitDTO suitDTO) {
         Suit suit = suitDAO.save(suitTransformer.fromDto(suitDTO));
+        Long id = suitTransformer.toDto(suit).getId();
 
-        return suitTransformer.toDto(suit);
+        return id;
     }
 
     public String generateFile(Long suitId, List<Long> caseIds) throws IOException {
