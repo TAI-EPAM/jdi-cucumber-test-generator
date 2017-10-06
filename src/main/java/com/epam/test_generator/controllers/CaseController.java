@@ -3,74 +3,138 @@ package com.epam.test_generator.controllers;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.services.CaseService;
+import com.epam.test_generator.services.SuitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 public class CaseController {
 
     @Autowired
     private CaseService casesService;
 
-    @RequestMapping(value = "/suit/{suitId}/case", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Void> addCaseToSuit(@PathVariable long suitId, @RequestBody CaseDTO caseArg) {
-        if(isPriorityValid(caseArg.getPriority()) && isDescriptionValid(caseArg.getDescription())) {
-            casesService.addCaseToSuit(caseArg, suitId);
+    @Autowired
+    SuitService suitService;
 
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
 
-        return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+        if (suitDTO != null) {
 
-    @RequestMapping(value = "/suit/{suitId}/case/{caseId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId) {
-        casesService.removeCase(suitId, caseId);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/suit/{suitId}/case/{caseId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> updateCase(@PathVariable("caseId") long caseId, @PathVariable("suitId") long suitId, @RequestBody CaseDTO caseArg) {
-        if(isPriorityValid(caseArg.getPriority()) && isDescriptionValid(caseArg.getDescription())) {
-            casesService.updateCase(suitId, caseArg);
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-    @RequestMapping(value = "/suit/{suitId}/case/{caseId}", method = RequestMethod.GET)
-    public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId) {
-        CaseDTO caseDTO = casesService.getCase(caseId);
-        if (caseDTO != null) {
-            return new ResponseEntity<>(caseDTO, HttpStatus.OK);
+            return new ResponseEntity<>(casesService.getCases(suitDTO), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(value="/suit/{suitId}/cases", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId, @RequestBody SuitDTO suitDTO){
-        List<Long> caseIds = suitDTO.getCases().stream().map(c->c.getId()).collect(Collectors.toList());
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
+
+        if (suitDTO == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        CaseDTO caseDTO = casesService.getCase(caseId);
+
+        if (caseDTO == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!caseBelongsToSuit(caseDTO, suitDTO)) {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(caseDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Long> addCaseToSuit(@PathVariable long suitId, @RequestBody CaseDTO caseDTO) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
+
+        if (suitDTO != null) {
+
+            return new ResponseEntity<>(casesService.addCaseToSuit(caseDTO, suitId), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<Long> updateCase(@PathVariable("caseId") long caseId, @PathVariable("suitId") long suitId, @RequestBody CaseDTO caseDTO) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
+
+        if (suitDTO == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        CaseDTO checkCaseDTO = casesService.getCase(caseId);
+
+        if (checkCaseDTO == null) {
+
+            return new ResponseEntity<>(casesService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
+        }
+
+        if (!caseBelongsToSuit(checkCaseDTO, suitDTO)) {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        casesService.updateCase(suitId, caseDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
+
+        if (suitDTO == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        CaseDTO caseDTO = casesService.getCase(caseId);
+
+        if (caseDTO == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!caseBelongsToSuit(caseDTO, suitDTO)) {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        casesService.removeCase(suitId, caseId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId, @RequestBody SuitDTO suitDTO) {
+        SuitDTO checkSuitDTO = suitService.getSuit(suitId);
+
+        if (checkSuitDTO == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId).collect(Collectors.toList());
         casesService.removeCases(suitId, caseIds);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private boolean isPriorityValid(Integer priority){
-		return (priority != null) && (priority >= 1) && (priority <= 5);
+    private boolean caseBelongsToSuit(CaseDTO caseDTO, SuitDTO suitDTO) {
+        return suitDTO.getCases().stream().anyMatch(caze -> Objects.equals(caze.getId(), caseDTO.getId()));
     }
-
-    private boolean isDescriptionValid(String description){
-		return description != null && description.length()>0 && description.length()<=255;
-    }
-
 }

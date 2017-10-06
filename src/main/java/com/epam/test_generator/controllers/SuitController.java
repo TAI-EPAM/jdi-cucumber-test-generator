@@ -25,11 +25,12 @@ public class SuitController {
         return new ResponseEntity<>(suitService.getSuits(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long id) {
-        SuitDTO suitDTO =  suitService.getSuit(id);
+        SuitDTO suitDTO = suitService.getSuit(id);
 
         if (suitDTO != null) {
+
             return new ResponseEntity<>(suitDTO, HttpStatus.OK);
         }
 

@@ -4,10 +4,12 @@ import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.entities.Suit;
 
+import com.epam.test_generator.transformers.SuitTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class CaseService {
     private CaseTransformer caseTransformer;
 
     @Autowired
+    private SuitTransformer suitTransformer;
+
+    @Autowired
     private CaseDAO caseDAO;
 
     @Autowired
@@ -36,22 +41,15 @@ public class CaseService {
     @Autowired
     private TagDAO tagDAO;
 
-    public CaseDTO addCaseToSuit(CaseDTO cs, long suitId) {
-        Suit suit = suitDAO.getOne(suitId);
-        Case caze = caseTransformer.fromDto(cs);
-
-        mergeTags(caze);
-
-        suit.getCases().add(caze);
-        suitDAO.save(suit);
-
-        return caseTransformer.toDto(caze);
-    }
-
     public List<CaseDTO> getCasesBySuitId(long suitId) {
         List<Case> list = suitDAO.findOne(suitId).getCases();
 
         return caseTransformer.toDtoList(list);
+    }
+
+    public List<CaseDTO> getCases(SuitDTO suitDTO) {
+
+        return suitDTO.getCases();
     }
 
     public CaseDTO getCase(Long id) {
@@ -59,18 +57,18 @@ public class CaseService {
         return caseTransformer.toDto(caseDAO.getOne(id));
     }
 
-    public void removeCase(long suitId, long caseId) {
+    public Long addCaseToSuit(CaseDTO caseDTO, long suitId) {
         Suit suit = suitDAO.getOne(suitId);
-        Case caze = suit.getCaseById(caseId);
+        Case caze = caseTransformer.fromDto(caseDTO);
 
-        if (caze != null) {
-            suit.getCases().remove(caze);
-            suitDAO.save(suit);
-            caseDAO.delete(caseId);
-        }
+        suit.getCases().add(caze);
+        caze = caseDAO.save(caze);
+
+        return caze.getId();
     }
 
-    public CaseDTO updateCase(long suitId, CaseDTO cs) {
+    //TODO change method
+    public void updateCase(long suitId, CaseDTO cs) {
         Suit suit = suitDAO.getOne(suitId);
         Case caze = suit.getCaseById(cs.getId());
 
@@ -91,7 +89,18 @@ public class CaseService {
             suitDAO.save(suit);
             cs = caseTransformer.toDto(caze);
         }
-        return cs;
+    }
+
+    //TODO check method
+    public void removeCase(long suitId, long caseId) {
+        Suit suit = suitDAO.getOne(suitId);
+        Case caze = suit.getCaseById(caseId);
+
+        if (caze != null) {
+            suit.getCases().remove(caze);
+            suitDAO.save(suit);
+            caseDAO.delete(caseId);
+        }
     }
 
     public void removeCases(long suitId, List<Long> caseIds) {
@@ -99,7 +108,7 @@ public class CaseService {
         suit.getCases()
                 .removeIf(caze -> caseIds.stream()
                         .anyMatch(id -> id.equals(caze.getId())));
-
+        //TODO check this line
         suitDAO.save(suit);
     }
 
