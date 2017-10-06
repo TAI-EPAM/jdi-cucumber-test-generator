@@ -6,7 +6,6 @@ import com.epam.test_generator.services.SuitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -44,7 +43,7 @@ public class SuitController {
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> editSuit(@PathVariable("suitId") long id, @RequestBody SuitDTO suitDTO) {
+    public ResponseEntity<Long> editSuit(@PathVariable("suitId") long id, @RequestBody SuitDTO suitDTO) {
         SuitDTO checkSuitDTO = suitService.getSuit(id);
 
         if (checkSuitDTO != null) {
@@ -53,7 +52,7 @@ public class SuitController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)

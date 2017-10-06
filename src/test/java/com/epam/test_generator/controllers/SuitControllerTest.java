@@ -165,16 +165,17 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void editSuit_return404whenSuitNotExist() throws Exception {
+	public void editSuit_return201whenSuitNotExist() throws Exception {
 		when(suitService.getSuit(anyLong())).thenReturn(null);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(suitDTO)))
 				.andDo(print())
-				.andExpect(status().isNotFound());
+				.andExpect(status().isCreated());
 
 		verify(suitService, times(0)).updateSuit(anyLong(), any(SuitDTO.class));
+		verify(suitService).addSuit(any(SuitDTO.class));
 	}
 
 	@Test
