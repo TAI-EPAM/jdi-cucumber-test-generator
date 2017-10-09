@@ -56,40 +56,22 @@ public class CaseService {
         return caze.getId();
     }
 
-    //TODO change method
-    public void updateCase(long suitId, CaseDTO cs) {
-        Suit suit = suitDAO.getOne(suitId);
-        Case caze = suit.getCaseById(cs.getId());
+    public void updateCase(long caseId, CaseDTO caseDTO) {
+        Case caze = caseDAO.getOne(caseId);
 
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        cs.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        caseDTO.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
 
-        if (caze != null) {
-            suit.getCases().remove(caze);
-
-            caze.setSteps(new ArrayList<>());
-            caze.setTags(new HashSet<>());
-
-            caze = caseTransformer.fromDto(cs);
-
-            mergeTags(caze);
-
-            suit.getCases().add(caze);
-            suitDAO.save(suit);
-            cs = caseTransformer.toDto(caze);
-        }
+        caseTransformer.mapDTOToEntity(caseDTO, caze);
+        caseDAO.save(caze);
     }
 
-    //TODO check method
     public void removeCase(long suitId, long caseId) {
         Suit suit = suitDAO.getOne(suitId);
         Case caze = suit.getCaseById(caseId);
 
-        if (caze != null) {
-            suit.getCases().remove(caze);
-            suitDAO.save(suit);
-            caseDAO.delete(caseId);
-        }
+        suit.getCases().remove(caze);
+        caseDAO.delete(caseId);
     }
 
     public void removeCases(long suitId, List<Long> caseIds) {
@@ -97,12 +79,12 @@ public class CaseService {
         suit.getCases()
                 .removeIf(caze -> caseIds.stream()
                         .anyMatch(id -> id.equals(caze.getId())));
-        //TODO check this line
-        suitDAO.save(suit);
+
+        caseIds.forEach(caseId -> caseDAO.delete(caseId));
     }
 
     private void mergeTags(Case caze){
-        if(caze.getTags() !=null){
+        if(caze.getTags() != null){
             caze.setTags(caze.getTags().stream()
                     .map(tag -> tagDAO.findOne(Example.of(tag))==null ? tag : tagDAO.findOne(Example.of(tag)))
                     .collect(Collectors.toSet()));

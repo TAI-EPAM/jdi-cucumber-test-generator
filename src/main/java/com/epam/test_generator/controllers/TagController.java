@@ -112,7 +112,7 @@ public class TagController {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        tagService.updateTag(caseId, tagId, tagDTO);
+        tagService.updateTag(tagId, tagDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -388,7 +388,7 @@ public class CaseControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(casesService).getCase(eq(SIMPLE_CASE_ID));
-        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -404,7 +404,7 @@ public class CaseControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(casesService,times(0)).getCase(eq(SIMPLE_CASE_ID));
-        verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -420,7 +420,7 @@ public class CaseControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(casesService).getCase(eq(SIMPLE_CASE_ID));
-        verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -437,7 +437,7 @@ public class CaseControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(casesService).getCase(eq(SIMPLE_CASE_ID));
-        verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     //TODO create validation (priority - null)
@@ -450,7 +450,7 @@ public class CaseControllerTest {
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     //TODO create validation (priority - 0)
@@ -463,7 +463,7 @@ public class CaseControllerTest {
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     //TODO create validation (priority - 6)
@@ -476,7 +476,7 @@ public class CaseControllerTest {
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     //TODO create validation (priority - negative)
@@ -490,7 +490,7 @@ public class CaseControllerTest {
                 .andExpect(status().isUnprocessableEntity());
 
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     //TODO create validation (description - null)
@@ -503,7 +503,7 @@ public class CaseControllerTest {
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     //TODO create validation (description - "")
@@ -516,7 +516,7 @@ public class CaseControllerTest {
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -533,6 +533,6 @@ public class CaseControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(casesService).getCase(eq(SIMPLE_CASE_ID));
-        verify(casesService).updateCase(anyLong(),any(CaseDTO.class));
+        verify(casesService).updateCase(eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
 }

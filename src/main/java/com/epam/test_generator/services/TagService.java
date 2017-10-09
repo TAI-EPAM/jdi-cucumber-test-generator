@@ -69,12 +69,11 @@ public class TagService {
 		return tag.getId();
 	}
 
-	public void updateTag(long caseId, long tagId, TagDTO tagDTO) {
-		Case caze = caseDAO.getOne(caseId);
+	public void updateTag(long tagId, TagDTO tagDTO) {
 		Tag tag = tagDAO.getOne(tagId);
+		tagTransformer.mapDTOToEntity(tagDTO, tag);
 
-		//TODO create update logic
-
+		tagDAO.save(tag);
 	}
 
 	public void removeTag(long caseId, long tagId) {

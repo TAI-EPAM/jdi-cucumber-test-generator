@@ -90,7 +90,7 @@ public class CaseController {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        caseService.updateCase(suitId, caseDTO);
+        caseService.updateCase(caseId, caseDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -291,7 +291,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
@@ -309,7 +309,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService, times(0)).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService, times(0)).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService, times(0)).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService, times(0)).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
@@ -327,7 +327,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService, times(0)).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService, times(0)).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService, times(0)).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
@@ -346,7 +346,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService, times(0)).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService, times(0)).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService, times(0)).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
@@ -365,7 +365,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService,times(0)).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService,times(0)).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
@@ -384,7 +384,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService,times(0)).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService,times(0)).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
@@ -392,7 +392,7 @@ public class TagControllerTest {
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(caseService.getCase(anyLong())).thenReturn(caseDTO);
         when(tagService.getTag(anyLong())).thenReturn(tagDTO);
-        doThrow(RuntimeException.class).when(tagService).updateTag(anyLong(), anyLong(), any(TagDTO.class));
+        doThrow(RuntimeException.class).when(tagService).updateTag(anyLong(), any(TagDTO.class));
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -403,7 +403,7 @@ public class TagControllerTest {
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
         verify(tagService).getTag(eq(SIMPLE_TAG_ID));
-        verify(tagService).updateTag(eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService).updateTag(eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
