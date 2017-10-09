@@ -20,7 +20,7 @@ public class CaseController {
     private CaseService casesService;
 
     @Autowired
-    SuitService suitService;
+    private SuitService suitService;
 
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
@@ -71,7 +71,7 @@ public class CaseController {
     }
 
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Long> updateCase(@PathVariable("caseId") long caseId, @PathVariable("suitId") long suitId, @RequestBody CaseDTO caseDTO) {
+    public ResponseEntity<Long> updateCase(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId, @RequestBody CaseDTO caseDTO) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
 
         if (suitDTO == null) {
