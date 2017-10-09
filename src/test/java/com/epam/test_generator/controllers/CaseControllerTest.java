@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -95,7 +96,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCases_return404whenGetCases_NotExistSuit() throws Exception {
+    public void testGetCases_return404whenSuitNotExist() throws Exception {
         when(suitService.getSuit(anyLong())).thenReturn(null);
         when(casesService.getCases(any(SuitDTO.class))).thenReturn(Collections.emptyList());
 
@@ -108,7 +109,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCases_return500whenGetCases() throws Exception {
+    public void testGetCases_return500whenRuntimeException() throws Exception {
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.getCases(any(SuitDTO.class))).thenThrow(new RuntimeException());
 
@@ -135,7 +136,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCase_return404whenGetCase_NotExistSuit() throws Exception {
+    public void testGetCase_return404whenSuitNotExist() throws Exception {
         when(suitService.getSuit(anyLong())).thenReturn(null);
         when(casesService.getCase(anyLong())).thenReturn(caseDTO);
 
@@ -148,7 +149,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCase_return404whenGetCase_NotExistCase() throws Exception {
+    public void testGetCase_return404whenCaseNotExist() throws Exception {
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.getCase(anyLong())).thenReturn(null);
 
@@ -161,7 +162,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCase_return400whenGetCase_SuitNotContainsCase() throws Exception {
+    public void testGetCase_return400whenSuitNotContainsCase() throws Exception {
         suitDTO.setCases(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.getCase(anyLong())).thenReturn(caseDTO);
@@ -175,7 +176,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCase_return500whenGetCase() throws Exception {
+    public void testGetCase_return500whenRuntimeException() throws Exception {
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.getCase(anyLong())).thenThrow(new RuntimeException());
 
@@ -188,7 +189,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testAddCase_return200whenAddNewCase() throws Exception {
+    public void testAddCase_return201whenAddNewCase() throws Exception {
         caseDTO.setId(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.addCaseToSuit(any(CaseDTO.class), anyLong())).thenReturn(SIMPLE_CASE_ID);
@@ -200,15 +201,17 @@ public class CaseControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().string(String.valueOf(SIMPLE_CASE_ID)));
 
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(casesService).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
-    @Test
+    //TODO create validation (description - null)
+    @Ignore
     public void testAddCase_return422whenAddCaseWithNullDescription() throws Exception {
         caseDTO.setId(null);
         caseDTO.setDescription(null);
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -216,12 +219,13 @@ public class CaseControllerTest {
         verify(casesService, times(0)).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
-    @Test
+    //TODO create validation (description - "")
+    @Ignore
     public void testAddCase_return422whenAddCaseWithEmptyDescription() throws Exception {
         caseDTO.setId(null);
         caseDTO.setDescription("");
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -229,12 +233,13 @@ public class CaseControllerTest {
         verify(casesService, times(0)).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
-    @Test
+    //TODO create validation (priority - null)
+    @Ignore
     public void testAddCase_return422whenAddCaseWithNullPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(null);
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -242,12 +247,13 @@ public class CaseControllerTest {
         verify(casesService, times(0)).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
-    @Test
+    //TODO create validation (priority - 0)
+    @Ignore
     public void testAddCase_return422whenAddCaseWithZeroPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(0);
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -255,12 +261,13 @@ public class CaseControllerTest {
         verify(casesService, times(0)).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
-    @Test
+    //TODO create validation (priority - 6)
+    @Ignore
     public void testAddCase_return422whenAddCaseWithMoreThanTheRequiredPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(6);
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -268,12 +275,13 @@ public class CaseControllerTest {
         verify(casesService, times(0)).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
-    @Test
+    //TODO create validation (priority - negative)
+    @Ignore
     public void testAddCase_return422whenAddCaseWithLessThanTheRequiredPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(-4);
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -282,52 +290,163 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testAddCase_return500whenAddNewCase() throws Exception {
+    public void testAddCase_return500whenRuntimeException() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.addCaseToSuit(any(CaseDTO.class), anyLong())).thenThrow(new RuntimeException());
 
-        mockMvc.perform(post("/suit/" + SIMPLE_SUIT_ID + "/case/")
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
+                .andDo(print())
                 .andExpect(status().isInternalServerError());
 
-        verify(casesService).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
+        verify(suitService).getSuit(anyLong());
+        verify(casesService).addCaseToSuit(any(CaseDTO.class), anyLong());
     }
 
     @Test
     public void testRemoveCase_return200whenRemoveCase() throws Exception {
-        mockMvc.perform(delete("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID))
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+                .andDo(print())
                 .andExpect(status().isOk());
 
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
         verify(casesService).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
-    public void testRemoveCase_return500whenRemoveCase() throws Exception {
+    public void testRemoveCase_return404whenSuitNotExist() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(null);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService, times(0)).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService, times(0)).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+    }
+
+    @Test
+    public void testRemoveCase_return404whenCaseNotExist() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(null);
+
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService, times(0)).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+    }
+
+    @Test
+    public void testRemoveCase_return400whenSuitNotContainsCase() throws Exception {
+        suitDTO.setCases(null);
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService, times(0)).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+    }
+
+    @Test
+    public void testRemoveCase_return500whenRuntimeException() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
         doThrow(RuntimeException.class).when(casesService).removeCase(anyLong(), anyLong());
 
-        mockMvc.perform(delete("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID))
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+                .andDo(print())
                 .andExpect(status().isInternalServerError());
 
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
         verify(casesService).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
-//
-//    @Test
-//    public void testUpdateCase_return200whenUpdateCase() throws Exception {
-//        when(casesService.updateCase(anyLong(), any(CaseDTO.class))).thenReturn(caseDTO);
-//
-//        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(caseDTO)))
-//                .andExpect(status().isOk());
-//
-//        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
-//    }
 
     @Test
+    public void testUpdateCase_return200whenUpdateCase() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(caseDTO)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+    }
+
+    @Test
+    public void testUpdateCase_return404whenSuitNotExist() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(null);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(caseDTO)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService,times(0)).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+    }
+
+    @Test
+    public void testUpdateCase_return201whenCaseNotExist() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(null);
+
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(caseDTO)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+    }
+
+    @Test
+    public void testUpdateCase_return201whenSuitNotContainsCase() throws Exception {
+        suitDTO.setCases(null);
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(caseDTO)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+    }
+
+    //TODO create validation (priority - null)
+    @Ignore
     public void testUpdateCase_return422whenUpdateCaseWithNullPriority() throws Exception {
         caseDTO.setPriority(null);
 
-        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -335,11 +454,12 @@ public class CaseControllerTest {
         verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
     }
 
-    @Test
+    //TODO create validation (priority - 0)
+    @Ignore
     public void testUpdateCase_return422whenUpdateCaseWithZeroPriority() throws Exception {
         caseDTO.setPriority(0);
 
-        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -347,11 +467,12 @@ public class CaseControllerTest {
         verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
     }
 
-    @Test
+    //TODO create validation (priority - 6)
+    @Ignore
     public void testUpdateCase_return422whenUpdateCaseWithMoreThanTheRequiredPriority() throws Exception {
         caseDTO.setPriority(6);
 
-        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -359,11 +480,12 @@ public class CaseControllerTest {
         verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
     }
 
-    @Test
+    //TODO create validation (priority - negative)
+    @Ignore
     public void testUpdateCase_return422whenUpdateCaseWithLessThanTheRequiredPriority() throws Exception {
         caseDTO.setPriority(-4);
 
-        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -372,11 +494,25 @@ public class CaseControllerTest {
         verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
     }
 
-    @Test
+    //TODO create validation (description - null)
+    @Ignore
     public void testUpdateCase_return422whenUpdateCaseWithNullDescription() throws Exception {
         caseDTO.setDescription(null);
 
-        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(caseDTO)))
+                .andExpect(status().isUnprocessableEntity());
+
+        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+    }
+
+    //TODO create validation (description - "")
+    @Ignore
+    public void testUpdateCase_return422whenUpdateCaseWithEmptyDescription() throws Exception {
+        caseDTO.setDescription("");
+
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
                 .andExpect(status().isUnprocessableEntity());
@@ -385,28 +521,19 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testUpdateCase_return422whenUpdateCaseWithEmptyDescription() throws Exception {
-        caseDTO.setDescription("");
+    public void testUpdateCase_return500whenRuntimeException() throws Exception {
+        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(casesService.getCase(anyLong())).thenReturn(caseDTO);
+        doThrow(RuntimeException.class).when(casesService).updateCase(anyLong(), any(CaseDTO.class));
 
-        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
 
-        verify(casesService, times(0)).updateCase(anyLong(),any(CaseDTO.class));
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService).getCase(eq(SIMPLE_CASE_ID));
+        verify(casesService).updateCase(anyLong(),any(CaseDTO.class));
     }
-
-//    @Test
-//    public void testUpdateCase_return500whenUpdateCase() throws Exception {
-//        when(casesService.updateCase(anyLong(), any(CaseDTO.class))).thenThrow(new RuntimeException());
-//
-//        mockMvc.perform(put("/suit/" + SIMPLE_SUIT_ID + "/case/" + SIMPLE_CASE_ID)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(mapper.writeValueAsString(caseDTO)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(casesService).updateCase(anyLong(),any(CaseDTO.class));
-//    }
-
-
 }

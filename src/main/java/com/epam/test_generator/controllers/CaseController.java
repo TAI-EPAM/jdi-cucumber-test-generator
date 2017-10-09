@@ -59,12 +59,12 @@ public class CaseController {
     }
 
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Long> addCaseToSuit(@PathVariable long suitId, @RequestBody CaseDTO caseDTO) {
+    public ResponseEntity<Long> addCaseToSuit(@PathVariable("suitId") long suitId, @RequestBody CaseDTO caseDTO) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
 
         if (suitDTO != null) {
 
-            return new ResponseEntity<>(casesService.addCaseToSuit(caseDTO, suitId), HttpStatus.OK);
+            return new ResponseEntity<>(casesService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -120,7 +120,7 @@ public class CaseController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE, consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId, @RequestBody SuitDTO suitDTO) {
         SuitDTO checkSuitDTO = suitService.getSuit(suitId);
 
@@ -135,6 +135,8 @@ public class CaseController {
     }
 
     private boolean caseBelongsToSuit(CaseDTO caseDTO, SuitDTO suitDTO) {
-        return suitDTO.getCases().stream().anyMatch(caze -> Objects.equals(caze.getId(), caseDTO.getId()));
+        List<CaseDTO> caseDTOList = suitDTO.getCases();
+
+        return caseDTOList != null && caseDTOList.stream().anyMatch(caze -> Objects.equals(caze.getId(), caseDTO.getId()));
     }
 }

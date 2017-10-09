@@ -66,7 +66,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void getSuits_return500whenGetSuits() throws Exception {
+	public void getSuits_return500whenRuntimeException() throws Exception {
 		when(suitService.getSuits()).thenThrow(new RuntimeException());
 
 		mockMvc.perform(get("/suits"))
@@ -88,7 +88,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void getSuit_return404whenGetSuit() throws Exception {
+	public void getSuit_return404whenSuitNotExist() throws Exception {
 		when(suitService.getSuit(anyLong())).thenReturn(null);
 
 		mockMvc.perform(get("/suits/" + TEST_SUIT_ID))
@@ -99,7 +99,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void getSuit_return500whenGetSuit() throws Exception {
+	public void getSuit_return500whenRuntimeException() throws Exception {
 		when(suitService.getSuit(anyLong())).thenThrow(new RuntimeException());
 
 		mockMvc.perform(get("/suits/" + TEST_SUIT_ID))
@@ -179,7 +179,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void editSuit_return500whenEditSuit() throws Exception {
+	public void editSuit_return500whenRuntimeException() throws Exception {
 		doThrow(RuntimeException.class).when(suitService).updateSuit(anyLong(), any(SuitDTO.class));
 		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 
@@ -205,7 +205,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void removeSuit_return404whenRemoveSuit() throws Exception {
+	public void removeSuit_return404whenSuitNotExist() throws Exception {
 		when(suitService.getSuit(anyLong())).thenReturn(null);
 		doNothing().when(suitService).removeSuit(anyLong());
 
@@ -217,7 +217,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void removeSuit_return500whenRemoveSuit() throws Exception {
+	public void removeSuit_return500whenRuntimeException() throws Exception {
 		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 		doThrow(RuntimeException.class).when(suitService).removeSuit(anyLong());
 
@@ -292,7 +292,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void addSuit_return500whenAddSuit() throws Exception {
+	public void addSuit_return500whenRuntimeException() throws Exception {
 		suitDTO.setId(null);
 		when(suitService.addSuit(any(SuitDTO.class))).thenThrow(new RuntimeException());
 
