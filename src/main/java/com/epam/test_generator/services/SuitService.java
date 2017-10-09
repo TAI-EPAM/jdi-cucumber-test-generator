@@ -42,7 +42,11 @@ public class SuitService {
     }
 
     public SuitDTO getSuit(long suitId) {
-        return suitTransformer.toDto(suitDAO.findOne(suitId));
+        if (suitDAO.getOne(suitId) == null) {
+            return null;
+        }
+
+        return suitTransformer.toDto(suitDAO.getOne(suitId));
     }
 
     public Long addSuit(SuitDTO suitDTO) {

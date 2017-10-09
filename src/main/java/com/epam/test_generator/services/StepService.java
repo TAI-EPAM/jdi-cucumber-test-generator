@@ -34,7 +34,7 @@ public class StepService {
     }
 
     public List<StepDTO> getStepsByCaseId(Long caseId) {
-        return caseDAO.findOne(caseId).getSteps().stream().
+        return caseDAO.getOne(caseId).getSteps().stream().
                 map(step -> stepTransformer.toDto(step)).collect(Collectors.toList());
     }
 
@@ -42,14 +42,11 @@ public class StepService {
         stepDAO.delete(id);
     }
 
-//    TODO change method
-    public void updateStep(StepDTO stepDTO, Long caseId) {
-        Case caze = caseDAO.getOne(caseId);
-        Step step = stepDAO.getOne(stepDTO.getId());
-
+    public void updateStep(Long stepId, StepDTO stepDTO) {
+        Step step = stepDAO.getOne(stepId);
         stepTransformer.mapDTOToEntity(stepDTO, step);
 
-
+        stepDAO.save(step);
     }
 
     public Long addStep(StepDTO stepDTO, Long caseID) {
@@ -76,7 +73,11 @@ public class StepService {
     }
 
     public StepDTO getStep(long stepId) {
+        Step step = stepDAO.getOne(stepId);
+        if (step == null) {
+            return null;
+        }
 
-        return stepTransformer.toDto(stepDAO.getOne(stepId));
+        return stepTransformer.toDto(step);
     }
 }

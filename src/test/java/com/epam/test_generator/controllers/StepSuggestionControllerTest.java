@@ -54,30 +54,30 @@ public class StepSuggestionControllerTest {
 
     @Test
     public void getSuggestionsList_return200whenGetStepsSuggestion() throws Exception {
-        when(stepSuggestionService.getStepsSuggestion()).thenReturn(Collections.emptyList());
+        when(stepSuggestionService.getStepsSuggestions()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/step_suggestion"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(stepSuggestionService).getStepsSuggestion();
+        verify(stepSuggestionService).getStepsSuggestions();
     }
 
     @Test
     public void getSuggestionsList_return500whenGetStepsSuggestion() throws Exception {
-        when(stepSuggestionService.getStepsSuggestion()).thenThrow(new RuntimeException());
+        when(stepSuggestionService.getStepsSuggestions()).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/step_suggestion"))
                 .andDo(print())
                 .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService).getStepsSuggestion();
+        verify(stepSuggestionService).getStepsSuggestions();
     }
 
     @Test
     public void testAddSuggestion_return200whenAddNewStepSuggestion() throws Exception {
         stepSuggestionDTO.setId(null);
-        when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class))).thenReturn(stepSuggestionDTO);
+        when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class))).thenReturn(stepSuggestionDTO.getId());
 
         mockMvc.perform(post("/step_suggestion")
                 .contentType(MediaType.APPLICATION_JSON)

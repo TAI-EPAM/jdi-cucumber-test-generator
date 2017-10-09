@@ -42,8 +42,12 @@ public class CaseService {
     private TagDAO tagDAO;
 
     public CaseDTO getCase(Long id) {
+        Case caze = caseDAO.getOne(id);
+        if (caze == null) {
+            return null;
+        }
 
-        return caseTransformer.toDto(caseDAO.getOne(id));
+        return caseTransformer.toDto(caze);
     }
 
     public Long addCaseToSuit(CaseDTO caseDTO, long suitId) {

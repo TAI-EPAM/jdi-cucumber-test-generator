@@ -45,7 +45,9 @@ public class TagService {
 	}
 
 	public TagDTO getTag(long tagId) {
-
+		if (tagDAO.getOne(tagId) == null) {
+			return null;
+		}
 		return tagTransformer.toDto(tagDAO.getOne(tagId));
 	}
 

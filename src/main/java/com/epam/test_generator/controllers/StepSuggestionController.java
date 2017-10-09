@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.StepSuggestionDTO;
+import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,42 +12,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class StepSuggestionController {
 
     @Autowired
-    StepSuggestionService stepSuggestionService;
+    private StepSuggestionService stepSuggestionService;
 
-    @RequestMapping(value = "/step_suggestion", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestion() {
-        return new ResponseEntity<>(stepSuggestionService.getStepsSuggestion(), HttpStatus.OK);
+    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestions() {
+
+        return new ResponseEntity<>(stepSuggestionService.getStepsSuggestions(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/step_suggestion", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<StepSuggestionDTO> addStepSuggestion(@RequestBody StepSuggestionDTO stepSuggestionDTO) {
-        if (contentIsValid(stepSuggestionDTO) && typeIsValid(stepSuggestionDTO)) {
+    @RequestMapping(value = "/stepSuggestions/{typeId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestionsByType(@PathVariable("typeId") long typeId) {
 
-            return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO),HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(stepSuggestionService.getStepsSuggestionsByType(typeId), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Long> addStepSuggestion(@RequestBody StepSuggestionDTO stepSuggestionDTO) {
+
+        return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.PUT, produces = "application/json")
+    public ResponseEntity<Long> updateStepSuggestion(@PathVariable("stepSuggestionId") long stepSuggestionId, @RequestBody StepSuggestionDTO stepSuggestionDTO) {
+        StepSuggestionDTO checkedStepSuggestion = stepSuggestionService.getStepsSuggestion(stepSuggestionId);
+        if (checkedStepSuggestion == null) {
+
+            return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO), HttpStatus.CREATED);
         }
-    }
+        stepSuggestionService.updateStepSuggestion(stepSuggestionId, stepSuggestionDTO);
 
-
-    @RequestMapping(value = "/step_suggestion/{stepSuggestionId}", method = RequestMethod.DELETE, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<Void> removeStepSuggestion(@PathVariable("stepSuggestionId") long stepSuggestionId) {
-        stepSuggestionService.removeStepSuggestion(stepSuggestionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private boolean contentIsValid(StepSuggestionDTO stepSuggestionDTO) {
-        return stepSuggestionDTO.getContent() != null && stepSuggestionDTO.getContent().length() > 2;
-    }
+    @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.DELETE, produces = "application/json")
+    public ResponseEntity<Void> removeStepSuggestion(@PathVariable("stepSuggestionId") long stepSuggestionId) {
+        if (stepSuggestionService.getStepsSuggestion(stepSuggestionId) == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        stepSuggestionService.removeStepSuggestion(stepSuggestionId);
 
-    private boolean typeIsValid(StepSuggestionDTO stepSuggestionDTO) {
-        return stepSuggestionDTO.getType() != null && stepSuggestionDTO.getType() >= 0 && stepSuggestionDTO.getType() <= StepType.values().length;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

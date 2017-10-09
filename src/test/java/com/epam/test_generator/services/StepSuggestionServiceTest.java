@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -52,17 +53,16 @@ public class StepSuggestionServiceTest {
     @Test
     public void getStepsSuggestion() throws Exception {
         when(stepSuggestionDAO.findAll()).thenReturn(listSteps);
-        when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedListSteps.get(0))
-                                                                     .thenReturn(expectedListSteps.get(1));
+        when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
 
-        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService.getStepsSuggestion();
+        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService.getStepsSuggestions();
         assertEquals(true, Arrays.deepEquals(expectedListSteps.toArray(), getListStepsSuggestion.toArray()));
 
         verify(stepSuggestionDAO).findAll();
     }
 
     @Test
-    public void addStepSuggestion() throws Exception {
+    public void testAddStepSuggestion() throws Exception {
         StepSuggestion newStepSuggestion = new StepSuggestion(3L, "StepSuggestion 3", StepType.AND);
         StepSuggestionDTO newStepSuggestionDTO = new StepSuggestionDTO(3L, "StepSuggestion 3", StepType.AND.ordinal());
 
@@ -70,8 +70,8 @@ public class StepSuggestionServiceTest {
         when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(newStepSuggestionDTO);
         when(stepSuggestionTransformer.fromDto(any(StepSuggestionDTO.class))).thenReturn(newStepSuggestion);
 
-        StepSuggestionDTO stepSuggestionAdded = stepSuggestionService.addStepSuggestion(newStepSuggestionDTO);
-        assertEquals(newStepSuggestionDTO, stepSuggestionAdded);
+        Long id = stepSuggestionService.addStepSuggestion(newStepSuggestionDTO);
+        assertEquals(newStepSuggestionDTO.getId(), id);
 
         verify(stepSuggestionDAO).save(any(StepSuggestion.class));
     }
