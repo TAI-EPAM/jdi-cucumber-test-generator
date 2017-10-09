@@ -2,6 +2,7 @@ package com.epam.test_generator.services;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Step;
@@ -41,12 +42,24 @@ public class StepService {
         stepDAO.delete(id);
     }
 
-    public StepDTO updateStep(Step step) {
-        return stepTransformer.toDto(stepDAO.save(step));
+//    TODO change method
+    public void updateStep(StepDTO stepDTO, Long caseId) {
+        Case caze = caseDAO.getOne(caseId);
+        Step step = stepDAO.getOne(stepDTO.getId());
+
+        stepTransformer.mapDTOToEntity(stepDTO, step);
+
+
     }
 
-    public void addStep(StepDTO stepDTO, Long caseID) {
-        addStepToCase(stepTransformer.fromDto(stepDTO), caseID);
+    public Long addStep(StepDTO stepDTO, Long caseID) {
+        Case caze = caseDAO.getOne(caseID);
+        Step step = stepTransformer.fromDto(stepDTO);
+
+        step = stepDAO.save(step);
+        caze.getSteps().add(step);
+
+        return step.getId();
     }
 
     public void removeAllSteps(Long caseId) {
@@ -60,5 +73,10 @@ public class StepService {
 
     public void addSteps(Long caseId, List<StepDTO> steps) {
         steps.forEach(stepDTO -> addStep(stepDTO,caseId));
+    }
+
+    public StepDTO getStep(long stepId) {
+
+        return stepTransformer.toDto(stepDAO.getOne(stepId));
     }
 }

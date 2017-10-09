@@ -29,12 +29,12 @@ public class SuitController {
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long id) {
         SuitDTO suitDTO = suitService.getSuit(id);
 
-        if (suitDTO != null) {
+        if (suitDTO == null) {
 
-            return new ResponseEntity<>(suitDTO, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(suitDTO, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suits", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -47,26 +47,26 @@ public class SuitController {
     public ResponseEntity<Long> editSuit(@PathVariable("suitId") long id, @RequestBody SuitDTO suitDTO) {
         SuitDTO checkSuitDTO = suitService.getSuit(id);
 
-        if (checkSuitDTO != null) {
-            suitService.updateSuit(id, suitDTO);
+        if (checkSuitDTO == null) {
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
         }
+        suitService.updateSuit(id, suitDTO);
 
-        return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long id) {
         SuitDTO suitDTO = suitService.getSuit(id);
 
-        if (suitDTO != null) {
-            suitService.removeSuit(id);
+        if (suitDTO == null) {
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        suitService.removeSuit(id);
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suits/{suitId}/featureFile", method = RequestMethod.POST, consumes = "application/json")
