@@ -41,17 +41,6 @@ public class CaseService {
     @Autowired
     private TagDAO tagDAO;
 
-    public List<CaseDTO> getCasesBySuitId(long suitId) {
-        List<Case> list = suitDAO.findOne(suitId).getCases();
-
-        return caseTransformer.toDtoList(list);
-    }
-
-    public List<CaseDTO> getCases(SuitDTO suitDTO) {
-
-        return suitDTO.getCases();
-    }
-
     public CaseDTO getCase(Long id) {
 
         return caseTransformer.toDto(caseDAO.getOne(id));

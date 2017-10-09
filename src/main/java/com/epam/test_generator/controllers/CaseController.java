@@ -26,12 +26,12 @@ public class CaseController {
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
 
-        if (suitDTO != null) {
+        if (suitDTO == null) {
 
-            return new ResponseEntity<>(casesService.getCases(suitDTO), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(suitDTO.getCases(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.GET, produces = "application/json")
