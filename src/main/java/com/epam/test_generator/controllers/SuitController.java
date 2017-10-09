@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class SuitController {
 
     @Autowired
-    SuitService suitService;
+    private SuitService suitService;
 
 
     @RequestMapping(value = "/suits", method = RequestMethod.GET, produces = "application/json")
@@ -26,8 +26,8 @@ public class SuitController {
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long id) {
-        SuitDTO suitDTO = suitService.getSuit(id);
+    public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
 
         if (suitDTO == null) {
 
@@ -44,27 +44,27 @@ public class SuitController {
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Long> editSuit(@PathVariable("suitId") long id, @RequestBody SuitDTO suitDTO) {
-        SuitDTO checkSuitDTO = suitService.getSuit(id);
+    public ResponseEntity<Long> updateSuit(@PathVariable("suitId") long suitId, @RequestBody SuitDTO suitDTO) {
+        SuitDTO checkSuitDTO = suitService.getSuit(suitId);
 
         if (checkSuitDTO == null) {
 
             return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
         }
-        suitService.updateSuit(id, suitDTO);
+        suitService.updateSuit(suitId, suitDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long id) {
-        SuitDTO suitDTO = suitService.getSuit(id);
+    public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long suitId) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
 
         if (suitDTO == null) {
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        suitService.removeSuit(id);
+        suitService.removeSuit(suitId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

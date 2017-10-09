@@ -110,7 +110,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void editSuit_return200whenEditSuit() throws Exception {
+	public void updateSuit_return200whenEditSuit() throws Exception {
 		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
@@ -124,7 +124,7 @@ public class SuitControllerTest {
 
 	//TODO create validation
 	@Ignore
-	public void editSuit_return400whenEditSuitWithNullName() throws Exception {
+	public void updateSuit_return400whenEditSuitWithNullName() throws Exception {
 		suitDTO.setName(null);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
@@ -138,7 +138,7 @@ public class SuitControllerTest {
 
 	//TODO create validation
 	@Ignore
-	public void editSuit_return400whenEditWithMoreThanTheRequiredPriority() throws Exception {
+	public void updateSuit_return400whenEditWithMoreThanTheRequiredPriority() throws Exception {
 		suitDTO.setPriority(6);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
@@ -152,7 +152,7 @@ public class SuitControllerTest {
 
 	//TODO create validation
 	@Ignore
-	public void editSuit_return400whenEditWithLessThanTheRequiredPriority() throws Exception {
+	public void updateSuit_return400whenEditWithLessThanTheRequiredPriority() throws Exception {
 		suitDTO.setPriority(-1);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
@@ -165,7 +165,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void editSuit_return201whenSuitNotExist() throws Exception {
+	public void updateSuit_return201whenSuitNotExist() throws Exception {
 		when(suitService.getSuit(anyLong())).thenReturn(null);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
@@ -179,7 +179,7 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void editSuit_return500whenRuntimeException() throws Exception {
+	public void updateSuit_return500whenRuntimeException() throws Exception {
 		doThrow(RuntimeException.class).when(suitService).updateSuit(anyLong(), any(SuitDTO.class));
 		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 

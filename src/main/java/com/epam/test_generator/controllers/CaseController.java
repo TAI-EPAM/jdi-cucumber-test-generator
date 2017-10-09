@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class CaseController {
 
     @Autowired
-    private CaseService casesService;
+    private CaseService caseService;
 
     @Autowired
     private SuitService suitService;
@@ -43,7 +43,7 @@ public class CaseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CaseDTO caseDTO = casesService.getCase(caseId);
+        CaseDTO caseDTO = caseService.getCase(caseId);
 
         if (caseDTO == null) {
 
@@ -64,7 +64,7 @@ public class CaseController {
 
         if (suitDTO != null) {
 
-            return new ResponseEntity<>(casesService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
+            return new ResponseEntity<>(caseService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -79,18 +79,18 @@ public class CaseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CaseDTO checkCaseDTO = casesService.getCase(caseId);
+        CaseDTO checkCaseDTO = caseService.getCase(caseId);
 
         if (checkCaseDTO == null) {
 
-            return new ResponseEntity<>(casesService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
+            return new ResponseEntity<>(caseService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
         }
 
         if (!caseBelongsToSuit(checkCaseDTO, suitDTO)) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        casesService.updateCase(suitId, caseDTO);
+        caseService.updateCase(suitId, caseDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -104,7 +104,7 @@ public class CaseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CaseDTO caseDTO = casesService.getCase(caseId);
+        CaseDTO caseDTO = caseService.getCase(caseId);
 
         if (caseDTO == null) {
 
@@ -115,7 +115,7 @@ public class CaseController {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        casesService.removeCase(suitId, caseId);
+        caseService.removeCase(suitId, caseId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -129,7 +129,7 @@ public class CaseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId).collect(Collectors.toList());
-        casesService.removeCases(suitId, caseIds);
+        caseService.removeCases(suitId, caseIds);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

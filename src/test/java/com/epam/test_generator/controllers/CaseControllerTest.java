@@ -188,6 +188,22 @@ public class CaseControllerTest {
         verify(casesService).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
     }
 
+    @Test
+    public void testAddCase_return404whenSuitNotExist() throws Exception {
+        caseDTO.setId(null);
+        when(suitService.getSuit(anyLong())).thenReturn(null);
+        when(casesService.addCaseToSuit(any(CaseDTO.class), anyLong())).thenReturn(SIMPLE_CASE_ID);
+
+        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(caseDTO)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(casesService, times(0)).addCaseToSuit(any(CaseDTO.class), eq(SIMPLE_SUIT_ID));
+    }
+
     //TODO create validation (description - null)
     @Ignore
     public void testAddCase_return422whenAddCaseWithNullDescription() throws Exception {

@@ -41,28 +41,25 @@ public class SuitService {
                 .collect(Collectors.toList());
     }
 
-    public SuitDTO getSuit(long id) {
-        return suitTransformer.toDto(suitDAO.findOne(id));
-    }
-
-    public void updateSuit(Long id, SuitDTO suitDTO) {
-//      TODO fix logic to save updates in suitDTO (use ID)
-        List<Case> cases = suitDAO.getOne(suitDTO.getId()).getCases();
-        Suit suit = suitTransformer.fromDto(suitDTO);
-        suit.setCases(cases);
-
-        suitTransformer.toDto(suitDAO.save(suit));
-    }
-
-    public void removeSuit(long id) {
-        suitDAO.delete(id);
+    public SuitDTO getSuit(long suitId) {
+        return suitTransformer.toDto(suitDAO.findOne(suitId));
     }
 
     public Long addSuit(SuitDTO suitDTO) {
         Suit suit = suitDAO.save(suitTransformer.fromDto(suitDTO));
-        Long id = suitTransformer.toDto(suit).getId();
 
-        return id;
+        return suit.getId();
+    }
+
+    public void updateSuit(long suitId, SuitDTO suitDTO) {
+        Suit suit = suitDAO.getOne(suitId);
+        suitTransformer.mapDTOToEntity(suitDTO, suit);
+
+        suitDAO.save(suit);
+    }
+
+    public void removeSuit(long suitId) {
+        suitDAO.delete(suitId);
     }
 
     public String generateFile(Long suitId, List<Long> caseIds) throws IOException {
