@@ -58,6 +58,18 @@ public class Step implements Serializable {
         this.type = StepType.values()[type];
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(Step.class)) {
+            Step s = (Step) obj;
+            return ((this.id.equals(s.getId())) &&
+                    (this.type.ordinal() == s.getType()) &&
+                    (this.rowNumber == s.getRowNumber()) &&
+                    (this.description.equals(s.getDescription())));
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public String toString() {

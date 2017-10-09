@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -120,6 +121,23 @@ public class Suit implements Serializable {
         }
 
         return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(Suit.class)) {
+            Suit s = (Suit) obj;
+            return ((this.id.equals(s.getId())) &&
+                    (this.name.equals(s.getName())) &&
+                    (this.priority.equals(s.getPriority())) &&
+                    (this.description.equals(s.getDescription())) &&
+                    (this.creationDate.equals(s.getCreationDate())) &&
+                    (this.tags.equals(s.getTags())) &&
+                    (this.cases.equals(s.getCases())));
+        } else {
+            return false;
+        }
     }
 
     @Override

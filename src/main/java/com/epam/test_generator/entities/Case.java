@@ -102,6 +102,21 @@ public class Case implements Serializable{
         this.tags = tags;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(Case.class)) {
+            Case c = (Case) obj;
+            return ((this.id.equals(c.getId())) &&
+                    (this.steps.equals(c.getSteps())) &&
+                    (this.priority.equals(c.getPriority())) &&
+                    (this.description.equals(c.getDescription())) &&
+                    (this.creationDate.equals(c.getCreationDate())) &&
+                    (this.tags.equals(c.getTags())) &&
+                    (this.updateDate.equals(c.getUpdateDate())));
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public String toString() {
