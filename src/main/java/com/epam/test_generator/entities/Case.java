@@ -26,7 +26,7 @@ public class Case implements Serializable{
 
     private Integer priority;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.ALL})
     private Set<Tag> tags;
 
     public Case(){
