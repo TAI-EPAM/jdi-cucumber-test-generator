@@ -27,57 +27,42 @@ public class StepService {
     @Autowired
     private StepTransformer stepTransformer;
 
-    public StepDTO addStepToCase(Step st, Long caseId) {
-    	caseDAO.getOne(caseId).getSteps().add(st);
-
-        return stepTransformer.toDto(stepDAO.save(st));
-    }
-
     public List<StepDTO> getStepsByCaseId(Long caseId) {
-        return caseDAO.getOne(caseId).getSteps().stream().
-                map(step -> stepTransformer.toDto(step)).collect(Collectors.toList());
+
+        return stepTransformer.toDtoList(caseDAO.findOne(caseId).getSteps());
     }
 
-    public void removeStep(Long id) {
-        stepDAO.delete(id);
-    }
-
-    public void updateStep(Long stepId, StepDTO stepDTO) {
-        Step step = stepDAO.getOne(stepId);
-        stepTransformer.mapDTOToEntity(stepDTO, step);
-
-        stepDAO.save(step);
-    }
-
-    public Long addStep(StepDTO stepDTO, Long caseID) {
-        Case caze = caseDAO.getOne(caseID);
-        Step step = stepTransformer.fromDto(stepDTO);
-
-        step = stepDAO.save(step);
-        caze.getSteps().add(step);
-
-        return step.getId();
-    }
-
-    public void removeAllSteps(Long caseId) {
-        Case caze = caseDAO.getOne(caseId);
-
-        caze.getSteps().forEach(step -> stepDAO.delete(step));
-
-        caze.setSteps(null);
-        caseDAO.save(caze);
-    }
-
-    public void addSteps(Long caseId, List<StepDTO> steps) {
-        steps.forEach(stepDTO -> addStep(stepDTO,caseId));
-    }
-
-    public StepDTO getStep(long stepId) {
-        Step step = stepDAO.getOne(stepId);
+    public StepDTO getStep(Long stepId) {
+        Step step = stepDAO.findOne(stepId);
         if (step == null) {
             return null;
         }
 
         return stepTransformer.toDto(step);
+    }
+
+    public Long addStepToCase(Long caseId, StepDTO stepDTO) {
+        Case caze = caseDAO.findOne(caseId);
+        Step step = stepTransformer.fromDto(stepDTO);
+
+        step = stepDAO.save(step);
+        caze.getSteps().add(step);//????
+
+        return step.getId();
+    }
+
+    public void removeStep(Long caseId, Long stepId) {
+        Case caze = caseDAO.findOne(caseId);
+        Step step = stepDAO.findOne(stepId);
+
+        caze.getSteps().remove(step);
+        stepDAO.delete(stepId);
+    }
+
+    public void updateStep(Long stepId, StepDTO stepDTO) {
+        Step step = stepDAO.findOne(stepId);
+        stepTransformer.mapDTOToEntity(stepDTO, step);
+
+        stepDAO.save(step);
     }
 }

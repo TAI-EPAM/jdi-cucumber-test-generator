@@ -37,16 +37,15 @@ public class SuitService {
     private CaseTransformer caseTransformer;
 
     public List<SuitDTO> getSuits() {
-        return suitDAO.findAll().stream().map(suit -> suitTransformer.toDto(suit))
-                .collect(Collectors.toList());
+        return suitTransformer.toDtoList(suitDAO.findAll());
     }
 
     public SuitDTO getSuit(long suitId) {
-        if (suitDAO.getOne(suitId) == null) {
+        if (suitDAO.findOne(suitId) == null) {
             return null;
         }
 
-        return suitTransformer.toDto(suitDAO.getOne(suitId));
+        return suitTransformer.toDto(suitDAO.findOne(suitId));
     }
 
     public Long addSuit(SuitDTO suitDTO) {
@@ -56,7 +55,7 @@ public class SuitService {
     }
 
     public void updateSuit(long suitId, SuitDTO suitDTO) {
-        Suit suit = suitDAO.getOne(suitId);
+        Suit suit = suitDAO.findOne(suitId);
         suitTransformer.mapDTOToEntity(suitDTO, suit);
 
         suitDAO.save(suit);
@@ -67,8 +66,8 @@ public class SuitService {
     }
 
     public String generateFile(Long suitId, List<Long> caseIds) throws IOException {
-        Suit suit = suitDAO.getOne(suitId);
-        List<Case> cases = caseIds.stream().map(id -> caseDAO.getOne(id)).collect(Collectors.toList());
+        Suit suit = suitDAO.findOne(suitId);
+        List<Case> cases = caseIds.stream().map(id -> caseDAO.findOne(id)).collect(Collectors.toList());
 
         return fileGenerator.generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
     }

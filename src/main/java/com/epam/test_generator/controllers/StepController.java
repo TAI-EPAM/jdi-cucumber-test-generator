@@ -101,12 +101,12 @@ public class StepController {
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (!caseBelongsToSuit(caseDTO, suitDTO) || !stepBelongsToCase(stepDTO, caseDTO)) {
+        if (!caseBelongsToSuit(caseDTO, suitDTO)) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(stepService.addStep(stepDTO, caseId), HttpStatus.CREATED);
+        return new ResponseEntity<>(stepService.addStepToCase(caseId, stepDTO), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
@@ -129,13 +129,13 @@ public class StepController {
         }
 
         StepDTO checkStepDTO = stepService.getStep(stepId);
-        if (!stepBelongsToCase(stepDTO, caseDTO)) {
-
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         if (checkStepDTO == null) {
 
-            return new ResponseEntity<>(stepService.addStep(stepDTO, caseId), HttpStatus.CREATED);
+            return new ResponseEntity<>(stepService.addStepToCase(caseId, stepDTO), HttpStatus.CREATED);
+        }
+        if (!stepBelongsToCase(checkStepDTO, caseDTO)) {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         stepService.updateStep(stepId, stepDTO);
 
@@ -170,7 +170,7 @@ public class StepController {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        stepService.removeStep(stepId);
+        stepService.removeStep(caseId, stepId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

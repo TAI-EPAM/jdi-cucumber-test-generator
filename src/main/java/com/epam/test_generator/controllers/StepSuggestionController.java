@@ -51,6 +51,7 @@ public class StepSuggestionController {
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<Void> removeStepSuggestion(@PathVariable("stepSuggestionId") long stepSuggestionId) {
         if (stepSuggestionService.getStepsSuggestion(stepSuggestionId) == null) {
+
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         stepSuggestionService.removeStepSuggestion(stepSuggestionId);

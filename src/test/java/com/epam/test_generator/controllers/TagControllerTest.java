@@ -189,7 +189,7 @@ public class TagControllerTest {
         tagDTO.setId(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(caseService.getCase(anyLong())).thenReturn(caseDTO);
-        when(tagService.addTagToCase(any(TagDTO.class), anyLong())).thenReturn(SIMPLE_TAG_ID);
+        when(tagService.addTagToCase(anyLong(), any(TagDTO.class))).thenReturn(SIMPLE_TAG_ID);
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -200,7 +200,7 @@ public class TagControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
-        verify(tagService).addTagToCase(any(TagDTO.class), eq(SIMPLE_CASE_ID));
+        verify(tagService).addTagToCase(eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class TagControllerTest {
         tagDTO.setId(null);
         when(suitService.getSuit(anyLong())).thenReturn(null);
         when(caseService.getCase(anyLong())).thenReturn(caseDTO);
-        when(tagService.addTagToCase(any(TagDTO.class), anyLong())).thenReturn(SIMPLE_TAG_ID);
+        when(tagService.addTagToCase(anyLong(), any(TagDTO.class))).thenReturn(SIMPLE_TAG_ID);
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -218,7 +218,7 @@ public class TagControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService, times(0)).getCase(eq(SIMPLE_CASE_ID));
-        verify(tagService, times(0)).addTagToCase(any(TagDTO.class), eq(SIMPLE_CASE_ID));
+        verify(tagService, times(0)).addTagToCase(eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
@@ -226,7 +226,7 @@ public class TagControllerTest {
         tagDTO.setId(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(caseService.getCase(anyLong())).thenReturn(null);
-        when(tagService.addTagToCase(any(TagDTO.class), anyLong())).thenReturn(SIMPLE_TAG_ID);
+        when(tagService.addTagToCase(anyLong(), any(TagDTO.class))).thenReturn(SIMPLE_TAG_ID);
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -236,7 +236,7 @@ public class TagControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
-        verify(tagService, times(0)).addTagToCase(any(TagDTO.class), eq(SIMPLE_CASE_ID));
+        verify(tagService, times(0)).addTagToCase(eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
@@ -245,7 +245,7 @@ public class TagControllerTest {
         suitDTO.setCases(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(caseService.getCase(anyLong())).thenReturn(caseDTO);
-        when(tagService.addTagToCase(any(TagDTO.class), anyLong())).thenReturn(SIMPLE_TAG_ID);
+        when(tagService.addTagToCase(anyLong(), any(TagDTO.class))).thenReturn(SIMPLE_TAG_ID);
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -255,7 +255,7 @@ public class TagControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
-        verify(tagService, times(0)).addTagToCase(any(TagDTO.class), eq(SIMPLE_CASE_ID));
+        verify(tagService, times(0)).addTagToCase(eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
@@ -263,7 +263,7 @@ public class TagControllerTest {
         tagDTO.setId(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(caseService.getCase(anyLong())).thenReturn(caseDTO);
-        when(tagService.addTagToCase(any(TagDTO.class), anyLong())).thenThrow(new RuntimeException());
+        when(tagService.addTagToCase(anyLong(), any(TagDTO.class))).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -273,7 +273,7 @@ public class TagControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
-        verify(tagService).addTagToCase(any(TagDTO.class), eq(SIMPLE_CASE_ID));
+        verify(tagService).addTagToCase(eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
@@ -354,7 +354,7 @@ public class TagControllerTest {
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(caseService.getCase(anyLong())).thenReturn(caseDTO);
         when(tagService.getTag(anyLong())).thenReturn(null);
-        when(tagService.addTagToCase(any(TagDTO.class), anyLong())).thenReturn(SIMPLE_TAG_ID);
+        when(tagService.addTagToCase(anyLong(), any(TagDTO.class))).thenReturn(SIMPLE_TAG_ID);
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)

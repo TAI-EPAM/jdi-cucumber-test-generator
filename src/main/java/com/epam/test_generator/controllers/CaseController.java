@@ -64,7 +64,7 @@ public class CaseController {
 
         if (suitDTO != null) {
 
-            return new ResponseEntity<>(caseService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
+            return new ResponseEntity<>(caseService.addCaseToSuit(suitId, caseDTO), HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -83,7 +83,7 @@ public class CaseController {
 
         if (checkCaseDTO == null) {
 
-            return new ResponseEntity<>(caseService.addCaseToSuit(caseDTO, suitId), HttpStatus.CREATED);
+            return new ResponseEntity<>(caseService.addCaseToSuit(suitId, caseDTO), HttpStatus.CREATED);
         }
 
         if (!caseBelongsToSuit(checkCaseDTO, suitDTO)) {

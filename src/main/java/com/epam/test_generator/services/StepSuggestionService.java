@@ -60,29 +60,35 @@ public class StepSuggestionService {
     }
 
     public StepSuggestionDTO getStepsSuggestion(long stepSuggestionId) {
+        StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
+        if (stepSuggestion == null) {
 
-        return stepSuggestionTransformer.toDto(stepSuggestionDAO.getOne(stepSuggestionId));
+            return null;
+        }
+
+        return stepSuggestionTransformer.toDto(stepSuggestion);
     }
 
     public List<StepSuggestionDTO> getStepsSuggestions() {
+
         return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll());
     }
 
     public List<StepSuggestionDTO> getStepsSuggestionsByType(long typeId) {
-        return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll().stream().filter(stepSuggestion -> stepSuggestion.getType().equals(typeId))
+
+        return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll().stream()
+                .filter(stepSuggestion -> ((long)stepSuggestion.getType())== (typeId))
                 .collect(Collectors.toList()));
     }
 
-
     public Long addStepSuggestion(StepSuggestionDTO stepSuggestionDTO) {
-        StepSuggestion stepSuggestion = new StepSuggestion();
-        stepSuggestion = stepSuggestionDAO.save(stepSuggestionTransformer.fromDto(stepSuggestionDTO));
+        StepSuggestion stepSuggestion = stepSuggestionDAO.save(stepSuggestionTransformer.fromDto(stepSuggestionDTO));
 
         return stepSuggestion.getId();
     }
 
     public void updateStepSuggestion(long stepSuggestionId, StepSuggestionDTO stepSuggestionDTO) {
-        StepSuggestion stepSuggestion = stepSuggestionDAO.getOne(stepSuggestionId);
+        StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
         stepSuggestionTransformer.mapDTOToEntity(stepSuggestionDTO, stepSuggestion);
 
         stepSuggestionDAO.save(stepSuggestion);

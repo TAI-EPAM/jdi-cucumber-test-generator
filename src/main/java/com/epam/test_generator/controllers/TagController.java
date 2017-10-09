@@ -80,7 +80,7 @@ public class TagController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(tagService.addTagToCase(tagDTO, caseId), HttpStatus.CREATED);
+        return new ResponseEntity<>(tagService.addTagToCase(caseId, tagDTO), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
@@ -105,7 +105,7 @@ public class TagController {
         TagDTO checkTagDTO = tagService.getTag(tagId);
         if(checkTagDTO == null){
 
-            return new ResponseEntity<>(tagService.addTagToCase(tagDTO, caseId), HttpStatus.CREATED);
+            return new ResponseEntity<>(tagService.addTagToCase(caseId, tagDTO), HttpStatus.CREATED);
         }
 
         if (!tagBelongsToCase(checkTagDTO, caseDTO)) {

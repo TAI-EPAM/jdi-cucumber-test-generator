@@ -1,10 +1,7 @@
 package com.epam.test_generator.services;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
@@ -38,22 +35,23 @@ public class TagService {
 	@Autowired
 	private TagTransformer tagTransformer;
 
-	public TagDTO save(TagDTO tagDTO){
+	public Long save(TagDTO tagDTO){
 		Tag tag = tagDAO.save(tagTransformer.fromDto(tagDTO));
 
-		return tagTransformer.toDto(tag);
+		return tag.getId();
 	}
 
 	public TagDTO getTag(long tagId) {
-		if (tagDAO.getOne(tagId) == null) {
+		Tag tag = tagDAO.findOne(tagId);
+		if (tag == null) {
 			return null;
 		}
-		return tagTransformer.toDto(tagDAO.getOne(tagId));
+		return tagTransformer.toDto(tag);
 	}
 
 	public Set<TagDTO> getAllTagsFromAllCasesInSuit(long suitId) {
 		Set<TagDTO> allTagsFromAllCases = new HashSet<>();
-		Suit suit = suitDAO.getOne(suitId);
+		Suit suit = suitDAO.findOne(suitId);
 
 		suit.getCases().forEach(caze -> caze.getTags()
 				.forEach(tag -> allTagsFromAllCases.add(tagTransformer.toDto(tag))));
@@ -61,28 +59,28 @@ public class TagService {
 		return allTagsFromAllCases;
 	}
 
-	public Long addTagToCase(TagDTO tagDTO, long caseId) {
-		Case caze = caseDAO.getOne(caseId);
+	public Long addTagToCase(long caseId, TagDTO tagDTO) {
+		Case caze = caseDAO.findOne(caseId);
 		Tag tag = tagTransformer.fromDto(tagDTO);
 
-		caze.getTags().add(tag);
 		tag = tagDAO.save(tag);
+		caze.getTags().add(tag);//????
 
 		return tag.getId();
 	}
 
 	public void updateTag(long tagId, TagDTO tagDTO) {
-		Tag tag = tagDAO.getOne(tagId);
+		Tag tag = tagDAO.findOne(tagId);
 		tagTransformer.mapDTOToEntity(tagDTO, tag);
 
 		tagDAO.save(tag);
 	}
 
 	public void removeTag(long caseId, long tagId) {
-		Case caze = caseDAO.getOne(caseId);
-		Tag tag = tagDAO.getOne(tagId);
+		Case caze = caseDAO.findOne(caseId);
+		Tag tag = tagDAO.findOne(tagId);
 
 		caze.getTags().remove(tag);
-		caseDAO.save(caze);
+		tagDAO.delete(tagId);
 	}
 }
