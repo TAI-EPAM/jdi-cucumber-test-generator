@@ -59,19 +59,6 @@ public class Step implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass().equals(Step.class)) {
-            Step s = (Step) obj;
-            return ((this.id.equals(s.getId())) &&
-                    (this.type.ordinal() == s.getType()) &&
-                    (this.rowNumber == s.getRowNumber()) &&
-                    (this.description.equals(s.getDescription())));
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public String toString() {
         return "Step{" +
                 "id=" + id +
@@ -81,4 +68,16 @@ public class Step implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Step)) return false;
+
+        Step step = (Step) o;
+
+        if (rowNumber != step.rowNumber) return false;
+        if (id != null ? !id.equals(step.id) : step.id != null) return false;
+        if (description != null ? !description.equals(step.description) : step.description != null) return false;
+        return type == step.type;
+    }
 }

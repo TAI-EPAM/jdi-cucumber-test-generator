@@ -103,22 +103,6 @@ public class Case implements Serializable{
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass().equals(Case.class)) {
-            Case c = (Case) obj;
-            return ((this.id.equals(c.getId())) &&
-                    (this.steps.equals(c.getSteps())) &&
-                    (this.priority.equals(c.getPriority())) &&
-                    (this.description.equals(c.getDescription())) &&
-                    (this.creationDate.equals(c.getCreationDate())) &&
-                    (this.tags.equals(c.getTags())) &&
-                    (this.updateDate.equals(c.getUpdateDate())));
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public String toString() {
         return "Case{" +
                 "id=" + id +
@@ -128,5 +112,21 @@ public class Case implements Serializable{
                 ", priority=" + priority +
                 ", tags=" + tags +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Case)) return false;
+
+        Case aCase = (Case) o;
+
+        if (id != null ? !id.equals(aCase.id) : aCase.id != null) return false;
+        if (description != null ? !description.equals(aCase.description) : aCase.description != null) return false;
+        if (steps != null ? !steps.equals(aCase.steps) : aCase.steps != null) return false;
+        if (creationDate != null ? !creationDate.equals(aCase.creationDate) : aCase.creationDate != null) return false;
+        if (updateDate != null ? !updateDate.equals(aCase.updateDate) : aCase.updateDate != null) return false;
+        if (priority != null ? !priority.equals(aCase.priority) : aCase.priority != null) return false;
+        return tags != null ? tags.equals(aCase.tags) : aCase.tags == null;
     }
 }

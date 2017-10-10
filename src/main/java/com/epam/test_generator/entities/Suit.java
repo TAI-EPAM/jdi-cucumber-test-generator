@@ -123,23 +123,6 @@ public class Suit implements Serializable {
         return result;
     }
 
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass().equals(Suit.class)) {
-            Suit s = (Suit) obj;
-            return ((this.id.equals(s.getId())) &&
-                    (this.name.equals(s.getName())) &&
-                    (this.priority.equals(s.getPriority())) &&
-                    (this.description.equals(s.getDescription())) &&
-                    (this.creationDate.equals(s.getCreationDate())) &&
-                    (this.tags.equals(s.getTags())) &&
-                    (this.cases.equals(s.getCases())));
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public String toString() {
         return "Suit{" +
@@ -153,4 +136,19 @@ public class Suit implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Suit)) return false;
+
+        Suit suit = (Suit) o;
+
+        if (id != null ? !id.equals(suit.id) : suit.id != null) return false;
+        if (name != null ? !name.equals(suit.name) : suit.name != null) return false;
+        if (description != null ? !description.equals(suit.description) : suit.description != null) return false;
+        if (priority != null ? !priority.equals(suit.priority) : suit.priority != null) return false;
+        if (creationDate != null ? !creationDate.equals(suit.creationDate) : suit.creationDate != null) return false;
+        if (tags != null ? !tags.equals(suit.tags) : suit.tags != null) return false;
+        return cases != null ? cases.equals(suit.cases) : suit.cases == null;
+    }
 }
