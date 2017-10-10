@@ -5,7 +5,8 @@ import javax.validation.constraints.*;
 public class StepSuggestionDTO {
     private Long id;
 
-    @NotEmpty
+    @NotNull
+    @Size(min = 1, max = 255)
     private String content;
 
     @NotNull

@@ -10,8 +10,8 @@ import java.util.Set;
 public class CaseDTO {
     private Long id;
 
-    @NotEmpty
-    @Size(max = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
     private String description;
 
     private List<@Valid StepDTO> steps;

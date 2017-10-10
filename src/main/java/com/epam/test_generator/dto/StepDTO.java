@@ -1,9 +1,6 @@
 package com.epam.test_generator.dto;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 public class StepDTO {
 
@@ -13,7 +10,8 @@ public class StepDTO {
     @Min(value = 1)
     private int rowNumber;
 
-    @NotEmpty
+    @NotNull
+    @Size(min = 1, max = 255)
     private String description;
 
     @NotNull

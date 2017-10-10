@@ -11,8 +11,8 @@ public class SuitDTO {
 
     private Long id;
 
-    @NotEmpty
-    @Size(max = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
     private String name;
 
     @Size(max = 255)
