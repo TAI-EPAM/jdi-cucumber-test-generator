@@ -4,8 +4,6 @@ package com.epam.test_generator.controllers;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
-import com.epam.test_generator.entities.Step;
-import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.StepService;
 import com.epam.test_generator.services.SuitService;
@@ -16,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -126,7 +123,7 @@ public class StepControllerTest {
                         .isNotFound());
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
-        verify(caseService).getCase(eq(SIMPLE_CASE_ID));
+        verify(caseService,times(0)).getCase(eq(SIMPLE_CASE_ID));
     }
 
     @Test
@@ -186,8 +183,8 @@ public class StepControllerTest {
                         .isNotFound());
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
-        verify(caseService).getCase(eq(SIMPLE_CASE_ID));
-        verify(stepService).getStep(eq(SIMPLE_STEP_ID));
+        verify(caseService, times(0)).getCase(eq(SIMPLE_CASE_ID));
+        verify(stepService,times(0)).getStep(eq(SIMPLE_STEP_ID));
     }
 
     @Test
@@ -203,7 +200,7 @@ public class StepControllerTest {
 
         verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_CASE_ID));
-        verify(stepService).getStep(eq(SIMPLE_STEP_ID));
+        verify(stepService,times(0)).getStep(eq(SIMPLE_STEP_ID));
     }
 
     @Test
