@@ -3,7 +3,6 @@ package com.epam.test_generator.dao;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.Suit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes={DatabaseConfigForTests.class})
@@ -36,7 +36,16 @@ public class CaseDAOTest {
         originalCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
         long id = caseDAO.save(originalCase).getId();
 
-        Assert.assertEquals(originalCase, caseDAO.findOne(id));
+        Case newCase = new Case();
+        newCase.setId(id);
+        newCase.setDescription("Case1 description");
+        newCase.setPriority(3);
+        newCase.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        newCase.setSteps(new ArrayList<>());
+        newCase.setTags(new HashSet<>());
+        newCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+
+        Assert.assertEquals(newCase, caseDAO.findOne(id));
     }
 
     @Test
@@ -52,7 +61,16 @@ public class CaseDAOTest {
         originalCase.setDescription("modified description");
         long id = caseDAO.save(originalCase).getId();
 
-        Assert.assertEquals(originalCase, caseDAO.findOne(id));
+        Case newCase = new Case();
+        newCase.setId(id);
+        newCase.setDescription("modified description");
+        newCase.setPriority(3);
+        newCase.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        newCase.setSteps(new ArrayList<>());
+        newCase.setTags(new HashSet<>());
+        newCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+
+        Assert.assertEquals(newCase, caseDAO.findOne(id));
     }
 
     @Test
@@ -68,7 +86,18 @@ public class CaseDAOTest {
         originalCase.setPriority(5);
         long id = caseDAO.save(originalCase).getId();
 
-        Assert.assertEquals(originalCase, caseDAO.findOne(id));
+        Case newCase = new Case();
+        newCase.setId(id);
+        newCase.setDescription("Case1 description");
+        newCase.setPriority(5);
+        newCase.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        newCase.setSteps(new ArrayList<>());
+        newCase.setTags(new HashSet<>());
+        newCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        caseDAO.save(newCase);
+        newCase.setPriority(5);
+
+        Assert.assertEquals(newCase, caseDAO.findOne(id));
     }
 
     @Test
@@ -86,7 +115,16 @@ public class CaseDAOTest {
         originalCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
         long id = caseDAO.save(originalCase).getId();
 
-        Assert.assertEquals(originalCase, caseDAO.findOne(id));
+        Case newCase = new Case();
+        newCase.setId(id);
+        newCase.setDescription("Case1 description");
+        newCase.setPriority(3);
+        newCase.setCreationDate(formatter.format(calendar.getTime()));
+        newCase.setSteps(new ArrayList<>());
+        newCase.setTags(new HashSet<>());
+        newCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+
+        Assert.assertEquals(newCase, caseDAO.findOne(id));
     }
 
     @Test
@@ -145,11 +183,47 @@ public class CaseDAOTest {
         case3.setTags(new HashSet<>());
         case3.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
 
-        Case[] cases = {case1, case2, case3};
+        ArrayList<Case> cases = new ArrayList<>();
+        cases.add(case1);
+        cases.add(case2);
+        cases.add(case3);
 
-        caseDAO.save(Arrays.asList(cases));
+        List<Long> ids = caseDAO.save(cases).stream().map(Case::getId).collect(Collectors.toList());
 
-        Assert.assertEquals(caseDAO.findAll(), Arrays.asList(cases));
+        Case case4 = new Case();
+        case4.setDescription("Case1 description");
+        case4.setId(ids.get(0));
+        case4.setPriority(3);
+        case4.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        case4.setSteps(new ArrayList<>());
+        case4.setTags(new HashSet<>());
+        case4.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+
+        Case case5 = new Case();
+        case5.setDescription("Case2 description");
+        case5.setId(ids.get(1));
+        case5.setPriority(1);
+        case5.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        case5.setSteps(new ArrayList<>());
+        case5.setTags(new HashSet<>());
+        case5.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+
+        Case case6 = new Case();
+        case6.setDescription("Case1 description");
+        case6.setId(ids.get(2));
+        case6.setPriority(3);
+        case6.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        case6.setSteps(new ArrayList<>());
+        case6.setTags(new HashSet<>());
+        case6.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+
+        ArrayList<Case> newCases = new ArrayList<>();
+
+        newCases.add(case4);
+        newCases.add(case5);
+        newCases.add(case6);
+
+        Assert.assertTrue(newCases.equals(caseDAO.findAll()));
     }
 
     @Test
