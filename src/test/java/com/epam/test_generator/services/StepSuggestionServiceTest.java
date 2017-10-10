@@ -19,8 +19,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StepSuggestionServiceTest {
@@ -51,7 +52,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepsSuggestion() throws Exception {
+    public void getStepsSuggestionsTest() throws Exception {
         when(stepSuggestionDAO.findAll()).thenReturn(listSteps);
         when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
 
@@ -62,7 +63,36 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void testAddStepSuggestion() throws Exception {
+    public void getStepSuggestionByIdTest() {
+        StepSuggestion expected = new StepSuggestion(1L, "StepSuggestion 1", StepType.GIVEN);
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(1L, "StepSuggestion 1", StepType.GIVEN.ordinal());
+
+        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(expectedDTO);
+        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
+        when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedDTO);
+
+        assertEquals(stepSuggestionService.getStepsSuggestion(1L), expectedDTO);
+
+        verify(stepSuggestionDAO).findOne(anyLong());
+    }
+
+    @Test
+    public void getStepSuggestionByTypeTest() {
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.WHEN.ordinal());
+        StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN);
+
+        when(stepSuggestionDAO.findAll()).thenReturn(Collections.singletonList(expected));
+        when(stepSuggestionTransformer.toDtoList(anyList())).thenReturn(Collections.singletonList(expectedDTO));
+
+        List<StepSuggestionDTO> actual = stepSuggestionService.getStepsSuggestionsByType(0);
+
+        assertEquals(Collections.singletonList(expectedDTO), actual);
+
+        verify(stepSuggestionDAO).findAll();
+    }
+
+    @Test
+    public void testAddStepSuggestionTest() throws Exception {
         StepSuggestion newStepSuggestion = new StepSuggestion(3L, "StepSuggestion 3", StepType.AND);
         StepSuggestionDTO newStepSuggestionDTO = new StepSuggestionDTO(3L, "StepSuggestion 3", StepType.AND.ordinal());
 
@@ -77,7 +107,22 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void removeStepSuggestion() throws Exception {
+    public void updateStepSuggestionTest() {
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.WHEN.ordinal());
+        StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN);
+
+        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
+        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(expectedDTO);
+
+        stepSuggestionService.updateStepSuggestion(2, expectedDTO);
+        StepSuggestionDTO actual = stepSuggestionService.getStepsSuggestion(2L);
+        assertEquals(expectedDTO, actual);
+
+        verify(stepSuggestionDAO).save(any(StepSuggestion.class));
+    }
+
+    @Test
+    public void removeStepSuggestionTest() throws Exception {
         stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
 
         verify(stepSuggestionDAO).delete(SIMPLE_AUTOCOMPLETE_ID);

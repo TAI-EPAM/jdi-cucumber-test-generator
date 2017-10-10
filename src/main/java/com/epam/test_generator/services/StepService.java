@@ -46,7 +46,7 @@ public class StepService {
         Step step = stepTransformer.fromDto(stepDTO);
 
         step = stepDAO.save(step);
-        caze.getSteps().add(step);//????
+        caze.getSteps().add(step);
 
         return step.getId();
     }

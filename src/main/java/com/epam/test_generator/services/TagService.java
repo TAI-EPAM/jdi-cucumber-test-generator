@@ -35,20 +35,6 @@ public class TagService {
 	@Autowired
 	private TagTransformer tagTransformer;
 
-	public Long save(TagDTO tagDTO){
-		Tag tag = tagDAO.save(tagTransformer.fromDto(tagDTO));
-
-		return tag.getId();
-	}
-
-	public TagDTO getTag(long tagId) {
-		Tag tag = tagDAO.findOne(tagId);
-		if (tag == null) {
-			return null;
-		}
-		return tagTransformer.toDto(tag);
-	}
-
 	public Set<TagDTO> getAllTagsFromAllCasesInSuit(long suitId) {
 		Set<TagDTO> allTagsFromAllCases = new HashSet<>();
 		Suit suit = suitDAO.findOne(suitId);
@@ -59,12 +45,27 @@ public class TagService {
 		return allTagsFromAllCases;
 	}
 
+	public TagDTO getTag(long tagId) {
+		Tag tag = tagDAO.findOne(tagId);
+		if (tag == null) {
+			return null;
+		}
+		return tagTransformer.toDto(tag);
+	}
+
+//	??????? do we use it
+	public Long save(TagDTO tagDTO){
+		Tag tag = tagDAO.save(tagTransformer.fromDto(tagDTO));
+
+		return tag.getId();
+	}
+
 	public Long addTagToCase(long caseId, TagDTO tagDTO) {
 		Case caze = caseDAO.findOne(caseId);
 		Tag tag = tagTransformer.fromDto(tagDTO);
 
 		tag = tagDAO.save(tag);
-		caze.getTags().add(tag);//????
+		caze.getTags().add(tag);
 
 		return tag.getId();
 	}

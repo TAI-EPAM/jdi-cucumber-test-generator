@@ -53,4 +53,24 @@ public class StepSuggestion {
     public void setType(Integer type) {
         this.type = StepType.values()[type];
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StepSuggestion that = (StepSuggestion) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!content.equals(that.content)) return false;
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + content.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 }
