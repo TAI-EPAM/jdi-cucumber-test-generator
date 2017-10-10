@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,19 +28,15 @@ public class SuitController {
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
-        SuitDTO suitDTO = suitService.getSuit(suitId);
+        Optional<SuitDTO> suitDTO = Optional.ofNullable(suitService.getSuit(suitId));
 
-        if (suitDTO == null) {
-
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(suitDTO, HttpStatus.OK);
+        return suitDTO.isPresent()
+                ? new ResponseEntity<>(suitDTO.get(), HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/suits", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addSuit(@RequestBody SuitDTO suitDTO) {
-
         return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
     }
 
