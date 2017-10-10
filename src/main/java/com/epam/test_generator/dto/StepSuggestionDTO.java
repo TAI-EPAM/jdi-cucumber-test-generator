@@ -1,10 +1,16 @@
 package com.epam.test_generator.dto;
 
+import javax.validation.constraints.*;
+
 public class StepSuggestionDTO {
     private Long id;
 
+    @NotEmpty
     private String content;
 
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 5)
     private Integer type;
 
     public StepSuggestionDTO(Long id, String content, Integer type) {

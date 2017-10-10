@@ -1,5 +1,7 @@
 package com.epam.test_generator.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -9,16 +11,23 @@ public class SuitDTO {
 
     private Long id;
 
+    @NotEmpty
+    @Size(min = 1, max = 255)
     private String name;
 
+    @Size(max = 255)
     private String description;
 
-    private List<CaseDTO> cases;
+    private List<@Valid CaseDTO> cases;
 
+    @NotNull
+    @Min(value = 1)
+    @Max(value = 5)
     private Integer priority;
 
     private String creationDate;
 
+    @Size(max = 255)
     private String tags;
 
     public SuitDTO() {

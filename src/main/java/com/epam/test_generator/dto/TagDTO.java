@@ -1,11 +1,15 @@
 package com.epam.test_generator.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 public class TagDTO implements Serializable {
 
     private Long id;
 
+    @NotEmpty
+    @Size(max = 255)
     private String name;
 
     public TagDTO() {

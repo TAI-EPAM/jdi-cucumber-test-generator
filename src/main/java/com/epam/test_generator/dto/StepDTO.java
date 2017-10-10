@@ -1,13 +1,24 @@
 package com.epam.test_generator.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class StepDTO {
 
     private Long id;
 
+    @NotNull
+    @Min(value = 1)
     private int rowNumber;
 
+    @NotEmpty
     private String description;
 
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 5)
     private Integer type;
 
     public Long getId() {

@@ -1,5 +1,10 @@
 package com.epam.test_generator.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -8,17 +13,22 @@ import java.util.Set;
 public class CaseDTO {
     private Long id;
 
+    @Size(max = 255)
     private String description;
 
-    private List<StepDTO> steps;
+    private List<@Valid StepDTO> steps;
 
     private String creationDate;
 
     private String updateDate;
 
+    @NotNull
+    @Min(value = 1)
+    @Max(value = 5)
     private Integer priority;
 
-    private Set<TagDTO> tags;
+    @Size(max = 5)
+    private Set<@Valid TagDTO> tags;
 
     public CaseDTO() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
