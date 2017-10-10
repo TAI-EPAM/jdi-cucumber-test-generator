@@ -51,18 +51,18 @@ public class StepService {
         return step.getId();
     }
 
+    public void updateStep(Long stepId, StepDTO stepDTO) {
+        Step step = stepDAO.findOne(stepId);
+        stepTransformer.mapDTOToEntity(stepDTO, step);
+
+        stepDAO.save(step);
+    }
+
     public void removeStep(Long caseId, Long stepId) {
         Case caze = caseDAO.findOne(caseId);
         Step step = stepDAO.findOne(stepId);
 
         caze.getSteps().remove(step);
         stepDAO.delete(stepId);
-    }
-
-    public void updateStep(Long stepId, StepDTO stepDTO) {
-        Step step = stepDAO.findOne(stepId);
-        stepTransformer.mapDTOToEntity(stepDTO, step);
-
-        stepDAO.save(step);
     }
 }
