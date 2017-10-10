@@ -424,7 +424,7 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testUpdateCase_return201whenSuitNotContainsCase() throws Exception {
+    public void testUpdateCase_return400whenSuitNotContainsCase() throws Exception {
         suitDTO.setCases(null);
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
         when(casesService.getCase(anyLong())).thenReturn(caseDTO);
