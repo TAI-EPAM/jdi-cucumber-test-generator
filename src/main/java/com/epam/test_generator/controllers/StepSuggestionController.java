@@ -32,7 +32,9 @@ public class StepSuggestionController {
 
     @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addStepSuggestion(@RequestBody StepSuggestionDTO stepSuggestionDTO) {
-
+    if(stepSuggestionDTO.getContent() == null){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
         return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO), HttpStatus.OK);
     }
 
