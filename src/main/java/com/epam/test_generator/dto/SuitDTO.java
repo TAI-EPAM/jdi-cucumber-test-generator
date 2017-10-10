@@ -26,6 +26,15 @@ public class SuitDTO {
         creationDate = formatter.format(Calendar.getInstance().getTime());
     }
 
+    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority, String tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.cases = cases;
+        this.priority = priority;
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }

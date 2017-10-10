@@ -27,6 +27,14 @@ public class CaseDTO {
 
     }
 
+    public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority, Set<TagDTO> tags) {
+        this.id = id;
+        this.description = description;
+        this.steps = steps;
+        this.priority = priority;
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }
