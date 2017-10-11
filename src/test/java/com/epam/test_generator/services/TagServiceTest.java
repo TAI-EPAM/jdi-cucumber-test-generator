@@ -3,6 +3,7 @@ package com.epam.test_generator.services;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
+import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
@@ -15,10 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -42,10 +40,13 @@ public class TagServiceTest {
     @InjectMocks
     private TagService tagService;
 
-    private Set<Tag> expectedTagsList;
-    private Set<TagDTO> expectedTagsDTOList;
+    private Set<Tag> expectedTagsSet;
+    private Set<TagDTO> expectedTagsDTOSet;
 
-    private  Tag expectedTag;
+    private List<Case> expectedCaseList;
+    private List<CaseDTO> expectedCaseDTOList;
+
+    private Tag expectedTag;
     private TagDTO expectedTagDTO;
     private Suit suit;
     private Case caze;
@@ -57,27 +58,32 @@ public class TagServiceTest {
 
     @Before
     public void setUp() {
-        expectedTagsList = new HashSet<>();
-        expectedTagsDTOList = new HashSet<>();
-
         expectedTag = new Tag("tag1");
-        expectedTagsList.add(expectedTag);
+        expectedTagsSet = new HashSet<>();
+        expectedTagsSet.add(expectedTag);
 
         expectedTagDTO = new TagDTO("tag1");
-        expectedTagsDTOList.add(expectedTagDTO);
+        expectedTagsDTOSet = new HashSet<>();
+        expectedTagsDTOSet.add(expectedTagDTO);
 
-        suit = new Suit(1L, "suit1", "desc1", Arrays.asList(caze), 1, "tag1");
-        caze = new Case(2L, "desc2", new ArrayList<>(), 1, expectedTagsList);
+        expectedCaseList = new ArrayList<>();
+        expectedCaseList.add(new Case(1L, "case1", new ArrayList<>(), 1, expectedTagsSet));
+        expectedCaseList.add(new Case(2L, "case2", new ArrayList<>(), 1, expectedTagsSet));
+
+        suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, "tag1");
+        caze = new Case(2L, "desc2", new ArrayList<>(), 1, expectedTagsSet);
     }
 
     @Test
     public void getAllTagsFromAllCasesInSuitTest() {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(tagTransformer.toDto(any(Tag.class))).thenReturn(expectedTagDTO);
 
         Set<TagDTO> actual = tagService.getAllTagsFromAllCasesInSuit(SIMPLE_SUIT_ID);
-        assertEquals(expectedTagsDTOList, actual);
+        assertEquals(expectedTagsDTOSet, actual);
 
         verify(suitDAO).findOne(SIMPLE_SUIT_ID);
+        verify(tagTransformer, times(2)).toDto(any(Tag.class));
     }
 
     @Test

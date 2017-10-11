@@ -72,7 +72,7 @@ public class TagService {
 		Suit suit = suitDAO.findOne(suitId);
 		checkNotNull(suit);
 
-		Case caze = caseDAO.getOne(caseId);
+		Case caze = caseDAO.findOne(caseId);
 		checkNotNull(caze);
 
 		caseBelongsToSuit(caze, suit);
@@ -91,7 +91,7 @@ public class TagService {
 		Suit suit = suitDAO.findOne(suitId);
 		checkNotNull(suit);
 
-		Case caze = caseDAO.getOne(caseId);
+		Case caze = caseDAO.findOne(caseId);
 		checkNotNull(caze);
 
 		caseBelongsToSuit(caze, suit);
