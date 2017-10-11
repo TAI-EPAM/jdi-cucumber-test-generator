@@ -40,6 +40,8 @@ public class StepSuggestionServiceTest {
     private List<StepSuggestion> listSteps;
     private List<StepSuggestionDTO> expectedListSteps;
 
+    private static final long SIMPLE_STEP_SUGGESTION_ID = 1L;
+
     @Before
     public void setUp() {
         listSteps = new ArrayList<>();
@@ -64,8 +66,8 @@ public class StepSuggestionServiceTest {
 
     @Test
     public void getStepSuggestionByIdTest() {
-        StepSuggestion expected = new StepSuggestion(1L, "StepSuggestion 1", StepType.GIVEN);
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(1L, "StepSuggestion 1", StepType.GIVEN.ordinal());
+        StepSuggestion expected = new StepSuggestion(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN);
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN.ordinal());
 
         when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(expectedDTO);
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
@@ -114,7 +116,7 @@ public class StepSuggestionServiceTest {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
         when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(expectedDTO);
 
-        stepSuggestionService.updateStepSuggestion(2, expectedDTO);
+        stepSuggestionService.updateStepSuggestion(SIMPLE_STEP_SUGGESTION_ID, expectedDTO);
         StepSuggestionDTO actual = stepSuggestionService.getStepsSuggestion(2L);
         assertEquals(expectedDTO, actual);
 

@@ -3,8 +3,10 @@ package com.epam.test_generator.controllers;
 import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -118,7 +120,8 @@ public class StepSuggestionControllerTest {
         verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionDTO.class));
     }
 
-    @Test
+    //TODO validation
+    @Ignore
     public void testAddStepSuggestion_return400whenAddStepSuggestionWithNullContent() throws Exception {
         stepSuggestionDTO.setId(null);
         stepSuggestionDTO.setContent(null);
@@ -132,8 +135,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testAddStepSuggestion_return500whenAddStepsSuggestion() throws Exception {
-
+    public void testAddStepSuggestion_return500whenRuntimeException() throws Exception {
         when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class))).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/stepSuggestions")
@@ -144,11 +146,8 @@ public class StepSuggestionControllerTest {
         verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionDTO.class));
     }
 
-
-
     @Test
     public void testUpdateStepSuggestion_return200whenUpdateStepSuggestion() throws Exception{
-
         when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(stepSuggestionDTO);
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
@@ -161,21 +160,19 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testUpdateStepSuggestion_return201WhenStepSuggestionNotExist() throws Exception{
-
-        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(null);
+    public void testUpdateStepSuggestion_return404WhenStepSuggestionNotExist() throws Exception{
+        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(stepSuggestionDTO)))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isNotFound());
 
-        verify(stepSuggestionService,times(0)).updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID),any(StepSuggestionDTO.class));
+        verify(stepSuggestionService).updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID),any(StepSuggestionDTO.class));
     }
     @Test
-    public void testUpdateStepSuggestion_return500() throws Exception{
-
+    public void testUpdateStepSuggestion_return500whenRuntimeException() throws Exception{
         when(stepSuggestionService.getStepsSuggestion(anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
@@ -184,12 +181,13 @@ public class StepSuggestionControllerTest {
                 .andDo(print())
                 .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService,times(0)).updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID),any(StepSuggestionDTO.class));
+        verify(stepSuggestionService).updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID),any(StepSuggestionDTO.class));
     }
 
      @Test
     public void testRemoveSuggestion_return200whenRemoveStepSuggestion() throws Exception {
         when(stepSuggestionService.getStepsSuggestion(SIMPLE_AUTOCOMPLETE_ID)).thenReturn(stepSuggestionDTO);
+
         mockMvc.perform(delete("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
                 .andExpect(status().isOk());
 
@@ -197,16 +195,14 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testRemoveSuggestion_return400whenStepSuggestionNotExist() throws Exception {
-        when(stepSuggestionService.getStepsSuggestion(SIMPLE_AUTOCOMPLETE_ID)).thenReturn(null);
+    public void testRemoveSuggestion_return404whenStepSuggestionNotExist() throws Exception {
+        when(stepSuggestionService.getStepsSuggestion(SIMPLE_AUTOCOMPLETE_ID)).thenThrow(new NotFoundException());
+
         mockMvc.perform(delete("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
                 .andExpect(status().isNotFound());
 
-        verify(stepSuggestionService,times(0)).removeStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID));
+        verify(stepSuggestionService).removeStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID));
     }
-
-
-
 
     @Test
     public void testRemoveSuggestion_return500whenRemoveStepSuggestion() throws Exception {
@@ -215,6 +211,6 @@ public class StepSuggestionControllerTest {
         mockMvc.perform(delete("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
                 .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService,times(0)).removeStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID));
+        verify(stepSuggestionService).removeStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID));
     }
 }

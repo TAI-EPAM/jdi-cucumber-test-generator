@@ -2,6 +2,7 @@ package com.epam.test_generator.services;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
@@ -52,6 +53,9 @@ public class StepServiceTest {
     private StepTransformer stepTransformer;
 
     @Mock
+    private SuitDAO suitDAO;
+
+    @Mock
     private CaseDAO caseDAO;
 
     @Mock
@@ -90,24 +94,30 @@ public class StepServiceTest {
 
     @Test
     public void getStepsByCaseIdTest() throws Exception {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(stepTransformer.toDtoList(anyList())).thenReturn(expectedListSteps);
 
-        List<StepDTO> actualStepList = stepService.getStepsByCaseId(SIMPLE_CASE_ID);
+        List<StepDTO> actualStepList = stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
         assertEquals(expectedListSteps, actualStepList);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepTransformer).toDtoList(anyList());
     }
 
     @Test
     public void getStepTest() throws Exception {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(stepDAO.findOne(anyLong())).thenReturn(step);
         when(stepTransformer.toDto(any(Step.class))).thenReturn(expectedStep);
 
-        StepDTO actualStep = stepService.getStep(SIMPLE_STEP_ID);
+        StepDTO actualStep = stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
         assertEquals(expectedStep, actualStep);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
+        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepTransformer).toDto(any(Step.class));
     }
@@ -117,26 +127,32 @@ public class StepServiceTest {
         Step newStep = new Step(3L, 3, "Step 3", StepType.AND);
         StepDTO newStepDTO = new StepDTO(null, 3, "Step 3", StepType.AND.ordinal());
 
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
-        when(stepTransformer.fromDto(any(StepDTO.class))).thenReturn(newStep);
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
+        when(stepTransformer.fromDto(any(StepDTO.class))).thenReturn(newStep);
 
-        Long actualId = stepService.addStepToCase(SIMPLE_CASE_ID, newStepDTO);
+        Long actualId = stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, newStepDTO);
         assertEquals(newStep.getId(), actualId);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
-        verify(stepTransformer).fromDto(any(StepDTO.class));
         verify(stepDAO).save(any(Step.class));
+        verify(stepTransformer).fromDto(any(StepDTO.class));
     }
 
     @Test
     public void updateStepTest() throws Exception {
         StepDTO updateStepDTO = new StepDTO(null,  3,"New Step desc", null);
 
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(stepDAO.findOne(anyLong())).thenReturn(step);
 
-        stepService.updateStep(SIMPLE_STEP_ID, updateStepDTO);
+        stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, updateStepDTO);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
+        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepTransformer).mapDTOToEntity(any(StepDTO.class), eq(step));
         verify(stepDAO).save(eq(step));
@@ -144,11 +160,13 @@ public class StepServiceTest {
 
     @Test
     public void removeStepTest() throws Exception {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(stepDAO.findOne(anyLong())).thenReturn(step);
 
-        stepService.removeStep(SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+        stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepDAO).delete(eq(SIMPLE_STEP_ID));
