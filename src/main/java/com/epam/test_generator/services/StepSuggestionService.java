@@ -14,6 +14,8 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.epam.test_generator.services.utils.UtilsService.*;
+
 @Transactional
 @Service
 public class StepSuggestionService {
@@ -87,14 +89,18 @@ public class StepSuggestionService {
         return stepSuggestion.getId();
     }
 
-    public void updateStepSuggestion(long stepSuggestionId, StepSuggestionDTO stepSuggestionDTO) {
+    public void updateStepSuggestion(Long stepSuggestionId, StepSuggestionDTO stepSuggestionDTO) {
         StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
+        checkNotNull(stepSuggestion);
         stepSuggestionTransformer.mapDTOToEntity(stepSuggestionDTO, stepSuggestion);
 
         stepSuggestionDAO.save(stepSuggestion);
     }
 
-    public void removeStepSuggestion(long id) {
-        stepSuggestionDAO.delete(id);
+    public void removeStepSuggestion(Long stepSuggestionId) {
+        StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
+        checkNotNull(stepSuggestion);
+
+        stepSuggestionDAO.delete(stepSuggestionId);
     }
 }

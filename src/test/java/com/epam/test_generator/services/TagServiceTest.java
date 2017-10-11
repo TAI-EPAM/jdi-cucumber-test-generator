@@ -51,6 +51,8 @@ public class TagServiceTest {
 
     private static final long SIMPLE_TAG_ID = 3L;
     private static final long SIMPLE_CASE_ID = 2L;
+    private static final long SIMPLE_SUIT_ID = 1L;
+
 
     @Before
     public void setUp() {
@@ -70,15 +72,12 @@ public class TagServiceTest {
 
     @Test
     public void getAllTagsFromAllCasesInSuitTest() {
+        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenReturn(expectedTagsDTOList);
 
-
-
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(tagTransformer.toDto(any(Tag.class))).thenReturn(expectedTagDTO);
-
-        Set<TagDTO> actual = tagService.getAllTagsFromAllCasesInSuit(1L);
-
+        Set<TagDTO> actual = tagService.getAllTagsFromAllCasesInSuit(SIMPLE_SUIT_ID);
         assertEquals(expectedTagsDTOList, actual);
+
+        verify(tagService).getAllTagsFromAllCasesInSuit(eq(SIMPLE_SUIT_ID));
     }
 
     @Test

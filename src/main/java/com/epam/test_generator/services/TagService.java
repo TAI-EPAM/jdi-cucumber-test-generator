@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.TagDTO;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.epam.test_generator.services.utils.UtilsService.*;
+
 @Transactional
 @Service
 public class TagService {
@@ -27,6 +30,9 @@ public class TagService {
 	private CaseDAO caseDAO;
 
 	@Autowired
+	private StepDAO stepDAO;
+
+	@Autowired
 	private TagDAO tagDAO;
 
 	@Autowired
@@ -35,33 +41,25 @@ public class TagService {
 	@Autowired
 	private TagTransformer tagTransformer;
 
-	public Set<TagDTO> getAllTagsFromAllCasesInSuit(long suitId) {
-		Set<TagDTO> allTagsFromAllCases = new HashSet<>();
+	public Set<TagDTO> getAllTagsFromAllCasesInSuit(Long suitId) {
 		Suit suit = suitDAO.findOne(suitId);
+		checkNotNull(suit);
 
+		Set<TagDTO> allTagsFromAllCases = new HashSet<>();
 		suit.getCases().forEach(caze -> caze.getTags()
 				.forEach(tag -> allTagsFromAllCases.add(tagTransformer.toDto(tag))));
 
 		return allTagsFromAllCases;
 	}
 
-	public TagDTO getTag(long tagId) {
-		Tag tag = tagDAO.findOne(tagId);
-		if (tag == null) {
-			return null;
-		}
-		return tagTransformer.toDto(tag);
-	}
+	public Long addTagToCase(Long suitId, Long caseId, TagDTO tagDTO) {
+		Suit suit = suitDAO.findOne(suitId);
+		checkNotNull(suit);
 
-//	??????? do we use it
-	public Long save(TagDTO tagDTO){
-		Tag tag = tagDAO.save(tagTransformer.fromDto(tagDTO));
-
-		return tag.getId();
-	}
-
-	public Long addTagToCase(long caseId, TagDTO tagDTO) {
 		Case caze = caseDAO.findOne(caseId);
+		checkNotNull(caze);
+
+		caseBelongsToSuit(caze,suit);
 		Tag tag = tagTransformer.fromDto(tagDTO);
 
 		tag = tagDAO.save(tag);
@@ -70,18 +68,41 @@ public class TagService {
 		return tag.getId();
 	}
 
-	public void updateTag(long tagId, TagDTO tagDTO) {
+	public void updateTag(Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
+		Suit suit = suitDAO.findOne(suitId);
+		checkNotNull(suit);
+
+		Case caze = caseDAO.getOne(caseId);
+		checkNotNull(caze);
+
+		caseBelongsToSuit(caze, suit);
+
 		Tag tag = tagDAO.findOne(tagId);
+		checkNotNull(tag);
+
+		tagBelongsToCase(tag, caze);
+
 		tagTransformer.mapDTOToEntity(tagDTO, tag);
 
 		tagDAO.save(tag);
 	}
 
-	public void removeTag(long caseId, long tagId) {
-		Case caze = caseDAO.findOne(caseId);
+	public void removeTag(Long suitId, Long caseId, Long tagId) {
+		Suit suit = suitDAO.findOne(suitId);
+		checkNotNull(suit);
+
+		Case caze = caseDAO.getOne(caseId);
+		checkNotNull(caze);
+
+		caseBelongsToSuit(caze, suit);
+
 		Tag tag = tagDAO.findOne(tagId);
+		checkNotNull(tag);
+
+		tagBelongsToCase(tag, caze);
 
 		caze.getTags().remove(tag);
+
 		tagDAO.delete(tagId);
 	}
 }

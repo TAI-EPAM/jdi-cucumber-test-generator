@@ -1,7 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.SuitDTO;
-import com.epam.test_generator.services.NotFoundException;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.SuitService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.mockito.Matchers.any;

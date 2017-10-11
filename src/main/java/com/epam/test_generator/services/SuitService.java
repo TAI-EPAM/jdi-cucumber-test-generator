@@ -9,13 +9,14 @@ import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.file_generator.FileGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.epam.test_generator.services.utils.UtilsService.*;
 
 @Transactional
 @Service
@@ -71,11 +72,5 @@ public class SuitService {
         List<Case> cases = caseIds.stream().map(id -> caseDAO.findOne(id)).collect(Collectors.toList());
 
         return fileGenerator.generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
-    }
-
-    private void checkNotNull(Suit suit) {
-        if (suit == null) {
-            throw new NotFoundException();
-        }
     }
 }
