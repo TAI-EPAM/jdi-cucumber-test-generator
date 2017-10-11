@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -40,6 +41,25 @@ public class Suit implements Serializable {
         this.cases = cases;
         this.priority = priority;
         this.tags = tags;
+    }
+
+    public Suit(String name, String description, Integer priority, String creationDate, String tags, List<Case> cases) {
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.creationDate = creationDate;
+        this.tags = tags;
+        this.cases = cases;
+    }
+
+    public Suit(Long id, String name, String description, Integer priority, String creationDate, String tags, List<Case> cases) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.creationDate = creationDate;
+        this.tags = tags;
+        this.cases = cases;
     }
 
     public Suit(String name, String description) {
@@ -135,4 +155,19 @@ public class Suit implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Suit)) return false;
+
+        Suit suit = (Suit) o;
+
+        if (id != null ? !id.equals(suit.id) : suit.id != null) return false;
+        if (name != null ? !name.equals(suit.name) : suit.name != null) return false;
+        if (description != null ? !description.equals(suit.description) : suit.description != null) return false;
+        if (priority != null ? !priority.equals(suit.priority) : suit.priority != null) return false;
+        if (creationDate != null ? !creationDate.equals(suit.creationDate) : suit.creationDate != null) return false;
+        if (tags != null ? !tags.equals(suit.tags) : suit.tags != null) return false;
+        return cases != null ? cases.equals(suit.cases) : suit.cases == null;
+    }
 }

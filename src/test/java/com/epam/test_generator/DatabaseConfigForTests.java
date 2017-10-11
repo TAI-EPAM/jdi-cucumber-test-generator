@@ -1,4 +1,4 @@
-package com.epam.test_generator.config;
+package com.epam.test_generator;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
 @EnableJpaRepositories("com.epam.test_generator.dao.interfaces")
-public class DatabaseConfig {
+public class DatabaseConfigForTests {
 
     @Resource
     private Environment environment;
@@ -44,7 +44,7 @@ public class DatabaseConfig {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:file:~/h2/app_db");
+        dataSource.setUrl("jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1");
 
         return dataSource;
     }

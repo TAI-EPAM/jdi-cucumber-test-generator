@@ -53,4 +53,18 @@ public class StepSuggestion {
     public void setType(Integer type) {
         this.type = StepType.values()[type];
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof StepSuggestion)) return false;
+
+        StepSuggestion stepSuggestion = (StepSuggestion) obj;
+
+        if (type.ordinal() != stepSuggestion.type.ordinal()) return false;
+        if (id != null ? !id.equals(stepSuggestion.id) : stepSuggestion.id != null) return false;
+        if (content != null ? !content.equals(stepSuggestion.content) : stepSuggestion.content != null) return false;
+
+        return type == stepSuggestion.type;
+    }
 }

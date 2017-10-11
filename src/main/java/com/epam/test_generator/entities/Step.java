@@ -58,7 +58,6 @@ public class Step implements Serializable {
         this.type = StepType.values()[type];
     }
 
-
     @Override
     public String toString() {
         return "Step{" +
@@ -69,4 +68,16 @@ public class Step implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Step)) return false;
+
+        Step step = (Step) o;
+
+        if (rowNumber != step.rowNumber) return false;
+        if (id != null ? !id.equals(step.id) : step.id != null) return false;
+        if (description != null ? !description.equals(step.description) : step.description != null) return false;
+        return type == step.type;
+    }
 }
