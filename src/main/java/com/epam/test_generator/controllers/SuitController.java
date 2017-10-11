@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,15 +50,10 @@ public class SuitController {
     }
 
     @RequestMapping(value="/suit/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> editSuit( @PathVariable("suitId") long id, @RequestBody SuitDTO suitDTO){
-        if (isNameValid(suitDTO.getName()) && isPriorityValid(suitDTO.getPriority()) &&
-                isDescriptionValid(suitDTO.getDescription()) && isTagsValid(suitDTO.getTags())) {
-            suitService.updateSuit(suitDTO);
+    public ResponseEntity<Void> editSuit( @PathVariable("suitId") long id, @RequestBody @Valid SuitDTO suitDTO){
+        suitService.updateSuit(suitDTO);
 
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suit/{suitId}", method = RequestMethod.DELETE)
@@ -75,38 +71,16 @@ public class SuitController {
 
     @RequestMapping(value="/suit", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<SuitDTO> addSuit(@RequestBody SuitDTO suitDTO) {
-        if (isNameValid(suitDTO.getName()) && isPriorityValid(suitDTO.getPriority()) &&
-                isDescriptionValid(suitDTO.getDescription()) && isTagsValid(suitDTO.getTags())) {
-			return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(suitDTO, HttpStatus.UNPROCESSABLE_ENTITY);
+    public ResponseEntity<SuitDTO> addSuit(@RequestBody @Valid SuitDTO suitDTO) {
+        return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.OK);
     }
     
 
     @RequestMapping(value = "/downloadFeatureFile", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
-    public ResponseEntity<String> downloadFile(@RequestBody SuitDTO suitDTO) throws IOException {
+    public ResponseEntity<String> downloadFile(@RequestBody @Valid SuitDTO suitDTO) throws IOException {
         List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId).collect(Collectors.toList());
 
         return  new ResponseEntity<>(suitService.generateFile(suitDTO.getId(), caseIds), HttpStatus.OK);
     }
-
-    private boolean isPriorityValid(Integer priority) {
-        return priority != null && priority >= 1 && priority <= 5;
-    }
-
-    private boolean isNameValid(String name) {
-        return name != null && name.length() >= 1 && name.length() <= 255;
-    }
-
-    private boolean isDescriptionValid(String description) {
-        return description == null || description.length() <= 255;
-    }
-
-    private boolean isTagsValid(String tags) {
-        return tags == null || tags.length() <= 255;
-    }
-
 }

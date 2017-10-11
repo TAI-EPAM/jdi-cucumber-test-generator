@@ -18,7 +18,8 @@ public class SuitDTO {
     @Size(max = 255)
     private String description;
 
-    private List<@Valid CaseDTO> cases;
+    @Valid
+    private List<CaseDTO> cases;
 
     @NotNull
     @Min(value = 1)

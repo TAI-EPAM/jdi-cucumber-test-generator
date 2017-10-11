@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -18,7 +19,9 @@ public class StepController {
     private StepService stepService;
 
     @RequestMapping(value = "/suit/{suitId}/case/{caseId}/step", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Void> addStepToCase(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId, @RequestBody StepDTO stepDTO) {
+    public ResponseEntity<Void> addStepToCase(@PathVariable("suitId") long suitId,
+                                              @PathVariable("caseId") long caseId,
+                                              @RequestBody @Valid StepDTO stepDTO) {
         stepService.addStep(stepDTO, caseId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -31,7 +34,9 @@ public class StepController {
     }
 
     @RequestMapping(value = "/suit/{suitId}/case/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> saveStepsForCaseId(@PathVariable("suitId") long suitId, @PathVariable("caseId") long caseId, @RequestBody List<StepDTO> steps) {
+    public ResponseEntity<Void> saveStepsForCaseId(@PathVariable("suitId") long suitId,
+                                                   @PathVariable("caseId") long caseId,
+                                                   @RequestBody @Valid List<StepDTO> steps) {
         stepService.removeAllSteps(caseId);
         stepService.addSteps(caseId, steps);
 

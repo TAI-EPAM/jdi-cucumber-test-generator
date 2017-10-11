@@ -14,7 +14,8 @@ public class CaseDTO {
     @Size(min = 1, max = 255)
     private String description;
 
-    private List<@Valid StepDTO> steps;
+    @Valid
+    private List<StepDTO> steps;
 
     private String creationDate;
 
@@ -26,7 +27,8 @@ public class CaseDTO {
     private Integer priority;
 
     @Size(max = 5)
-    private Set<@Valid TagDTO> tags;
+    @Valid
+    private Set<TagDTO> tags;
 
     public CaseDTO() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");

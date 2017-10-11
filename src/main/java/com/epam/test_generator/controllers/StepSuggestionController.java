@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -25,13 +26,8 @@ public class StepSuggestionController {
 
     @RequestMapping(value = "/step_suggestion", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<StepSuggestionDTO> addStepSuggestion(@RequestBody StepSuggestionDTO stepSuggestionDTO) {
-        if (contentIsValid(stepSuggestionDTO) && typeIsValid(stepSuggestionDTO)) {
-
-            return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO),HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+    public ResponseEntity<StepSuggestionDTO> addStepSuggestion(@RequestBody @Valid StepSuggestionDTO stepSuggestionDTO) {
+         return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO),HttpStatus.OK);
     }
 
 
@@ -40,13 +36,5 @@ public class StepSuggestionController {
     public ResponseEntity<Void> removeStepSuggestion(@PathVariable("stepSuggestionId") long stepSuggestionId) {
         stepSuggestionService.removeStepSuggestion(stepSuggestionId);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private boolean contentIsValid(StepSuggestionDTO stepSuggestionDTO) {
-        return stepSuggestionDTO.getContent() != null && stepSuggestionDTO.getContent().length() > 2;
-    }
-
-    private boolean typeIsValid(StepSuggestionDTO stepSuggestionDTO) {
-        return stepSuggestionDTO.getType() != null && stepSuggestionDTO.getType() >= 0 && stepSuggestionDTO.getType() <= StepType.values().length;
     }
 }
