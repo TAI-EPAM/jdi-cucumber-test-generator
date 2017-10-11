@@ -43,6 +43,25 @@ public class Suit implements Serializable {
         this.tags = tags;
     }
 
+    public Suit(String name, String description, Integer priority, String creationDate, String tags, List<Case> cases) {
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.creationDate = creationDate;
+        this.tags = tags;
+        this.cases = cases;
+    }
+
+    public Suit(Long id, String name, String description, Integer priority, String creationDate, String tags, List<Case> cases) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.creationDate = creationDate;
+        this.tags = tags;
+        this.cases = cases;
+    }
+
     public Suit(String name, String description) {
         this.name = name;
         this.description = description;

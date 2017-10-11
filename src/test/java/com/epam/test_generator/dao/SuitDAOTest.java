@@ -30,118 +30,78 @@ public class SuitDAOTest {
 
     @Test
     public void testCreateAndRetrieve() {
-        Suit originalSuit = new Suit("Suit1", "Suit1 description");
-        originalSuit.setPriority(3);
-        originalSuit.setTags("tag1,tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
 
-        Suit newSuit = new Suit("Suit1", "Suit1 description");
+        Suit newSuit = retriveSuit();
         newSuit.setId(id);
-        newSuit.setPriority(3);
-        newSuit.setTags("tag1,tag2");
-        newSuit.setCases(new ArrayList<>());
-        newSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
 
         Assert.assertEquals(newSuit, suitDAO.findOne(id));
     }
 
     @Test
     public void testUpdatePriority() {
-        Suit originalSuit = new Suit("Suit2", "Suit2 description");
-        originalSuit.setPriority(3);
-        originalSuit.setTags("tag1 tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setPriority(4);
         id = suitDAO.save(originalSuit).getId();
 
-        Suit newSuit = new Suit("Suit2", "Suit2 description");
-        newSuit.setPriority(4);
+        Suit newSuit = retriveSuit();
         newSuit.setId(id);
-        newSuit.setTags("tag1 tag2");
-        newSuit.setCases(new ArrayList<>());
-        newSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        newSuit.setPriority(4);
 
         Assert.assertEquals(newSuit, suitDAO.getOne(id));
     }
 
     @Test
     public void testUpdateDescription() {
-        Suit originalSuit = new Suit("Suit3", "Suit3 description");
-        originalSuit.setPriority(3);
-        originalSuit.setTags("tag1 tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setDescription("modified description");
         id = suitDAO.save(originalSuit).getId();
 
-        Suit newSuit = new Suit("Suit3", "modified description");
+        Suit newSuit = retriveSuit();
         newSuit.setId(id);
-        newSuit.setPriority(3);
-        newSuit.setTags("tag1 tag2");
-        newSuit.setCases(new ArrayList<>());
-        newSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        newSuit.setDescription("modified description");
 
         Assert.assertEquals(newSuit, suitDAO.getOne(id));
     }
 
     @Test
     public void testUpdateTags() {
-        Suit originalSuit = new Suit("Suit4", "Suit4 description");
-        originalSuit.setPriority(5);
-        originalSuit.setTags("tag1 tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setTags("tag1 tag2 tag3");
         id = suitDAO.save(originalSuit).getId();
 
-        Suit newSuit = new Suit("Suit4", "Suit4 description");
-        newSuit.setPriority(5);
-        newSuit.setTags("tag1 tag2 tag3");
-        newSuit.setCases(new ArrayList<>());
-        newSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit newSuit = retriveSuit();
         newSuit.setId(id);
+        newSuit.setTags("tag1 tag2 tag3");
 
         Assert.assertEquals(newSuit, suitDAO.getOne(id));
     }
 
     @Test
     public void testUpdateName() {
-        Suit originalSuit = new Suit("Suit4", "Suit4 description");
-        originalSuit.setPriority(5);
-        originalSuit.setTags("tag1 tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setName("Suit4a");
         id = suitDAO.save(originalSuit).getId();
 
-        Suit newSuit = new Suit("Suit4a", "Suit4 description");
-        newSuit.setPriority(5);
-        newSuit.setTags("tag1 tag2");
-        newSuit.setCases(new ArrayList<>());
-        newSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit newSuit = retriveSuit();
         newSuit.setId(id);
+        newSuit.setName("Suit4a");
 
         Assert.assertEquals(newSuit, suitDAO.getOne(id));
     }
 
     @Test
     public void testRemoveById() {
-        Suit originalSuit = new Suit("Suit4", "Suit4 description");
-        originalSuit.setPriority(5);
-        originalSuit.setTags("tag1 tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
         suitDAO.delete(id);
 
@@ -150,11 +110,7 @@ public class SuitDAOTest {
 
     @Test
     public void testRemove() {
-        Suit originalSuit = new Suit("Suit4", "Suit4 description");
-        originalSuit.setPriority(5);
-        originalSuit.setTags("tag1 tag2");
-        originalSuit.setCases(new ArrayList<>());
-        originalSuit.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit originalSuit = retriveSuit();
         long id = suitDAO.save(originalSuit).getId();
         suitDAO.delete(originalSuit);
 
@@ -163,51 +119,18 @@ public class SuitDAOTest {
 
     @Test
     public void testAddList() {
-        Suit suit1 = new Suit("Suit1", "Suit1 description");
-        suit1.setPriority(5);
-        suit1.setTags("tag1 tag2");
-        suit1.setCases(new ArrayList<>());
-        suit1.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-
-        Suit suit2 = new Suit("Suit2", "Suit2 description");
-        suit2.setPriority(5);
-        suit2.setTags("tag1");
-        suit2.setCases(new ArrayList<>());
-        suit2.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-
-        Suit suit3 = new Suit("Suit3", "Suit3 description");
-        suit3.setPriority(5);
-        suit3.setTags("tag1 tag3");
-        suit3.setCases(new ArrayList<>());
-        suit3.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-
-        ArrayList<Suit> suits = new ArrayList<>();
-        suits.add(suit1);
-        suits.add(suit2);
-        suits.add(suit3);
+        List<Suit> suits = retrieveSuiteList();
 
         List<Long> ids = suitDAO.save(suits).stream().map(Suit::getId).collect(Collectors.toList());
 
-        Suit suit4 = new Suit("Suit1", "Suit1 description");
-        suit4.setPriority(5);
-        suit4.setId(ids.get(0));
-        suit4.setTags("tag1 tag2");
-        suit4.setCases(new ArrayList<>());
-        suit4.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit suit4 = new Suit(ids.get(0), "Suit1", "Suit1 description", 5,
+                formatter.format(Calendar.getInstance().getTime()), "tag1 tag2", new ArrayList<>());
 
-        Suit suit5 = new Suit("Suit2", "Suit2 description");
-        suit5.setPriority(5);
-        suit5.setId(ids.get(1));
-        suit5.setTags("tag1");
-        suit5.setCases(new ArrayList<>());
-        suit5.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit suit5 = new Suit(ids.get(1),"Suit2", "Suit2 description", 5,
+                formatter.format(Calendar.getInstance().getTime()), "tag1 ", new ArrayList<>());
 
-        Suit suit6 = new Suit("Suit3", "Suit3 description");
-        suit6.setPriority(5);
-        suit6.setId(ids.get(2));
-        suit6.setTags("tag1 tag3");
-        suit6.setCases(new ArrayList<>());
-        suit6.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        Suit suit6 = new Suit(ids.get(2), "Suit3", "Suit3 description", 5,
+                formatter.format(Calendar.getInstance().getTime()), "tag1 tag3", new ArrayList<>());
 
         ArrayList<Suit> newSuits = new ArrayList<>();
         newSuits.add(suit4);
@@ -219,29 +142,34 @@ public class SuitDAOTest {
 
     @Test
     public void testRemoveList() {
-        Suit suit1 = new Suit("Suit1", "Suit1 description");
-        suit1.setPriority(5);
-        suit1.setTags("tag1 tag2");
-        suit1.setCases(new ArrayList<>());
-        suit1.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        List<Suit> suits = retrieveSuiteList();
 
-        Suit suit2 = new Suit("Suit2", "Suit2 description");
-        suit2.setPriority(5);
-        suit2.setTags("tag1");
-        suit2.setCases(new ArrayList<>());
-        suit2.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+        suitDAO.save(suits);
 
-        Suit suit3 = new Suit("Suit3", "Suit3 description");
-        suit3.setPriority(5);
-        suit3.setTags("tag1 tag3");
-        suit3.setCases(new ArrayList<>());
-        suit3.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-        Suit[] suits = {suit1, suit2, suit3};
-
-        suitDAO.save(Arrays.asList(suits));
-
-        suitDAO.delete(Arrays.asList(suits));
+        suitDAO.delete(suits);
 
         Assert.assertTrue(suitDAO.findAll().isEmpty());
+    }
+
+    private Suit retriveSuit() {
+        return new Suit("Suit1", "Suit1 description", 3,
+                formatter.format(Calendar.getInstance().getTime()), "tag1,tag2", new ArrayList<>());
+    }
+
+    private List<Suit> retrieveSuiteList() {
+        Suit suit1 = new Suit("Suit1", "Suit1 description", 5,
+                formatter.format(Calendar.getInstance().getTime()), "tag1 tag2", new ArrayList<>());
+
+        Suit suit2 = new Suit("Suit2", "Suit2 description", 5,
+                formatter.format(Calendar.getInstance().getTime()), "tag1 ", new ArrayList<>());
+
+        Suit suit3 = new Suit("Suit3", "Suit3 description", 5,
+                formatter.format(Calendar.getInstance().getTime()), "tag1 tag3", new ArrayList<>());
+
+        ArrayList<Suit> suits = new ArrayList<>();
+        suits.add(suit1);
+        suits.add(suit2);
+        suits.add(suit3);
+        return suits;
     }
 }

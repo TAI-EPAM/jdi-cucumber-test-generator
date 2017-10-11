@@ -43,6 +43,15 @@ public class Case implements Serializable{
         this.tags = tags;
     }
 
+    public Case(String description, List<Step> steps, String creationDate, String updateDate, Integer priority, Set<Tag> tags) {
+        this.description = description;
+        this.steps = steps;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
+        this.priority = priority;
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }
