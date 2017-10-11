@@ -19,6 +19,16 @@ public class StepDTO {
     @Max(value = 5)
     private Integer type;
 
+    public StepDTO() {
+    }
+
+    public StepDTO(Long id, int rowNumber, String description, Integer type) {
+        this.id = id;
+        this.rowNumber = rowNumber;
+        this.description = description;
+        this.type = type;
+    }
+
     public Long getId() {
         return id;
     }

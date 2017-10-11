@@ -36,6 +36,31 @@ public class SuitDTO {
         creationDate = formatter.format(Calendar.getInstance().getTime());
     }
 
+    public SuitDTO(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority, String creationDate, String tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.cases = cases;
+        this.priority = priority;
+        this.creationDate = creationDate;
+        this.tags = tags;
+    }
+
+    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority, String tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.cases = cases;
+        this.priority = priority;
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }
@@ -90,6 +115,34 @@ public class SuitDTO {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SuitDTO suitDTO = (SuitDTO) o;
+
+        if (!id.equals(suitDTO.id)) return false;
+        if (!name.equals(suitDTO.name)) return false;
+        if (!description.equals(suitDTO.description)) return false;
+        if (!cases.equals(suitDTO.cases)) return false;
+        if (!priority.equals(suitDTO.priority)) return false;
+        if (!creationDate.equals(suitDTO.creationDate)) return false;
+        return tags.equals(suitDTO.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + cases.hashCode();
+        result = 31 * result + priority.hashCode();
+        result = 31 * result + creationDate.hashCode();
+        result = 31 * result + tags.hashCode();
+        return result;
     }
 
     @Override
