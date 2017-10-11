@@ -25,11 +25,11 @@ public class TagDAOTest {
 
     @Test
     public void testCreateAndRetrieve() {
-        Tag originalTag = new Tag("tag1");
+        Tag originalTag = retrieveTag();
 
         long id = tagDAO.save(originalTag).getId();
 
-        Tag newTag = new Tag("tag1");
+        Tag newTag = retrieveTag();
         newTag.setId(id);
 
         Assert.assertEquals(newTag, tagDAO.findOne(id));
@@ -37,7 +37,7 @@ public class TagDAOTest {
 
     @Test
     public void testRemove() {
-        Tag originalTag = new Tag("tag1");
+        Tag originalTag = retrieveTag();
 
         long id = tagDAO.save(originalTag).getId();
         tagDAO.delete(originalTag);
@@ -47,7 +47,7 @@ public class TagDAOTest {
 
     @Test
     public void testRemoveById() {
-        Tag originalTag = new Tag("tag1");
+        Tag originalTag = retrieveTag();
 
         long id = tagDAO.save(originalTag).getId();
         tagDAO.delete(id);
@@ -57,39 +57,39 @@ public class TagDAOTest {
 
     @Test
     public void testAddList() {
-        ArrayList<Tag> tags = new ArrayList<>();
-        tags.add(new Tag("tag1"));
-        tags.add(new Tag("tag2"));
-        tags.add(new Tag("tag3"));
+        List<Tag> tags = retrieveTagList();
 
         List<Long> ids = tagDAO.save(tags).stream().map(Tag::getId).collect(Collectors.toList());
 
-        Tag tag1 = new Tag("tag1");
-        tag1.setId(ids.get(0));
-        Tag tag2 = new Tag("tag2");
-        tag2.setId(ids.get(1));
-        Tag tag3 = new Tag("tag3");
-        tag3.setId(ids.get(2));
-
-        ArrayList<Tag> newTags = new ArrayList<>();
-        newTags.add(tag1);
-        newTags.add(tag2);
-        newTags.add(tag3);
+        List<Tag> newTags = retrieveTagList();
+        newTags.get(0).setId(ids.get(0));
+        newTags.get(1).setId(ids.get(1));
+        newTags.get(2).setId(ids.get(2));
 
         Assert.assertTrue(newTags.equals(tagDAO.findAll()));
     }
 
     @Test
     public void testRemoveList() {
-        ArrayList<Tag> tags = new ArrayList<>();
-        tags.add(new Tag("tag1"));
-        tags.add(new Tag("tag2"));
-        tags.add(new Tag("tag3"));
+        List<Tag> tags = retrieveTagList();
 
         tagDAO.save(tags);
 
         tagDAO.delete(tags);
 
         Assert.assertTrue(tagDAO.findAll().isEmpty());
+    }
+
+    private Tag retrieveTag() {
+        return new Tag("tag1");
+    }
+
+    private List<Tag> retrieveTagList() {
+        ArrayList<Tag> tags = new ArrayList<>();
+        tags.add(new Tag("tag1"));
+        tags.add(new Tag("tag2"));
+        tags.add(new Tag("tag3"));
+
+        return tags;
     }
 }
