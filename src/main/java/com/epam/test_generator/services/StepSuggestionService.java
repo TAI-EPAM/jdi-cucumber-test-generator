@@ -61,19 +61,16 @@ public class StepSuggestionService {
         }
     }
 
-    public StepSuggestionDTO getStepsSuggestion(long stepSuggestionId) {
-        StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
-        if (stepSuggestion == null) {
-
-            return null;
-        }
-
-        return stepSuggestionTransformer.toDto(stepSuggestion);
-    }
-
     public List<StepSuggestionDTO> getStepsSuggestions() {
 
         return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll());
+    }
+
+    public StepSuggestionDTO getStepsSuggestion(long stepSuggestionId) {
+        StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
+        checkNotNull(stepSuggestion);
+
+        return stepSuggestionTransformer.toDto(stepSuggestion);
     }
 
     public List<StepSuggestionDTO> getStepsSuggestionsByType(long typeId) {
