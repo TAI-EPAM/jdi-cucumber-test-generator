@@ -123,19 +123,10 @@ public class SuitDAOTest {
 
         List<Long> ids = suitDAO.save(suits).stream().map(Suit::getId).collect(Collectors.toList());
 
-        Suit suit4 = new Suit(ids.get(0), "Suit1", "Suit1 description", 5,
-                formatter.format(Calendar.getInstance().getTime()), "tag1 tag2", new ArrayList<>());
-
-        Suit suit5 = new Suit(ids.get(1),"Suit2", "Suit2 description", 5,
-                formatter.format(Calendar.getInstance().getTime()), "tag1 ", new ArrayList<>());
-
-        Suit suit6 = new Suit(ids.get(2), "Suit3", "Suit3 description", 5,
-                formatter.format(Calendar.getInstance().getTime()), "tag1 tag3", new ArrayList<>());
-
-        ArrayList<Suit> newSuits = new ArrayList<>();
-        newSuits.add(suit4);
-        newSuits.add(suit5);
-        newSuits.add(suit6);
+        List<Suit> newSuits = retrieveSuiteList();
+        newSuits.get(0).setId(ids.get(0));
+        newSuits.get(1).setId(ids.get(1));
+        newSuits.get(2).setId(ids.get(2));
 
         Assert.assertTrue(newSuits.equals(suitDAO.findAll()));
     }
