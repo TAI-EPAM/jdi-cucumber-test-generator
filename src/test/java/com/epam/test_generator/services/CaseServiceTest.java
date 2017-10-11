@@ -116,7 +116,7 @@ public class CaseServiceTest {
     public void updateCaseTest() throws Exception {
         CaseDTO updateCaseDTO = new CaseDTO(null, "New Case desc", null, null, null);
 
-        when(suitDAO.findOne(anyLong())).thenReturn(suit)
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
 
         caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, updateCaseDTO);

@@ -72,26 +72,12 @@ public class TagServiceTest {
 
     @Test
     public void getAllTagsFromAllCasesInSuitTest() {
-        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenReturn(expectedTagsDTOList);
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
 
         Set<TagDTO> actual = tagService.getAllTagsFromAllCasesInSuit(SIMPLE_SUIT_ID);
         assertEquals(expectedTagsDTOList, actual);
 
-        verify(tagService).getAllTagsFromAllCasesInSuit(eq(SIMPLE_SUIT_ID));
-    }
-
-    @Test
-    public void getTagTest() {
-        when(tagDAO.findOne(anyLong())).thenReturn(expectedTag);
-        when(tagTransformer.toDto(any(Tag.class))).thenReturn(expectedTagDTO);
-
-        TagDTO actualTag = tagService.getTag(SIMPLE_TAG_ID);
-        assertEquals(expectedTagDTO, actualTag);
-
-        verify(tagDAO).findOne(eq(SIMPLE_TAG_ID));
-        verify(tagTransformer).toDto(any(Tag.class));
-
-
+        verify(suitDAO).findOne(SIMPLE_SUIT_ID);
     }
 
     @Test
@@ -104,13 +90,15 @@ public class TagServiceTest {
         tagDTO.setId(null);
         tagDTO.setName("name");
 
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(tagTransformer.fromDto(any(TagDTO.class))).thenReturn(tag);
         when(tagDAO.save(any(Tag.class))).thenReturn(tag);
 
-        Long actualLong = tagService.addTagToCase(SIMPLE_CASE_ID, tagDTO);
+        Long actualLong = tagService.addTagToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, tagDTO);
         assertEquals(tag.getId(),actualLong);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(tagTransformer).fromDto(any(TagDTO.class));
         verify(tagDAO).save(any(Tag.class));
@@ -120,29 +108,27 @@ public class TagServiceTest {
 
     @Test
     public void updateTagTest() {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(tagDAO.findOne(anyLong())).thenReturn(expectedTag);
         when(tagDAO.save(any(Tag.class))).thenReturn(expectedTag);
 
-        tagService.updateTag(SIMPLE_TAG_ID,expectedTagDTO);
+        tagService.updateTag(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_TAG_ID,expectedTagDTO);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
+        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(tagDAO).findOne(eq(SIMPLE_TAG_ID));
         verify(tagDAO).save(any(Tag.class));
-
-
-
-
-
     }
 
     @Test
     public void removeTagTest() {
-        Case caze = new Case();
-        caze.setTags(expectedTagsList);
-
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(tagDAO.findOne(anyLong())).thenReturn(expectedTag);
 
-        tagService.removeTag(1L, 2L);
-        verify(tagDAO).delete(2L);
+        tagService.removeTag(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_TAG_ID);
+
+        verify(tagDAO).delete(SIMPLE_TAG_ID);
     }
 }
