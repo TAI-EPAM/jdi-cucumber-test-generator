@@ -10,6 +10,7 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.CaseTransformer;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,19 +82,21 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void getCaseTest() throws Exception {
+    public void testGetCaseTest() throws Exception {
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseTransformer.toDto(any(Case.class))).thenReturn(expetedCaze);
 
-        CaseDTO actualCase = caseService.getCase(SIMPLE_CASE_ID);
+        CaseDTO actualCase = caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
         assertEquals(expetedCaze, actualCase);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(caseTransformer).toDto(any(Case.class));
     }
 
     @Test
-    public void addCaseToSuitTest() throws Exception {
+    public void testAddCaseToSuitTest() throws Exception {
         Case newCase = new Case(3L, "Case 3", listSteps, 2, setTags);
         CaseDTO newCaseDTO = new CaseDTO(null, "Case 3", expectedListSteps, 2, expectedSetTags);
 
@@ -112,10 +116,12 @@ public class CaseServiceTest {
     public void updateCaseTest() throws Exception {
         CaseDTO updateCaseDTO = new CaseDTO(null, "New Case desc", null, null, null);
 
+        when(suitDAO.findOne(anyLong())).thenReturn(suit)
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
 
-        caseService.updateCase(SIMPLE_CASE_ID, updateCaseDTO);
+        caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, updateCaseDTO);
 
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(caseTransformer).mapDTOToEntity(any(CaseDTO.class), eq(caze));
         verify(caseDAO).save(eq(caze));
@@ -124,6 +130,7 @@ public class CaseServiceTest {
     @Test
     public void removeCaseTest() throws Exception {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        doNothing().when(caseDAO).delete(caze);
 
         caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
 
