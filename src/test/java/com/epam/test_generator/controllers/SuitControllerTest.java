@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.services.NotFoundException;
 import com.epam.test_generator.services.SuitService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -89,7 +90,7 @@ public class SuitControllerTest {
 
 	@Test
 	public void getSuit_return404whenSuitNotExist() throws Exception {
-		when(suitService.getSuit(anyLong())).thenReturn(null);
+		when(suitService.getSuit(anyLong())).thenThrow(new NotFoundException());
 
 		mockMvc.perform(get("/suits/" + TEST_SUIT_ID))
 			.andDo(print())
@@ -111,8 +112,6 @@ public class SuitControllerTest {
 
 	@Test
 	public void updateSuit_return200whenEditSuit() throws Exception {
-		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
-
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(mapper.writeValueAsString(suitDTO)))
@@ -165,23 +164,21 @@ public class SuitControllerTest {
 	}
 
 	@Test
-	public void updateSuit_return201whenSuitNotExist() throws Exception {
-		when(suitService.getSuit(anyLong())).thenReturn(null);
+	public void updateSuit_return404whenSuitNotExist() throws Exception {
+		doThrow(NotFoundException.class).when(suitService).updateSuit(anyLong(), any(SuitDTO.class));
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(suitDTO)))
 				.andDo(print())
-				.andExpect(status().isCreated());
+				.andExpect(status().isNotFound());
 
-		verify(suitService, times(0)).updateSuit(anyLong(), any(SuitDTO.class));
-		verify(suitService).addSuit(any(SuitDTO.class));
+		verify(suitService).updateSuit(anyLong(), any(SuitDTO.class));
 	}
 
 	@Test
 	public void updateSuit_return500whenRuntimeException() throws Exception {
 		doThrow(RuntimeException.class).when(suitService).updateSuit(anyLong(), any(SuitDTO.class));
-		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 
 		mockMvc.perform(put("/suits/" + TEST_SUIT_ID)
 			.contentType(MediaType.APPLICATION_JSON)
@@ -194,7 +191,6 @@ public class SuitControllerTest {
 
 	@Test
 	public void removeSuit_return200whenRemoveSuit() throws Exception {
-		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 		doNothing().when(suitService).removeSuit(anyLong());
 
 		mockMvc.perform(delete("/suits/" + TEST_SUIT_ID))
@@ -206,19 +202,17 @@ public class SuitControllerTest {
 
 	@Test
 	public void removeSuit_return404whenSuitNotExist() throws Exception {
-		when(suitService.getSuit(anyLong())).thenReturn(null);
-		doNothing().when(suitService).removeSuit(anyLong());
+		doThrow(NotFoundException.class).when(suitService).removeSuit(anyLong());
 
 		mockMvc.perform(delete("/suits/" + TEST_SUIT_ID))
 			.andDo(print())
 			.andExpect(status().isNotFound());
 
-		verify(suitService, times(0)).removeSuit(anyLong());
+		verify(suitService).removeSuit(anyLong());
 	}
 
 	@Test
 	public void removeSuit_return500whenRuntimeException() throws Exception {
-		when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
 		doThrow(RuntimeException.class).when(suitService).removeSuit(anyLong());
 
 		mockMvc.perform(delete("/suits/" + TEST_SUIT_ID))

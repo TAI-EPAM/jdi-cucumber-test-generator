@@ -28,26 +28,18 @@ public class SuitController {
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
-        Optional<SuitDTO> suitDTO = Optional.ofNullable(suitService.getSuit(suitId));
 
-        return suitDTO.isPresent()
-                ? new ResponseEntity<>(suitDTO.get(), HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(suitService.getSuit(suitId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suits", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addSuit(@RequestBody SuitDTO suitDTO) {
+
         return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Long> updateSuit(@PathVariable("suitId") long suitId, @RequestBody SuitDTO suitDTO) {
-        SuitDTO checkSuitDTO = suitService.getSuit(suitId);
-
-        if (checkSuitDTO == null) {
-
-            return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
-        }
+    public ResponseEntity<Void> updateSuit(@PathVariable("suitId") long suitId, @RequestBody SuitDTO suitDTO) {
         suitService.updateSuit(suitId, suitDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -55,12 +47,6 @@ public class SuitController {
 
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long suitId) {
-        SuitDTO suitDTO = suitService.getSuit(suitId);
-
-        if (suitDTO == null) {
-
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         suitService.removeSuit(suitId);
 
         return new ResponseEntity<>(HttpStatus.OK);

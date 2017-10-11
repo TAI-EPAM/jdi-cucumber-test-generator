@@ -41,11 +41,10 @@ public class SuitService {
     }
 
     public SuitDTO getSuit(long suitId) {
-        if (suitDAO.findOne(suitId) == null) {
-            return null;
-        }
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
 
-        return suitTransformer.toDto(suitDAO.findOne(suitId));
+        return suitTransformer.toDto(suit);
     }
 
     public Long addSuit(SuitDTO suitDTO) {
@@ -56,12 +55,14 @@ public class SuitService {
 
     public void updateSuit(long suitId, SuitDTO suitDTO) {
         Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
         suitTransformer.mapDTOToEntity(suitDTO, suit);
-
         suitDAO.save(suit);
     }
 
     public void removeSuit(long suitId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
         suitDAO.delete(suitId);
     }
 
@@ -70,5 +71,11 @@ public class SuitService {
         List<Case> cases = caseIds.stream().map(id -> caseDAO.findOne(id)).collect(Collectors.toList());
 
         return fileGenerator.generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
+    }
+
+    private void checkNotNull(Suit suit) {
+        if (suit == null) {
+            throw new NotFoundException();
+        }
     }
 }

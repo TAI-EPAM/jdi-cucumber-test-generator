@@ -33,20 +33,22 @@ public class SuitServiceTest {
     @Mock
     private SuitTransformer suitTransformer;
 
-    List<Suit> expectedSuitList;
-    List<SuitDTO> expectedSuitDTOList;
+    private static final long SIMPLE_SUIT_ID = 1L;
 
-    Suit expectedSuit;
-    SuitDTO expectedSuitDTO;
+    private List<Suit> expectedSuitList;
+    private List<SuitDTO> expectedSuitDTOList;
+
+    private Suit expectedSuit;
+    private SuitDTO expectedSuitDTO;
 
     @Before
     public void setUp() {
         expectedSuitList = new ArrayList<>();
-        expectedSuit = new Suit(1L, "suit1", "desc1");
+        expectedSuit = new Suit(SIMPLE_SUIT_ID, "suit1", "desc1");
         expectedSuitList.add(expectedSuit);
 
         expectedSuitDTOList = new ArrayList<>();
-        expectedSuitDTO = new SuitDTO(1L, "suit1", "desc1");
+        expectedSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "suit1", "desc1");
         expectedSuitDTOList.add(expectedSuitDTO);
     }
 
@@ -64,7 +66,7 @@ public class SuitServiceTest {
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
         when(suitTransformer.toDto(any(Suit.class))).thenReturn(expectedSuitDTO);
 
-        SuitDTO actual = suitService.getSuit(1L);
+        SuitDTO actual = suitService.getSuit(SIMPLE_SUIT_ID);
 
         assertEquals(expectedSuitDTO, actual);
     }
@@ -82,7 +84,6 @@ public class SuitServiceTest {
     @Test
     public void updateSuitTest() {
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
-        when(suitTransformer.toDto(any(Suit.class))).thenReturn(expectedSuitDTO);
         when(suitDAO.save(any(Suit.class))).thenAnswer(new Answer<Object>() {
             public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
                 expectedSuitDTO.setName("new name");
@@ -91,17 +92,19 @@ public class SuitServiceTest {
             }
         });
 
-        SuitDTO newSuitDTO = new SuitDTO(1L, "new name", "desc1");
-
-        suitService.updateSuit(1L, newSuitDTO);
-
+        SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
+        suitService.updateSuit(SIMPLE_SUIT_ID, newSuitDTO);
         assertEquals(expectedSuitDTO.getName(), newSuitDTO.getName());
     }
 
     @Test
     public void removeSuitTest() {
-        suitService.removeSuit(1L);
+        when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
+
+        suitService.removeSuit(SIMPLE_SUIT_ID);
+
         verify(suitDAO).delete(anyLong());
+        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
     }
 
 
