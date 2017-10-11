@@ -71,4 +71,25 @@ public class StepDTO {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StepDTO)) return false;
+
+        StepDTO stepDTO = (StepDTO) o;
+
+        if (rowNumber != stepDTO.rowNumber) return false;
+        if (id != null ? !id.equals(stepDTO.id) : stepDTO.id != null) return false;
+        if (description != null ? !description.equals(stepDTO.description) : stepDTO.description != null) return false;
+        return type != null ? type.equals(stepDTO.type) : stepDTO.type == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + rowNumber;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
 }

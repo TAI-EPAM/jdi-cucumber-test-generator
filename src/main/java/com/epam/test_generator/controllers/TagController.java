@@ -21,9 +21,6 @@ public class TagController {
     @Autowired
     private CaseService casesService;
 
-    @Autowired
-    private SuitService suitService;
-
     @RequestMapping(value = "/suits/{suitId}/cases/tags", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Set<TagDTO>> getAllTagsFromAllCasesInSuit(@PathVariable("suitId") long suitId) {
 

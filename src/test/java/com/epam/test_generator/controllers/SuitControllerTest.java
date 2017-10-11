@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.mockito.Matchers.any;
@@ -120,8 +121,7 @@ public class SuitControllerTest {
 		verify(suitService).updateSuit(anyLong(), any(SuitDTO.class));
 	}
 
-	//TODO create validation
-	@Ignore
+	@Test
 	public void updateSuit_return400whenEditSuitWithNullName() throws Exception {
 		suitDTO.setName(null);
 
@@ -134,8 +134,7 @@ public class SuitControllerTest {
 		verify(suitService, times(0)).updateSuit(anyLong(), any(SuitDTO.class));
 	}
 
-	//TODO create validation
-	@Ignore
+	@Test
 	public void updateSuit_return400whenEditWithMoreThanTheRequiredPriority() throws Exception {
 		suitDTO.setPriority(6);
 
@@ -148,8 +147,7 @@ public class SuitControllerTest {
 		verify(suitService, times(0)).updateSuit(anyLong(),any(SuitDTO.class));
 	}
 
-	//TODO create validation
-	@Ignore
+	@Test
 	public void updateSuit_return400whenEditWithLessThanTheRequiredPriority() throws Exception {
 		suitDTO.setPriority(-1);
 
@@ -236,8 +234,7 @@ public class SuitControllerTest {
 		verify(suitService).addSuit(any(SuitDTO.class));
 	}
 
-	//TODO create validation
-	@Ignore
+	@Test
 	public void addSuit_return400whenAddSuitWithNullName() throws Exception {
 		suitDTO.setId(null);
 		suitDTO.setName(null);
@@ -252,8 +249,7 @@ public class SuitControllerTest {
 		verify(suitService, times(0)).addSuit(any(SuitDTO.class));
 	}
 
-	//TODO create validation
-	@Ignore
+	@Test
 	public void addSuit_return400whenAddSuitWithMoreThanTheRequiredPriority() throws Exception {
 		suitDTO.setId(null);
 		suitDTO.setPriority(6);
@@ -268,8 +264,7 @@ public class SuitControllerTest {
 		verify(suitService, times(0)).addSuit(any(SuitDTO.class));
 	}
 
-	//TODO create validation
-	@Ignore
+	@Test
 	public void addSuit_return400whenAddSuitWithLessThanTheRequiredPriority() throws Exception {
 		suitDTO.setId(null);
 		suitDTO.setPriority(-1);

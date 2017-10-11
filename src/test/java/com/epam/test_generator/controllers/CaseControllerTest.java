@@ -180,9 +180,8 @@ public class CaseControllerTest {
 
         verify(casesService).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (description - null)
-    @Ignore
+    
+    @Test
     public void testAddCase_return422whenAddCaseWithNullDescription() throws Exception {
         caseDTO.setId(null);
         caseDTO.setDescription(null);
@@ -190,13 +189,12 @@ public class CaseControllerTest {
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (description - "")
-    @Ignore
+    
+    @Test
     public void testAddCase_return422whenAddCaseWithEmptyDescription() throws Exception {
         caseDTO.setId(null);
         caseDTO.setDescription("");
@@ -204,13 +202,12 @@ public class CaseControllerTest {
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (priority - null)
-    @Ignore
+    
+    @Test
     public void testAddCase_return422whenAddCaseWithNullPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(null);
@@ -218,13 +215,12 @@ public class CaseControllerTest {
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (priority - 0)
-    @Ignore
+    
+    @Test
     public void testAddCase_return422whenAddCaseWithZeroPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(0);
@@ -232,13 +228,12 @@ public class CaseControllerTest {
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
-    //TODO create validation (priority - 6)
-    @Ignore
+    @Test
     public void testAddCase_return422whenAddCaseWithMoreThanTheRequiredPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(6);
@@ -246,13 +241,12 @@ public class CaseControllerTest {
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
-    //TODO create validation (priority - negative)
-    @Ignore
+    @Test
     public void testAddCase_return422whenAddCaseWithLessThanTheRequiredPriority() throws Exception {
         caseDTO.setId(null);
         caseDTO.setPriority(-4);
@@ -260,7 +254,7 @@ public class CaseControllerTest {
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
@@ -314,82 +308,76 @@ public class CaseControllerTest {
 
         verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (priority - null)
-    @Ignore
+    
+    @Test
     public void testUpdateCase_return422whenUpdateCaseWithNullPriority() throws Exception {
         caseDTO.setPriority(null);
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (priority - 0)
-    @Ignore
+    
+    @Test
     public void testUpdateCase_return422whenUpdateCaseWithZeroPriority() throws Exception {
         caseDTO.setPriority(0);
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (priority - 6)
-    @Ignore
+    
+    @Test
     public void testUpdateCase_return422whenUpdateCaseWithMoreThanTheRequiredPriority() throws Exception {
         caseDTO.setPriority(6);
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (priority - negative)
-    @Ignore
+    
+    @Test
     public void testUpdateCase_return422whenUpdateCaseWithLessThanTheRequiredPriority() throws Exception {
         caseDTO.setPriority(-4);
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
 
         verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (description - null)
-    @Ignore
+    
+    @Test
     public void testUpdateCase_return422whenUpdateCaseWithNullDescription() throws Exception {
         caseDTO.setDescription(null);
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }
-
-    //TODO create validation (description - "")
-    @Ignore
+    
+    @Test
     public void testUpdateCase_return422whenUpdateCaseWithEmptyDescription() throws Exception {
         caseDTO.setDescription("");
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verify(casesService, times(0)).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(CaseDTO.class));
     }

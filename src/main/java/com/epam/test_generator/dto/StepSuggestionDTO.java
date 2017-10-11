@@ -51,4 +51,24 @@ public class StepSuggestionDTO {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StepSuggestionDTO)) return false;
+
+        StepSuggestionDTO that = (StepSuggestionDTO) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        return type != null ? type.equals(that.type) : that.type == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
 }

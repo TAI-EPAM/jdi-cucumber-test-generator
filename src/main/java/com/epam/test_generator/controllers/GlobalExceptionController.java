@@ -35,7 +35,7 @@ public class GlobalExceptionController {
 				.forEach((f)->
 					result.put(f.getField(),f.getDefaultMessage()));
 
-		return new ResponseEntity<>(result,HttpStatus.UNPROCESSABLE_ENTITY);
+		return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
 	}
 
 

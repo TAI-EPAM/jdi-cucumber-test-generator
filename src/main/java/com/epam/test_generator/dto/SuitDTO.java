@@ -120,28 +120,29 @@ public class SuitDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SuitDTO)) return false;
 
         SuitDTO suitDTO = (SuitDTO) o;
 
-        if (!id.equals(suitDTO.id)) return false;
-        if (!name.equals(suitDTO.name)) return false;
-        if (!description.equals(suitDTO.description)) return false;
-        if (!cases.equals(suitDTO.cases)) return false;
-        if (!priority.equals(suitDTO.priority)) return false;
-        if (!creationDate.equals(suitDTO.creationDate)) return false;
-        return tags.equals(suitDTO.tags);
+        if (id != null ? !id.equals(suitDTO.id) : suitDTO.id != null) return false;
+        if (name != null ? !name.equals(suitDTO.name) : suitDTO.name != null) return false;
+        if (description != null ? !description.equals(suitDTO.description) : suitDTO.description != null) return false;
+        if (cases != null ? !cases.equals(suitDTO.cases) : suitDTO.cases != null) return false;
+        if (priority != null ? !priority.equals(suitDTO.priority) : suitDTO.priority != null) return false;
+        if (creationDate != null ? !creationDate.equals(suitDTO.creationDate) : suitDTO.creationDate != null)
+            return false;
+        return tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + cases.hashCode();
-        result = 31 * result + priority.hashCode();
-        result = 31 * result + creationDate.hashCode();
-        result = 31 * result + tags.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (cases != null ? cases.hashCode() : 0);
+        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
     }
 

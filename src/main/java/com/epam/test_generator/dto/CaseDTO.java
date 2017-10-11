@@ -102,6 +102,35 @@ public class CaseDTO {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CaseDTO)) return false;
+
+        CaseDTO caseDTO = (CaseDTO) o;
+
+        if (id != null ? !id.equals(caseDTO.id) : caseDTO.id != null) return false;
+        if (description != null ? !description.equals(caseDTO.description) : caseDTO.description != null) return false;
+        if (steps != null ? !steps.equals(caseDTO.steps) : caseDTO.steps != null) return false;
+        if (creationDate != null ? !creationDate.equals(caseDTO.creationDate) : caseDTO.creationDate != null)
+            return false;
+        if (updateDate != null ? !updateDate.equals(caseDTO.updateDate) : caseDTO.updateDate != null) return false;
+        if (priority != null ? !priority.equals(caseDTO.priority) : caseDTO.priority != null) return false;
+        return tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (steps != null ? steps.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (updateDate != null ? updateDate.hashCode() : 0);
+        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "CaseDTO{" +
                 "id=" + id +

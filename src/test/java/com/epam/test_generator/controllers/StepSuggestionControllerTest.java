@@ -6,7 +6,7 @@ import com.epam.test_generator.services.StepSuggestionService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -120,8 +120,7 @@ public class StepSuggestionControllerTest {
         verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionDTO.class));
     }
 
-    //TODO validation
-    @Ignore
+    @Test
     public void testAddStepSuggestion_return400whenAddStepSuggestionWithNullContent() throws Exception {
         stepSuggestionDTO.setId(null);
         stepSuggestionDTO.setContent(null);
