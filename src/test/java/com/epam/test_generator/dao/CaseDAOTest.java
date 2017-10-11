@@ -24,8 +24,6 @@ public class CaseDAOTest {
     @Autowired
     CaseDAO caseDAO;
 
-    private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-
     @Test
     public void testCreateAndRetrieve() {
         Case originalCase = retrieveCase();
@@ -53,36 +51,27 @@ public class CaseDAOTest {
 
     @Test
     public void testUpdatePriority() {
-        Case originalCase = new Case();
-        originalCase.setDescription("Case1 description");
-        originalCase.setPriority(3);
-        originalCase.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-        originalCase.setSteps(new ArrayList<>());
-        originalCase.setTags(new HashSet<>());
-        originalCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        Case originalCase = retrieveCase();
         caseDAO.save(originalCase);
         originalCase.setPriority(5);
         long id = caseDAO.save(originalCase).getId();
 
-        Case newCase = new Case();
+        Case newCase = retrieveCase();
         newCase.setId(id);
-        newCase.setDescription("Case1 description");
         newCase.setPriority(5);
-        newCase.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-        newCase.setSteps(new ArrayList<>());
-        newCase.setTags(new HashSet<>());
-        newCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
         caseDAO.save(newCase);
-        newCase.setPriority(5);
 
         Assert.assertEquals(newCase, caseDAO.findOne(id));
     }
 
     @Test
     public void testChangeUpdateDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
         Case originalCase = retrieveCase();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, Calendar.SEPTEMBER, 9);
+
         originalCase.setUpdateDate(formatter.format(calendar.getTime()));
         originalCase.setCreationDate(formatter.format(calendar.getTime()));
         caseDAO.save(originalCase);
@@ -140,12 +129,16 @@ public class CaseDAOTest {
     }
 
     private Case retrieveCase() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
         return new Case("Case description", new ArrayList<>(),
                 formatter.format(Calendar.getInstance().getTime()), formatter.format(Calendar.getInstance().getTime()),
                 3, new HashSet<>());
     }
 
     private List<Case> retrieveCaseList() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
         Case case1 = new Case("Case1 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
                 formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>());
         Case case2 = new Case("Case2 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),

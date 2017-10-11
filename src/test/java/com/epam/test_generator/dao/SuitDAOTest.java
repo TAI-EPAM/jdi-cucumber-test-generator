@@ -26,8 +26,6 @@ public class SuitDAOTest {
     @Autowired
     SuitDAO suitDAO;
 
-    private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-
     @Test
     public void testCreateAndRetrieve() {
         Suit originalSuit = retriveSuit();
@@ -143,11 +141,13 @@ public class SuitDAOTest {
     }
 
     private Suit retriveSuit() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         return new Suit("Suit1", "Suit1 description", 3,
                 formatter.format(Calendar.getInstance().getTime()), "tag1,tag2", new ArrayList<>());
     }
 
     private List<Suit> retrieveSuiteList() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Suit suit1 = new Suit("Suit1", "Suit1 description", 5,
                 formatter.format(Calendar.getInstance().getTime()), "tag1 tag2", new ArrayList<>());
 
