@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,9 +66,8 @@ public class TagServiceTest {
         expectedTagDTO = new TagDTO("tag1");
         expectedTagsDTOList.add(expectedTagDTO);
 
-        suit = new Suit(1L, "suit1", "desc1", new ArrayList<>(), 1, "tag1");
+        suit = new Suit(1L, "suit1", "desc1", Arrays.asList(caze), 1, "tag1");
         caze = new Case(2L, "desc2", new ArrayList<>(), 1, expectedTagsList);
-        suit.getCases().add(caze);
     }
 
     @Test

@@ -304,7 +304,7 @@ public class CaseControllerTest {
 
     @Test
     public void testUpdateCase_return400whenSuitNotContainsCase() throws Exception {
-        suitDTO.setCases(null);
+        doThrow(BadRequestException.class).when(casesService).updateCase(anyLong(), anyLong(), any(CaseDTO.class));
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)

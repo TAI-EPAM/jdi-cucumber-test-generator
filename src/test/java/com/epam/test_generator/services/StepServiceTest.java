@@ -66,27 +66,31 @@ public class StepServiceTest {
 
     @Before
     public void setUp() {
+        step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
+        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN.ordinal());
+
         listSteps = new ArrayList<>();
         listSteps.add(new Step(1L, 1, "Step 1", StepType.GIVEN));
         listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN));
+        listSteps.add(step);
 
         expectedListSteps = new ArrayList<>();
         expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN.ordinal()));
         expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN.ordinal()));
+        expectedListSteps.add(expectedStep);
 
-        step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
-        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN.ordinal());
+        caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
+        expetedCaze = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
 
         listCases = new ArrayList<>();
         listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
         listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags ));
+        listCases.add(caze);
 
         expectedListCases = new ArrayList<>();
         expectedListCases.add(new CaseDTO(1L, "Case 1", expectedListSteps, 1, expectedSetTags));
         expectedListCases.add(new CaseDTO(2L, "Case 2", expectedListSteps, 2, expectedSetTags));
-
-        caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
-        expetedCaze = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
+        expectedListCases.add(expetedCaze);
 
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
         expectedSuit = new SuitDTO(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", expectedListCases, 1, "tag1");
@@ -144,6 +148,8 @@ public class StepServiceTest {
     @Test
     public void updateStepTest() throws Exception {
         StepDTO updateStepDTO = new StepDTO(null,  3,"New Step desc", null);
+
+
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);

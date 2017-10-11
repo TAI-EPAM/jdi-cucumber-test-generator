@@ -161,7 +161,7 @@ public class StepSuggestionControllerTest {
 
     @Test
     public void testUpdateStepSuggestion_return404WhenStepSuggestionNotExist() throws Exception{
-        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenThrow(new NotFoundException());
+        doThrow(NotFoundException.class).when(stepSuggestionService).updateStepSuggestion(anyLong(), any(StepSuggestionDTO.class));
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -173,7 +173,7 @@ public class StepSuggestionControllerTest {
     }
     @Test
     public void testUpdateStepSuggestion_return500whenRuntimeException() throws Exception{
-        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenThrow(new RuntimeException());
+        doThrow(RuntimeException.class).when(stepSuggestionService).updateStepSuggestion(anyLong(), any(StepSuggestionDTO.class));
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -196,7 +196,7 @@ public class StepSuggestionControllerTest {
 
     @Test
     public void testRemoveSuggestion_return404whenStepSuggestionNotExist() throws Exception {
-        when(stepSuggestionService.getStepsSuggestion(SIMPLE_AUTOCOMPLETE_ID)).thenThrow(new NotFoundException());
+        doThrow(NotFoundException.class).when(stepSuggestionService).removeStepSuggestion(anyLong());
 
         mockMvc.perform(delete("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
                 .andExpect(status().isNotFound());
@@ -206,7 +206,7 @@ public class StepSuggestionControllerTest {
 
     @Test
     public void testRemoveSuggestion_return500whenRemoveStepSuggestion() throws Exception {
-        when(stepSuggestionService.getStepsSuggestion(SIMPLE_AUTOCOMPLETE_ID)).thenThrow(new RuntimeException());
+        doThrow(RuntimeException.class).when(stepSuggestionService).removeStepSuggestion(anyLong());
 
         mockMvc.perform(delete("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
                 .andExpect(status().isInternalServerError());

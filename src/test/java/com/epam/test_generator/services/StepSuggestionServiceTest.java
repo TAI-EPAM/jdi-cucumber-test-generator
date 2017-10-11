@@ -69,13 +69,13 @@ public class StepSuggestionServiceTest {
         StepSuggestion expected = new StepSuggestion(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN);
         StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN.ordinal());
 
-        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(expectedDTO);
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
         when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedDTO);
 
         assertEquals(stepSuggestionService.getStepsSuggestion(1L), expectedDTO);
 
         verify(stepSuggestionDAO).findOne(anyLong());
+        verify(stepSuggestionTransformer).toDto(any(StepSuggestion.class));
     }
 
     @Test
@@ -125,8 +125,11 @@ public class StepSuggestionServiceTest {
 
     @Test
     public void removeStepSuggestionTest() throws Exception {
+        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(listSteps.get(0));
+
         stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
 
+        verify(stepSuggestionDAO).findOne(anyLong());
         verify(stepSuggestionDAO).delete(SIMPLE_AUTOCOMPLETE_ID);
     }
 

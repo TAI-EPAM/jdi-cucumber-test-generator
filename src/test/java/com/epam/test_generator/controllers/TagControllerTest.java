@@ -107,13 +107,13 @@ public class TagControllerTest {
 
     @Test
     public void testGetAllTagsFromAllCasesInSuit_return404whenSuitNotExist() throws Exception {
-        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenReturn(tagDTOSet);
+        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        verify(tagService, times(0)).getAllTagsFromAllCasesInSuit(anyLong());
+        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class TagControllerTest {
 
     @Test
     public void testGetTags_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(caseService.getCase(anyLong(), anyLong())).thenReturn(caseDTO);
+        when(caseService.getCase(anyLong(), anyLong())).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
                 .andDo(print())
@@ -151,7 +151,7 @@ public class TagControllerTest {
 
     @Test
     public void testGetTags_return400whenSuitNotContainsCase() throws Exception {
-        when(caseService.getCase(anyLong(), anyLong())).thenThrow(any(BadRequestException.class));
+        when(caseService.getCase(anyLong(), anyLong())).thenThrow(BadRequestException.class);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
                 .andDo(print())
@@ -177,8 +177,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddTag_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        tagDTO.setId(null);
-        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class))).thenThrow(any(NotFoundException.class));
+        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class))).thenThrow(NotFoundException.class);
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -191,8 +190,7 @@ public class TagControllerTest {
 
     @Test
     public void testAddTag_return400whenSuitNotContainsCase() throws Exception {
-        tagDTO.setId(null);
-        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class))).thenThrow(any(NotFoundException.class));
+        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class))).thenThrow(BadRequestException.class);
 
         mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -219,15 +217,13 @@ public class TagControllerTest {
 
     @Test
     public void testUpdateTag_return200whenUpdateTag() throws Exception {
-        doNothing().when(tagService).updateTag(anyLong(), anyLong(), anyLong(), any(TagDTO.class));
-
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tagDTO)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(tagService).updateTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_TAG_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
+        verify(tagService).updateTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID), any(TagDTO.class));
     }
 
     @Test
