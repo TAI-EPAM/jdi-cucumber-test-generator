@@ -33,6 +33,4 @@ public class GlobalExceptionController {
 
 		return new ResponseEntity<>(validationErrorsDTO,HttpStatus.BAD_REQUEST);
 	}
-
-
 }

@@ -36,12 +36,4 @@ public class ValidationErrorDTO {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "ValidationErrorDTO{" +
-                "field='" + field + '\'' +
-                ", message='" + message + '\'' +
-                ", type='" + type + '\'' +
-                '}';
-    }
 }
