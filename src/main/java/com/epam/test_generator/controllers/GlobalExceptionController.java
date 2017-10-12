@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers;
 
+import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -8,8 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionController {
@@ -29,13 +28,10 @@ public class GlobalExceptionController {
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-		Map<String, String> result = new HashMap<>();
-		ex.getBindingResult().getFieldErrors()
-				.forEach((f)->
-					result.put(f.getField(),f.getDefaultMessage()));
+	public ResponseEntity<ValidationErrorsDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+		ValidationErrorsDTO validationErrorsDTO = new ValidationErrorsDTO(ex);
 
-		return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(validationErrorsDTO,HttpStatus.BAD_REQUEST);
 	}
 
 
