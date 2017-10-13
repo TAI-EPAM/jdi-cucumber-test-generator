@@ -80,11 +80,12 @@ public class StepServiceTest {
         expectedListSteps.add(expectedStep);
 
         caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
-        expetedCaze = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
+        expetedCaze = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1,
+            expectedSetTags);
 
         listCases = new ArrayList<>();
         listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
-        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags ));
+        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags));
         listCases.add(caze);
 
         expectedListCases = new ArrayList<>();
@@ -93,7 +94,8 @@ public class StepServiceTest {
         expectedListCases.add(expetedCaze);
 
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
-        expectedSuit = new SuitDTO(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", expectedListCases, 1, "tag1");
+        expectedSuit = new SuitDTO(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", expectedListCases, 1,
+            "tag1");
     }
 
     @Test
@@ -147,9 +149,7 @@ public class StepServiceTest {
 
     @Test
     public void updateStepTest() throws Exception {
-        StepDTO updateStepDTO = new StepDTO(null,  3,"New Step desc", null);
-
-
+        StepDTO updateStepDTO = new StepDTO(null, 3, "New Step desc", null);
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
