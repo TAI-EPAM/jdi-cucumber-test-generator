@@ -7,12 +7,11 @@ import java.util.stream.Collectors;
 
 public class ValidationErrorsDTO {
 
-    private Boolean isError;
+    private Boolean isError = true;
     private String type;
     private List<ValidationErrorDTO> errors;
 
     public ValidationErrorsDTO(MethodArgumentNotValidException ex) {
-        isError = true;
         type = "Method Argument Not Valid Exception";
         errors = ex.getBindingResult().getFieldErrors().stream()
                 .map((f) -> new ValidationErrorDTO(f.getObjectName(), f.getField(), f.getDefaultMessage()))
@@ -23,9 +22,6 @@ public class ValidationErrorsDTO {
         return isError;
     }
 
-    public void setError(Boolean error) {
-        isError = error;
-    }
 
     public String getType() {
         return type;
