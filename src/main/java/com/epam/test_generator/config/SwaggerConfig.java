@@ -18,23 +18,23 @@ import java.util.ArrayList;
 public class SwaggerConfig {
 
     @Bean
-    public Docket customImplementation(){
+    public Docket customImplementation() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(getApiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.epam.test_generator"))
-                .paths(PathSelectors.any())
-                .build()
-                .useDefaultResponseMessages(false);
+            .apiInfo(getApiInfo())
+            .useDefaultResponseMessages(false)
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("com.epam.test_generator"))
+            .paths(PathSelectors.any())
+            .build();
     }
 
     private ApiInfo getApiInfo() {
         return new ApiInfo("Cucumber test generator REST API",
-                "REST Api Documentation",
-                "1.0",
-                "urn:tos",
-                new Contact("", "", ""),
-                "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0",
-                new ArrayList<>());
+            "REST Api Documentation",
+            "1.0",
+            "urn:tos",
+            new Contact("", "", ""),
+            "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0",
+            new ArrayList<>());
     }
 }
