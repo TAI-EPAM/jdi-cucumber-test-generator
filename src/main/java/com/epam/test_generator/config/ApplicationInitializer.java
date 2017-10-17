@@ -13,11 +13,12 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        AnnotationConfigWebApplicationContext ctx= new AnnotationConfigWebApplicationContext();
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 
         ctx.register(WebConfig.class);
 
-        ServletRegistration.Dynamic servlet =servletContext.addServlet(DISPATCHER,new DispatcherServlet(ctx));
+        ServletRegistration.Dynamic servlet = servletContext
+            .addServlet(DISPATCHER, new DispatcherServlet(ctx));
         servlet.addMapping("/*");
     }
 }
