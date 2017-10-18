@@ -24,6 +24,8 @@ public abstract class AbstractDozerTransformer<E, D> {
         return (D) dozerMapper.map(entity, getDTOClass());
     }
 
+    public void mapDTOToEntity(D d, E e) { dozerMapper.map(d, e);}
+
     public List<E> fromDtoList(List<D> dtoList){
         return dtoList.stream().map(this::fromDto).collect(Collectors.toList());
     }

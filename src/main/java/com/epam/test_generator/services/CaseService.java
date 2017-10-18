@@ -8,17 +8,16 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.entities.Suit;
 
+import com.epam.test_generator.transformers.SuitTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.epam.test_generator.services.utils.UtilsService.*;
 
 @Transactional
 @Service
@@ -26,6 +25,9 @@ public class CaseService {
 
     @Autowired
     private CaseTransformer caseTransformer;
+
+    @Autowired
+    private SuitTransformer suitTransformer;
 
     @Autowired
     private CaseDAO caseDAO;
@@ -36,78 +38,67 @@ public class CaseService {
     @Autowired
     private TagDAO tagDAO;
 
-    public CaseDTO addCaseToSuit(CaseDTO cs, long suitId) {
-        Suit suit = suitDAO.getOne(suitId);
-        Case caze = caseTransformer.fromDto(cs);
+    public CaseDTO getCase(Long suitId, Long caseId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
 
-        mergeTags(caze);
+        Case caze = caseDAO.findOne(caseId);
+        checkNotNull(caze);
 
-        suit.getCases().add(caze);
-        suitDAO.save(suit);
+        caseBelongsToSuit(caze,suit);
 
         return caseTransformer.toDto(caze);
     }
 
-    public List<CaseDTO> getCasesBySuitId(long suitId) {
-        List<Case> list = suitDAO.findOne(suitId).getCases();
+    public Long addCaseToSuit(Long suitId, CaseDTO caseDTO) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
 
-        return caseTransformer.toDtoList(list);
+        Case caze = caseTransformer.fromDto(caseDTO);
+
+        caze = caseDAO.save(caze);
+        suit.getCases().add(caze);
+
+        return caze.getId();
     }
 
-    public CaseDTO getCase(Long id) {
+    public void updateCase(Long suitId, Long caseId, CaseDTO caseDTO) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
 
-        return caseTransformer.toDto(caseDAO.getOne(id));
-    }
+        Case caze = caseDAO.findOne(caseId);
+        checkNotNull(caze);
 
-    public void removeCase(long suitId, long caseId) {
-        Suit suit = suitDAO.getOne(suitId);
-        Case caze = suit.getCaseById(caseId);
-
-        if (caze != null) {
-            suit.getCases().remove(caze);
-            suitDAO.save(suit);
-            caseDAO.delete(caseId);
-        }
-    }
-
-    public CaseDTO updateCase(long suitId, CaseDTO cs) {
-        Suit suit = suitDAO.getOne(suitId);
-        Case caze = suit.getCaseById(cs.getId());
+        caseBelongsToSuit(caze, suit);
 
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        cs.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        caseDTO.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
 
-        if (caze != null) {
-            suit.getCases().remove(caze);
-
-            caze.setSteps(new ArrayList<>());
-            caze.setTags(new HashSet<>());
-
-            caze = caseTransformer.fromDto(cs);
-
-            mergeTags(caze);
-
-            suit.getCases().add(caze);
-            suitDAO.save(suit);
-            cs = caseTransformer.toDto(caze);
-        }
-        return cs;
+        caseTransformer.mapDTOToEntity(caseDTO, caze);
+        caseDAO.save(caze);
     }
 
-    public void removeCases(long suitId, List<Long> caseIds) {
-        Suit suit = suitDAO.getOne(suitId);
+    public void removeCase(Long suitId, Long caseId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+
+        Case caze = suit.getCaseById(caseId);
+        checkNotNull(caze);
+
+        caseBelongsToSuit(caze, suit);
+
+        suit.getCases().remove(caze);
+        caseDAO.delete(caseId);
+    }
+
+    public void removeCases(Long suitId, List<Long> caseIds) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+
         suit.getCases()
                 .removeIf(caze -> caseIds.stream()
                         .anyMatch(id -> id.equals(caze.getId())));
 
-        suitDAO.save(suit);
-    }
-
-    private void mergeTags(Case caze){
-        if(caze.getTags() !=null){
-            caze.setTags(caze.getTags().stream()
-                    .map(tag -> tagDAO.findOne(Example.of(tag))==null ? tag : tagDAO.findOne(Example.of(tag)))
-                    .collect(Collectors.toSet()));
-        }
+        caseIds.forEach(caseId -> caseDAO.delete(caseId));
     }
 }

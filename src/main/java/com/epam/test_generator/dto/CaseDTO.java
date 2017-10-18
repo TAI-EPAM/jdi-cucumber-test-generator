@@ -1,5 +1,7 @@
 package com.epam.test_generator.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -8,16 +10,24 @@ import java.util.Set;
 public class CaseDTO {
     private Long id;
 
+    @NotNull
+    @Size(min = 1, max = 255)
     private String description;
 
+    @Valid
     private List<StepDTO> steps;
 
     private String creationDate;
 
     private String updateDate;
 
+    @NotNull
+    @Min(value = 1)
+    @Max(value = 5)
     private Integer priority;
 
+    @Size(max = 5)
+    @Valid
     private Set<TagDTO> tags;
 
     public CaseDTO() {
@@ -25,6 +35,14 @@ public class CaseDTO {
         creationDate = formatter.format(Calendar.getInstance().getTime());
         updateDate = formatter.format(Calendar.getInstance().getTime());
 
+    }
+
+    public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority, Set<TagDTO> tags) {
+        this.id = id;
+        this.description = description;
+        this.steps = steps;
+        this.priority = priority;
+        this.tags = tags;
     }
 
     public Long getId() {
@@ -81,6 +99,35 @@ public class CaseDTO {
 
     public void setTags(Set<TagDTO> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CaseDTO)) return false;
+
+        CaseDTO caseDTO = (CaseDTO) o;
+
+        if (id != null ? !id.equals(caseDTO.id) : caseDTO.id != null) return false;
+        if (description != null ? !description.equals(caseDTO.description) : caseDTO.description != null) return false;
+        if (steps != null ? !steps.equals(caseDTO.steps) : caseDTO.steps != null) return false;
+        if (creationDate != null ? !creationDate.equals(caseDTO.creationDate) : caseDTO.creationDate != null)
+            return false;
+        if (updateDate != null ? !updateDate.equals(caseDTO.updateDate) : caseDTO.updateDate != null) return false;
+        if (priority != null ? !priority.equals(caseDTO.priority) : caseDTO.priority != null) return false;
+        return tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (steps != null ? steps.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (updateDate != null ? updateDate.hashCode() : 0);
+        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
     }
 
     @Override

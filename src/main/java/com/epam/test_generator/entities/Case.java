@@ -26,7 +26,7 @@ public class Case implements Serializable{
 
     private Integer priority;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.ALL})
     private Set<Tag> tags;
 
     public Case(){
@@ -39,6 +39,15 @@ public class Case implements Serializable{
         this.id = id;
         this.description = description;
         this.steps = steps;
+        this.priority = priority;
+        this.tags = tags;
+    }
+
+    public Case(String description, List<Step> steps, String creationDate, String updateDate, Integer priority, Set<Tag> tags) {
+        this.description = description;
+        this.steps = steps;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
         this.priority = priority;
         this.tags = tags;
     }
@@ -102,7 +111,6 @@ public class Case implements Serializable{
         this.tags = tags;
     }
 
-
     @Override
     public String toString() {
         return "Case{" +
@@ -113,5 +121,21 @@ public class Case implements Serializable{
                 ", priority=" + priority +
                 ", tags=" + tags +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Case)) return false;
+
+        Case aCase = (Case) o;
+
+        if (id != null ? !id.equals(aCase.id) : aCase.id != null) return false;
+        if (description != null ? !description.equals(aCase.description) : aCase.description != null) return false;
+        if (steps != null ? !steps.equals(aCase.steps) : aCase.steps != null) return false;
+        if (creationDate != null ? !creationDate.equals(aCase.creationDate) : aCase.creationDate != null) return false;
+        if (updateDate != null ? !updateDate.equals(aCase.updateDate) : aCase.updateDate != null) return false;
+        if (priority != null ? !priority.equals(aCase.priority) : aCase.priority != null) return false;
+        return tags != null ? tags.equals(aCase.tags) : aCase.tags == null;
     }
 }

@@ -16,6 +16,8 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.epam.test_generator.services.utils.UtilsService.*;
+
 @Transactional
 @Service
 public class SuitService {
@@ -36,36 +38,38 @@ public class SuitService {
     private CaseTransformer caseTransformer;
 
     public List<SuitDTO> getSuits() {
-        return suitDAO.findAll().stream().map(suit -> suitTransformer.toDto(suit))
-                                            .collect(Collectors.toList());
+        return suitTransformer.toDtoList(suitDAO.findAll());
     }
 
-    public SuitDTO getSuit(long id) {
-        return suitTransformer.toDto(suitDAO.findOne(id));
-    }
-
-    public SuitDTO updateSuit(SuitDTO suitDTO) {
-        List<Case> cases = suitDAO.getOne(suitDTO.getId()).getCases();
-        Suit suit = suitTransformer.fromDto(suitDTO);
-
-        suit.setCases(cases);
-
-        return suitTransformer.toDto(suitDAO.save(suit));
-    }
-
-    public void removeSuit(long id) {
-        suitDAO.delete(id);
-    }
-
-    public SuitDTO addSuit(SuitDTO suitDTO) {
-        Suit suit = suitDAO.save(suitTransformer.fromDto(suitDTO));
+    public SuitDTO getSuit(long suitId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
 
         return suitTransformer.toDto(suit);
     }
 
+    public Long addSuit(SuitDTO suitDTO) {
+        Suit suit = suitDAO.save(suitTransformer.fromDto(suitDTO));
+
+        return suit.getId();
+    }
+
+    public void updateSuit(long suitId, SuitDTO suitDTO) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+        suitTransformer.mapDTOToEntity(suitDTO, suit);
+        suitDAO.save(suit);
+    }
+
+    public void removeSuit(long suitId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+        suitDAO.delete(suitId);
+    }
+
     public String generateFile(Long suitId, List<Long> caseIds) throws IOException {
-        Suit suit = suitDAO.getOne(suitId);
-        List<Case> cases = caseIds.stream().map(id -> caseDAO.getOne(id)).collect(Collectors.toList());
+        Suit suit = suitDAO.findOne(suitId);
+        List<Case> cases = caseIds.stream().map(id -> caseDAO.findOne(id)).collect(Collectors.toList());
 
         return fileGenerator.generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
     }
