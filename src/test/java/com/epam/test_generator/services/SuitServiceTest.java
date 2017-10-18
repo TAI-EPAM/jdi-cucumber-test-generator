@@ -1,25 +1,27 @@
 package com.epam.test_generator.services;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyListOf;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitTransformer;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SuitServiceTest {
@@ -71,6 +73,13 @@ public class SuitServiceTest {
         assertEquals(expectedSuitDTO, actual);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void getSuitTest_expectNotFoundException() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+        suitService.getSuit(SIMPLE_SUIT_ID);
+    }
+
     @Test
     public void addSuitTest() {
         when(suitDAO.save(any(Suit.class))).thenReturn(expectedSuit);
@@ -84,18 +93,23 @@ public class SuitServiceTest {
     @Test
     public void updateSuitTest() {
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
-        when(suitDAO.save(any(Suit.class))).thenAnswer(new Answer<Object>() {
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                expectedSuitDTO.setName("new name");
+        when(suitDAO.save(any(Suit.class))).thenAnswer(invocationOnMock -> {
+			expectedSuitDTO.setName("new name");
 
-                return null;
-            }
-        });
+			return null;
+		});
 
         SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
         suitService.updateSuit(SIMPLE_SUIT_ID, newSuitDTO);
         assertEquals(expectedSuitDTO.getName(), newSuitDTO.getName());
     }
+
+	@Test(expected = NotFoundException.class)
+	public void updateSuitTest_expectNotFoundException() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		suitService.updateSuit(SIMPLE_SUIT_ID, new SuitDTO());
+	}
 
     @Test
     public void removeSuitTest() {
@@ -107,5 +121,11 @@ public class SuitServiceTest {
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
     }
 
+	@Test(expected = NotFoundException.class)
+	public void removeSuitTest_expectNotFoundException() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		suitService.removeSuit(SIMPLE_SUIT_ID);
+	}
 
 }

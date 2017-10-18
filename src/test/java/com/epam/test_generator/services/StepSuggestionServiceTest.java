@@ -1,27 +1,28 @@
 package com.epam.test_generator.services;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepSuggestion;
-import com.epam.test_generator.transformers.StepSuggestionTransformer;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.services.exceptions.NotFoundException;
+import com.epam.test_generator.transformers.StepSuggestionTransformer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StepSuggestionServiceTest {
@@ -72,10 +73,17 @@ public class StepSuggestionServiceTest {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
         when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedDTO);
 
-        assertEquals(stepSuggestionService.getStepsSuggestion(1L), expectedDTO);
+        assertEquals(stepSuggestionService.getStepsSuggestion(SIMPLE_STEP_SUGGESTION_ID), expectedDTO);
 
         verify(stepSuggestionDAO).findOne(anyLong());
         verify(stepSuggestionTransformer).toDto(any(StepSuggestion.class));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getStepSuggestionByIdTest_expectNotFoundException() {
+        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
+
+        stepSuggestionService.getStepsSuggestion(SIMPLE_STEP_SUGGESTION_ID);
     }
 
     @Test
@@ -123,6 +131,13 @@ public class StepSuggestionServiceTest {
         verify(stepSuggestionDAO).save(any(StepSuggestion.class));
     }
 
+	@Test(expected = NotFoundException.class)
+	public void updateStepSuggestionTest_expectNotFoundException() {
+		when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
+
+		stepSuggestionService.updateStepSuggestion(SIMPLE_STEP_SUGGESTION_ID, new StepSuggestionDTO());
+	}
+
     @Test
     public void removeStepSuggestionTest() throws Exception {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(listSteps.get(0));
@@ -132,5 +147,12 @@ public class StepSuggestionServiceTest {
         verify(stepSuggestionDAO).findOne(anyLong());
         verify(stepSuggestionDAO).delete(SIMPLE_AUTOCOMPLETE_ID);
     }
+
+	@Test(expected = NotFoundException.class)
+	public void removeStepSuggestionTest_expectNotFoundException() {
+		when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
+
+		stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
+	}
 
 }

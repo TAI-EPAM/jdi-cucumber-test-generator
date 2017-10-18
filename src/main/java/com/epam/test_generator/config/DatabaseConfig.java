@@ -61,13 +61,15 @@ public class DatabaseConfig {
     private Properties getHibernateProperties() {
         try {
             Properties properties = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("hibernate.properties");
+            InputStream inputStream = getClass().getClassLoader()
+                .getResourceAsStream("hibernate.properties");
 
             properties.load(inputStream);
 
             return properties;
         } catch (IOException e) {
-            throw  new IllegalArgumentException("Cannot find 'hibernate.properties' file in classpath!");
+            throw new IllegalArgumentException(
+                "Cannot find 'hibernate.properties' file in classpath!");
         }
     }
 

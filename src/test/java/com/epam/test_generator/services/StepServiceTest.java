@@ -1,29 +1,34 @@
 package com.epam.test_generator.services;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
-import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.dto.SuitDTO;
-import com.epam.test_generator.dto.TagDTO;
-import com.epam.test_generator.entities.*;
+import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.entities.Tag;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.StepTransformer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StepServiceTest {
@@ -33,21 +38,14 @@ public class StepServiceTest {
     private static final long SIMPLE_STEP_ID = 3L;
 
     private Suit suit;
-    private SuitDTO expectedSuit;
 
     private Case caze;
-    private CaseDTO expetedCaze;
 
     private Step step;
     private StepDTO expectedStep;
 
-    private List<Case> listCases;
-    private List<CaseDTO> expectedListCases;
-
-    private List<Step> listSteps;
-    private List<StepDTO> expectedListSteps;
-    private Set<Tag> setTags;
-    private Set<TagDTO> expectedSetTags;
+    private List<StepDTO> expectedListSteps = new ArrayList<>();
+    private Set<Tag> setTags = new HashSet<>();
 
     @Mock
     private StepTransformer stepTransformer;
@@ -69,31 +67,25 @@ public class StepServiceTest {
         step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
         expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN.ordinal());
 
-        listSteps = new ArrayList<>();
+        List<Step> listSteps = new ArrayList<>();
+
         listSteps.add(new Step(1L, 1, "Step 1", StepType.GIVEN));
         listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN));
         listSteps.add(step);
 
-        expectedListSteps = new ArrayList<>();
         expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN.ordinal()));
         expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN.ordinal()));
         expectedListSteps.add(expectedStep);
 
         caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
-        expetedCaze = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
 
-        listCases = new ArrayList<>();
+        List<Case> listCases = new ArrayList<>();
+
         listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
-        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags ));
+        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags));
         listCases.add(caze);
 
-        expectedListCases = new ArrayList<>();
-        expectedListCases.add(new CaseDTO(1L, "Case 1", expectedListSteps, 1, expectedSetTags));
-        expectedListCases.add(new CaseDTO(2L, "Case 2", expectedListSteps, 2, expectedSetTags));
-        expectedListCases.add(expetedCaze);
-
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
-        expectedSuit = new SuitDTO(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", expectedListCases, 1, "tag1");
     }
 
     @Test
@@ -110,6 +102,21 @@ public class StepServiceTest {
         verify(stepTransformer).toDtoList(anyList());
     }
 
+	@Test(expected = NotFoundException.class)
+	public void getStepsByCaseIdTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void getStepsByCaseIdTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
+
     @Test
     public void getStepTest() throws Exception {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
@@ -125,6 +132,30 @@ public class StepServiceTest {
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepTransformer).toDto(any(Step.class));
     }
+
+	@Test(expected = NotFoundException.class)
+	public void getStepTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void getStepTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void getStepTest_expectNotFoundExceptionFromStep() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(caze);
+		when(stepDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
     @Test
     public void addStepToCaseTest() throws Exception {
@@ -145,11 +176,24 @@ public class StepServiceTest {
         verify(stepTransformer).fromDto(any(StepDTO.class));
     }
 
+	@Test(expected = NotFoundException.class)
+	public void addStepTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new StepDTO());
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void addStepTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new StepDTO());
+	}
+
     @Test
     public void updateStepTest() throws Exception {
-        StepDTO updateStepDTO = new StepDTO(null,  3,"New Step desc", null);
-
-
+        StepDTO updateStepDTO = new StepDTO(null, 3, "New Step desc", null);
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
@@ -164,6 +208,30 @@ public class StepServiceTest {
         verify(stepDAO).save(eq(step));
     }
 
+	@Test(expected = NotFoundException.class)
+	public void updateStepTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void updateStepTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void updateStepTest_expectNotFoundExceptionFromStep() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(caze);
+		when(stepDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
+	}
+
     @Test
     public void removeStepTest() throws Exception {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
@@ -177,5 +245,29 @@ public class StepServiceTest {
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepDAO).delete(eq(SIMPLE_STEP_ID));
     }
+
+	@Test(expected = NotFoundException.class)
+	public void removeStepTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void removeStepTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void removeStepTest_expectNotFoundExceptionFromStep() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(caze);
+		when(stepDAO.findOne(anyLong())).thenReturn(null);
+
+		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
 }

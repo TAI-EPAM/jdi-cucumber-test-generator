@@ -1,23 +1,22 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.entities.Suit;
-
+import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-
-import static com.epam.test_generator.services.utils.UtilsService.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
@@ -82,7 +81,7 @@ public class CaseService {
         Suit suit = suitDAO.findOne(suitId);
         checkNotNull(suit);
 
-        Case caze = suit.getCaseById(caseId);
+        Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
 
         caseBelongsToSuit(caze, suit);
@@ -101,4 +100,5 @@ public class CaseService {
 
         caseIds.forEach(caseId -> caseDAO.delete(caseId));
     }
+
 }

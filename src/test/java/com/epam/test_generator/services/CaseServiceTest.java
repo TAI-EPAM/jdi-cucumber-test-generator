@@ -1,10 +1,17 @@
 package com.epam.test_generator.services;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Step;
@@ -12,25 +19,17 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.CaseTransformer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseServiceTest {
@@ -39,18 +38,14 @@ public class CaseServiceTest {
     private static final long SIMPLE_CASE_ID = 2L;
 
     private Suit suit;
-    private SuitDTO expectedSuit;
 
-    private Case caze;
-    private CaseDTO expetedCaze;
+	private Case caze;
+    private CaseDTO expectedCase;
 
-    private List<Case> listCases;
-    private List<CaseDTO> expectedListCases;
-
-    private List<Step> listSteps;
-    private List<StepDTO> expectedListSteps;
-    private Set<Tag> setTags;
-    private Set<TagDTO> expectedSetTags;
+	private List<Step> listSteps = new ArrayList<>();
+    private List<StepDTO> expectedListSteps = new ArrayList<>();
+    private Set<Tag> setTags = new HashSet<>();
+    private Set<TagDTO> expectedSetTags = new HashSet<>();
 
     @Mock
     private SuitDAO suitDAO;
@@ -64,39 +59,49 @@ public class CaseServiceTest {
     @InjectMocks
     private CaseService caseService;
 
-    @Before
+	@Before
     public void setUp() {
-        listCases = new ArrayList<>();
-        listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
+		List<Case> listCases = new ArrayList<>();
+
+		listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
         listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags ));
 
-        expectedListCases = new ArrayList<>();
-        expectedListCases.add(new CaseDTO(1L, "Case 1", expectedListSteps, 1, expectedSetTags));
-        expectedListCases.add(new CaseDTO(2L, "Case 2", expectedListSteps, 2, expectedSetTags));
-
         caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
-        expetedCaze = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
-
-        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
-        expectedSuit = new SuitDTO(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", expectedListCases, 1, "tag1");
+        expectedCase = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
+		suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
     }
 
     @Test
-    public void testGetCaseTest() throws Exception {
+    public void getCaseTest() throws Exception {
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseTransformer.toDto(any(Case.class))).thenReturn(expetedCaze);
+        when(caseTransformer.toDto(any(Case.class))).thenReturn(expectedCase);
 
         CaseDTO actualCase = caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
-        assertEquals(expetedCaze, actualCase);
+        assertEquals(expectedCase, actualCase);
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(caseTransformer).toDto(any(Case.class));
     }
 
-    @Test
-    public void testAddCaseToSuitTest() throws Exception {
+	@Test(expected = NotFoundException.class)
+	public void getCaseTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void getCaseTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
+
+	@Test
+    public void addCaseToSuitTest() throws Exception {
         Case newCase = new Case(3L, "Case 3", listSteps, 2, setTags);
         CaseDTO newCaseDTO = new CaseDTO(null, "Case 3", expectedListSteps, 2, expectedSetTags);
 
@@ -111,6 +116,13 @@ public class CaseServiceTest {
         verify(caseTransformer).fromDto(any(CaseDTO.class));
         verify(caseDAO).save(any(Case.class));
     }
+
+	@Test(expected = NotFoundException.class)
+	public void addCaseToSuitTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.addCaseToSuit(SIMPLE_SUIT_ID, new CaseDTO());
+	}
 
     @Test
     public void updateCaseTest() throws Exception {
@@ -127,9 +139,25 @@ public class CaseServiceTest {
         verify(caseDAO).save(eq(caze));
     }
 
+	@Test(expected = NotFoundException.class)
+	public void updateCaseTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new CaseDTO());
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void updateCaseTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new CaseDTO());
+	}
+
     @Test
     public void removeCaseTest() throws Exception {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(caze);
         doNothing().when(caseDAO).delete(caze);
 
         caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
@@ -137,6 +165,21 @@ public class CaseServiceTest {
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).delete(eq(SIMPLE_CASE_ID));
     }
+
+	@Test(expected = NotFoundException.class)
+	public void removeCaseTest_expectNotFoundExceptionFromSuit() {
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
+
+	@Test(expected = NotFoundException.class)
+	public void removeCaseTest_expectNotFoundExceptionFromCase() {
+		when(suitDAO.findOne(anyLong())).thenReturn(suit);
+		when(caseDAO.findOne(anyLong())).thenReturn(null);
+
+		caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
 
     @Test
     public void removeCasesTest() throws Exception {
@@ -149,4 +192,15 @@ public class CaseServiceTest {
         verify(caseDAO).delete(eq(1L));
         verify(caseDAO).delete(eq(2L));
     }
+
+	@Test(expected = NotFoundException.class)
+	public void removeCasesTest_expectNotFoundExceptionFromSuit() {
+		List<Long> caseIds = new ArrayList<>();
+
+		when(suitDAO.findOne(anyLong())).thenReturn(null);
+
+		caseIds.add(SIMPLE_CASE_ID);
+		caseService.removeCases(SIMPLE_SUIT_ID, caseIds);
+	}
+
 }
