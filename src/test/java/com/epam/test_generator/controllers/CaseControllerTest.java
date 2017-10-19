@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
