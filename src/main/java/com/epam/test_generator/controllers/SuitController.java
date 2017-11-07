@@ -38,7 +38,7 @@ public class SuitController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to return", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to return", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
@@ -68,7 +68,7 @@ public class SuitController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to update", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to update", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitDTO", value = "Updated suit object", required = true, dataType = "SuitDTO", paramType = "body")
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
@@ -85,7 +85,7 @@ public class SuitController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to delete", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to delete", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long suitId) {

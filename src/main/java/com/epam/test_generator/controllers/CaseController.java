@@ -30,7 +30,7 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
@@ -45,8 +45,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to return", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case to return", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
@@ -62,7 +62,7 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseDTO", value = "Added case object", required = true, dataType = "CaseDTO", paramType = "body")
     })
     @ResponseStatus(HttpStatus.CREATED)
@@ -80,8 +80,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to update", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case to update", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseDTO", value = "Updated case object", required = true, dataType = "CaseDTO", paramType = "body")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.PUT, consumes = "application/json")
@@ -100,8 +100,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to delete", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case to delete", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
@@ -117,7 +117,7 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitDTO", value = "Suit object with casesIds", required = true, dataType = "SuitDTO", paramType = "body")
     })
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE, consumes = "application/json")

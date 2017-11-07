@@ -25,8 +25,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains steps", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains steps", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepDTO>> getStepsByCaseId(@PathVariable("suitId") long suitId,
@@ -41,9 +41,9 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "stepId", value = "ID of step to return", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "stepId", value = "ID of step to return", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<StepDTO> getStepByStepId(@PathVariable(value = "suitId") long suitId,
@@ -62,8 +62,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new step", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new step", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepDTO", value = "Added step object", required = true, dataType = "StepDTO", paramType = "body")
     })
     @ResponseStatus(HttpStatus.CREATED)
@@ -83,9 +83,9 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "stepId", value = "ID of step to update", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "stepId", value = "ID of step to update", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepDTO", value = "Updated step object", required = true, dataType = "StepDTO", paramType = "boy")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
@@ -104,9 +104,9 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step", required = true, dataType = "long", paramType = "query"),
-        @ApiImplicitParam(name = "stepId", value = "ID of step to delete", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step", required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "stepId", value = "ID of step to delete", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,

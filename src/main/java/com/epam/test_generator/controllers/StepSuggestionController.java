@@ -32,7 +32,7 @@ public class StepSuggestionController {
         @ApiResponse(code = 200, message = "OK", response = StepSuggestionDTO.class, responseContainer = "List")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "typeId", value = "Type of step suggestion that we want to return", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "typeId", value = "Type of step suggestion that we want to return", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/stepSuggestions/{typeId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestionsByType(
@@ -66,7 +66,7 @@ public class StepSuggestionController {
         @ApiResponse(code = 404, message = "StepSuggestion not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to update", required = true, dataType = "long", paramType = "query"),
+        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to update", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepSuggestionDTO", value = "Updated step suggestion object", required = true, dataType = "StepSuggestionDTO", paramType = "body")
     })
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.PUT, produces = "application/json")
@@ -85,7 +85,7 @@ public class StepSuggestionController {
         @ApiResponse(code = 404, message = "StepSuggestion not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to delete", required = true, dataType = "long", paramType = "query")
+        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to delete", required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<Void> removeStepSuggestion(
