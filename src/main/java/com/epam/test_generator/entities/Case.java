@@ -1,15 +1,19 @@
 package com.epam.test_generator.entities;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Case implements Serializable{
+public class Case implements Serializable {
 
     @Id
     @GeneratedValue
@@ -29,7 +33,7 @@ public class Case implements Serializable{
     @OneToMany(cascade = {CascadeType.ALL})
     private Set<Tag> tags;
 
-    public Case(){
+    public Case() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         creationDate = formatter.format(Calendar.getInstance().getTime());
         updateDate = formatter.format(Calendar.getInstance().getTime());
@@ -43,7 +47,8 @@ public class Case implements Serializable{
         this.tags = tags;
     }
 
-    public Case(String description, List<Step> steps, String creationDate, String updateDate, Integer priority, Set<Tag> tags) {
+    public Case(String description, List<Step> steps, String creationDate, String updateDate,
+                Integer priority, Set<Tag> tags) {
         this.description = description;
         this.steps = steps;
         this.creationDate = creationDate;
@@ -69,7 +74,7 @@ public class Case implements Serializable{
     }
 
     public List<Step> getSteps() {
-        if (steps == null){
+        if (steps == null) {
             steps = new ArrayList<>();
         }
         return steps;
@@ -114,28 +119,34 @@ public class Case implements Serializable{
     @Override
     public String toString() {
         return "Case{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", steps=" + steps +
-                ", creationDate='" + creationDate + '\'' +
-                ", priority=" + priority +
-                ", tags=" + tags +
-                '}';
+            "id=" + id +
+            ", description='" + description + '\'' +
+            ", steps=" + steps +
+            ", creationDate='" + creationDate + '\'' +
+            ", priority=" + priority +
+            ", tags=" + tags +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Case)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Case)) {
+            return false;
+        }
 
         Case aCase = (Case) o;
 
-        if (id != null ? !id.equals(aCase.id) : aCase.id != null) return false;
-        if (description != null ? !description.equals(aCase.description) : aCase.description != null) return false;
-        if (steps != null ? !steps.equals(aCase.steps) : aCase.steps != null) return false;
-        if (creationDate != null ? !creationDate.equals(aCase.creationDate) : aCase.creationDate != null) return false;
-        if (updateDate != null ? !updateDate.equals(aCase.updateDate) : aCase.updateDate != null) return false;
-        if (priority != null ? !priority.equals(aCase.priority) : aCase.priority != null) return false;
-        return tags != null ? tags.equals(aCase.tags) : aCase.tags == null;
+        return (id != null ? id.equals(aCase.id) : aCase.id == null)
+            && (description != null ? description.equals(aCase.description)
+            : aCase.description == null)
+            && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
+            && (creationDate != null ? creationDate.equals(aCase.creationDate)
+            : aCase.creationDate == null)
+            && (updateDate != null ? updateDate.equals(aCase.updateDate) : aCase.updateDate == null)
+            && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
+            && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
     }
 }

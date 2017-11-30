@@ -1,13 +1,17 @@
 package com.epam.test_generator.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CaseDTO {
+
     private Long id;
 
     @NotNull
@@ -37,7 +41,8 @@ public class CaseDTO {
 
     }
 
-    public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority, Set<TagDTO> tags) {
+    public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority,
+                   Set<TagDTO> tags) {
         this.id = id;
         this.description = description;
         this.steps = steps;
@@ -103,19 +108,25 @@ public class CaseDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CaseDTO)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CaseDTO)) {
+            return false;
+        }
 
         CaseDTO caseDTO = (CaseDTO) o;
 
-        if (id != null ? !id.equals(caseDTO.id) : caseDTO.id != null) return false;
-        if (description != null ? !description.equals(caseDTO.description) : caseDTO.description != null) return false;
-        if (steps != null ? !steps.equals(caseDTO.steps) : caseDTO.steps != null) return false;
-        if (creationDate != null ? !creationDate.equals(caseDTO.creationDate) : caseDTO.creationDate != null)
-            return false;
-        if (updateDate != null ? !updateDate.equals(caseDTO.updateDate) : caseDTO.updateDate != null) return false;
-        if (priority != null ? !priority.equals(caseDTO.priority) : caseDTO.priority != null) return false;
-        return tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null;
+        return (id != null ? id.equals(caseDTO.id) : caseDTO.id == null)
+            && (description != null ? description.equals(caseDTO.description)
+            : caseDTO.description == null)
+            && (steps != null ? steps.equals(caseDTO.steps) : caseDTO.steps == null)
+            && (creationDate != null ? creationDate.equals(caseDTO.creationDate)
+            : caseDTO.creationDate == null)
+            && (updateDate != null ? updateDate.equals(caseDTO.updateDate)
+            : caseDTO.updateDate == null)
+            && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
+            && (tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null);
     }
 
     @Override
@@ -133,13 +144,13 @@ public class CaseDTO {
     @Override
     public String toString() {
         return "CaseDTO{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", steps=" + steps +
-                ", creationDate=" + creationDate +
-                ", priority=" + priority +
-                ", tags='" + tags + '\'' +
-                '}';
+            "id=" + id +
+            ", description='" + description + '\'' +
+            ", steps=" + steps +
+            ", creationDate=" + creationDate +
+            ", priority=" + priority +
+            ", tags='" + tags + '\'' +
+            '}';
     }
 
 }

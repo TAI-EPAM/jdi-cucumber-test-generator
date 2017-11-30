@@ -1,8 +1,8 @@
 package com.epam.test_generator.dto;
 
+import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 
 public class TagDTO implements Serializable {
 
@@ -37,13 +37,17 @@ public class TagDTO implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TagDTO)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TagDTO)) {
+            return false;
+        }
 
         TagDTO tagDTO = (TagDTO) o;
 
-        if (id != null ? !id.equals(tagDTO.id) : tagDTO.id != null) return false;
-        return name != null ? name.equals(tagDTO.name) : tagDTO.name == null;
+        return (id != null ? id.equals(tagDTO.id) : tagDTO.id == null)
+            && (name != null ? name.equals(tagDTO.name) : tagDTO.name == null);
     }
 
     @Override
@@ -56,8 +60,8 @@ public class TagDTO implements Serializable {
     @Override
     public String toString() {
         return "TagDTO{" +
-                "name='" + name + '\'' +
-                '}';
+            "name='" + name + '\'' +
+            '}';
     }
 
 }

@@ -1,5 +1,10 @@
 package com.epam.test_generator.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -12,12 +17,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
@@ -29,7 +28,8 @@ public class DatabaseConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
+        LocalContainerEntityManagerFactoryBean entityManager =
+            new LocalContainerEntityManagerFactoryBean();
 
         entityManager.setDataSource(dataSource());
         entityManager.setPackagesToScan(environment.getRequiredProperty("db.entity.package"));

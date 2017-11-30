@@ -1,8 +1,12 @@
 package com.epam.test_generator.dto;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class StepSuggestionDTO {
+
     private Long id;
 
     @NotNull
@@ -54,14 +58,18 @@ public class StepSuggestionDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StepSuggestionDTO)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StepSuggestionDTO)) {
+            return false;
+        }
 
         StepSuggestionDTO that = (StepSuggestionDTO) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        return type != null ? type.equals(that.type) : that.type == null;
+        return (id != null ? id.equals(that.id) : that.id == null)
+            && (content != null ? content.equals(that.content) : that.content == null)
+            && (type != null ? type.equals(that.type) : that.type == null);
     }
 
     @Override

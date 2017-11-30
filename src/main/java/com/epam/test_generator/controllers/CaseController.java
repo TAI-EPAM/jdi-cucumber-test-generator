@@ -5,15 +5,23 @@ import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.SuitService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CaseController {
@@ -30,9 +38,11 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases",
+        method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
 
@@ -45,10 +55,13 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to return", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case to return",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
+        method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId) {
 
@@ -62,11 +75,14 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseDTO", value = "Added case object", required = true, dataType = "CaseDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseDTO", value = "Added case object",
+            required = true, dataType = "CaseDTO", paramType = "body")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST,
+        consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addCaseToSuit(@PathVariable("suitId") long suitId,
                                               @RequestBody @Valid CaseDTO caseDTO) {
 
@@ -80,11 +96,15 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to update", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseDTO", value = "Updated case object", required = true, dataType = "CaseDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case to update",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseDTO", value = "Updated case object",
+            required = true, dataType = "CaseDTO", paramType = "body")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
+        method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateCase(@PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
                                            @RequestBody @Valid CaseDTO caseDTO) {
@@ -100,8 +120,10 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to delete", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case to delete",
+            required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
@@ -117,10 +139,13 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "suitDTO", value = "Suit object with casesIds", required = true, dataType = "SuitDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "suitDTO", value = "Suit object with casesIds",
+            required = true, dataType = "SuitDTO", paramType = "body")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE, consumes = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE,
+        consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
                                             @RequestBody @Valid SuitDTO suitDTO) {
         List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)

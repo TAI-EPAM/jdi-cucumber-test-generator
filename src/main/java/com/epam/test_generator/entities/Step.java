@@ -1,7 +1,9 @@
 package com.epam.test_generator.entities;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 public class Step implements Serializable {
@@ -61,23 +63,28 @@ public class Step implements Serializable {
     @Override
     public String toString() {
         return "Step{" +
-                "id=" + id +
-                ", rowNumber=" + rowNumber +
-                ", description='" + description + '\'' +
-                ", type=" + type +
-                '}';
+            "id=" + id +
+            ", rowNumber=" + rowNumber +
+            ", description='" + description + '\'' +
+            ", type=" + type +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Step)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Step)) {
+            return false;
+        }
 
         Step step = (Step) o;
 
-        if (rowNumber != step.rowNumber) return false;
-        if (id != null ? !id.equals(step.id) : step.id != null) return false;
-        if (description != null ? !description.equals(step.description) : step.description != null) return false;
-        return type == step.type;
+        return rowNumber == step.rowNumber
+            && (id != null ? id.equals(step.id) : step.id == null)
+            && (description != null ? description.equals(step.description)
+            : step.description == null)
+            && (type == step.type);
     }
 }
