@@ -136,15 +136,15 @@ public class CaseController {
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
                                             @RequestBody Long[] removeCaseIds) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
-        if (!suitDTO.getCases().stream().map(CaseDTO::getId).collect(Collectors.toList())
-            .containsAll(
-                Arrays.asList(removeCaseIds))) {
+        List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
+            .map(CaseDTO::getId)
+            .collect(Collectors.toList());
+        List<Long> idsToRemove = Arrays.asList(removeCaseIds);
+
+        if (!existentSuitCaseIds.containsAll(idsToRemove)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)
-            .filter(Arrays.asList(removeCaseIds)::contains)
-            .collect(Collectors.toList());
-        caseService.removeCases(suitId, caseIds);
+        caseService.removeCases(suitId, idsToRemove);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

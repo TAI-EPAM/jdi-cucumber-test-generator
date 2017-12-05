@@ -527,4 +527,9 @@ public class CaseControllerTest {
 
         verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
     }
+
+    @Test
+    public void testRemoveCases_suitWithoutCasesToBeRemoved() {
+
+    }
 }
