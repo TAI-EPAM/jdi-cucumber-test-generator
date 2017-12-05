@@ -25,7 +25,6 @@ import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -529,7 +528,28 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testRemoveCases_suitWithoutCasesToBeRemoved() {
+    public void testRemoveCases_suitWithoutCasesToBeRemoved() throws Exception {
 
+        Long[] invalidCaseIds = {6L, 8L};
+
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(invalidCaseIds)))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testRemoveCases_duplicatedCaseIds() throws Exception {
+
+        Long[] invalidCaseIds = {3L, 4L, 4L};
+
+        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(invalidCaseIds)))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+        verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(invalidCaseIds)));
     }
 }
