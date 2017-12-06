@@ -56,14 +56,16 @@ public class StepSuggestion {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         StepSuggestion that = (StepSuggestion) o;
 
-        if (!id.equals(that.id)) return false;
-        if (!content.equals(that.content)) return false;
-        return type == that.type;
+        return id.equals(that.id) && content.equals(that.content) && type == that.type;
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.epam.test_generator.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class SuitDTO {
 
@@ -42,7 +45,8 @@ public class SuitDTO {
         this.description = description;
     }
 
-    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority, String creationDate, String tags) {
+    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
+                   String creationDate, String tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,7 +56,8 @@ public class SuitDTO {
         this.tags = tags;
     }
 
-    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority, String tags) {
+    public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
+                   String tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -119,19 +124,24 @@ public class SuitDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SuitDTO)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SuitDTO)) {
+            return false;
+        }
 
         SuitDTO suitDTO = (SuitDTO) o;
 
-        if (id != null ? !id.equals(suitDTO.id) : suitDTO.id != null) return false;
-        if (name != null ? !name.equals(suitDTO.name) : suitDTO.name != null) return false;
-        if (description != null ? !description.equals(suitDTO.description) : suitDTO.description != null) return false;
-        if (cases != null ? !cases.equals(suitDTO.cases) : suitDTO.cases != null) return false;
-        if (priority != null ? !priority.equals(suitDTO.priority) : suitDTO.priority != null) return false;
-        if (creationDate != null ? !creationDate.equals(suitDTO.creationDate) : suitDTO.creationDate != null)
-            return false;
-        return tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null;
+        return (id != null ? id.equals(suitDTO.id) : suitDTO.id == null)
+            && (name != null ? name.equals(suitDTO.name) : suitDTO.name == null)
+            && (description != null ? description.equals(suitDTO.description)
+            : suitDTO.description == null)
+            && (cases != null ? cases.equals(suitDTO.cases) : suitDTO.cases == null)
+            && (priority != null ? priority.equals(suitDTO.priority) : suitDTO.priority == null)
+            && (creationDate != null ? creationDate.equals(suitDTO.creationDate)
+            : suitDTO.creationDate == null)
+            && (tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null);
     }
 
     @Override
@@ -149,11 +159,11 @@ public class SuitDTO {
     @Override
     public String toString() {
         return "Suit{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", cases=" + cases +
-                '}';
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", cases=" + cases +
+            '}';
     }
 }
 

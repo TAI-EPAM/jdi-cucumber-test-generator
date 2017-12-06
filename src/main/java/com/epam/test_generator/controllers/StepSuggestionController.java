@@ -19,22 +19,29 @@ public class StepSuggestionController {
 
     @ApiOperation(value = "Get all step suggestions", nickname = "getStepsSuggestions")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "OK", response = StepSuggestionDTO.class, responseContainer = "List")
+        @ApiResponse(code = 200, message = "OK", response = StepSuggestionDTO.class,
+            responseContainer = "List")
     })
-    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.GET,
+        produces = "application/json")
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestions() {
 
         return new ResponseEntity<>(stepSuggestionService.getStepsSuggestions(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get all step suggestions by type", nickname = "getStepsSuggestionsByType")
+    @ApiOperation(value = "Get all step suggestions by type",
+        nickname = "getStepsSuggestionsByType")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "OK", response = StepSuggestionDTO.class, responseContainer = "List")
+        @ApiResponse(code = 200, message = "OK",
+            response = StepSuggestionDTO.class, responseContainer = "List")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "typeId", value = "Type of step suggestion that we want to return", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "typeId",
+            value = "Type of step suggestion that we want to return",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/stepSuggestions/{typeId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/stepSuggestions/{typeId}",
+        method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestionsByType(
         @PathVariable("typeId") long typeId) {
 
@@ -48,10 +55,12 @@ public class StepSuggestionController {
         @ApiResponse(code = 400, message = "Invalid input")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "stepSuggestionDTO", value = "Added step suggestion object", required = true, dataType = "StepSuggestionDTO", paramType = "body")
+        @ApiImplicitParam(name = "stepSuggestionDTO", value = "Added step suggestion object",
+            required = true, dataType = "StepSuggestionDTO", paramType = "body")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST,
+        consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addStepSuggestion(
         @RequestBody @Valid StepSuggestionDTO stepSuggestionDTO) {
 
@@ -66,8 +75,10 @@ public class StepSuggestionController {
         @ApiResponse(code = 404, message = "StepSuggestion not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to update", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "stepSuggestionDTO", value = "Updated step suggestion object", required = true, dataType = "StepSuggestionDTO", paramType = "body")
+        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to update",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "stepSuggestionDTO", value = "Updated step suggestion object",
+            required = true, dataType = "StepSuggestionDTO", paramType = "body")
     })
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<Void> updateStepSuggestion(
@@ -85,9 +96,11 @@ public class StepSuggestionController {
         @ApiResponse(code = 404, message = "StepSuggestion not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to delete", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to delete",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}",
+        method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<Void> removeStepSuggestion(
         @PathVariable("stepSuggestionId") long stepSuggestionId) {
         stepSuggestionService.removeStepSuggestion(stepSuggestionId);

@@ -29,9 +29,11 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases with tags", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases with tags",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases/tags", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases/tags",
+        method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Set<TagDTO>> getAllTagsFromAllCasesInSuit(
         @PathVariable("suitId") long suitId) {
 
@@ -44,10 +46,13 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains tags", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains tags",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags",
+        method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Set<TagDTO>> getTags(@PathVariable("suitId") long suitId,
                                                @PathVariable("caseId") long caseId) {
         CaseDTO caseDTO = casesService.getCase(suitId, caseId);
@@ -62,12 +67,16 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new tag", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "tagDTO", value = "Added tag object", required = true, dataType = "TagDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new tag",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "tagDTO", value = "Added tag object",
+            required = true, dataType = "TagDTO", paramType = "body")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST,
+        produces = "application/json")
     public ResponseEntity<Long> addTagToCase(@PathVariable("suitId") long suitId,
                                              @PathVariable("caseId") long caseId,
                                              @RequestBody TagDTO tagDTO) {
@@ -83,10 +92,14 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case/Tag not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "tagId", value = "ID of tag to update", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "tagDTO", value = "Updated tag object", required = true, dataType = "TagDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "tagId", value = "ID of tag to update",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "tagDTO", value = "Updated tag object",
+            required = true, dataType = "TagDTO", paramType = "body")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateTag(@PathVariable("suitId") long suitId,
@@ -104,11 +117,15 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case/Tag not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "tagId", value = "ID of tag to delete", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "tagId", value = "ID of tag to delete",
+            required = true, dataType = "long", paramType = "path")
     })
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}",
+        method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<Void> removeTagFromCase(@PathVariable("suitId") long suitId,
                                                   @PathVariable("caseId") long caseId,
                                                   @PathVariable("tagId") long tagId) {

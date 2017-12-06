@@ -1,6 +1,9 @@
 package com.epam.test_generator.dto;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class StepDTO {
 
@@ -64,24 +67,29 @@ public class StepDTO {
     @Override
     public String toString() {
         return "StepDTO{" +
-                "id=" + id +
-                ", rowNumber=" + rowNumber +
-                ", description='" + description + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+            "id=" + id +
+            ", rowNumber=" + rowNumber +
+            ", description='" + description + '\'' +
+            ", type='" + type + '\'' +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StepDTO)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StepDTO)) {
+            return false;
+        }
 
         StepDTO stepDTO = (StepDTO) o;
 
-        if (rowNumber != stepDTO.rowNumber) return false;
-        if (id != null ? !id.equals(stepDTO.id) : stepDTO.id != null) return false;
-        if (description != null ? !description.equals(stepDTO.description) : stepDTO.description != null) return false;
-        return type != null ? type.equals(stepDTO.type) : stepDTO.type == null;
+        return (rowNumber == stepDTO.rowNumber) &&
+            (id != null ? id.equals(stepDTO.id) : stepDTO.id == null)
+            && (description != null ? description.equals(stepDTO.description)
+            : stepDTO.description == null)
+            && (type != null ? type.equals(stepDTO.type) : stepDTO.type == null);
     }
 
     @Override

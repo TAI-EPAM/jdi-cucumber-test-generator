@@ -4,16 +4,24 @@ import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.SuitService;
-import io.swagger.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SuitController {
@@ -24,7 +32,8 @@ public class SuitController {
 
     @ApiOperation(value = "Get all suits", nickname = "getSuits")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "OK", response = SuitDTO.class, responseContainer = "List")
+        @ApiResponse(code = 200, message = "OK",
+            response = SuitDTO.class, responseContainer = "List")
     })
     @RequestMapping(value = "/suits", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<SuitDTO>> getSuits() {
@@ -38,7 +47,8 @@ public class SuitController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to return", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to return",
+            required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
@@ -52,10 +62,12 @@ public class SuitController {
         @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class)
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitDTO", value = "Added suit object", required = true, dataType = "SuitDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitDTO", value = "Added suit object",
+            required = true, dataType = "SuitDTO", paramType = "body")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/suits", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/suits", method = RequestMethod.POST,
+        consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addSuit(@RequestBody @Valid SuitDTO suitDTO) {
 
         return new ResponseEntity<>(suitService.addSuit(suitDTO), HttpStatus.CREATED);
@@ -68,10 +80,13 @@ public class SuitController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to update", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "suitDTO", value = "Updated suit object", required = true, dataType = "SuitDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to update",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "suitDTO", value = "Updated suit object",
+            required = true, dataType = "SuitDTO", paramType = "body")
     })
-    @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT,
+        consumes = "application/json")
     public ResponseEntity<Void> updateSuit(@PathVariable("suitId") long suitId,
                                            @RequestBody @Valid SuitDTO suitDTO) {
         suitService.updateSuit(suitId, suitDTO);
@@ -85,7 +100,8 @@ public class SuitController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to delete", required = true, dataType = "long", paramType = "path")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to delete",
+            required = true, dataType = "long", paramType = "path")
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long suitId) {
@@ -94,7 +110,8 @@ public class SuitController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/suits/{suitId}/featureFile", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/suits/{suitId}/featureFile",
+        method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<String> downloadFile(@RequestBody @Valid SuitDTO suitDTO)
         throws IOException {
         List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)
