@@ -13,6 +13,15 @@ import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -136,21 +145,29 @@ public class CaseController {
     @ApiOperation(value = "Delete cases from suit", nickname = "removeCases")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
-        @ApiResponse(code = 404, message = "Suit not found")
+        @ApiResponse(code = 404, message = "Suit not found"),
+        @ApiResponse(code = 400, message = "Suit doesn't contains some of cases")
     })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "suitDTO", value = "Suit object with casesIds",
-            required = true, dataType = "SuitDTO", paramType = "body")
+        @ApiImplicitParam(name = "removeCaseIds", value = "IDs of cases to be removed",
+            required = true, dataType = "Long[]", paramType = "body")
     })
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE,
         consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
-                                            @RequestBody @Valid SuitDTO suitDTO) {
-        List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)
+                                            @RequestBody Long[] removeCaseIds) {
+        SuitDTO suitDTO = suitService.getSuit(suitId);
+        List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
+            .map(CaseDTO::getId)
             .collect(Collectors.toList());
-        caseService.removeCases(suitId, caseIds);
+        List<Long> idsToRemove = Arrays.asList(removeCaseIds);
+
+        if (!existentSuitCaseIds.containsAll(idsToRemove)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        caseService.removeCases(suitId, idsToRemove);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
