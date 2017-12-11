@@ -7,6 +7,7 @@ import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.transformers.CaseTransformer;
@@ -61,7 +62,7 @@ public class CaseService {
         return caze.getId();
     }
 
-    public void updateCase(Long suitId, Long caseId, CaseDTO caseDTO) {
+    public void updateCase(Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
         Suit suit = suitDAO.findOne(suitId);
         checkNotNull(suit);
 
@@ -71,9 +72,16 @@ public class CaseService {
         caseBelongsToSuit(caze, suit);
 
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        caseDTO.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        caze.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
 
-        caseTransformer.mapDTOToEntity(caseDTO, caze);
+        if (editCaseDTO.getDescription() != null) {
+            caze.setDescription(editCaseDTO.getDescription());
+        }
+
+        if (editCaseDTO.getPriority() != null) {
+            caze.setPriority(editCaseDTO.getPriority());
+        }
+
         caseDAO.save(caze);
     }
 

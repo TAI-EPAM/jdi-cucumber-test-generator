@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
@@ -126,7 +127,7 @@ public class CaseServiceTest {
 
     @Test
     public void updateCaseTest() throws Exception {
-        CaseDTO updateCaseDTO = new CaseDTO(null, "New Case desc", null, null, null);
+        EditCaseDTO updateCaseDTO = new EditCaseDTO("New Case desc", null);
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
@@ -135,7 +136,6 @@ public class CaseServiceTest {
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
-        verify(caseTransformer).mapDTOToEntity(any(CaseDTO.class), eq(caze));
         verify(caseDAO).save(eq(caze));
     }
 
@@ -143,7 +143,7 @@ public class CaseServiceTest {
 	public void updateCaseTest_expectNotFoundExceptionFromSuit() {
 		when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new CaseDTO());
+		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
 	}
 
 	@Test(expected = NotFoundException.class)
@@ -151,7 +151,7 @@ public class CaseServiceTest {
 		when(suitDAO.findOne(anyLong())).thenReturn(suit);
 		when(caseDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new CaseDTO());
+		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
 	}
 
     @Test

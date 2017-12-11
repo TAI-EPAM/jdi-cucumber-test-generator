@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.CaseService;
@@ -116,8 +117,8 @@ public class CaseController {
         method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateCase(@PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
-                                           @RequestBody @Valid CaseDTO caseDTO) {
-        caseService.updateCase(suitId, caseId, caseDTO);
+                                           @RequestBody @Valid EditCaseDTO editCaseDTO) {
+        caseService.updateCase(suitId, caseId, editCaseDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
