@@ -3,6 +3,7 @@ package com.epam.test_generator.dao;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
 import org.junit.Assert;
 import org.junit.Test;
@@ -133,18 +134,18 @@ public class CaseDAOTest {
 
         return new Case("Case description", new ArrayList<>(),
                 formatter.format(Calendar.getInstance().getTime()), formatter.format(Calendar.getInstance().getTime()),
-                3, new HashSet<>());
+                3, new HashSet<>(), Status.NOT_RUN);
     }
 
     private List<Case> retrieveCaseList() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
         Case case1 = new Case("Case1 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
-                formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>());
+                formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>(), Status.NOT_RUN);
         Case case2 = new Case("Case2 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
-                formatter.format(Calendar.getInstance().getTime()), 1, new HashSet<>());
+                formatter.format(Calendar.getInstance().getTime()), 1, new HashSet<>(), Status.NOT_RUN);
         Case case3 = new Case("Case3 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
-                formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>());
+                formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>(), Status.NOT_RUN);
 
         ArrayList<Case> cases = new ArrayList<>();
         cases.add(case1);

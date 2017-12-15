@@ -15,10 +15,14 @@ import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Event;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
+import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.statemachine.StateMachine;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseServiceTest {
@@ -40,10 +45,10 @@ public class CaseServiceTest {
 
     private Suit suit;
 
-	private Case caze;
+    private Case caze;
     private CaseDTO expectedCase;
 
-	private List<Step> listSteps = new ArrayList<>();
+    private List<Step> listSteps = new ArrayList<>();
     private List<StepDTO> expectedListSteps = new ArrayList<>();
     private Set<Tag> setTags = new HashSet<>();
     private Set<TagDTO> expectedSetTags = new HashSet<>();
@@ -60,16 +65,23 @@ public class CaseServiceTest {
     @InjectMocks
     private CaseService caseService;
 
-	@Before
-    public void setUp() {
-		List<Case> listCases = new ArrayList<>();
+    @Mock
+    private StateMachineAdapter stateMachineAdapter;
 
-		listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
-        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags ));
+    @Mock
+    private StateMachine<Status, Event> stateMachine;
+
+    @Before
+    public void setUp() {
+        List<Case> listCases = new ArrayList<>();
+
+        listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
+        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags));
 
         caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
-        expectedCase = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1, expectedSetTags);
-		suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
+        expectedCase = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1,
+            expectedSetTags, Status.NOT_DONE);
+        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
     }
 
     @Test
@@ -78,7 +90,7 @@ public class CaseServiceTest {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseTransformer.toDto(any(Case.class))).thenReturn(expectedCase);
 
-        CaseDTO actualCase = caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
+        CaseDTO actualCase = caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
         assertEquals(expectedCase, actualCase);
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
@@ -86,25 +98,26 @@ public class CaseServiceTest {
         verify(caseTransformer).toDto(any(Case.class));
     }
 
-	@Test(expected = NotFoundException.class)
-	public void getCaseTest_expectNotFoundExceptionFromSuit() {
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void getCaseTest_expectNotFoundExceptionFromSuit() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
-	}
+        caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+    }
 
-	@Test(expected = NotFoundException.class)
-	public void getCaseTest_expectNotFoundExceptionFromCase() {
-		when(suitDAO.findOne(anyLong())).thenReturn(suit);
-		when(caseDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void getCaseTest_expectNotFoundExceptionFromCase() {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
-	}
+        caseService.getCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+    }
 
-	@Test
+    @Test
     public void addCaseToSuitTest() throws Exception {
         Case newCase = new Case(3L, "Case 3", listSteps, 2, setTags);
-        CaseDTO newCaseDTO = new CaseDTO(null, "Case 3", expectedListSteps, 2, expectedSetTags);
+        CaseDTO newCaseDTO = new CaseDTO(null, "Case 3", expectedListSteps, 2,
+            expectedSetTags, Status.NOT_DONE);
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseTransformer.fromDto(any(CaseDTO.class))).thenReturn(newCase);
@@ -118,12 +131,12 @@ public class CaseServiceTest {
         verify(caseDAO).save(any(Case.class));
     }
 
-	@Test(expected = NotFoundException.class)
-	public void addCaseToSuitTest_expectNotFoundExceptionFromSuit() {
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void addCaseToSuitTest_expectNotFoundExceptionFromSuit() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.addCaseToSuit(SIMPLE_SUIT_ID, new CaseDTO());
-	}
+        caseService.addCaseToSuit(SIMPLE_SUIT_ID, new CaseDTO());
+    }
 
     @Test
     public void updateCaseTest() throws Exception {
@@ -139,25 +152,25 @@ public class CaseServiceTest {
         verify(caseDAO).save(eq(caze));
     }
 
-	@Test(expected = NotFoundException.class)
-	public void updateCaseTest_expectNotFoundExceptionFromSuit() {
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void updateCaseTest_expectNotFoundExceptionFromSuit() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
-	}
+        caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
+    }
 
-	@Test(expected = NotFoundException.class)
-	public void updateCaseTest_expectNotFoundExceptionFromCase() {
-		when(suitDAO.findOne(anyLong())).thenReturn(suit);
-		when(caseDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void updateCaseTest_expectNotFoundExceptionFromCase() {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
-	}
+        caseService.updateCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
+    }
 
     @Test
     public void removeCaseTest() throws Exception {
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
-		when(caseDAO.findOne(anyLong())).thenReturn(caze);
+        when(caseDAO.findOne(anyLong())).thenReturn(caze);
         doNothing().when(caseDAO).delete(caze);
 
         caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
@@ -166,20 +179,20 @@ public class CaseServiceTest {
         verify(caseDAO).delete(eq(SIMPLE_CASE_ID));
     }
 
-	@Test(expected = NotFoundException.class)
-	public void removeCaseTest_expectNotFoundExceptionFromSuit() {
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void removeCaseTest_expectNotFoundExceptionFromSuit() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
-	}
+        caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+    }
 
-	@Test(expected = NotFoundException.class)
-	public void removeCaseTest_expectNotFoundExceptionFromCase() {
-		when(suitDAO.findOne(anyLong())).thenReturn(suit);
-		when(caseDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void removeCaseTest_expectNotFoundExceptionFromCase() {
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(null);
 
-		caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
-	}
+        caseService.removeCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+    }
 
     @Test
     public void removeCasesTest() throws Exception {
@@ -193,14 +206,42 @@ public class CaseServiceTest {
         verify(caseDAO).delete(eq(2L));
     }
 
-	@Test(expected = NotFoundException.class)
-	public void removeCasesTest_expectNotFoundExceptionFromSuit() {
-		List<Long> caseIds = new ArrayList<>();
+    @Test(expected = NotFoundException.class)
+    public void removeCasesTest_expectNotFoundExceptionFromSuit() {
+        List<Long> caseIds = new ArrayList<>();
 
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		caseIds.add(SIMPLE_CASE_ID);
-		caseService.removeCases(SIMPLE_SUIT_ID, caseIds);
-	}
+        caseIds.add(SIMPLE_CASE_ID);
+        caseService.removeCases(SIMPLE_SUIT_ID, caseIds);
+    }
 
+    @Test
+    public void performEventTest_changingStatusFromNotDoneToNotRun() throws Exception {
+        when(caseTransformer.fromDto(any(CaseDTO.class))).thenReturn(caze);
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+        when(stateMachine.sendEvent(any(Event.class))).thenReturn(true);
+
+        when(stateMachineAdapter.restore(caze)).thenReturn(stateMachine);
+
+        caze.setStatus(Status.NOT_DONE);
+
+        caseService.performEvent(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, Event.CREATE);
+
+        verify(stateMachineAdapter).persist(eq(stateMachine), eq(caze));
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void performEventTest_sendEventFalse() throws Exception {
+
+        when(caseTransformer.fromDto(any(CaseDTO.class))).thenReturn(caze);
+        when(suitDAO.findOne(anyLong())).thenReturn(suit);
+        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+        when(stateMachine.sendEvent(any(Event.class))).thenReturn(false);
+
+        when(stateMachineAdapter.restore(caze)).thenReturn(stateMachine);
+
+        caseService.performEvent(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, Event.CREATE);
+    }
 }

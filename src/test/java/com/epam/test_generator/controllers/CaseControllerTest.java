@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.entities.Event;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
@@ -73,6 +75,7 @@ public class CaseControllerTest {
         caseDTO.setDescription("case1");
         caseDTO.setPriority(1);
         caseDTO.setSteps(new ArrayList<>());
+        caseDTO.setStatus(Status.NOT_DONE);
 
         CaseDTO caseDTO1 = new CaseDTO();
         caseDTO1.setId(CASE_IDS[0]);
@@ -306,7 +309,8 @@ public class CaseControllerTest {
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+        verify(casesService)
+            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
@@ -320,7 +324,8 @@ public class CaseControllerTest {
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+        verify(casesService)
+            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
@@ -334,7 +339,8 @@ public class CaseControllerTest {
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+        verify(casesService)
+            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
@@ -402,7 +408,8 @@ public class CaseControllerTest {
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(casesService).updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+        verify(casesService)
+            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
@@ -526,5 +533,41 @@ public class CaseControllerTest {
             .andExpect(status().isOk());
 
         verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(invalidCaseIds)));
+    }
+
+    @Test
+    public void testPerformEvent_return200() throws Exception {
+
+        mockMvc
+            .perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/CREATE")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+        verify(casesService)
+            .performEvent(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(Event.CREATE));
+    }
+
+    @Test
+    public void testPerformEvent_return400whenWrongEventName() throws Exception {
+
+        mockMvc
+            .perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/WRONG")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPerformEvent_return400whenEventCantBePerformed() throws Exception {
+
+        doThrow(BadRequestException.class).when(casesService)
+            .performEvent(anyLong(), anyLong(), eq(Event.PASS));
+
+        mockMvc
+            .perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/PASS")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 }

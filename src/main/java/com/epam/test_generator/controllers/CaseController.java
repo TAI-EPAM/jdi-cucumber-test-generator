@@ -4,16 +4,10 @@ import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
+import com.epam.test_generator.entities.Event;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.SuitService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -171,5 +165,29 @@ public class CaseController {
         caseService.removeCases(suitId, idsToRemove);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Perform status changing event on given case", nickname = "performEvent")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK", response = Status.class),
+        @ApiResponse(code = 400, message = "Can't perform given event on current case")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "IDs of cases to perform event on",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "event", value = "Name of event to be performed",
+            required = true, dataType = "String", paramType = "path")
+    })
+    @RequestMapping(value = "suits/{suitId}/cases/{caseId}/events/{event}", method = RequestMethod.PUT,
+        consumes = "application/json")
+    public ResponseEntity<Status> performEvent(@PathVariable("suitId") long suitId,
+                                               @PathVariable("caseId") long caseId,
+                                               @PathVariable("event") Event event)
+        throws Exception {
+
+        return new ResponseEntity<>(
+            caseService.performEvent(suitId, caseId, event), HttpStatus.OK);
     }
 }

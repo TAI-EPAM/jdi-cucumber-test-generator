@@ -9,13 +9,18 @@ import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Event;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.services.exceptions.BadRequestException;
+import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +42,9 @@ public class CaseService {
 
     @Autowired
     private TagDAO tagDAO;
+
+    @Autowired
+    private StateMachineAdapter stateMachineAdapter;
 
     public CaseDTO getCase(Long suitId, Long caseId) {
         Suit suit = suitDAO.findOne(suitId);
@@ -109,4 +117,15 @@ public class CaseService {
         caseIds.forEach(caseId -> caseDAO.delete(caseId));
     }
 
+    public Status performEvent(Long suitId, Long caseId, Event event) throws Exception {
+        Case cs = caseTransformer.fromDto(getCase(suitId, caseId));
+        StateMachine<Status, Event> stateMachine = stateMachineAdapter.restore(cs);
+        if (stateMachine.sendEvent(event)) {
+            stateMachineAdapter.persist(stateMachine, cs);
+            caseDAO.save(cs);
+            return cs.getStatus();
+        } else {
+            throw new BadRequestException();
+        }
+    }
 }

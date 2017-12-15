@@ -11,8 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import org.springframework.statemachine.annotation.WithStateMachine;
 
 @Entity
+@WithStateMachine
 public class Case implements Serializable {
 
     @Id
@@ -29,6 +31,8 @@ public class Case implements Serializable {
     private String updateDate;
 
     private Integer priority;
+
+    private Status status;
 
     @OneToMany(cascade = {CascadeType.ALL})
     private Set<Tag> tags;
@@ -48,13 +52,15 @@ public class Case implements Serializable {
     }
 
     public Case(String description, List<Step> steps, String creationDate, String updateDate,
-                Integer priority, Set<Tag> tags) {
+                Integer priority, Set<Tag> tags, Status status) {
         this.description = description;
         this.steps = steps;
         this.creationDate = creationDate;
         this.updateDate = updateDate;
         this.priority = priority;
         this.tags = tags;
+
+        this.status = status;
     }
 
     public Long getId() {
@@ -116,6 +122,14 @@ public class Case implements Serializable {
         this.tags = tags;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Case{" +
@@ -125,6 +139,7 @@ public class Case implements Serializable {
             ", creationDate='" + creationDate + '\'' +
             ", priority=" + priority +
             ", tags=" + tags +
+            ", status" + status +
             '}';
     }
 
@@ -147,6 +162,7 @@ public class Case implements Serializable {
             : aCase.creationDate == null)
             && (updateDate != null ? updateDate.equals(aCase.updateDate) : aCase.updateDate == null)
             && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
+            && (status != null ? status.equals(aCase.status) : aCase.status == null)
             && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
     }
 }

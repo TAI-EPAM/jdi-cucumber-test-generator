@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
 @ControllerAdvice
@@ -22,6 +23,14 @@ public class GlobalExceptionController {
     public ResponseEntity<Void> handleNotFoundException(NotFoundException ex) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
+        MethodArgumentTypeMismatchException ex) {
+        return new ResponseEntity<>("Invalid argument: " + ex.getName(), HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Void> handleBadRequestException(BadRequestException ex) {

@@ -1,5 +1,6 @@
 package com.epam.test_generator.dto;
 
+import com.epam.test_generator.entities.Status;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -34,6 +35,9 @@ public class CaseDTO {
     @Valid
     private Set<TagDTO> tags;
 
+    @NotNull
+    private Status status;
+
     public CaseDTO() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         creationDate = formatter.format(Calendar.getInstance().getTime());
@@ -42,12 +46,13 @@ public class CaseDTO {
     }
 
     public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority,
-                   Set<TagDTO> tags) {
+                   Set<TagDTO> tags, Status status) {
         this.id = id;
         this.description = description;
         this.steps = steps;
         this.priority = priority;
         this.tags = tags;
+        this.status = status;
     }
 
     public Long getId() {
@@ -106,6 +111,14 @@ public class CaseDTO {
         this.tags = tags;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -126,7 +139,8 @@ public class CaseDTO {
             && (updateDate != null ? updateDate.equals(caseDTO.updateDate)
             : caseDTO.updateDate == null)
             && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
-            && (tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null);
+            && (tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null)
+            && (status != null ? status.equals(caseDTO.status) : caseDTO.status == null);
     }
 
     @Override
@@ -138,6 +152,7 @@ public class CaseDTO {
         result = 31 * result + (updateDate != null ? updateDate.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
 
@@ -150,9 +165,9 @@ public class CaseDTO {
             ", creationDate=" + creationDate +
             ", priority=" + priority +
             ", tags='" + tags + '\'' +
+            ", status=" + status +
             '}';
     }
-
 }
 
 
