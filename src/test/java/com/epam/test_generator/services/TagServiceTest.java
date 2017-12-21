@@ -1,6 +1,7 @@
 package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.TagDTO;
@@ -42,6 +44,9 @@ public class TagServiceTest {
 
     @Mock
     private TagTransformer tagTransformer;
+
+    @Mock
+    private CaseVersionDAO caseVersionDAO;
 
     @InjectMocks
     private TagService tagService;
@@ -113,11 +118,13 @@ public class TagServiceTest {
 
         Long actualLong = tagService.addTagToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, tagDTO);
         assertEquals(tag.getId(),actualLong);
+        assertTrue(caze.getTags().contains(tag));
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(tagTransformer).fromDto(any(TagDTO.class));
         verify(tagDAO).save(any(Tag.class));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
 	@Test(expected = NotFoundException.class)
@@ -143,11 +150,13 @@ public class TagServiceTest {
         when(tagDAO.save(any(Tag.class))).thenReturn(expectedTag);
 
         tagService.updateTag(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_TAG_ID, expectedTagDTO);
+        assertTrue(caze.getTags().contains(expectedTag));
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(tagDAO).findOne(eq(SIMPLE_TAG_ID));
         verify(tagDAO).save(any(Tag.class));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
 	@Test(expected = NotFoundException.class)
@@ -183,6 +192,7 @@ public class TagServiceTest {
         tagService.removeTag(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_TAG_ID);
 
         verify(tagDAO).delete(SIMPLE_TAG_ID);
+        verify(caseVersionDAO).save(eq(caze));
     }
 
 	@Test(expected = NotFoundException.class)

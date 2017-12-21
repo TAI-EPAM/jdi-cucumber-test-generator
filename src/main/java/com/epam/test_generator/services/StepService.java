@@ -1,6 +1,7 @@
 package com.epam.test_generator.services;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.StepDTO;
@@ -27,6 +28,9 @@ public class StepService {
 
     @Autowired
     private SuitDAO suitDAO;
+
+    @Autowired
+    private CaseVersionDAO caseVersionDAO;
 
     @Autowired
     private StepTransformer stepTransformer;
@@ -74,6 +78,8 @@ public class StepService {
         step = stepDAO.save(step);
         caze.getSteps().add(step);
 
+        caseVersionDAO.save(caze);
+
         return step.getId();
     }
 
@@ -94,6 +100,8 @@ public class StepService {
         stepTransformer.mapDTOToEntity(stepDTO, step);
 
         stepDAO.save(step);
+
+        caseVersionDAO.save(caze);
     }
 
     public void removeStep(Long suitId, Long caseId, Long stepId) {
@@ -112,5 +120,7 @@ public class StepService {
 
         caze.getSteps().remove(step);
         stepDAO.delete(stepId);
+
+        caseVersionDAO.save(caze);
     }
 }

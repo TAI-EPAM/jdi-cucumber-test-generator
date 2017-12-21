@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -44,6 +45,7 @@ public class Case implements Serializable {
     }
 
     public Case(Long id, String description, List<Step> steps, Integer priority, Set<Tag> tags) {
+        this();
         this.id = id;
         this.description = description;
         this.steps = steps;
@@ -84,6 +86,22 @@ public class Case implements Serializable {
             steps = new ArrayList<>();
         }
         return steps;
+    }
+
+    public void addStep(Step step) {
+        if (steps == null) {
+            steps = new ArrayList<>();
+        }
+
+        steps.add(step);
+    }
+
+    public void addTag(Tag tag) {
+        if (tags == null) {
+            tags = new HashSet<>();
+        }
+
+        tags.add(tag);
     }
 
     public void setSteps(List<Step> steps) {

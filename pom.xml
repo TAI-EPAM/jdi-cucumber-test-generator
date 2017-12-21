@@ -252,6 +252,19 @@
             <artifactId>spring-statemachine-core</artifactId>
             <version>1.2.7.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.javers</groupId>
+            <artifactId>javers-core</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.javers</groupId>
+            <artifactId>javers-spring-jpa</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

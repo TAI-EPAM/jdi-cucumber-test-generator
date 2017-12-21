@@ -1,6 +1,7 @@
 package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.StepDTO;
@@ -58,6 +60,9 @@ public class StepServiceTest {
 
     @Mock
     private StepDAO stepDAO;
+
+    @Mock
+    private CaseVersionDAO caseVersionDAO;
 
     @InjectMocks
     private StepService stepService;
@@ -169,11 +174,13 @@ public class StepServiceTest {
 
         Long actualId = stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, newStepDTO);
         assertEquals(newStep.getId(), actualId);
+        assertTrue(caze.getSteps().contains(newStep));
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepDAO).save(any(Step.class));
         verify(stepTransformer).fromDto(any(StepDTO.class));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
 	@Test(expected = NotFoundException.class)
@@ -200,12 +207,14 @@ public class StepServiceTest {
         when(stepDAO.findOne(anyLong())).thenReturn(step);
 
         stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, updateStepDTO);
+        assertTrue(caze.getSteps().contains(step));
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepTransformer).mapDTOToEntity(any(StepDTO.class), eq(step));
         verify(stepDAO).save(eq(step));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
 	@Test(expected = NotFoundException.class)
@@ -239,11 +248,13 @@ public class StepServiceTest {
         when(stepDAO.findOne(anyLong())).thenReturn(step);
 
         stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+        assertTrue(!caze.getSteps().contains(step));
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepDAO).delete(eq(SIMPLE_STEP_ID));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
 	@Test(expected = NotFoundException.class)

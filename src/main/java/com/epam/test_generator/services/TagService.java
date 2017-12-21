@@ -1,5 +1,6 @@
 package com.epam.test_generator.services;
 
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,6 +42,9 @@ public class TagService {
 	@Autowired
 	private TagTransformer tagTransformer;
 
+	@Autowired
+	private CaseVersionDAO caseVersionDAO;
+
 	public Set<TagDTO> getAllTagsFromAllCasesInSuit(Long suitId) {
 		Suit suit = suitDAO.findOne(suitId);
 		checkNotNull(suit);
@@ -65,6 +69,8 @@ public class TagService {
 		tag = tagDAO.save(tag);
 		caze.getTags().add(tag);
 
+		caseVersionDAO.save(caze);
+
 		return tag.getId();
 	}
 
@@ -85,6 +91,8 @@ public class TagService {
 		tagTransformer.mapDTOToEntity(tagDTO, tag);
 
 		tagDAO.save(tag);
+
+		caseVersionDAO.save(caze);
 	}
 
 	public void removeTag(Long suitId, Long caseId, Long tagId) {
@@ -104,5 +112,7 @@ public class TagService {
 		caze.getTags().remove(tag);
 
 		tagDAO.delete(tagId);
+
+		caseVersionDAO.save(caze);
 	}
 }

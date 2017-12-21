@@ -5,10 +5,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
@@ -58,6 +60,9 @@ public class CaseServiceTest {
 
     @Mock
     private CaseDAO caseDAO;
+
+    @Mock
+    private CaseVersionDAO caseVersionDAO;
 
     @Mock
     private CaseTransformer caseTransformer;
@@ -129,6 +134,7 @@ public class CaseServiceTest {
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseTransformer).fromDto(any(CaseDTO.class));
         verify(caseDAO).save(any(Case.class));
+        verify(caseVersionDAO).save(eq(newCase));
     }
 
     @Test(expected = NotFoundException.class)
@@ -150,6 +156,7 @@ public class CaseServiceTest {
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(caseDAO).save(eq(caze));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
     @Test(expected = NotFoundException.class)
@@ -177,6 +184,7 @@ public class CaseServiceTest {
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).delete(eq(SIMPLE_CASE_ID));
+        verify(caseVersionDAO).delete(eq(caze));
     }
 
     @Test(expected = NotFoundException.class)
@@ -204,6 +212,7 @@ public class CaseServiceTest {
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
         verify(caseDAO).delete(eq(1L));
         verify(caseDAO).delete(eq(2L));
+        verify(caseVersionDAO, times(2)).delete(any(Case.class));
     }
 
     @Test(expected = NotFoundException.class)
@@ -230,6 +239,7 @@ public class CaseServiceTest {
         caseService.performEvent(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, Event.CREATE);
 
         verify(stateMachineAdapter).persist(eq(stateMachine), eq(caze));
+        verify(caseVersionDAO).save(eq(caze));
     }
 
     @Test(expected = BadRequestException.class)
