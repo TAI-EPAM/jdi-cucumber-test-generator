@@ -182,4 +182,15 @@ public class Suit implements Serializable {
             && (tags != null ? tags.equals(suit.tags) : suit.tags == null)
             && (cases != null ? cases.equals(suit.cases) : suit.cases == null);
     }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (cases != null ? cases.hashCode() : 0);
+        return result;
+    }
 }
