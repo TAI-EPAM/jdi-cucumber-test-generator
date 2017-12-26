@@ -90,4 +90,13 @@ public class Step implements Serializable {
             : step.description == null)
             && (type == step.type);
     }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + rowNumber;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
 }

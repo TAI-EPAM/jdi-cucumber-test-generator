@@ -186,4 +186,15 @@ public class Case implements Serializable {
             && (status != null ? status.equals(aCase.status) : aCase.status == null)
             && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
     }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (steps != null ? steps.hashCode() : 0);
+        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
+    }
 }
