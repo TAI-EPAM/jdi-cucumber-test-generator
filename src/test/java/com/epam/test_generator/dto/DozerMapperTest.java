@@ -60,14 +60,14 @@ public class DozerMapperTest {
 		StepDTO stepDTO = new StepDTO();
 
 		step.setId(1L);
-		step.setType(StepType.GIVEN.ordinal());
+		step.setType(StepType.GIVEN);
 		step.setDescription("Case description");
 		step.setRowNumber(1);
 
 		dozerMapper.map(step, stepDTO);
 
 		assertThat(step.getId(), is(equalTo(stepDTO.getId())));
-		assertThat(StepType.values()[step.getType()].ordinal(), is(equalTo(stepDTO.getType())));
+		assertThat(StepType.GIVEN, is(equalTo(stepDTO.getType())));
 		assertThat(step.getDescription(), is(equalTo(stepDTO.getDescription())));
 		assertThat(step.getRowNumber(), is(equalTo(stepDTO.getRowNumber())));
 	}
@@ -78,13 +78,13 @@ public class DozerMapperTest {
 		StepSuggestionDTO stepSuggestionDTO = new StepSuggestionDTO();
 
 		stepSuggestion.setId(1L);
-		stepSuggestion.setType(StepType.GIVEN.ordinal());
+		stepSuggestion.setType(StepType.GIVEN);
 		stepSuggestion.setContent("Step suggestion description");
 
 		dozerMapper.map(stepSuggestion, stepSuggestionDTO);
 
 		assertThat(stepSuggestion.getId(), is(equalTo(stepSuggestionDTO.getId())));
-		assertThat(StepType.values()[stepSuggestion.getType()].ordinal(), is(equalTo(stepSuggestionDTO.getType())));
+		assertThat(StepType.GIVEN, is(equalTo(stepSuggestionDTO.getType())));
 		assertThat(stepSuggestion.getContent(), is(equalTo(stepSuggestionDTO.getContent())));
 	}
 }

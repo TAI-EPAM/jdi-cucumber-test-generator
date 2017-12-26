@@ -1,6 +1,8 @@
 package com.epam.test_generator.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +16,7 @@ public class StepSuggestion {
 
     private String content;
 
+    @Enumerated(EnumType.STRING)
     private StepType type;
 
     public StepSuggestion(Long id, String content, StepType type) {
@@ -46,12 +49,12 @@ public class StepSuggestion {
         this.content = content;
     }
 
-    public Integer getType() {
-        return type.ordinal();
+    public StepType getType() {
+        return type;
     }
 
-    public void setType(Integer type) {
-        this.type = StepType.values()[type];
+    public void setType(StepType type) {
+        this.type = type;
     }
 
     @Override

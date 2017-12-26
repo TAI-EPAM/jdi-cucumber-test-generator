@@ -3,18 +3,19 @@ package com.epam.test_generator.services;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepSuggestion;
-import com.epam.test_generator.transformers.StepSuggestionTransformer;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.transformers.StepSuggestionTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.epam.test_generator.services.utils.UtilsService.*;
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 @Transactional
 @Service
@@ -73,11 +74,11 @@ public class StepSuggestionService {
         return stepSuggestionTransformer.toDto(stepSuggestion);
     }
 
-    public List<StepSuggestionDTO> getStepsSuggestionsByType(long typeId) {
-
-        return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll().stream()
-                .filter(stepSuggestion -> ((long)stepSuggestion.getType())== (typeId))
-                .collect(Collectors.toList()));
+    public List<StepSuggestionDTO> getStepsSuggestionsByType(StepType stepType) {
+        return stepSuggestionTransformer.toDtoList(
+                stepSuggestionDAO.findAll().stream()
+                        .filter(s -> s.getType() == stepType)
+                        .collect(Collectors.toList()));
     }
 
     public Long addStepSuggestion(StepSuggestionDTO stepSuggestionDTO) {

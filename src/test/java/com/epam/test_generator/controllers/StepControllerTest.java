@@ -4,6 +4,7 @@ package com.epam.test_generator.controllers;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.StepService;
 import com.epam.test_generator.services.SuitService;
@@ -77,7 +78,7 @@ public class StepControllerTest {
         stepDTO.setId(SIMPLE_STEP_ID);
         stepDTO.setDescription("description of step");
         stepDTO.setRowNumber(1);
-        stepDTO.setType(2);
+        stepDTO.setType(StepType.THEN);
 
         stepDTOS= new ArrayList<>();
         stepDTOS.add(stepDTO);

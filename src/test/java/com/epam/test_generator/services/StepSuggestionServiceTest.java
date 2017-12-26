@@ -50,8 +50,8 @@ public class StepSuggestionServiceTest {
         listSteps.add(new StepSuggestion(2L, "StepSuggestion 2", StepType.THEN));
 
         expectedListSteps = new ArrayList<>();
-        expectedListSteps.add(new StepSuggestionDTO(1L, "StepSuggestion 1", StepType.GIVEN.ordinal()));
-        expectedListSteps.add(new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.THEN.ordinal()));
+        expectedListSteps.add(new StepSuggestionDTO(1L, "StepSuggestion 1", StepType.GIVEN));
+        expectedListSteps.add(new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.THEN));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class StepSuggestionServiceTest {
     @Test
     public void getStepSuggestionByIdTest() {
         StepSuggestion expected = new StepSuggestion(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN);
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN.ordinal());
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1", StepType.GIVEN);
 
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
         when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedDTO);
@@ -88,13 +88,14 @@ public class StepSuggestionServiceTest {
 
     @Test
     public void getStepSuggestionByTypeTest() {
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.WHEN.ordinal());
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.WHEN);
         StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN);
 
         when(stepSuggestionDAO.findAll()).thenReturn(Collections.singletonList(expected));
         when(stepSuggestionTransformer.toDtoList(anyList())).thenReturn(Collections.singletonList(expectedDTO));
 
-        List<StepSuggestionDTO> actual = stepSuggestionService.getStepsSuggestionsByType(0);
+        List<StepSuggestionDTO> actual = stepSuggestionService.getStepsSuggestionsByType
+                (StepType.GIVEN);
 
         assertEquals(Collections.singletonList(expectedDTO), actual);
 
@@ -104,7 +105,7 @@ public class StepSuggestionServiceTest {
     @Test
     public void testAddStepSuggestionTest() throws Exception {
         StepSuggestion newStepSuggestion = new StepSuggestion(3L, "StepSuggestion 3", StepType.AND);
-        StepSuggestionDTO newStepSuggestionDTO = new StepSuggestionDTO(3L, "StepSuggestion 3", StepType.AND.ordinal());
+        StepSuggestionDTO newStepSuggestionDTO = new StepSuggestionDTO(3L, "StepSuggestion 3", StepType.AND);
 
         when(stepSuggestionDAO.save(any(StepSuggestion.class))).thenReturn(newStepSuggestion);
         when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(newStepSuggestionDTO);
@@ -118,7 +119,7 @@ public class StepSuggestionServiceTest {
 
     @Test
     public void updateStepSuggestionTest() {
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.WHEN.ordinal());
+        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.WHEN);
         StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN);
 
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);

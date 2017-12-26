@@ -2,6 +2,8 @@ package com.epam.test_generator.entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -16,6 +18,7 @@ public class Step implements Serializable {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
     private StepType type;
 
     public Step() {
@@ -52,12 +55,12 @@ public class Step implements Serializable {
         this.description = description;
     }
 
-    public Integer getType() {
-        return type.ordinal();
+    public StepType getType() {
+        return type;
     }
 
-    public void setType(Integer type) {
-        this.type = StepType.values()[type];
+    public void setType(StepType type) {
+        this.type = type;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.epam.test_generator.dao;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.StepSuggestion;
+import com.epam.test_generator.entities.StepType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,12 +56,12 @@ public class StepSuggestionDAOTest {
         StepSuggestion originalStepSuggestion = retrieveStepUggestion();
 
         stepSuggestionDAO.save(originalStepSuggestion);
-        originalStepSuggestion.setType(3);
+        originalStepSuggestion.setType(StepType.AND);
         long id = stepSuggestionDAO.save(originalStepSuggestion).getId();
 
         StepSuggestion newStepSuggestion = retrieveStepUggestion();
         newStepSuggestion.setId(id);
-        newStepSuggestion.setType(3);
+        newStepSuggestion.setType(StepType.AND);
 
         Assert.assertEquals(newStepSuggestion, stepSuggestionDAO.findOne(id));
     }
@@ -115,7 +116,7 @@ public class StepSuggestionDAOTest {
     private StepSuggestion retrieveStepUggestion() {
         StepSuggestion stepSuggestion = new StepSuggestion();
         stepSuggestion.setContent("content");
-        stepSuggestion.setType(2);
+        stepSuggestion.setType(StepType.THEN);
 
         return stepSuggestion;
     }
@@ -123,15 +124,15 @@ public class StepSuggestionDAOTest {
     private List<StepSuggestion> retrieveStepSuggestionList() {
         StepSuggestion stepSuggestion1 = new StepSuggestion();
         stepSuggestion1.setContent("content1");
-        stepSuggestion1.setType(2);
+        stepSuggestion1.setType(StepType.THEN);
 
         StepSuggestion stepSuggestion2 = new StepSuggestion();
         stepSuggestion2.setContent("content2");
-        stepSuggestion2.setType(1);;
+        stepSuggestion2.setType(StepType.WHEN);;
 
         StepSuggestion stepSuggestion3 = new StepSuggestion();
         stepSuggestion3.setContent("content3");
-        stepSuggestion3.setType(2);
+        stepSuggestion3.setType(StepType.THEN);
 
         ArrayList<StepSuggestion> stepSuggestions = new ArrayList<>();
         stepSuggestions.add(stepSuggestion1);

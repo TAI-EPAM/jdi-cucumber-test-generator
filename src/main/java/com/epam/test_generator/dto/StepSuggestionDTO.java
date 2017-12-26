@@ -1,5 +1,7 @@
 package com.epam.test_generator.dto;
 
+import com.epam.test_generator.entities.StepType;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,17 +16,15 @@ public class StepSuggestionDTO {
     private String content;
 
     @NotNull
-    @Min(value = 0)
-    @Max(value = 5)
-    private Integer type;
+    private StepType type;
 
-    public StepSuggestionDTO(Long id, String content, Integer type) {
+    public StepSuggestionDTO(Long id, String content, StepType type) {
         this.id = id;
         this.content = content;
         this.type = type;
     }
 
-    public StepSuggestionDTO(String content, Integer type) {
+    public StepSuggestionDTO(String content, StepType type) {
         this.content = content;
         this.type = type;
     }
@@ -48,11 +48,11 @@ public class StepSuggestionDTO {
         this.content = content;
     }
 
-    public Integer getType() {
+    public StepType getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(StepType type) {
         this.type = type;
     }
 

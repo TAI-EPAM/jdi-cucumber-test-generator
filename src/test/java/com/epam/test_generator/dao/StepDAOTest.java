@@ -3,6 +3,7 @@ package com.epam.test_generator.dao;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.StepType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,12 +68,12 @@ public class StepDAOTest {
     public void testUpdateType() {
         Step originalStep = retriveStep();
         stepDAO.save(originalStep);
-        originalStep.setType(2);
+        originalStep.setType(StepType.THEN);
         long id = stepDAO.save(originalStep).getId();
 
         Step newStep = retriveStep();
         newStep.setId(id);
-        newStep.setType(2);
+        newStep.setType(StepType.THEN);
 
         Assert.assertEquals(newStep, stepDAO.findOne(id));
     }
@@ -126,7 +127,7 @@ public class StepDAOTest {
         Step step = new Step();
         step.setDescription("Step description");
         step.setRowNumber(5);
-        step.setType(1);
+        step.setType(StepType.WHEN);
 
         return step;
     }
@@ -135,17 +136,17 @@ public class StepDAOTest {
         Step step1 = new Step();
         step1.setDescription("Step1 description");
         step1.setRowNumber(5);
-        step1.setType(1);
+        step1.setType(StepType.WHEN);
 
         Step step2 = new Step();
         step2.setDescription("Step2 description");
         step2.setRowNumber(6);
-        step2.setType(1);
+        step2.setType(StepType.WHEN);
 
         Step step3 = new Step();
         step3.setDescription("Step3 description");
         step3.setRowNumber(7);
-        step3.setType(2);
+        step3.setType(StepType.WHEN);
 
         ArrayList<Step> steps = new ArrayList<>();
         steps.add(step1);

@@ -30,9 +30,6 @@ public class FileGenerator {
 
         Map<String, Object> input = new HashMap<>();
 
-        StepType[] type = StepType.values();
-        input.put("types", type);
-
         cases.removeIf(c-> c.getSteps()==null || c.getSteps().size()==0);
         suit.setCases(cases);
         input.put("suit", suit);

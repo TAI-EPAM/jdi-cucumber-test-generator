@@ -56,19 +56,19 @@ public class FileGeneratorTest extends Assert{
         step1.setId(1L);
         step1.setDescription("given1");
         step1.setRowNumber(1);
-        step1.setType(StepType.GIVEN.ordinal());
+        step1.setType(StepType.GIVEN);
 
         StepDTO step2 = new StepDTO();
         step2.setId(2L);
         step2.setRowNumber(2);
         step2.setDescription("when1");
-        step2.setType(StepType.WHEN.ordinal());
+        step2.setType(StepType.WHEN);
 
         StepDTO step3 = new StepDTO();
         step3.setId(3L);
         step3.setRowNumber(3);
         step3.setDescription("then1");
-        step3.setType(StepType.THEN.ordinal());
+        step3.setType(StepType.THEN);
 
         steps.add(step1);
         steps.add(step2);
@@ -79,7 +79,7 @@ public class FileGeneratorTest extends Assert{
         step4.setId(4L);
         step4.setRowNumber(4);
         step4.setDescription("given2");
-        step4.setType(StepType.GIVEN.ordinal());
+        step4.setType(StepType.GIVEN);
         ArrayList<StepDTO> steps2 = new ArrayList<>();
         steps2.add(step4);
         caze2.setSteps(steps2);

@@ -41,6 +41,8 @@ public class StepSuggestionControllerTest {
 
 	private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
 
+	private static final StepType STEP_TYPE = StepType.GIVEN;
+
 	private List<StepSuggestionDTO> stepSuggestionDTOS;
 
 	@Mock
@@ -57,7 +59,7 @@ public class StepSuggestionControllerTest {
         stepSuggestionDTO = new StepSuggestionDTO();
         stepSuggestionDTO.setId(SIMPLE_AUTOCOMPLETE_ID);
         stepSuggestionDTO.setContent("Some step description");
-        stepSuggestionDTO.setType(StepType.GIVEN.ordinal());
+        stepSuggestionDTO.setType(StepType.GIVEN);
         stepSuggestionDTOS = new ArrayList<>();
     }
 
@@ -85,25 +87,26 @@ public class StepSuggestionControllerTest {
 
     @Test
     public void getStepsSuggestionsByType_return200whenGetStepsSuggestion() throws Exception{
-        when(stepSuggestionService.getStepsSuggestionsByType(SIMPLE_AUTOCOMPLETE_ID)).thenReturn(stepSuggestionDTOS);
+        when(stepSuggestionService.getStepsSuggestionsByType(STEP_TYPE)).thenReturn
+                (stepSuggestionDTOS);
 
-        mockMvc.perform(get("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
+        mockMvc.perform(get("/stepSuggestions/" + STEP_TYPE))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(stepSuggestionService).getStepsSuggestionsByType(eq(SIMPLE_AUTOCOMPLETE_ID));
+        verify(stepSuggestionService).getStepsSuggestionsByType(eq(STEP_TYPE));
 
     }
 
     @Test
     public void getStepsSuggestionsByType_return500whenGetStepsSuggestion() throws Exception {
-        when(stepSuggestionService.getStepsSuggestionsByType(SIMPLE_AUTOCOMPLETE_ID)).thenThrow(new RuntimeException());
+        when(stepSuggestionService.getStepsSuggestionsByType(STEP_TYPE)).thenThrow(new RuntimeException());
 
-        mockMvc.perform(get("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))
+        mockMvc.perform(get("/stepSuggestions/" + STEP_TYPE))
                 .andDo(print())
                 .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService).getStepsSuggestionsByType(eq(SIMPLE_AUTOCOMPLETE_ID));
+        verify(stepSuggestionService).getStepsSuggestionsByType(eq(STEP_TYPE));
     }
 
 

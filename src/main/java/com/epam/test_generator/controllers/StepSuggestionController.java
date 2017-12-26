@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.StepSuggestionDTO;
+import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +37,16 @@ public class StepSuggestionController {
             response = StepSuggestionDTO.class, responseContainer = "List")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "typeId",
+        @ApiImplicitParam(name = "stepType",
             value = "Type of step suggestion that we want to return",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "StepType", paramType = "path")
     })
-    @RequestMapping(value = "/stepSuggestions/{typeId}",
+    @RequestMapping(value = "/stepSuggestions/{stepType}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestionsByType(
-        @PathVariable("typeId") long typeId) {
+        @PathVariable("stepType") StepType stepType) {
 
-        return new ResponseEntity<>(stepSuggestionService.getStepsSuggestionsByType(typeId),
+        return new ResponseEntity<>(stepSuggestionService.getStepsSuggestionsByType(stepType),
             HttpStatus.OK);
     }
 

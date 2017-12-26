@@ -13,7 +13,6 @@ Feature: ${suit.description}
     </#if>
     Scenario: ${case.description}
          <#list case.steps as step>
-            <#assign t = step.type>
-            ${types[t].typeName} ${step.description}
+            ${step.type.typeName} ${step.description}
          </#list>
     </#list>

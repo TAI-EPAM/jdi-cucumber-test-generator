@@ -70,7 +70,7 @@ public class StepServiceTest {
     @Before
     public void setUp() {
         step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
-        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN.ordinal());
+        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
 
         List<Step> listSteps = new ArrayList<>();
 
@@ -78,8 +78,8 @@ public class StepServiceTest {
         listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN));
         listSteps.add(step);
 
-        expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN.ordinal()));
-        expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN.ordinal()));
+        expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN));
+        expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN));
         expectedListSteps.add(expectedStep);
 
         caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
@@ -165,7 +165,7 @@ public class StepServiceTest {
     @Test
     public void addStepToCaseTest() throws Exception {
         Step newStep = new Step(3L, 3, "Step 3", StepType.AND);
-        StepDTO newStepDTO = new StepDTO(null, 3, "Step 3", StepType.AND.ordinal());
+        StepDTO newStepDTO = new StepDTO(null, 3, "Step 3", StepType.AND);
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
