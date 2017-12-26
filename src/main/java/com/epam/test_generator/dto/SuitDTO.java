@@ -1,7 +1,7 @@
 package com.epam.test_generator.dto;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -29,14 +29,13 @@ public class SuitDTO {
     @Max(value = 5)
     private Integer priority;
 
-    private String creationDate;
+    private Date creationDate;
 
     @Size(max = 255)
     private String tags;
 
     public SuitDTO() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        creationDate = formatter.format(Calendar.getInstance().getTime());
+        creationDate = Calendar.getInstance().getTime();
     }
 
     public SuitDTO(Long id, String name, String description) {
@@ -46,7 +45,7 @@ public class SuitDTO {
     }
 
     public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
-                   String creationDate, String tags) {
+                   Date creationDate, String tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -106,11 +105,11 @@ public class SuitDTO {
         this.priority = priority;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -139,8 +138,6 @@ public class SuitDTO {
             : suitDTO.description == null)
             && (cases != null ? cases.equals(suitDTO.cases) : suitDTO.cases == null)
             && (priority != null ? priority.equals(suitDTO.priority) : suitDTO.priority == null)
-            && (creationDate != null ? creationDate.equals(suitDTO.creationDate)
-            : suitDTO.creationDate == null)
             && (tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null);
     }
 
@@ -151,7 +148,6 @@ public class SuitDTO {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (cases != null ? cases.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
     }

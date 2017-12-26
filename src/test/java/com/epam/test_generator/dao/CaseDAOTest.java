@@ -67,20 +67,18 @@ public class CaseDAOTest {
 
     @Test
     public void testChangeUpdateDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-
         Case originalCase = retrieveCase();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, Calendar.SEPTEMBER, 9);
 
-        originalCase.setUpdateDate(formatter.format(calendar.getTime()));
-        originalCase.setCreationDate(formatter.format(calendar.getTime()));
+        originalCase.setUpdateDate(calendar.getTime());
+        originalCase.setCreationDate(calendar.getTime());
         caseDAO.save(originalCase);
-        originalCase.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        originalCase.setUpdateDate(Calendar.getInstance().getTime());
         long id = caseDAO.save(originalCase).getId();
 
         Case newCase = retrieveCase();
-        newCase.setCreationDate(formatter.format(calendar.getTime()));
+        newCase.setCreationDate(calendar.getTime());
         newCase.setId(id);
 
         Assert.assertEquals(newCase, caseDAO.findOne(id));
@@ -133,19 +131,19 @@ public class CaseDAOTest {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
         return new Case("Case description", new ArrayList<>(),
-                formatter.format(Calendar.getInstance().getTime()), formatter.format(Calendar.getInstance().getTime()),
+                Calendar.getInstance().getTime(), Calendar.getInstance().getTime(),
                 3, new HashSet<>(), Status.NOT_RUN);
     }
 
     private List<Case> retrieveCaseList() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
-        Case case1 = new Case("Case1 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
-                formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>(), Status.NOT_RUN);
-        Case case2 = new Case("Case2 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
-                formatter.format(Calendar.getInstance().getTime()), 1, new HashSet<>(), Status.NOT_RUN);
-        Case case3 = new Case("Case3 description", new ArrayList<>(), formatter.format(Calendar.getInstance().getTime()),
-                formatter.format(Calendar.getInstance().getTime()), 3, new HashSet<>(), Status.NOT_RUN);
+        Case case1 = new Case("Case1 description", new ArrayList<>(), Calendar.getInstance().getTime(),
+                Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
+        Case case2 = new Case("Case2 description", new ArrayList<>(), Calendar.getInstance().getTime(),
+                Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN);
+        Case case3 = new Case("Case3 description", new ArrayList<>(), Calendar.getInstance().getTime(),
+                Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
 
         ArrayList<Case> cases = new ArrayList<>();
         cases.add(case1);

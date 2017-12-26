@@ -17,7 +17,6 @@ import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +84,7 @@ public class CaseService {
 
         caseBelongsToSuit(caze, suit);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        caze.setUpdateDate(formatter.format(Calendar.getInstance().getTime()));
+        caze.setUpdateDate(Calendar.getInstance().getTime());
 
         if (editCaseDTO.getDescription() != null) {
             caze.setDescription(editCaseDTO.getDescription());

@@ -1,8 +1,8 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
@@ -22,9 +22,9 @@ public class CaseDTO {
     @Valid
     private List<StepDTO> steps;
 
-    private String creationDate;
+    private Date creationDate;
 
-    private String updateDate;
+    private Date updateDate;
 
     @NotNull
     @Min(value = 1)
@@ -39,10 +39,8 @@ public class CaseDTO {
     private Status status;
 
     public CaseDTO() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        creationDate = formatter.format(Calendar.getInstance().getTime());
-        updateDate = formatter.format(Calendar.getInstance().getTime());
-
+        creationDate = Calendar.getInstance().getTime();
+        updateDate = creationDate;
     }
 
     public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority,
@@ -79,19 +77,19 @@ public class CaseDTO {
         this.steps = steps;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
-    public String getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
 
@@ -134,10 +132,6 @@ public class CaseDTO {
             && (description != null ? description.equals(caseDTO.description)
             : caseDTO.description == null)
             && (steps != null ? steps.equals(caseDTO.steps) : caseDTO.steps == null)
-            && (creationDate != null ? creationDate.equals(caseDTO.creationDate)
-            : caseDTO.creationDate == null)
-            && (updateDate != null ? updateDate.equals(caseDTO.updateDate)
-            : caseDTO.updateDate == null)
             && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
             && (tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null)
             && (status != null ? status.equals(caseDTO.status) : caseDTO.status == null);
@@ -148,8 +142,6 @@ public class CaseDTO {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (steps != null ? steps.hashCode() : 0);
-        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-        result = 31 * result + (updateDate != null ? updateDate.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);

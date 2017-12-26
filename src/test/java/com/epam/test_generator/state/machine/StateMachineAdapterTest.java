@@ -47,8 +47,7 @@ public class StateMachineAdapterTest {
 
     @Before
     public void setUp() {
-        cs = new Case("descr", new ArrayList<>(), "crDate",
-            "updDate", 1, new HashSet<>(),
+        cs = new Case("descr", new ArrayList<>(), 1, new HashSet<>(),
             Status.NOT_RUN);
     }
 

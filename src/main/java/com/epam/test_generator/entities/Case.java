@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,9 +30,9 @@ public class Case implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Step> steps;
 
-    private String creationDate;
+    private Date creationDate;
 
-    private String updateDate;
+    private Date updateDate;
 
     private Integer priority;
 
@@ -42,9 +43,8 @@ public class Case implements Serializable {
     private Set<Tag> tags;
 
     public Case() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        creationDate = formatter.format(Calendar.getInstance().getTime());
-        updateDate = formatter.format(Calendar.getInstance().getTime());
+        creationDate = Calendar.getInstance().getTime();
+        updateDate = creationDate;
     }
 
     public Case(Long id, String description, List<Step> steps, Integer priority, Set<Tag> tags) {
@@ -56,12 +56,23 @@ public class Case implements Serializable {
         this.tags = tags;
     }
 
-    public Case(String description, List<Step> steps, String creationDate, String updateDate,
+    public Case(String description, List<Step> steps, Date creationDate, Date updateDate,
                 Integer priority, Set<Tag> tags, Status status) {
         this.description = description;
         this.steps = steps;
         this.creationDate = creationDate;
         this.updateDate = updateDate;
+        this.priority = priority;
+        this.tags = tags;
+
+        this.status = status;
+    }
+
+    public Case(String description, List<Step> steps,
+        Integer priority, Set<Tag> tags, Status status) {
+        this();
+        this.description = description;
+        this.steps = steps;
         this.priority = priority;
         this.tags = tags;
 
@@ -111,19 +122,19 @@ public class Case implements Serializable {
         this.steps = steps;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
-    public String getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
 
@@ -179,9 +190,6 @@ public class Case implements Serializable {
             && (description != null ? description.equals(aCase.description)
             : aCase.description == null)
             && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
-            && (creationDate != null ? creationDate.equals(aCase.creationDate)
-            : aCase.creationDate == null)
-            && (updateDate != null ? updateDate.equals(aCase.updateDate) : aCase.updateDate == null)
             && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
             && (status != null ? status.equals(aCase.status) : aCase.status == null)
             && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);

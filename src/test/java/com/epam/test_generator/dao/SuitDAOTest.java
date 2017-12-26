@@ -143,19 +143,19 @@ public class SuitDAOTest {
     private Suit retriveSuit() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         return new Suit("Suit1", "Suit1 description", 3,
-                formatter.format(Calendar.getInstance().getTime()), "tag1,tag2", new ArrayList<>());
+                Calendar.getInstance().getTime(), "tag1,tag2", new ArrayList<>());
     }
 
     private List<Suit> retrieveSuiteList() {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Suit suit1 = new Suit("Suit1", "Suit1 description", 5,
-                formatter.format(Calendar.getInstance().getTime()), "tag1 tag2", new ArrayList<>());
+                Calendar.getInstance().getTime(), "tag1 tag2", new ArrayList<>());
 
         Suit suit2 = new Suit("Suit2", "Suit2 description", 5,
-                formatter.format(Calendar.getInstance().getTime()), "tag1 ", new ArrayList<>());
+                Calendar.getInstance().getTime(), "tag1 ", new ArrayList<>());
 
         Suit suit3 = new Suit("Suit3", "Suit3 description", 5,
-                formatter.format(Calendar.getInstance().getTime()), "tag1 tag3", new ArrayList<>());
+                Calendar.getInstance().getTime(), "tag1 tag3", new ArrayList<>());
 
         ArrayList<Suit> suits = new ArrayList<>();
         suits.add(suit1);

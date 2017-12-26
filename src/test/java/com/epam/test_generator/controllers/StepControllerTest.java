@@ -11,6 +11,9 @@ import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +73,7 @@ public class StepControllerTest {
 
 
     @Before
-    public void setUp(){
+    public void setUp() throws ParseException {
         this.mockMvc = MockMvcBuilders.standaloneSetup(stepController)
                 .setControllerAdvice(new GlobalExceptionController())
                 .build();
@@ -83,14 +86,16 @@ public class StepControllerTest {
         stepDTOS= new ArrayList<>();
         stepDTOS.add(stepDTO);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+
         caseDTO = new CaseDTO();
         caseDTO.setId(SIMPLE_CASE_ID);
-        caseDTO.setCreationDate("12.05.2017");
+        caseDTO.setCreationDate(formatter.parse("12.05.2017"));
         caseDTO.setDescription("description of case");
         caseDTO.setSteps(stepDTOS);
         caseDTO.setPriority(2);
         caseDTO.setTags(null);
-        caseDTO.setUpdateDate("13.06.2017");
+        caseDTO.setUpdateDate(formatter.parse("13.06.2017"));
 
         caseDTOS = new ArrayList<>();
         caseDTOS.add(caseDTO);
@@ -99,7 +104,7 @@ public class StepControllerTest {
 
         suitDTO.setId(SIMPLE_SUIT_ID);
         suitDTO.setCases(caseDTOS);
-        suitDTO.setCreationDate("11.11.2011");
+        suitDTO.setCreationDate(formatter.parse("11.11.2011"));
         suitDTO.setDescription("description of suit");
         suitDTO.setName("the name of suit");
         suitDTO.setPriority(1);

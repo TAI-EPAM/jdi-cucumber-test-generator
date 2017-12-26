@@ -3,6 +3,7 @@ package com.epam.test_generator.entities;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ public class Suit implements Serializable {
 
     private Integer priority;
 
-    private String creationDate;
+    private Date creationDate;
 
     private String tags;
 
@@ -32,9 +33,7 @@ public class Suit implements Serializable {
     private List<Case> cases;
 
     public Suit() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-
-        creationDate = formatter.format(Calendar.getInstance().getTime());
+        creationDate = Calendar.getInstance().getTime();
     }
 
     public Suit(Long id, String name, String description, List<Case> cases, Integer priority,
@@ -47,7 +46,7 @@ public class Suit implements Serializable {
         this.tags = tags;
     }
 
-    public Suit(String name, String description, Integer priority, String creationDate, String tags,
+    public Suit(String name, String description, Integer priority, Date creationDate, String tags,
                 List<Case> cases) {
         this.name = name;
         this.description = description;
@@ -57,7 +56,7 @@ public class Suit implements Serializable {
         this.cases = cases;
     }
 
-    public Suit(Long id, String name, String description, Integer priority, String creationDate,
+    public Suit(Long id, String name, String description, Integer priority, Date creationDate,
                 String tags, List<Case> cases) {
         this.id = id;
         this.name = name;
@@ -103,19 +102,17 @@ public class Suit implements Serializable {
         this.description = description;
     }
 
-    public Integer getPriority() {
-        return priority;
-    }
+    public Integer getPriority() { return priority; }
 
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -177,8 +174,6 @@ public class Suit implements Serializable {
             && (description != null ? description.equals(suit.description)
             : suit.description == null)
             && (priority != null ? priority.equals(suit.priority) : suit.priority == null)
-            && (creationDate != null ? creationDate.equals(suit.creationDate)
-            : suit.creationDate == null)
             && (tags != null ? tags.equals(suit.tags) : suit.tags == null)
             && (cases != null ? cases.equals(suit.cases) : suit.cases == null);
     }
