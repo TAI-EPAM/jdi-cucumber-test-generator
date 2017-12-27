@@ -1,35 +1,31 @@
 package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.Step;
-import com.epam.test_generator.entities.StepType;
-import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.entities.Tag;
+import com.epam.test_generator.entities.*;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.StepTransformer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -281,4 +277,36 @@ public class StepServiceTest {
 		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
 	}
 
+    @Test
+    public void cascadeUpdateSteps() {
+        StepDTO actionCreateDTO = new StepDTO(null, 1, "New Step 1", null);
+        StepDTO actionDeleteDTO = new StepDTO(3L, 2, "New Step 2", null);
+        StepDTO actionUpdateDTO  = new StepDTO(4L, 3, "New Step 3", null);
+        actionCreateDTO.setAction(Action.CREATE);
+        actionDeleteDTO.setAction(Action.DELETE);
+        actionUpdateDTO.setAction(Action.UPDATE);
+
+        StepService mock = mock(StepService.class);
+        Mockito.doCallRealMethod().when(mock).cascadeUpdateSteps(anyLong(),anyInt(),anyList());
+        mock.cascadeUpdateSteps(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, Lists.newArrayList(actionCreateDTO, actionDeleteDTO, actionUpdateDTO));
+
+        verify(mock , times(1)).addStepToCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID, actionCreateDTO);
+        verify(mock, times(1)).updateStep(SIMPLE_SUIT_ID,SIMPLE_CASE_ID, actionUpdateDTO.getId(),actionUpdateDTO);
+        verify(mock, times(1)).removeStep(SIMPLE_SUIT_ID,SIMPLE_CASE_ID, actionDeleteDTO.getId());
+    }
+
+    @Test
+    public void cascadeUpdateSteps_WithoutActions() {
+        StepDTO actionCreateDTO = new StepDTO(null, 1, "New Step 1", null);
+        StepDTO actionDeleteDTO = new StepDTO(3L, 2, "New Step 2", null);
+        StepDTO actionUpdateDTO  = new StepDTO(4L, 3, "New Step 3", null);
+
+        StepService mock = mock(StepService.class);
+        Mockito.doCallRealMethod().when(mock).cascadeUpdateSteps(anyLong(),anyInt(),anyList());
+        mock.cascadeUpdateSteps(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, Lists.newArrayList(actionCreateDTO, actionDeleteDTO, actionUpdateDTO));
+
+        verify(mock, never()).addStepToCase(anyLong(),anyLong(), any(StepDTO.class));
+        verify(mock, never()).updateStep(anyLong(),anyLong(),anyLong(), any(StepDTO.class));
+        verify(mock, never()).removeStep(anyLong(),anyLong(), anyLong());
+    }
 }

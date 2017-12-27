@@ -5,6 +5,7 @@ import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.StepDTO;
+import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
@@ -122,5 +123,34 @@ public class StepService {
         stepDAO.delete(stepId);
 
         caseVersionDAO.save(caze);
+    }
+
+    /**
+     * This service method is specialized for 'adding' 'editing' and 'deleting' a list of steps
+     *
+     * For selecting required action uses "action" field from DTO object
+     *
+     * @param steps array list of steps
+     */
+    public void cascadeUpdateSteps(long suitId, long caseId, List<StepDTO> steps) {
+        for (StepDTO stepDTO : steps) {
+            Action action = stepDTO.getAction();
+            if (action != null) {
+                switch (action) {
+                    case UPDATE:
+                        updateStep(suitId, caseId, stepDTO.getId(), stepDTO);
+                        break;
+                    case CREATE:
+                        addStepToCase(suitId, caseId, stepDTO);
+                        break;
+                    case DELETE:
+                        removeStep(suitId, caseId, stepDTO.getId());
+                        break;
+                    default:
+                        // Do nothing
+                        break;
+                }
+            }
+        }
     }
 }

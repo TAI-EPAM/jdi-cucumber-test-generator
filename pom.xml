@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <fasterxml.version>2.5.1</fasterxml.version>
+        <fasterxml.version>2.9.0</fasterxml.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <spring.version>4.3.10.RELEASE</spring.version>
         <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.execution.data.file>

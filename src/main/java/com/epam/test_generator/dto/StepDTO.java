@@ -1,9 +1,10 @@
 package com.epam.test_generator.dto;
 
+import com.epam.test_generator.entities.Action;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.epam.test_generator.entities.StepType;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,6 +12,9 @@ import javax.validation.constraints.Size;
 public class StepDTO {
 
     private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Action action;
 
     @NotNull
     @Min(value = 1)
@@ -63,6 +67,14 @@ public class StepDTO {
 
     public void setType(StepType type) {
         this.type = type;
+    }
+
+    public void setAction(Action action){
+        this.action = action;
+    }
+
+    public Action getAction(){
+        return action;
     }
 
     @Override

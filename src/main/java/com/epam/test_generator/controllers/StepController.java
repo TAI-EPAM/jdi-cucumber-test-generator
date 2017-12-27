@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +122,37 @@ public class StepController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    /**
+     * This method is specialized for cascading adding editing and deleting a list of steps
+     *
+     * @param steps array list of steps from JSON object
+     * @return HTTP status of operation
+     */
+    @ApiOperation(value = "Cascade update of the list with steps", nickname = "updateSteps")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
+            @ApiResponse(code = 404, message = "Suit/Case/Step not found")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+                    required = true, dataType = "long", paramType = "path"),
+            @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
+                    required = true, dataType = "long", paramType = "path"),
+            @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
+                    required = true, dataType = "StepDTO", paramType = "body")
+    })
+    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<Void> updateSteps(@PathVariable("suitId") long suitId,
+                                           @PathVariable("caseId") long caseId,
+                                           @RequestBody @Valid List<StepDTO> steps) {
+        stepService.cascadeUpdateSteps(suitId, caseId, steps);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @ApiOperation(value = "Delete step by id", nickname = "removeCase")
     @ApiResponses(value = {

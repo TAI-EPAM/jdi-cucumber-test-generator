@@ -19,12 +19,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.Not;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -346,4 +345,35 @@ public class StepControllerTest {
     }
 
 
+    @Test
+    public void updateSteps_return200whenUpdateSteps() throws Exception {
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(stepDTOS)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(stepService).cascadeUpdateSteps(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),anyList());
+        verify(stepService, never()).addStepToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),any(StepDTO.class));
+        verify(stepService, never()).removeStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService, never()).updateStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),eq(SIMPLE_STEP_ID) ,any(StepDTO.class));
+    }
+
+    @Test
+    public void updateSteps_return404whenSuitNotExistOrCaseNotExistOrStepNotExist() throws Exception {
+        Mockito.doCallRealMethod().when(stepService).cascadeUpdateSteps(anyLong(),anyInt(),anyList());
+        doThrow(NotFoundException.class).when(stepService).removeStep(anyLong(), anyLong(), anyLong());
+
+        String request = mapper.writeValueAsString(stepDTOS);
+        // By default the action field is hidden in JSON, must added to request manually
+        request = request.replace("}]", ",\"action\":\"DELETE\"}]");
+
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(stepService).cascadeUpdateSteps(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),eq(stepDTOS));
+    }
 }
