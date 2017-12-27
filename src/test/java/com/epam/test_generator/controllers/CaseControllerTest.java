@@ -113,27 +113,6 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void testGetCases_return200whenGetCases() throws Exception {
-
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases"))
-            .andDo(print())
-            .andExpect(status().isOk());
-
-        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
-    }
-
-    @Test
-    public void testGetCases_return404whenSuitNotExist() throws Exception {
-        when(suitService.getSuit(anyLong())).thenThrow(new NotFoundException());
-
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-
-        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
-    }
-
-    @Test
     public void testGetCase_return200whenGetCase() throws Exception {
         when(casesService.getCase(anyLong(), anyLong())).thenReturn(caseDTO);
 

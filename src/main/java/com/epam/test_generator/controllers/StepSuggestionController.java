@@ -25,6 +25,7 @@ public class StepSuggestionController {
     })
     @RequestMapping(value = "/stepSuggestions", method = RequestMethod.GET,
         produces = "application/json")
+    @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestions() {
 
         return new ResponseEntity<>(stepSuggestionService.getStepsSuggestions(), HttpStatus.OK);
@@ -39,7 +40,8 @@ public class StepSuggestionController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "stepType",
             value = "Type of step suggestion that we want to return",
-            required = true, dataType = "StepType", paramType = "path")
+            required = true, dataType = "StepType", paramType = "path"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/stepSuggestions/{stepType}",
         method = RequestMethod.GET, produces = "application/json")
@@ -57,7 +59,8 @@ public class StepSuggestionController {
     })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "stepSuggestionDTO", value = "Added step suggestion object",
-            required = true, dataType = "StepSuggestionDTO", paramType = "body")
+            required = true, dataType = "StepSuggestionDTO", paramType = "body"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST,
@@ -79,7 +82,8 @@ public class StepSuggestionController {
         @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to update",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepSuggestionDTO", value = "Updated step suggestion object",
-            required = true, dataType = "StepSuggestionDTO", paramType = "body")
+            required = true, dataType = "StepSuggestionDTO", paramType = "body"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<Void> updateStepSuggestion(
@@ -98,7 +102,8 @@ public class StepSuggestionController {
     })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to delete",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}",
         method = RequestMethod.DELETE, produces = "application/json")

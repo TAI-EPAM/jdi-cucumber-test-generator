@@ -43,7 +43,9 @@ public class CaseController {
     })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+
     })
     @RequestMapping(value = "/suits/{suitId}/cases",
         method = RequestMethod.GET, produces = "application/json")
@@ -62,12 +64,13 @@ public class CaseController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to return",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId) {
+        @PathVariable("caseId") long caseId) {
 
         return new ResponseEntity<>(caseService.getCase(suitId, caseId), HttpStatus.OK);
     }
@@ -82,13 +85,15 @@ public class CaseController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseDTO", value = "Added case object",
-            required = true, dataType = "CaseDTO", paramType = "body")
+            required = true, dataType = "CaseDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+
     })
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addCaseToSuit(@PathVariable("suitId") long suitId,
-                                              @RequestBody @Valid CaseDTO caseDTO) {
+        @RequestBody @Valid CaseDTO caseDTO) {
 
         return new ResponseEntity<>(caseService.addCaseToSuit(suitId, caseDTO), HttpStatus.CREATED);
     }
@@ -105,7 +110,8 @@ public class CaseController {
         @ApiImplicitParam(name = "caseId", value = "ID of case to update",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseDTO", value = "Updated case object",
-            required = true, dataType = "CaseDTO", paramType = "body")
+            required = true, dataType = "CaseDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.PUT, consumes = "application/json")
@@ -127,11 +133,12 @@ public class CaseController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to delete",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId) {
+        @PathVariable("caseId") long caseId) {
         caseService.removeCase(suitId, caseId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -147,12 +154,13 @@ public class CaseController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "removeCaseIds", value = "IDs of cases to be removed",
-            required = true, dataType = "Long[]", paramType = "body")
+            required = true, dataType = "Long[]", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE,
         consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
-                                            @RequestBody Long[] removeCaseIds) {
+        @RequestBody Long[] removeCaseIds) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
         List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
             .map(CaseDTO::getId)
@@ -178,7 +186,8 @@ public class CaseController {
         @ApiImplicitParam(name = "caseId", value = "IDs of cases to perform event on",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "event", value = "Name of event to be performed",
-            required = true, dataType = "String", paramType = "path")
+            required = true, dataType = "String", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "suits/{suitId}/cases/{caseId}/events/{event}", method = RequestMethod.PUT,
         consumes = "application/json")

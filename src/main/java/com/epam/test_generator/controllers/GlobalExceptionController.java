@@ -1,13 +1,17 @@
 package com.epam.test_generator.controllers;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import com.epam.test_generator.dto.ErrorDTO;
+
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
@@ -44,4 +48,15 @@ public class GlobalExceptionController {
 
         return new ResponseEntity<>(validationErrorsDTO, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = {JWTVerificationException.class})
+    public ResponseEntity<ErrorDTO> tokenInvalid(JWTVerificationException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<ErrorDTO> loginFailed(AuthenticationException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.UNAUTHORIZED);
+    }
+
 }

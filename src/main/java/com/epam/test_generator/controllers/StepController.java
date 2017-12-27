@@ -38,12 +38,13 @@ public class StepController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains steps",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepDTO>> getStepsByCaseId(@PathVariable("suitId") long suitId,
-                                                          @PathVariable("caseId") long caseId) {
+        @PathVariable("caseId") long caseId) {
 
         return new ResponseEntity<>(stepService.getStepsByCaseId(suitId, caseId), HttpStatus.OK);
     }
@@ -59,13 +60,14 @@ public class StepController {
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepId", value = "ID of step to return",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<StepDTO> getStepByStepId(@PathVariable(value = "suitId") long suitId,
-                                                   @PathVariable("caseId") long caseId,
-                                                   @PathVariable(value = "stepId") long stepId) {
+        @PathVariable("caseId") long caseId,
+        @PathVariable(value = "stepId") long stepId) {
 
         return new ResponseEntity<>(stepService.getStep(suitId, caseId, stepId),
             HttpStatus.OK);
@@ -84,14 +86,15 @@ public class StepController {
         @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new step",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepDTO", value = "Added step object",
-            required = true, dataType = "StepDTO", paramType = "body")
+            required = true, dataType = "StepDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addStepToCase(@PathVariable("suitId") long suitId,
-                                              @PathVariable("caseId") long caseId,
-                                              @RequestBody @Valid StepDTO stepDTO) {
+        @PathVariable("caseId") long caseId,
+        @RequestBody @Valid StepDTO stepDTO) {
 
         return new ResponseEntity<>(stepService.addStepToCase(suitId, caseId, stepDTO),
             HttpStatus.CREATED);
@@ -111,13 +114,14 @@ public class StepController {
         @ApiImplicitParam(name = "stepId", value = "ID of step to update",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepDTO", value = "Updated step object",
-            required = true, dataType = "StepDTO", paramType = "boy")
+            required = true, dataType = "StepDTO", paramType = "boy"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateStep(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId,
-                                           @PathVariable("stepId") long stepId,
-                                           @RequestBody @Valid StepDTO stepDTO) {
+        @PathVariable("caseId") long caseId,
+        @PathVariable("stepId") long stepId,
+        @RequestBody @Valid StepDTO stepDTO) {
         stepService.updateStep(suitId, caseId, stepId, stepDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -165,13 +169,14 @@ public class StepController {
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepId", value = "ID of step to delete",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId,
-                                           @PathVariable("stepId") long stepId) {
+        @PathVariable("caseId") long caseId,
+        @PathVariable("stepId") long stepId) {
         stepService.removeStep(suitId, caseId, stepId);
 
         return new ResponseEntity<>(HttpStatus.OK);

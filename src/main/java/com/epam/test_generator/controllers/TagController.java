@@ -5,14 +5,22 @@ import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.CaseService;
-import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.TagService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.Set;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TagController {
@@ -30,7 +38,8 @@ public class TagController {
     })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases with tags",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/tags",
         method = RequestMethod.GET, produces = "application/json")
@@ -49,7 +58,8 @@ public class TagController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains tags",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags",
         method = RequestMethod.GET, produces = "application/json")
@@ -72,7 +82,8 @@ public class TagController {
         @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new tag",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "tagDTO", value = "Added tag object",
-            required = true, dataType = "TagDTO", paramType = "body")
+            required = true, dataType = "TagDTO", paramType = "body"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST,
@@ -99,7 +110,8 @@ public class TagController {
         @ApiImplicitParam(name = "tagId", value = "ID of tag to update",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "tagDTO", value = "Updated tag object",
-            required = true, dataType = "TagDTO", paramType = "body")
+            required = true, dataType = "TagDTO", paramType = "body"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateTag(@PathVariable("suitId") long suitId,
@@ -122,7 +134,8 @@ public class TagController {
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "tagId", value = "ID of tag to delete",
-            required = true, dataType = "long", paramType = "path")
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}",
         method = RequestMethod.DELETE, produces = "application/json")

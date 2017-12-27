@@ -27,4 +27,8 @@
             <b set-method="setType" get-method="getType">type</b>
         </field>
     </mapping>
+    <mapping map-null="false">
+        <class-a>com.epam.test_generator.entities.User</class-a>
+        <class-b>com.epam.test_generator.dto.UserDTO</class-b>
+    </mapping>
 </mappings>
