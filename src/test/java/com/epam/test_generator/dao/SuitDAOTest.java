@@ -4,6 +4,15 @@ import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,14 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={DatabaseConfigForTests.class})
+@ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
 public class SuitDAOTest {
 
@@ -29,7 +32,6 @@ public class SuitDAOTest {
     public void testCreateAndRetrieve() {
         final Suit originalSuit = retriveSuit();
         final long id = suitDAO.save(originalSuit).getId();
-
 
         final Suit newSuit = retriveSuit();
 
@@ -86,7 +88,6 @@ public class SuitDAOTest {
         Assert.assertEquals(tagsWithIds.size(), tagsWithoutIds.size());
 
         final Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
-
 
         newSuit.setId(id);
         newSuit.setDescription("modified description");
@@ -182,19 +183,19 @@ public class SuitDAOTest {
     private Suit retriveSuit() {
         final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         return new Suit("Suit1", "Suit1 description", 3,
-                Calendar.getInstance().getTime(), retrieveTagList("tag1","tag2"), new ArrayList<>());
+            Calendar.getInstance().getTime(), retrieveTagList("tag1", "tag2"), new ArrayList<>());
     }
 
     private List<Suit> retrieveSuiteList() {
         final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         final Suit suit1 = new Suit("Suit1", "Suit1 description", 5,
-                Calendar.getInstance().getTime(), retrieveTagList("tag1","tag2"), new ArrayList<>());
+            Calendar.getInstance().getTime(), retrieveTagList("tag1", "tag2"), new ArrayList<>());
 
         final Suit suit2 = new Suit("Suit2", "Suit2 description", 5,
-                Calendar.getInstance().getTime(), retrieveTagList("tag1"), new ArrayList<>());
+            Calendar.getInstance().getTime(), retrieveTagList("tag1"), new ArrayList<>());
 
         final Suit suit3 = new Suit("Suit3", "Suit3 description", 5,
-                Calendar.getInstance().getTime(), retrieveTagList("tag1","tag3"), new ArrayList<>());
+            Calendar.getInstance().getTime(), retrieveTagList("tag1", "tag3"), new ArrayList<>());
 
         final List<Suit> suits = new ArrayList<>();
         suits.add(suit1);
@@ -203,7 +204,7 @@ public class SuitDAOTest {
         return suits;
     }
 
-    private Set<Tag> retrieveTagList(String ... tags){
+    private Set<Tag> retrieveTagList(String... tags) {
         return Stream.of(tags).map(Tag::new).collect(Collectors.toSet());
     }
 

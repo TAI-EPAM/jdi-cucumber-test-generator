@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class StepController {
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepDTO>> getStepsByCaseId(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId) {
+                                                          @PathVariable("caseId") long caseId) {
 
         return new ResponseEntity<>(stepService.getStepsByCaseId(suitId, caseId), HttpStatus.OK);
     }
@@ -66,8 +65,8 @@ public class StepController {
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<StepDTO> getStepByStepId(@PathVariable(value = "suitId") long suitId,
-        @PathVariable("caseId") long caseId,
-        @PathVariable(value = "stepId") long stepId) {
+                                                   @PathVariable("caseId") long caseId,
+                                                   @PathVariable(value = "stepId") long stepId) {
 
         return new ResponseEntity<>(stepService.getStep(suitId, caseId, stepId),
             HttpStatus.OK);
@@ -93,8 +92,8 @@ public class StepController {
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addStepToCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId,
-        @RequestBody @Valid StepDTO stepDTO) {
+                                              @PathVariable("caseId") long caseId,
+                                              @RequestBody @Valid StepDTO stepDTO) {
 
         return new ResponseEntity<>(stepService.addStepToCase(suitId, caseId, stepDTO),
             HttpStatus.CREATED);
@@ -119,9 +118,9 @@ public class StepController {
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateStep(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId,
-        @PathVariable("stepId") long stepId,
-        @RequestBody @Valid StepDTO stepDTO) {
+                                           @PathVariable("caseId") long caseId,
+                                           @PathVariable("stepId") long stepId,
+                                           @RequestBody @Valid StepDTO stepDTO) {
         stepService.updateStep(suitId, caseId, stepId, stepDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -136,22 +135,22 @@ public class StepController {
      */
     @ApiOperation(value = "Cascade update of the list with steps", nickname = "updateSteps")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
-            @ApiResponse(code = 404, message = "Suit/Case/Step not found")
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
+        @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
-                    required = true, dataType = "long", paramType = "path"),
-            @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
-                    required = true, dataType = "long", paramType = "path"),
-            @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
-                    required = true, dataType = "StepDTO", paramType = "body")
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
+            required = true, dataType = "StepDTO", paramType = "body")
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateSteps(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId,
-                                           @RequestBody @Valid List<StepDTO> steps) {
+                                            @PathVariable("caseId") long caseId,
+                                            @RequestBody @Valid List<StepDTO> steps) {
         stepService.cascadeUpdateSteps(suitId, caseId, steps);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -175,8 +174,8 @@ public class StepController {
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId,
-        @PathVariable("stepId") long stepId) {
+                                           @PathVariable("caseId") long caseId,
+                                           @PathVariable("stepId") long stepId) {
         stepService.removeStep(suitId, caseId, stepId);
 
         return new ResponseEntity<>(HttpStatus.OK);

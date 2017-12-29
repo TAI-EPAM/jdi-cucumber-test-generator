@@ -20,13 +20,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class StatesControllerTest {
 
-    private MockMvc mockMvc;
-
     Status status = Status.NOT_RUN;
-
     @Mock
     StatesService statesService;
-
+    private MockMvc mockMvc;
     @InjectMocks
     private StatesController statesController;
 
@@ -44,7 +41,6 @@ public class StatesControllerTest {
         mockMvc.perform(get("/events/" + status))
             .andDo(print())
             .andExpect(status().isOk());
-
 
         verify(statesService).availableTransitions(eq(status));
 

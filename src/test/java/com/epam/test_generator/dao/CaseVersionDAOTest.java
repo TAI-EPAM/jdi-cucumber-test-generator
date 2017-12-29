@@ -1,11 +1,11 @@
 package com.epam.test_generator.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.JaversConfig;
 import com.epam.test_generator.dao.impl.CaseVersionDAOImpl;
-import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
@@ -43,9 +43,9 @@ public class CaseVersionDAOTest {
     @Before
     public void setUp() {
 
-        caze = new Case(CASE_ID,"name", "description", Lists.newArrayList(), 1,
+        caze = new Case(CASE_ID, "name", "description", Lists.newArrayList(), 1,
             Sets.newHashSet());
-        Case caze2 = new Case(CASE_ID2,"name", "description2", Lists.newArrayList(), 1,
+        Case caze2 = new Case(CASE_ID2, "name", "description2", Lists.newArrayList(), 1,
             Sets.newHashSet());
         caseList = Arrays.asList(caze, caze2);
 

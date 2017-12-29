@@ -4,6 +4,12 @@ import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,15 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={DatabaseConfigForTests.class})
+@ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
 public class CaseDAOTest {
 
@@ -52,6 +51,7 @@ public class CaseDAOTest {
         Assert.assertEquals(newCase.getName(), caseDAO.findOne(id).getName());
 
     }
+
     @Test
     public void testUpdateDescription() {
         Case originalCase = retrieveCase();
@@ -146,18 +146,21 @@ public class CaseDAOTest {
     private Case retrieveCase() {
 
         return new Case("Case name", "Case description", new ArrayList<>(),
-                Calendar.getInstance().getTime(), Calendar.getInstance().getTime(),
-                3, new HashSet<>(), Status.NOT_RUN);
+            Calendar.getInstance().getTime(), Calendar.getInstance().getTime(),
+            3, new HashSet<>(), Status.NOT_RUN);
     }
 
     private List<Case> retrieveCaseList() {
 
-        final Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(), Calendar.getInstance().getTime(),
-                Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
-        final Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(), Calendar.getInstance().getTime(),
-                Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN);
-        final Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(), Calendar.getInstance().getTime(),
-                Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
+        final Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(),
+            Calendar.getInstance().getTime(),
+            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
+        final Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(),
+            Calendar.getInstance().getTime(),
+            Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN);
+        final Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(),
+            Calendar.getInstance().getTime(),
+            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
 
         ArrayList<Case> cases = new ArrayList<>();
         cases.add(case1);

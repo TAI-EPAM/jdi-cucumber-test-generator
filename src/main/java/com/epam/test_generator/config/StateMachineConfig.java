@@ -35,8 +35,8 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<Status
     }
 
     /**
-     * Configures logic of State Machine: defines how transitions
-     * change state.
+     * Configures logic of State Machine: defines how transitions change state.
+     *
      * @param transitions enum that represents list of transitions
      */
     @Override

@@ -42,20 +42,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseControllerTest {
 
-    private ObjectMapper mapper = new ObjectMapper();
-
-    private MockMvc mockMvc;
-
-    private CaseDTO caseDTO;
-
-    private SuitDTO suitDTO;
-
-    private List<CaseDTO> caseDTOList;
-
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
     private static final Long[] CASE_IDS = {3L, 4L, 5L};
-
+    private ObjectMapper mapper = new ObjectMapper();
+    private MockMvc mockMvc;
+    private CaseDTO caseDTO;
+    private SuitDTO suitDTO;
+    private List<CaseDTO> caseDTOList;
     @Mock
     private CaseService casesService;
 

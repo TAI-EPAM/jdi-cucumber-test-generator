@@ -27,16 +27,12 @@ public class TokenServiceTest {
 
     @InjectMocks
     TokenService sut;
-
-    private String badToken;
-    private String goodToken;
-
     @Mock
     LoginUserDTO loginUserDTO;
-
     @Mock
     User user;
-
+    private String badToken;
+    private String goodToken;
 
     @Before
     public void setUp() throws Exception {
@@ -51,28 +47,28 @@ public class TokenServiceTest {
         sut.validate(goodToken);
 
     }
+
     @Test(expected = JWTDecodeException.class)
     public void validate_notValidToken() throws Exception {
         sut.validate(badToken);
     }
 
 
-
     @Test
     public void getToken_ok() throws Exception {
         when(loginUserDTO.getEmail()).thenReturn("email");
         when(userService.getUserByEmail(any())).thenReturn(user);
-        when(userService.isSamePasswords(anyString(),anyString())).thenReturn(true);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
         sut.getToken(loginUserDTO);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void getToken_NoSuchUser() throws Exception{
+    public void getToken_NoSuchUser() throws Exception {
         sut.getToken(loginUserDTO);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void getToken_IncorrectPassword() throws Exception{
+    public void getToken_IncorrectPassword() throws Exception {
         when(loginUserDTO.getEmail()).thenReturn("email");
         when(userService.getUserByEmail(any())).thenReturn(user);
         sut.getToken(loginUserDTO);

@@ -1,23 +1,22 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.file_generator.FileGenerator;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
-import com.epam.test_generator.file_generator.FileGenerator;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.epam.test_generator.services.utils.UtilsService.*;
 
 @Transactional
 @Service
@@ -76,8 +75,10 @@ public class SuitService {
 
     public String generateFile(Long suitId, List<Long> caseIds) throws IOException {
         Suit suit = suitDAO.findOne(suitId);
-        List<Case> cases = caseIds.stream().map(id -> caseDAO.findOne(id)).collect(Collectors.toList());
+        List<Case> cases = caseIds.stream().map(id -> caseDAO.findOne(id))
+            .collect(Collectors.toList());
 
-        return fileGenerator.generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
+        return fileGenerator
+            .generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
     }
 }

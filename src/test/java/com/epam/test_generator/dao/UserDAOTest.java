@@ -1,19 +1,18 @@
 package com.epam.test_generator.dao;
 
+import static org.junit.Assert.assertEquals;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.User;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.transaction.Transactional;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class})

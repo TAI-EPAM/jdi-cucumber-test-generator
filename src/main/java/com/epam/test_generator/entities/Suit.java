@@ -1,12 +1,15 @@
 package com.epam.test_generator.entities;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -100,7 +103,9 @@ public class Suit implements Serializable {
         this.description = description;
     }
 
-    public Integer getPriority() { return priority; }
+    public Integer getPriority() {
+        return priority;
+    }
 
     public void setPriority(Integer priority) {
         this.priority = priority;

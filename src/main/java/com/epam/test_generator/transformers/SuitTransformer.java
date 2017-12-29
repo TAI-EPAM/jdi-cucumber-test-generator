@@ -5,7 +5,7 @@ import com.epam.test_generator.entities.Suit;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SuitTransformer extends AbstractDozerTransformer<Suit, SuitDTO>{
+public class SuitTransformer extends AbstractDozerTransformer<Suit, SuitDTO> {
 
     @Override
     protected Class<Suit> getEntityClass() {

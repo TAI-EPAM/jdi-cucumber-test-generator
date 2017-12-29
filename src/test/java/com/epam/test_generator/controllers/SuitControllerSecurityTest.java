@@ -37,29 +37,22 @@ import org.springframework.web.context.WebApplicationContext;
 public class SuitControllerSecurityTest {
 
     private final LoginUserDTO loginUserDTO = new LoginUserDTO();
-
+    @Autowired
+    UserDAO userDAO;
+    @Autowired
+    PasswordEncoder encoder;
+    @InjectMocks
+    @Autowired
+    JwtAuthenticationProvider jwtAuthenticationProvider;
     @Mock
     private
     User invalidUser;
     @Mock
     private
     User validUser;
-
-
-    @Autowired
-    UserDAO userDAO;
-
-    @Autowired
-    PasswordEncoder encoder;
-
     @Mock
     private
     UserService userService;
-
-    @InjectMocks
-    @Autowired
-    JwtAuthenticationProvider jwtAuthenticationProvider;
-
     @InjectMocks
     @Autowired
     private
@@ -84,7 +77,6 @@ public class SuitControllerSecurityTest {
 
         loginUserDTO.setEmail("test@email.com");
         loginUserDTO.setPassword("test");
-
 
         when(invalidUser.getEmail()).thenReturn("test@email.com");
         when(invalidUser.getPassword()).thenReturn("test");

@@ -24,20 +24,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class LoginControllerTest {
 
 
+    @Mock
+    TokenService tokenService;
+    @InjectMocks
+    LoginController loginController;
+    @Mock
+    LoginUserDTO loginUserDTO;
     private MockMvc mockMvc;
     private LoginUserDTO user;
     private ObjectMapper mapper;
-
-
-    @Mock
-    TokenService tokenService;
-
-    @InjectMocks
-    LoginController loginController;
-
-    @Mock
-    LoginUserDTO loginUserDTO;
-
 
     @Before
     public void setUp() throws Exception {

@@ -1,9 +1,12 @@
 package com.epam.test_generator.services.utils;
 
-import com.epam.test_generator.entities.*;
+import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.StepSuggestion;
+import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -44,7 +47,8 @@ public class UtilsService {
     public static void caseBelongsToSuit(Case caze, Suit suit) {
         List<Case> caseList = suit.getCases();
 
-        if (caseList == null || caseList.stream().noneMatch(c -> Objects.equals(c.getId(), caze.getId()))) {
+        if (caseList == null || caseList.stream()
+            .noneMatch(c -> Objects.equals(c.getId(), caze.getId()))) {
             throw new BadRequestException();
         }
     }
@@ -52,7 +56,8 @@ public class UtilsService {
     public static void stepBelongsToCase(Step step, Case caze) {
         List<Step> stepList = caze.getSteps();
 
-        if (stepList == null || stepList.stream().noneMatch(s -> Objects.equals(s.getId(), step.getId()))) {
+        if (stepList == null || stepList.stream()
+            .noneMatch(s -> Objects.equals(s.getId(), step.getId()))) {
             throw new BadRequestException();
         }
     }
@@ -60,7 +65,8 @@ public class UtilsService {
     public static void tagBelongsToCase(Tag tag, Case caze) {
         Set<Tag> tagSet = caze.getTags();
 
-        if (tagSet == null || tagSet.stream().noneMatch(t -> Objects.equals(t.getId(), tag.getId()))) {
+        if (tagSet == null || tagSet.stream()
+            .noneMatch(t -> Objects.equals(t.getId(), tag.getId()))) {
             throw new BadRequestException();
         }
 

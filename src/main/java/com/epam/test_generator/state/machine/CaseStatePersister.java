@@ -10,9 +10,8 @@ import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Component;
 
 /**
- * Defines how persisting works with
- * {@link Case} as class that stores {@link Status}
- * (State Machine state)
+ * Defines how persisting works with {@link Case} as class that stores {@link Status} (State Machine
+ * state)
  */
 @Component
 @WithStateMachine
@@ -20,6 +19,7 @@ public class CaseStatePersister implements StateMachinePersister<Status, Event, 
 
     /**
      * Saves current state of stateMachine to Case
+     *
      * @param stateMachine to get state from
      * @param contextObj to store given state
      */
@@ -30,6 +30,7 @@ public class CaseStatePersister implements StateMachinePersister<Status, Event, 
 
     /**
      * Restore state from case
+     *
      * @param stateMachine to update state
      * @param contextObj that stores state
      * @return state machine with state from Case

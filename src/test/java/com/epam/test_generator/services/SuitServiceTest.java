@@ -27,20 +27,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class SuitServiceTest {
 
+    private static final long SIMPLE_SUIT_ID = 1L;
     @InjectMocks
     private SuitService suitService;
-
     @Mock
     private CaseVersionDAO caseVersionDAO;
-
     @Mock
     private SuitDAO suitDAO;
-
     @Mock
     private SuitTransformer suitTransformer;
-
-    private static final long SIMPLE_SUIT_ID = 1L;
-
     private List<Suit> expectedSuitList;
     private List<SuitDTO> expectedSuitDTOList;
 
@@ -100,22 +95,22 @@ public class SuitServiceTest {
     public void updateSuitTest() {
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
         when(suitDAO.save(any(Suit.class))).thenAnswer(invocationOnMock -> {
-			expectedSuitDTO.setName("new name");
+            expectedSuitDTO.setName("new name");
 
-			return null;
-		});
+            return null;
+        });
 
         SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
         suitService.updateSuit(SIMPLE_SUIT_ID, newSuitDTO);
         assertEquals(expectedSuitDTO.getName(), newSuitDTO.getName());
     }
 
-	@Test(expected = NotFoundException.class)
-	public void updateSuitTest_expectNotFoundException() {
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void updateSuitTest_expectNotFoundException() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		suitService.updateSuit(SIMPLE_SUIT_ID, new SuitDTO());
-	}
+        suitService.updateSuit(SIMPLE_SUIT_ID, new SuitDTO());
+    }
 
     @Test
     public void removeSuitTest() {
@@ -129,11 +124,11 @@ public class SuitServiceTest {
         verify(caseVersionDAO).delete(eq(expectedSuit.getCases()));
     }
 
-	@Test(expected = NotFoundException.class)
-	public void removeSuitTest_expectNotFoundException() {
-		when(suitDAO.findOne(anyLong())).thenReturn(null);
+    @Test(expected = NotFoundException.class)
+    public void removeSuitTest_expectNotFoundException() {
+        when(suitDAO.findOne(anyLong())).thenReturn(null);
 
-		suitService.removeSuit(SIMPLE_SUIT_ID);
-	}
+        suitService.removeSuit(SIMPLE_SUIT_ID);
+    }
 
 }

@@ -59,7 +59,8 @@ public class Case implements Serializable {
         this.tags = tags;
     }
 
-    public Case(String name, String description, List<Step> steps, Date creationDate, Date updateDate,
+    public Case(String name, String description, List<Step> steps, Date creationDate,
+                Date updateDate,
                 Integer priority, Set<Tag> tags, Status status) {
         this.name = name;
         this.description = description;
@@ -73,7 +74,7 @@ public class Case implements Serializable {
     }
 
     public Case(String name, String description, List<Step> steps,
-        Integer priority, Set<Tag> tags, Status status) {
+                Integer priority, Set<Tag> tags, Status status) {
         this();
         this.name = name;
         this.description = description;
@@ -115,6 +116,10 @@ public class Case implements Serializable {
         return steps;
     }
 
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
+
     public void addStep(Step step) {
         if (steps == null) {
             steps = new ArrayList<>();
@@ -129,10 +134,6 @@ public class Case implements Serializable {
         }
 
         tags.add(tag);
-    }
-
-    public void setSteps(List<Step> steps) {
-        this.steps = steps;
     }
 
     public Date getCreationDate() {
@@ -162,6 +163,7 @@ public class Case implements Serializable {
     public Set<Tag> getTags() {
         return tags;
     }
+
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
@@ -176,8 +178,9 @@ public class Case implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
-                id, name, description, steps, creationDate, priority, tags, steps);
+        return String.format(
+            "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
+            id, name, description, steps, creationDate, priority, tags, steps);
     }
 
     @Override
@@ -193,12 +196,12 @@ public class Case implements Serializable {
 
         return (id != null ? id.equals(aCase.id) : aCase.id == null)
             && (name != null ? name.equals(aCase.name) : aCase.name == null)
-                && (description != null ? description.equals(aCase.description)
-                : aCase.description == null)
-                && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
-                && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
-                && (status != null ? status.equals(aCase.status) : aCase.status == null)
-                && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
+            && (description != null ? description.equals(aCase.description)
+            : aCase.description == null)
+            && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
+            && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
+            && (status != null ? status.equals(aCase.status) : aCase.status == null)
+            && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
     }
 
     @Override

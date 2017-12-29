@@ -1,8 +1,8 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
@@ -10,10 +10,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 public class CaseDTO {
 
@@ -147,7 +143,7 @@ public class CaseDTO {
 
         return (id != null ? id.equals(caseDTO.id) : caseDTO.id == null)
             && (name != null ? name.equals(caseDTO.name) : caseDTO.name == null)
-                && (description != null ? description.equals(caseDTO.description)
+            && (description != null ? description.equals(caseDTO.description)
             : caseDTO.description == null)
             && (steps != null ? steps.equals(caseDTO.steps) : caseDTO.steps == null)
             && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
@@ -169,8 +165,9 @@ public class CaseDTO {
 
     @Override
     public String toString() {
-        return String.format("CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
-                id, name, description, steps, creationDate, priority, tags, steps);
+        return String.format(
+            "CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
+            id, name, description, steps, creationDate, priority, tags, steps);
     }
 }
 

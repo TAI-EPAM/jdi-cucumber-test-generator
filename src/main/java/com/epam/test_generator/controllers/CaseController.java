@@ -70,7 +70,7 @@ public class CaseController {
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId) {
+                                           @PathVariable("caseId") long caseId) {
 
         return new ResponseEntity<>(caseService.getCase(suitId, caseId), HttpStatus.OK);
     }
@@ -93,7 +93,7 @@ public class CaseController {
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addCaseToSuit(@PathVariable("suitId") long suitId,
-        @RequestBody @Valid CaseDTO caseDTO) {
+                                              @RequestBody @Valid CaseDTO caseDTO) {
 
         return new ResponseEntity<>(caseService.addCaseToSuit(suitId, caseDTO), HttpStatus.CREATED);
     }
@@ -138,7 +138,7 @@ public class CaseController {
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId) {
+                                           @PathVariable("caseId") long caseId) {
         caseService.removeCase(suitId, caseId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -160,7 +160,7 @@ public class CaseController {
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE,
         consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
-        @RequestBody Long[] removeCaseIds) {
+                                            @RequestBody Long[] removeCaseIds) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
         List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
             .map(CaseDTO::getId)

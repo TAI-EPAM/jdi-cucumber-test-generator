@@ -20,6 +20,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @PropertySource(value = "classpath:config.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -46,12 +51,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfig(){
+    public WebMvcConfigurer corsConfig() {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {

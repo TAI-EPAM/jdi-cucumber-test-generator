@@ -21,16 +21,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class UserControllerTest {
 
 
+    @Mock
+    UserService userService;
+    @InjectMocks
+    UserController userController;
     private MockMvc mockMvc;
     private LoginUserDTO userDTO;
     private LoginUserDTO user;
     private ObjectMapper mapper;
-
-    @Mock
-    UserService userService;
-
-    @InjectMocks
-    UserController userController;
 
     @Before
     public void setUp() throws Exception {

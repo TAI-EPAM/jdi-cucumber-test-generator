@@ -6,15 +6,18 @@ import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.StepType;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-public class FileGeneratorTest extends Assert{
+public class FileGeneratorTest extends Assert {
 
     private FileGenerator fileGenerator;
 
@@ -23,8 +26,8 @@ public class FileGeneratorTest extends Assert{
     private Set<TagDTO> tags;
 
     @Before
-    public void prepareFileGenerator(){
-        fileGenerator= new FileGenerator();
+    public void prepareFileGenerator() {
+        fileGenerator = new FileGenerator();
     }
 
     @Test
@@ -44,7 +47,7 @@ public class FileGeneratorTest extends Assert{
         caze1.setDescription("case1");
         caze1.setPriority(1);
         caze1.setTags(null);
-       final CaseDTO caze2 = new CaseDTO();
+        final CaseDTO caze2 = new CaseDTO();
         caze2.setId(2L);
         caze2.setName("name2");
         caze2.setDescription("case2");
@@ -93,7 +96,7 @@ public class FileGeneratorTest extends Assert{
         final File expectedFile = new File("src/test/resources/FileGeneratorTest1");
         final String realResult = fileGenerator.generate(suit, cases);
         final String expectedResult = new Scanner(expectedFile).useDelimiter("\\Z").next();
-        assertEquals(expectedResult.trim(),realResult.trim());
+        assertEquals(expectedResult.trim(), realResult.trim());
     }
 
     @Test
@@ -122,17 +125,17 @@ public class FileGeneratorTest extends Assert{
 
         final String realResult = fileGenerator.generate(suit, cases);
         final String expectedResult = new Scanner(expectedFile).useDelimiter("\\Z").next();
-        assertEquals(expectedResult.trim(),realResult.trim());
+        assertEquals(expectedResult.trim(), realResult.trim());
 
     }
 
     @Test(expected = NullPointerException.class)
-    public void nullPointerSuitTest() throws IOException{
-        fileGenerator.generate(null,new ArrayList<>());
+    public void nullPointerSuitTest() throws IOException {
+        fileGenerator.generate(null, new ArrayList<>());
     }
 
     @Test(expected = NullPointerException.class)
-    public void nullPointerCasesTest() throws IOException{
+    public void nullPointerCasesTest() throws IOException {
         String result;
         suit = new SuitDTO();
         suit.setId(1L);
@@ -140,11 +143,11 @@ public class FileGeneratorTest extends Assert{
         suit.setDescription("description1");
         suit.setPriority(1);
         suit.setTags(new HashSet<>());
-        fileGenerator.generate(suit,null);
+        fileGenerator.generate(suit, null);
     }
 
     @Test
-    public void suitWithoutInnerCasesTest() throws IOException{
+    public void suitWithoutInnerCasesTest() throws IOException {
         suit = new SuitDTO();
         suit.setId(1L);
         suit.setName("suit1");
@@ -165,6 +168,6 @@ public class FileGeneratorTest extends Assert{
         final File expectedFile = new File("src/test/resources/FileGeneratorTest2");
         final String realResult = fileGenerator.generate(suit, cases);
         final String expectedResult = new Scanner(expectedFile).useDelimiter("\\Z").next();
-        assertEquals(expectedResult.trim(),realResult.trim());
+        assertEquals(expectedResult.trim(), realResult.trim());
     }
 }

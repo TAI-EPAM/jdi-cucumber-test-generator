@@ -29,7 +29,7 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
 
         for (int i = 0; i < caseHistory.size(); ++i) {
             Shadow<Case> caseShadow = caseHistory.get(i);
-            caseVersions.add(new CaseVersion(caseShadow.get(), (long)(caseHistory.size() - i)));
+            caseVersions.add(new CaseVersion(caseShadow.get(), (long) (caseHistory.size() - i)));
         }
 
         return caseVersions;

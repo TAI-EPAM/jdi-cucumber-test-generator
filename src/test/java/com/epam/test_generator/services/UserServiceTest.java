@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyChar;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -16,8 +15,6 @@ import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
-import org.junit.rules.ExpectedException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -26,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -115,15 +113,15 @@ public class UserServiceTest {
 
     @Test
     public void isSamePasswords_true() throws Exception {
-        when(encoder.matches(anyString(),anyString())).thenReturn(true);
-        assertTrue(sut.isSamePasswords(anyString(),anyString()));
+        when(encoder.matches(anyString(), anyString())).thenReturn(true);
+        assertTrue(sut.isSamePasswords(anyString(), anyString()));
 
     }
 
     @Test
     public void isSamePasswords_false() throws Exception {
-        when(encoder.matches(anyString(),anyString())).thenReturn(false);
-        assertFalse(sut.isSamePasswords(anyString(),anyString()));
+        when(encoder.matches(anyString(), anyString())).thenReturn(false);
+        assertFalse(sut.isSamePasswords(anyString(), anyString()));
 
     }
 

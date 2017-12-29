@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LoginUserDTO {
+
     @NotNull
     @Size(min = 1, max = 255)
     @Email

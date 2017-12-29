@@ -41,7 +41,7 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
+                                                  UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
         throws AuthenticationException {
 
     }
@@ -56,7 +56,8 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
      */
     @Override
     protected UserDetails retrieveUser(String username,
-        UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+                                       UsernamePasswordAuthenticationToken authentication)
+        throws AuthenticationException {
 
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
         String token = jwtAuthenticationToken.getToken();

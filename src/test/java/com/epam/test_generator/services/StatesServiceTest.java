@@ -1,6 +1,6 @@
 package com.epam.test_generator.services;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.state.machine.StateMachineAdapter;

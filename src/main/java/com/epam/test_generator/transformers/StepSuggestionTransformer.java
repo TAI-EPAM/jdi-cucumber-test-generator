@@ -5,7 +5,8 @@ import com.epam.test_generator.entities.StepSuggestion;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StepSuggestionTransformer extends AbstractDozerTransformer<StepSuggestion, StepSuggestionDTO> {
+public class StepSuggestionTransformer extends
+    AbstractDozerTransformer<StepSuggestion, StepSuggestionDTO> {
 
     @Override
     protected Class<StepSuggestion> getEntityClass() {

@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.epam.test_generator.dto.ErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
@@ -10,8 +11,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import com.epam.test_generator.dto.ErrorDTO;
-
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 

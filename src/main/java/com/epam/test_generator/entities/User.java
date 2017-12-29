@@ -10,20 +10,17 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Entity
 public class User {
 
-    public User() {
-    }
-
     @Id
     @GeneratedValue
     private Long id;
-
     @Column(unique = true)
     private String email;
-
     @JsonIgnore
     private String password;
-
     private Role role;
+
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -42,14 +39,13 @@ public class User {
         return password;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-
     public void setPassword(String password) {
 
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public void setRole(Role role) {

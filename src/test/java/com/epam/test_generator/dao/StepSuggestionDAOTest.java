@@ -4,6 +4,10 @@ import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,13 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={DatabaseConfigForTests.class})
+@ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
 public class StepSuggestionDAOTest {
 
@@ -91,7 +90,8 @@ public class StepSuggestionDAOTest {
     public void testAddList() {
         List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
 
-        List<Long> ids = stepSuggestionDAO.save(stepSuggestions).stream().map(StepSuggestion::getId).collect(Collectors.toList());
+        List<Long> ids = stepSuggestionDAO.save(stepSuggestions).stream().map(StepSuggestion::getId)
+            .collect(Collectors.toList());
 
         List<StepSuggestion> newStepSuggestions = retrieveStepSuggestionList();
 
@@ -128,7 +128,8 @@ public class StepSuggestionDAOTest {
 
         StepSuggestion stepSuggestion2 = new StepSuggestion();
         stepSuggestion2.setContent("content2");
-        stepSuggestion2.setType(StepType.WHEN);;
+        stepSuggestion2.setType(StepType.WHEN);
+        ;
 
         StepSuggestion stepSuggestion3 = new StepSuggestion();
         stepSuggestion3.setContent("content3");

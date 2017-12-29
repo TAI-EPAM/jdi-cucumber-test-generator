@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class JaversConfig {
 
     /**
-     * Config javers to connect to existing sql repository.
-     * Set Tag and Step classes as Value type for getting theirs copies in Case history.
+     * Config javers to connect to existing sql repository. Set Tag and Step classes as Value type
+     * for getting theirs copies in Case history.
      */
     @Bean
     public Javers javers(PlatformTransactionManager txManager) {
@@ -46,8 +46,7 @@ public class JaversConfig {
     /**
      * Required by auto-audit aspect. <br/><br/>
      *
-     * Creates {@link MockAuthorProvider} instance,
-     * suitable when using Spring Security
+     * Creates {@link MockAuthorProvider} instance, suitable when using Spring Security
      */
     @Bean
     public AuthorProvider authorProvider() {

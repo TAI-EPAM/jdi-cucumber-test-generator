@@ -9,6 +9,17 @@ import org.hibernate.validator.constraints.Email;
 public class UserDTO {
 
 
+    private Long id;
+    @NotNull
+    @Email
+    @Size(min = 1, max = 255)
+    private String email;
+    @NotNull
+    @Size(min = 1, max = 255)
+    private String password;
+    @ColumnDefault(value = "USER")
+    private Role role;
+
     public UserDTO(String password, Role role, String email) {
         this.password = password;
         this.role = role;
@@ -17,20 +28,6 @@ public class UserDTO {
 
     public UserDTO() {
     }
-
-    private Long id;
-
-    @NotNull
-    @Email
-    @Size(min = 1, max = 255)
-    private String email;
-
-    @NotNull
-    @Size(min = 1, max = 255)
-    private String password;
-
-    @ColumnDefault(value="USER")
-    private Role role;
 
     public Long getId() {
         return id;
@@ -48,13 +45,13 @@ public class UserDTO {
         return password;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
     public void setPassword(String password) {
 
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public void setRole(Role role) {

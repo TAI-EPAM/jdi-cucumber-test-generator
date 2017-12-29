@@ -4,6 +4,10 @@ import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,14 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={DatabaseConfigForTests.class})
+@ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
 public class StepDAOTest {
 

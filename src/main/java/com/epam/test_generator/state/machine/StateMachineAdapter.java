@@ -13,17 +13,15 @@ import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Component;
 
 /**
- * Class that defines behavior of State Machines
- * bind to Case entity, such as persisting states to Case
- * and performing events
+ * Class that defines behavior of State Machines bind to Case entity, such as persisting states to
+ * Case and performing events
  */
 @Component
 @WithStateMachine
 public class StateMachineAdapter {
 
     /**
-     * Factory that produces State Machines with settings from
-     * {@link org.springframework.statemachine.config.StateMachineConfig}
+     * Factory that produces State Machines with settings from {@link org.springframework.statemachine.config.StateMachineConfig}
      */
     @Autowired
     private StateMachineFactory<Status, Event> stateMachineFactory;

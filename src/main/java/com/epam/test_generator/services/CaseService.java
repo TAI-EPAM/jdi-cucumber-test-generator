@@ -56,7 +56,7 @@ public class CaseService {
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
 
-        caseBelongsToSuit(caze,suit);
+        caseBelongsToSuit(caze, suit);
 
         return caseTransformer.toDto(caze);
     }

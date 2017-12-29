@@ -1,10 +1,8 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Action;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.epam.test_generator.entities.StepType;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -69,12 +67,12 @@ public class StepDTO {
         this.type = type;
     }
 
-    public void setAction(Action action){
-        this.action = action;
+    public Action getAction() {
+        return action;
     }
 
-    public Action getAction(){
-        return action;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     @Override

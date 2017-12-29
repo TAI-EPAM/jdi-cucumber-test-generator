@@ -17,8 +17,6 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 
         ctx.register(WebConfig.class);
 
-
-
         ServletRegistration.Dynamic servlet = servletContext
             .addServlet(DISPATCHER, new DispatcherServlet(ctx));
         servlet.addMapping("/*");

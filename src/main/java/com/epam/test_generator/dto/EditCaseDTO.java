@@ -25,12 +25,12 @@ public class EditCaseDTO {
         return description;
     }
 
-    public Integer getPriority() {
-        return priority;
-    }
-
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getPriority() {
+        return priority;
     }
 
     public void setPriority(Integer priority) {

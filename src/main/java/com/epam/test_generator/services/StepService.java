@@ -1,5 +1,9 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+import static com.epam.test_generator.services.utils.UtilsService.stepBelongsToCase;
+
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
@@ -10,12 +14,10 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.transformers.StepTransformer;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.epam.test_generator.services.utils.UtilsService.*;
-import java.util.List;
 
 @Transactional
 @Service

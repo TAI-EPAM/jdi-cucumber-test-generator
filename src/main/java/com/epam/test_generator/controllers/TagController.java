@@ -39,7 +39,7 @@ public class TagController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases with tags",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/tags",
         method = RequestMethod.GET, produces = "application/json")
@@ -59,7 +59,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains tags",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags",
         method = RequestMethod.GET, produces = "application/json")
@@ -83,7 +83,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "tagDTO", value = "Added tag object",
             required = true, dataType = "TagDTO", paramType = "body"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST,
@@ -111,7 +111,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "tagDTO", value = "Updated tag object",
             required = true, dataType = "TagDTO", paramType = "body"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateTag(@PathVariable("suitId") long suitId,
@@ -135,7 +135,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "tagId", value = "ID of tag to delete",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}",
         method = RequestMethod.DELETE, produces = "application/json")

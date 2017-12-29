@@ -1,7 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.entities.Role.USER;
-
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.dto.UserDTO;

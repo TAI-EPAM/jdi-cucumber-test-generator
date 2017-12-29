@@ -36,7 +36,7 @@ public class SuitController {
             response = SuitDTO.class, responseContainer = "List")
     })
     @RequestMapping(value = "/suits", method = RequestMethod.GET, produces = "application/json")
-    @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     public ResponseEntity<List<SuitDTO>> getSuits() {
 
@@ -51,7 +51,7 @@ public class SuitController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitId", value = "ID of suit to return",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
@@ -67,7 +67,7 @@ public class SuitController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitDTO", value = "Added suit object",
             required = true, dataType = "SuitDTO", paramType = "body"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits", method = RequestMethod.POST,
@@ -88,7 +88,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitDTO", value = "Updated suit object",
             required = true, dataType = "SuitDTO", paramType = "body"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT,
         consumes = "application/json")
@@ -107,7 +107,7 @@ public class SuitController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "suitId", value = "ID of suit to delete",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long suitId) {
@@ -118,7 +118,7 @@ public class SuitController {
 
     @RequestMapping(value = "/suits/{suitId}/featureFile",
         method = RequestMethod.POST, consumes = "application/json")
-    @ApiImplicitParam(name="Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     public ResponseEntity<String> downloadFile(@RequestBody @Valid SuitDTO suitDTO)
         throws IOException {
         List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)

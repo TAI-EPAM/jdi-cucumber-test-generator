@@ -5,9 +5,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Storage of user information which is later encapsulated into
- * Authentication objects. This allows non-security related user information (such as email
- * addresses, telephone numbers etc) to be stored in a convenient location.
+ * Storage of user information which is later encapsulated into Authentication objects. This allows
+ * non-security related user information (such as email addresses, telephone numbers etc) to be
+ * stored in a convenient location.
  */
 
 public class AuthenticatedUser implements UserDetails {
@@ -18,7 +18,7 @@ public class AuthenticatedUser implements UserDetails {
     private Collection<? extends GrantedAuthority> authorityList;
 
     public AuthenticatedUser(Long id, String email, String token,
-        Collection<? extends GrantedAuthority> authorityList) {
+                             Collection<? extends GrantedAuthority> authorityList) {
         this.id = id;
         this.email = email;
         this.token = token;
