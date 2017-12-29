@@ -42,6 +42,10 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
 
     @Override
     public void save(Iterable<Case> cases) {
+        if (cases == null) {
+            return;
+        }
+
         for (Case caze : cases) {
             save(caze);
         }
@@ -54,9 +58,12 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
 
     @Override
     public void delete(Iterable<Case> cases) {
+        if (cases == null) {
+            return;
+        }
+
         for (Case caze : cases) {
             delete(caze);
         }
-
     }
 }

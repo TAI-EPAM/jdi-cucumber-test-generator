@@ -149,4 +149,27 @@ public class CaseVersionDAOTest {
         assertEquals(1, caseVersions.size());
         assertEquals(1, caseVersions2.size());
     }
+
+    @Test
+    public void delete_NullSimpleCaseList_NothingDeleted() {
+        caseVersionDAO.save(caseList);
+        caseVersionDAO.delete((Iterable<Case>) null);
+
+        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+
+        assertEquals(1, caseVersions.size());
+        assertEquals(1, caseVersions2.size());
+    }
+
+    @Test
+    public void delete_NullSimpleCaseList_NothingSaved() {
+        caseVersionDAO.save((Iterable<Case>) null);
+
+        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+
+        assertEquals(0, caseVersions.size());
+        assertEquals(0, caseVersions2.size());
+    }
 }
