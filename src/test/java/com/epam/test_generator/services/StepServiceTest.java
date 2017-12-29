@@ -28,6 +28,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class StepServiceTest {
 
@@ -42,8 +53,8 @@ public class StepServiceTest {
     private Step step;
     private StepDTO expectedStep;
 
-    private List<StepDTO> expectedListSteps = new ArrayList<>();
-    private Set<Tag> setTags = new HashSet<>();
+    private final List<StepDTO> expectedListSteps = new ArrayList<>();
+    private final Set<Tag> setOfTags = new HashSet<>();
 
     @Mock
     private StepTransformer stepTransformer;
@@ -68,7 +79,7 @@ public class StepServiceTest {
         step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
         expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
 
-        List<Step> listSteps = new ArrayList<>();
+        final List<Step> listSteps = new ArrayList<>();
 
         listSteps.add(new Step(1L, 1, "Step 1", StepType.GIVEN));
         listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN));
@@ -78,15 +89,15 @@ public class StepServiceTest {
         expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN));
         expectedListSteps.add(expectedStep);
 
-        caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
+        caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setOfTags);
 
-        List<Case> listCases = new ArrayList<>();
+        final List<Case> listCases = new ArrayList<>();
 
-        listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
-        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags));
+        listCases.add(new Case(1L, "Case 1", listSteps, 1, setOfTags));
+        listCases.add(new Case(2L, "Case 2", listSteps, 2, setOfTags));
         listCases.add(caze);
 
-        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
+        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags);
     }
 
     @Test

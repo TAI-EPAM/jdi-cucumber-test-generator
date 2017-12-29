@@ -52,7 +52,7 @@ public class CaseServiceTest {
 
     private List<Step> listSteps = new ArrayList<>();
     private List<StepDTO> expectedListSteps = new ArrayList<>();
-    private Set<Tag> setTags = new HashSet<>();
+    private Set<Tag> setOfTags = new HashSet<>();
     private Set<TagDTO> expectedSetTags = new HashSet<>();
 
     @Mock
@@ -78,15 +78,15 @@ public class CaseServiceTest {
 
     @Before
     public void setUp() {
-        List<Case> listCases = new ArrayList<>();
+        final List<Case> listCases = new ArrayList<>();
 
-        listCases.add(new Case(1L, "Case 1", listSteps, 1, setTags));
-        listCases.add(new Case(2L, "Case 2", listSteps, 2, setTags));
+        listCases.add(new Case(1L, "Case 1", listSteps, 1, setOfTags));
+        listCases.add(new Case(2L, "Case 2", listSteps, 2, setOfTags));
 
-        caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setTags);
+        caze = new Case(SIMPLE_CASE_ID, "Case desc", listSteps, 1, setOfTags);
         expectedCase = new CaseDTO(SIMPLE_CASE_ID, "Case desc", expectedListSteps, 1,
             expectedSetTags, Status.NOT_DONE);
-        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, "tag1");
+        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags);
     }
 
     @Test
@@ -120,15 +120,15 @@ public class CaseServiceTest {
 
     @Test
     public void addCaseToSuitTest() throws Exception {
-        Case newCase = new Case(3L, "Case 3", listSteps, 2, setTags);
-        CaseDTO newCaseDTO = new CaseDTO(null, "Case 3", expectedListSteps, 2,
+        final Case newCase = new Case(3L, "Case 3", listSteps, 2, setOfTags);
+        final CaseDTO newCaseDTO = new CaseDTO(null, "Case 3", expectedListSteps, 2,
             expectedSetTags, Status.NOT_DONE);
 
         when(suitDAO.findOne(anyLong())).thenReturn(suit);
         when(caseTransformer.fromDto(any(CaseDTO.class))).thenReturn(newCase);
         when(caseDAO.save(any(Case.class))).thenReturn(newCase);
 
-        Long actualId = caseService.addCaseToSuit(SIMPLE_SUIT_ID, newCaseDTO);
+        final Long actualId = caseService.addCaseToSuit(SIMPLE_SUIT_ID, newCaseDTO);
         assertEquals(newCase.getId(), actualId);
 
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));

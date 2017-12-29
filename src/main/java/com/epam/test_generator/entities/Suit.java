@@ -1,15 +1,12 @@
 package com.epam.test_generator.entities;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import java.util.Set;
 
 
 @Entity
@@ -27,7 +24,8 @@ public class Suit implements Serializable {
 
     private Date creationDate;
 
-    private String tags;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private Set<Tag> tags;
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Case> cases;
@@ -37,7 +35,7 @@ public class Suit implements Serializable {
     }
 
     public Suit(Long id, String name, String description, List<Case> cases, Integer priority,
-                String tags) {
+                Set<Tag> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -46,7 +44,7 @@ public class Suit implements Serializable {
         this.tags = tags;
     }
 
-    public Suit(String name, String description, Integer priority, Date creationDate, String tags,
+    public Suit(String name, String description, Integer priority, Date creationDate, Set<Tag> tags,
                 List<Case> cases) {
         this.name = name;
         this.description = description;
@@ -57,7 +55,7 @@ public class Suit implements Serializable {
     }
 
     public Suit(Long id, String name, String description, Integer priority, Date creationDate,
-                String tags, List<Case> cases) {
+                Set<Tag> tags, List<Case> cases) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -116,11 +114,11 @@ public class Suit implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public String getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
@@ -167,7 +165,7 @@ public class Suit implements Serializable {
             return false;
         }
 
-        Suit suit = (Suit) o;
+        final Suit suit = (Suit) o;
 
         return (id != null ? id.equals(suit.id) : suit.id == null)
             && (name != null ? name.equals(suit.name) : suit.name == null)

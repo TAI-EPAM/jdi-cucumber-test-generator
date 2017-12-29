@@ -64,7 +64,7 @@ public class TagServiceTest {
 
     @Before
     public void setUp() {
-		Set<Tag> expectedTagsSet = new HashSet<>();
+		final Set<Tag> expectedTagsSet = new HashSet<>();
 
         expectedTag = new Tag("tag1");
         expectedTagsSet.add(expectedTag);
@@ -73,12 +73,12 @@ public class TagServiceTest {
         expectedTagsDTOSet = new HashSet<>();
         expectedTagsDTOSet.add(expectedTagDTO);
 
-		List<Case> expectedCaseList = new ArrayList<>();
+		final List<Case> expectedCaseList = new ArrayList<>();
 
 		expectedCaseList.add(new Case(1L, "case1", new ArrayList<>(), 1, expectedTagsSet));
         expectedCaseList.add(new Case(2L, "case2", new ArrayList<>(), 1, expectedTagsSet));
 
-        suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, "tag1");
+        suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, expectedTagsSet);
         caze = new Case(2L, "desc2", new ArrayList<>(), 1, expectedTagsSet);
     }
 

@@ -3,6 +3,7 @@ package com.epam.test_generator.dto;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -31,8 +32,7 @@ public class SuitDTO {
 
     private Date creationDate;
 
-    @Size(max = 255)
-    private String tags;
+    private Set<TagDTO> tags;
 
     public SuitDTO() {
         creationDate = Calendar.getInstance().getTime();
@@ -45,7 +45,7 @@ public class SuitDTO {
     }
 
     public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
-                   Date creationDate, String tags) {
+                   Date creationDate, Set<TagDTO> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -56,7 +56,7 @@ public class SuitDTO {
     }
 
     public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
-                   String tags) {
+                   Set<TagDTO> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -113,11 +113,11 @@ public class SuitDTO {
         this.creationDate = creationDate;
     }
 
-    public String getTags() {
+    public Set<TagDTO> getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(Set<TagDTO> tags) {
         this.tags = tags;
     }
 

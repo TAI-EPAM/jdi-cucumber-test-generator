@@ -4,6 +4,7 @@ package com.epam.test_generator.controllers;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.StepService;
@@ -26,7 +27,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -97,6 +100,8 @@ public class StepControllerTest {
         caseDTO.setUpdateDate(formatter.parse("13.06.2017"));
 
         caseDTOS = new ArrayList<>();
+        final Set<TagDTO> tagDTOS = new HashSet<>();
+        tagDTOS.add(new TagDTO("tags of suit"));
         caseDTOS.add(caseDTO);
 
         suitDTO = new SuitDTO();
@@ -107,7 +112,7 @@ public class StepControllerTest {
         suitDTO.setDescription("description of suit");
         suitDTO.setName("the name of suit");
         suitDTO.setPriority(1);
-        suitDTO.setTags("tags of suit");
+        suitDTO.setTags(tagDTOS);
     }
 
     @Test
