@@ -8,20 +8,26 @@ public interface CaseVersionDAO {
 
     /**
      * Find all CaseVersions of Case with caseId.
-     * @param caseId
-     * @return
      */
     List<CaseVersion> find(Long caseId);
 
     /**
-     * Save {@link CaseVersion} of current {@link Case}.
-     * @param caze
+     * Save new {@link CaseVersion} of current {@link Case}.
      */
     void save(Case caze);
 
     /**
-     * Save {@link CaseVersion} of deleted {@link Case}
-     * @param caze
+     * Save new {@link CaseVersion} of each {@link Case}
+     */
+    void save(Iterable<Case> cases);
+
+    /**
+     * Save new {@link CaseVersion} of deleted {@link Case}
      */
     void delete(Case caze);
+
+    /**
+     * Save new {@link CaseVersion} of each deleted {@link Case}
+     */
+    void delete(Iterable<Case> cases);
 }

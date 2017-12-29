@@ -15,6 +15,7 @@ import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.pojo.CaseVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,17 +32,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class CaseVersionDAOTest {
 
     private static final Long CASE_ID = 1L;
+    private static final Long CASE_ID2 = 2L;
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
 
     private Case caze;
+    private List<Case> caseList;
 
     @Before
     public void setUp() {
 
         caze = new Case(CASE_ID, "description", Lists.newArrayList(), 1,
             Sets.newHashSet());
+        Case caze2 = new Case(CASE_ID2, "description2", Lists.newArrayList(), 1,
+            Sets.newHashSet());
+        caseList = Arrays.asList(caze, caze2);
+
     }
 
     @Test
@@ -114,5 +121,29 @@ public class CaseVersionDAOTest {
         List<CaseVersion> caseVersionList = caseVersionDAO.find(CASE_ID);
 
         assertEquals(2, caseVersionList.size());
+    }
+
+    @Test
+    public void delete_SimpleCaseList_Deleted() {
+        caseVersionDAO.save(caseList);
+        caseVersionDAO.delete(caseList);
+
+        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+
+        assertEquals(2, caseVersions.size());
+        assertEquals(2, caseVersions2.size());
+
+    }
+
+    @Test
+    public void save_SimpleCaseList_Saved() {
+        caseVersionDAO.save(caseList);
+
+        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+
+        assertEquals(1, caseVersions.size());
+        assertEquals(1, caseVersions2.size());
     }
 }

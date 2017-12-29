@@ -24,8 +24,6 @@ public class JaversConfig {
     /**
      * Config javers to connect to existing sql repository.
      * Set Tag and Step classes as Value type for getting theirs copies in Case history.
-     * @param txManager
-     * @return
      */
     @Bean
     public Javers javers(PlatformTransactionManager txManager) {

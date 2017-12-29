@@ -41,7 +41,22 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
     }
 
     @Override
+    public void save(Iterable<Case> cases) {
+        for (Case caze : cases) {
+            save(caze);
+        }
+    }
+
+    @Override
     public void delete(Case caze) {
         javers.commitShallowDelete(authorProvider.provide(), caze);
+    }
+
+    @Override
+    public void delete(Iterable<Case> cases) {
+        for (Case caze : cases) {
+            delete(caze);
+        }
+
     }
 }

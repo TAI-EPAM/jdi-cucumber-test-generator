@@ -9,6 +9,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Suit;
@@ -28,6 +29,9 @@ public class SuitServiceTest {
 
     @InjectMocks
     private SuitService suitService;
+
+    @Mock
+    private CaseVersionDAO caseVersionDAO;
 
     @Mock
     private SuitDAO suitDAO;
@@ -88,6 +92,8 @@ public class SuitServiceTest {
         expectedSuitDTO.setId(null);
         Long actual = suitService.addSuit(expectedSuitDTO);
         assertEquals(expectedSuit.getId(), actual);
+        verify(caseVersionDAO).save(eq(expectedSuit.getCases()));
+
     }
 
     @Test
@@ -119,6 +125,8 @@ public class SuitServiceTest {
 
         verify(suitDAO).delete(anyLong());
         verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
+
+        verify(caseVersionDAO).delete(eq(expectedSuit.getCases()));
     }
 
 	@Test(expected = NotFoundException.class)

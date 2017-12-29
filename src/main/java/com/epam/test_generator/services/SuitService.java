@@ -1,6 +1,7 @@
 package com.epam.test_generator.services;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Case;
@@ -37,6 +38,9 @@ public class SuitService {
     @Autowired
     private CaseTransformer caseTransformer;
 
+    @Autowired
+    private CaseVersionDAO caseVersionDAO;
+
     public List<SuitDTO> getSuits() {
         return suitTransformer.toDtoList(suitDAO.findAll());
     }
@@ -51,6 +55,7 @@ public class SuitService {
     public Long addSuit(SuitDTO suitDTO) {
         Suit suit = suitDAO.save(suitTransformer.fromDto(suitDTO));
 
+        caseVersionDAO.save(suit.getCases());
         return suit.getId();
     }
 
@@ -65,6 +70,8 @@ public class SuitService {
         Suit suit = suitDAO.findOne(suitId);
         checkNotNull(suit);
         suitDAO.delete(suitId);
+
+        caseVersionDAO.delete(suit.getCases());
     }
 
     public String generateFile(Long suitId, List<Long> caseIds) throws IOException {
