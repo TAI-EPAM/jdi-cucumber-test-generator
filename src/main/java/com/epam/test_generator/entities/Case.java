@@ -1,7 +1,6 @@
 package com.epam.test_generator.entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +24,8 @@ public class Case implements Serializable {
     @GeneratedValue
     private Long id;
 
+    private String name;
+
     private String description;
 
     @OneToMany(cascade = {CascadeType.ALL})
@@ -47,17 +48,20 @@ public class Case implements Serializable {
         updateDate = creationDate;
     }
 
-    public Case(Long id, String description, List<Step> steps, Integer priority, Set<Tag> tags) {
+    public Case(Long id, String name, String description, List<Step> steps,
+                Integer priority, Set<Tag> tags) {
         this();
         this.id = id;
+        this.name = name;
         this.description = description;
         this.steps = steps;
         this.priority = priority;
         this.tags = tags;
     }
 
-    public Case(String description, List<Step> steps, Date creationDate, Date updateDate,
+    public Case(String name, String description, List<Step> steps, Date creationDate, Date updateDate,
                 Integer priority, Set<Tag> tags, Status status) {
+        this.name = name;
         this.description = description;
         this.steps = steps;
         this.creationDate = creationDate;
@@ -68,9 +72,10 @@ public class Case implements Serializable {
         this.status = status;
     }
 
-    public Case(String description, List<Step> steps,
+    public Case(String name, String description, List<Step> steps,
         Integer priority, Set<Tag> tags, Status status) {
         this();
+        this.name = name;
         this.description = description;
         this.steps = steps;
         this.priority = priority;
@@ -85,6 +90,14 @@ public class Case implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -163,15 +176,8 @@ public class Case implements Serializable {
 
     @Override
     public String toString() {
-        return "Case{" +
-            "id=" + id +
-            ", description='" + description + '\'' +
-            ", steps=" + steps +
-            ", creationDate='" + creationDate + '\'' +
-            ", priority=" + priority +
-            ", tags=" + tags +
-            ", status" + status +
-            '}';
+        return String.format("Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
+                id, name, description, steps, creationDate, priority, tags, steps);
     }
 
     @Override
@@ -183,20 +189,22 @@ public class Case implements Serializable {
             return false;
         }
 
-        Case aCase = (Case) o;
+        final Case aCase = (Case) o;
 
         return (id != null ? id.equals(aCase.id) : aCase.id == null)
-            && (description != null ? description.equals(aCase.description)
-            : aCase.description == null)
-            && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
-            && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
-            && (status != null ? status.equals(aCase.status) : aCase.status == null)
-            && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
+            && (name != null ? name.equals(aCase.name) : aCase.name == null)
+                && (description != null ? description.equals(aCase.description)
+                : aCase.description == null)
+                && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
+                && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
+                && (status != null ? status.equals(aCase.status) : aCase.status == null)
+                && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (steps != null ? steps.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);

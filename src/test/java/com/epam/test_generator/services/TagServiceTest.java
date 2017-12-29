@@ -19,16 +19,23 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.TagTransformer;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TagServiceTest {
@@ -75,11 +82,11 @@ public class TagServiceTest {
 
 		final List<Case> expectedCaseList = new ArrayList<>();
 
-		expectedCaseList.add(new Case(1L, "case1", new ArrayList<>(), 1, expectedTagsSet));
-        expectedCaseList.add(new Case(2L, "case2", new ArrayList<>(), 1, expectedTagsSet));
+        expectedCaseList.add(new Case(1L, "name1", "case1", new ArrayList<>(), 1, expectedTagsSet));
+        expectedCaseList.add(new Case(2L, "name2", "case2", new ArrayList<>(), 1, expectedTagsSet));
 
         suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, expectedTagsSet);
-        caze = new Case(2L, "desc2", new ArrayList<>(), 1, expectedTagsSet);
+        caze = new Case(2L, "name1", "desc2", new ArrayList<>(), 1, expectedTagsSet);
     }
 
     @Test

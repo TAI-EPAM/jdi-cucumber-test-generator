@@ -1,8 +1,8 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
@@ -10,10 +10,18 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class CaseDTO {
 
     private Long id;
+
+    @NotNull
+    @Size(min = 1, max = 250)
+    private String name;
 
     @NotNull
     @Size(min = 1, max = 255)
@@ -43,9 +51,10 @@ public class CaseDTO {
         updateDate = creationDate;
     }
 
-    public CaseDTO(Long id, String description, List<StepDTO> steps, Integer priority,
+    public CaseDTO(Long id, String name, String description, List<StepDTO> steps, Integer priority,
                    Set<TagDTO> tags, Status status) {
         this.id = id;
+        this.name = name;
         this.description = description;
         this.steps = steps;
         this.priority = priority;
@@ -59,6 +68,14 @@ public class CaseDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -126,10 +143,11 @@ public class CaseDTO {
             return false;
         }
 
-        CaseDTO caseDTO = (CaseDTO) o;
+        final CaseDTO caseDTO = (CaseDTO) o;
 
         return (id != null ? id.equals(caseDTO.id) : caseDTO.id == null)
-            && (description != null ? description.equals(caseDTO.description)
+            && (name != null ? name.equals(caseDTO.name) : caseDTO.name == null)
+                && (description != null ? description.equals(caseDTO.description)
             : caseDTO.description == null)
             && (steps != null ? steps.equals(caseDTO.steps) : caseDTO.steps == null)
             && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
@@ -140,6 +158,7 @@ public class CaseDTO {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (steps != null ? steps.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
@@ -150,15 +169,8 @@ public class CaseDTO {
 
     @Override
     public String toString() {
-        return "CaseDTO{" +
-            "id=" + id +
-            ", description='" + description + '\'' +
-            ", steps=" + steps +
-            ", creationDate=" + creationDate +
-            ", priority=" + priority +
-            ", tags='" + tags + '\'' +
-            ", status=" + status +
-            '}';
+        return String.format("CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
+                id, name, description, steps, creationDate, priority, tags, steps);
     }
 }
 

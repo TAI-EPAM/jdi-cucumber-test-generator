@@ -43,9 +43,9 @@ public class CaseVersionDAOTest {
     @Before
     public void setUp() {
 
-        caze = new Case(CASE_ID, "description", Lists.newArrayList(), 1,
+        caze = new Case(CASE_ID,"name", "description", Lists.newArrayList(), 1,
             Sets.newHashSet());
-        Case caze2 = new Case(CASE_ID2, "description2", Lists.newArrayList(), 1,
+        Case caze2 = new Case(CASE_ID2,"name", "description2", Lists.newArrayList(), 1,
             Sets.newHashSet());
         caseList = Arrays.asList(caze, caze2);
 
@@ -55,15 +55,18 @@ public class CaseVersionDAOTest {
     public void testCommits() {
         caseVersionDAO.save(caze);
 
+        caze.setName("nameUpdate");
+        caseVersionDAO.save(caze);
+
         caze.setDescription("descriptionUpdate");
         caseVersionDAO.save(caze);
 
         caze.setPriority(2);
         caseVersionDAO.save(caze);
 
-        List<CaseVersion> caseVersionList = caseVersionDAO.find(CASE_ID);
+        final List<CaseVersion> caseVersionList = caseVersionDAO.find(CASE_ID);
 
-        assertEquals(3, caseVersionList.size());
+        assertEquals(4, caseVersionList.size());
     }
 
     @Test

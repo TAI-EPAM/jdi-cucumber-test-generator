@@ -1,18 +1,9 @@
 package com.epam.test_generator.state.machine;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.epam.test_generator.config.StateMachineConfig;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +15,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
+
+import java.util.*;
+
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,7 +44,7 @@ public class StateMachineAdapterTest {
 
     @Before
     public void setUp() {
-        cs = new Case("descr", new ArrayList<>(), 1, new HashSet<>(),
+        cs = new Case("name", "descr", new ArrayList<>(), 1, new HashSet<>(),
             Status.NOT_RUN);
     }
 
@@ -115,7 +112,7 @@ public class StateMachineAdapterTest {
             .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
         Status status = Status.SKIPPED;
 
-        List<Event> expectedEvents = Collections.singletonList(Event.EDIT);;
+        List<Event> expectedEvents = Collections.singletonList(Event.EDIT);
 
         Assert.assertEquals(expectedEvents, stateMachineAdapter.availableTransitions(status));
     }

@@ -40,11 +40,13 @@ public class FileGeneratorTest extends Assert{
         cases = new ArrayList<>();
         final CaseDTO caze1 = new CaseDTO();
         caze1.setId(1L);
+        caze1.setName("name1");
         caze1.setDescription("case1");
         caze1.setPriority(1);
         caze1.setTags(null);
-        final CaseDTO caze2 = new CaseDTO();
+       final CaseDTO caze2 = new CaseDTO();
         caze2.setId(2L);
+        caze2.setName("name2");
         caze2.setDescription("case2");
         caze2.setPriority(1);
         tags = new HashSet<>();
@@ -52,7 +54,7 @@ public class FileGeneratorTest extends Assert{
         caze2.setTags(tags);
 
         final List<StepDTO> steps = new ArrayList<>();
-        StepDTO step1 = new StepDTO();
+        final StepDTO step1 = new StepDTO();
         step1.setId(1L);
         step1.setDescription("given1");
         step1.setRowNumber(1);
@@ -80,7 +82,7 @@ public class FileGeneratorTest extends Assert{
         step4.setRowNumber(4);
         step4.setDescription("given2");
         step4.setType(StepType.GIVEN);
-        ArrayList<StepDTO> steps2 = new ArrayList<>();
+        final List<StepDTO> steps2 = new ArrayList<>();
         steps2.add(step4);
         caze2.setSteps(steps2);
 
@@ -108,6 +110,7 @@ public class FileGeneratorTest extends Assert{
         cases = new ArrayList<>();
         final CaseDTO caze1 = new CaseDTO();
         caze1.setId(1L);
+        caze1.setName("name3");
         caze1.setDescription("case3");
         caze1.setPriority(1);
         caze1.setTags(null);
@@ -152,6 +155,7 @@ public class FileGeneratorTest extends Assert{
         cases = new ArrayList<>();
         final CaseDTO caze1 = new CaseDTO();
         caze1.setId(1L);
+        caze1.setName("name3");
         caze1.setDescription("case3");
         caze1.setPriority(1);
         caze1.setTags(null);
@@ -159,8 +163,8 @@ public class FileGeneratorTest extends Assert{
         cases.add(caze1);
 
         final File expectedFile = new File("src/test/resources/FileGeneratorTest2");
-        String realResult = fileGenerator.generate(suit,cases);
-        String expectedResult = new Scanner(expectedFile).useDelimiter("\\Z").next();
+        final String realResult = fileGenerator.generate(suit, cases);
+        final String expectedResult = new Scanner(expectedFile).useDelimiter("\\Z").next();
         assertEquals(expectedResult.trim(),realResult.trim());
     }
 }

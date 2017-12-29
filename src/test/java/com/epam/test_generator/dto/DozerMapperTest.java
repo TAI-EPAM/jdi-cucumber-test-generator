@@ -1,14 +1,14 @@
 package com.epam.test_generator.dto;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import com.epam.test_generator.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(JUnit4.class)
 public class DozerMapperTest {
@@ -40,16 +40,18 @@ public class DozerMapperTest {
 
 	@Test
 	public void mapCaseToCaseDTO() {
-		Case caze = new Case();
-		CaseDTO caseDTO = new CaseDTO();
+		final Case caze = new Case();
+		final CaseDTO caseDTO = new CaseDTO();
 
 		caze.setId(1L);
+		caze.setName("Case name");
 		caze.setDescription("Case description");
 		caze.setPriority(1);
 
 		dozerMapper.map(caze, caseDTO);
 
 		assertThat(caze.getId(), is(equalTo(caseDTO.getId())));
+		assertThat(caze.getName(), is(equalTo(caseDTO.getName())));
 		assertThat(caze.getDescription(), is(equalTo(caseDTO.getDescription())));
 		assertThat(caze.getPriority(), is(equalTo(caseDTO.getPriority())));
 	}

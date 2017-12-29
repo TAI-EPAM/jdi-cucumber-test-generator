@@ -1,13 +1,9 @@
 package com.epam.test_generator.state.machine;
 
-import static org.mockito.Mockito.when;
-
 import com.epam.test_generator.config.StateMachineConfig;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
-import java.util.ArrayList;
-import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +18,12 @@ import org.springframework.statemachine.access.StateMachineAccess;
 import org.springframework.statemachine.access.StateMachineAccessor;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.state.State;
-
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
@@ -53,7 +53,7 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
     @Before
     public void onStartUp() {
         persister = new CaseStatePersister();
-        cs = new Case("descr", new ArrayList<>(), 1, new HashSet<>(),
+        cs = new Case("name", "descr", new ArrayList<>(), 1, new HashSet<>(),
             Status.NOT_RUN);
     }
 
