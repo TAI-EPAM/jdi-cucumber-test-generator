@@ -18,9 +18,9 @@ public class UserDTO {
     @Size(min = 1, max = 255)
     private String password;
 
-    private RoleDTO role;
+    private String role;
 
-    public UserDTO(String password, RoleDTO role, String email) {
+    public UserDTO(String password, String role, String email) {
         this.password = password;
         this.role = role;
         this.email = email;
@@ -50,11 +50,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public RoleDTO getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(RoleDTO role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

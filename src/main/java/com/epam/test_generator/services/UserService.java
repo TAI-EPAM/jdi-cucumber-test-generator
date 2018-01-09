@@ -5,7 +5,6 @@ import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import com.epam.test_generator.transformers.RoleTransformer;
 import com.epam.test_generator.transformers.UserTransformer;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
+    private final static String DEFAULT_ROLE = "GUEST";
+
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -29,9 +30,6 @@ public class UserService {
 
     @Autowired
     private UserTransformer userTransformer;
-
-    @Autowired
-    private RoleTransformer roleTransformer;
 
     public User getUserById(Long id) {
         return userDAO.findById(id);
@@ -53,11 +51,11 @@ public class UserService {
             throw new UnauthorizedException(
                 "user with email:" + loginUserDTO.getEmail() + " already exist!");
         } else {
-            UserDTO userDTO = new UserDTO();
+            final UserDTO userDTO = new UserDTO();
             userDTO.setEmail(loginUserDTO.getEmail());
             userDTO.setPassword(encoder.encode(loginUserDTO.getPassword()));
-            User user = userTransformer.fromDto(userDTO);
-            user.setRole(roleService.getRoleByName("GUEST"));
+            userDTO.setRole(roleService.getRoleByName(DEFAULT_ROLE).getName());
+            final User user = userTransformer.fromDto(userDTO);
             userDAO.save(user);
             System.out.println("lol");
         }

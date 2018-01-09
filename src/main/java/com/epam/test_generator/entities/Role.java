@@ -1,10 +1,8 @@
 package com.epam.test_generator.entities;
 
-import java.util.Collection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Role {
@@ -14,9 +12,6 @@ public class Role {
     private Long id;
 
     private String name;
-
-    @OneToMany
-    private Collection<User> users;
 
 
     public Role(String roleName) {
@@ -34,11 +29,4 @@ public class Role {
         this.name = name;
     }
 
-    public Collection<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Collection<User> users) {
-        this.users = users;
-    }
 }

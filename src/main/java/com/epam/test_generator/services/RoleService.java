@@ -20,8 +20,12 @@ public class RoleService {
 
     @Resource
     private Environment environment;
+
     @Autowired
     private RoleDAO roleDAO;
+
+    @Autowired
+    private UserService userService;
 
     public Role getRoleByName(String name) {
         return roleDAO.findByName(name);
@@ -35,21 +39,22 @@ public class RoleService {
         roleDAO.save(role);
     }
 
-    public List<Role> findAll(){
+    public List<Role> findAll() {
         return roleDAO.findAll();
     }
 
-    public List<Role> getRolesFromProperties(){
+    public List<Role> getRolesFromProperties() {
         List<Role> roles = new ArrayList<>();
         String stringOfRoles = environment.getProperty("roles");
         String[] split = stringOfRoles.split(", ");
         List<String> strings = Arrays.asList(split);
-        for(String s:strings){
-        roles.add(new Role(s));
+        for (String s : strings) {
+            roles.add(new Role(s));
         }
         return roles;
     }
-    public void addAllRolesToDB(){
+
+    public void addAllRolesToDB() {
         roleDAO.save(getRolesFromProperties());
     }
 

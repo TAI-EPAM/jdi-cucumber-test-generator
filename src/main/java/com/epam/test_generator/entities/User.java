@@ -1,12 +1,11 @@
 package com.epam.test_generator.entities;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -21,10 +20,11 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @ManyToOne
-    @JoinTable(name = "users_roles",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+//    @ManyToOne()
+//    @JoinTable(name = "users_roles",
+//        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+//        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Role role;
 
     public User() {
