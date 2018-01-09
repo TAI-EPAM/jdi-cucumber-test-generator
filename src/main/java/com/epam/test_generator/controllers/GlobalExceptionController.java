@@ -19,6 +19,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Void> handleRunTimeException(Exception ex) {
+        ex.printStackTrace();
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

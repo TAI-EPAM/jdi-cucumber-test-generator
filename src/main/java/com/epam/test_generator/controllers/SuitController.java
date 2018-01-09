@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,8 @@ public class SuitController {
         @ApiResponse(code = 200, message = "OK",
             response = SuitDTO.class, responseContainer = "List")
     })
+
+    @Secured("ROLE_GUEST")
     @RequestMapping(value = "/suits", method = RequestMethod.GET, produces = "application/json")
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
