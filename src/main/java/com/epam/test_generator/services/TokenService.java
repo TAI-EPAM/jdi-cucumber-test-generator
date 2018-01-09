@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 @PropertySource("classpath:application.properties")
 public class TokenService {
 
+    
 
     @Resource
     private Environment environment;

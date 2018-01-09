@@ -42,7 +42,7 @@ public class RoleService {
     public List<Role> getRolesFromProperties(){
         List<Role> roles = new ArrayList<>();
         String stringOfRoles = environment.getProperty("roles");
-        String[] split = stringOfRoles.split(",");
+        String[] split = stringOfRoles.split(", ");
         List<String> strings = Arrays.asList(split);
         for(String s:strings){
         roles.add(new Role(s));
