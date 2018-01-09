@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleDAO extends JpaRepository<Role, Long> {
 
-    com.epam.test_generator.entities.Role findByName(String name);
+    Role findByName(String name);
 
 }

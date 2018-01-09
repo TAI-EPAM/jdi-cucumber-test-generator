@@ -7,7 +7,6 @@ import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.UserService;
 import com.epam.test_generator.services.exceptions.JwtTokenMalformedException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +40,7 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
-                                                  UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
         throws AuthenticationException {
 
     }
@@ -56,7 +55,7 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
      */
     @Override
     protected UserDetails retrieveUser(String username,
-                                       UsernamePasswordAuthenticationToken authentication)
+        UsernamePasswordAuthenticationToken authentication)
         throws AuthenticationException {
 
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
@@ -85,11 +84,11 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
     }
 
     private Collection<SimpleGrantedAuthority> getSimpleGrantedAuthorities(List<Role> roles) {
-        return Arrays
-            .stream(new List[]{roles})
-            .map(s -> "ROLE_" + s.toString().substring(1, s.toString().length() - 1))
+        return roles.stream()
+            .map(s -> "ROLE_" + s.getName())
             .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
+
 
     /**
      * Returns true if this AuthenticationProvider supports the indicated Authentication object.

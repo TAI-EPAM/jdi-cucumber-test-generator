@@ -29,4 +29,31 @@ public class Role {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Role{ id= %s ,name= %s};",
+            id, name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Role)) {
+            return false;
+        }
+
+        final Role aRole = (Role) o;
+
+        return (id != null ? id.equals(aRole.id) : aRole.id == null)
+            && (name != null ? name.equals(aRole.name) : aRole.name == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }
