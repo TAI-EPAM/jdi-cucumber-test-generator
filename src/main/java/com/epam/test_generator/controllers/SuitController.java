@@ -37,7 +37,7 @@ public class SuitController {
             response = SuitDTO.class, responseContainer = "List")
     })
 
-    @Secured("ROLE_GUEST")
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER","ROLE_TEST_LEAD","ROLE_GUEST"})
     @RequestMapping(value = "/suits", method = RequestMethod.GET, produces = "application/json")
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
@@ -56,6 +56,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER","ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
 
@@ -73,6 +74,7 @@ public class SuitController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER","ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addSuit(@RequestBody @Valid SuitDTO suitDTO) {
@@ -93,6 +95,7 @@ public class SuitController {
             required = true, dataType = "SuitDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER","ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.PUT,
         consumes = "application/json")
     public ResponseEntity<Void> updateSuit(@PathVariable("suitId") long suitId,
@@ -112,13 +115,14 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER","ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeSuit(@PathVariable("suitId") long suitId) {
         suitService.removeSuit(suitId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER","ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/featureFile",
         method = RequestMethod.POST, consumes = "application/json")
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)

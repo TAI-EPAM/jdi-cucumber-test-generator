@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<StepDTO>> getStepsByCaseId(@PathVariable("suitId") long suitId,
@@ -62,6 +64,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<StepDTO> getStepByStepId(@PathVariable(value = "suitId") long suitId,
@@ -88,6 +91,7 @@ public class StepController {
             required = true, dataType = "StepDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
@@ -116,6 +120,7 @@ public class StepController {
             required = true, dataType = "StepDTO", paramType = "boy"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateStep(@PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
@@ -147,6 +152,7 @@ public class StepController {
         @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
             required = true, dataType = "StepDTO", paramType = "body")
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateSteps(@PathVariable("suitId") long suitId,
                                             @PathVariable("caseId") long caseId,
@@ -171,6 +177,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,

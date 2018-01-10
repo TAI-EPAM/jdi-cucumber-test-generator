@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers;
 
 
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,6 +16,7 @@ public class GeneralController {
     }
 
     @ApiOperation(value = "", hidden = true)
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(value = "/suggestion_manager")
     public String getStepSuggestionsPage() {
         return "/stepSuggestions";

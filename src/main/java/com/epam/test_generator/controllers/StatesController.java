@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatesController {
 
     @Autowired
-    StatesService statesService;
+    private StatesService statesService;
 
 
     @ApiOperation(value = "Get list of Case events available for given status",
@@ -34,6 +35,7 @@ public class StatesController {
     })
     @ApiImplicitParam(name = "status", value = "Case status",
         required = true, dataType = "String", paramType = "path")
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/events/{status}", method = RequestMethod.GET)
     public ResponseEntity<List<Event>> getAvailableEvents(
         @PathVariable("status") Status status) {
@@ -48,6 +50,7 @@ public class StatesController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Event.class, responseContainer = "List")
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     public ResponseEntity<List<Event>> getEvents() {
 
@@ -60,6 +63,7 @@ public class StatesController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Status.class, responseContainer = "List")
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/statuses", method = RequestMethod.GET)
     public ResponseEntity<List<Status>> getStatuses() {
 
