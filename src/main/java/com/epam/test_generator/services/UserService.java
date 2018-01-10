@@ -37,13 +37,12 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userDAO.findByEmail(email);
+       return userDAO.findByEmail(email);
 
     }
 
-    public List<User> getAll() {
-        return userDAO.findAll();
-
+    public List<UserDTO> getUsers() {
+        return userTransformer.toDtoList(userDAO.findAll());
     }
 
     public void createUser(LoginUserDTO loginUserDTO) {

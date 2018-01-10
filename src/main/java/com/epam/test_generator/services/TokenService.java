@@ -38,16 +38,16 @@ public class TokenService {
     }
 
 
-    public String getToken(LoginUserDTO userDTO) {
+    public String getToken(LoginUserDTO loginUserDTO) {
 
-        User user = userService.getUserByEmail(userDTO.getEmail());
-
+        User user = userService.getUserByEmail(loginUserDTO.getEmail());
         if (user == null) {
             throw new UnauthorizedException(
-                "User with email: " + userDTO.getEmail() + " not found.");
+                    "User with email: " + loginUserDTO.getEmail() + " not found.");
         }
 
-        if (!(userService.isSamePasswords(userDTO.getPassword(), user.getPassword()))) {
+
+        if (!(userService.isSamePasswords(loginUserDTO.getPassword(), user.getPassword()))) {
             throw new UnauthorizedException("Incorrect password.");
         } else {
             Builder builder = JWT.create()
