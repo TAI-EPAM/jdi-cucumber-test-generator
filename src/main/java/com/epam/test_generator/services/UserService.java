@@ -56,7 +56,6 @@ public class UserService {
             userDTO.setRole(roleService.getRoleByName(DEFAULT_ROLE).getName());
             final User user = userTransformer.fromDto(userDTO);
             userDAO.save(user);
-            System.out.println("lol");
         }
     }
 

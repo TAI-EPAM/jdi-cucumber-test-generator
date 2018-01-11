@@ -3,13 +3,16 @@ package com.epam.test_generator.config;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.services.RoleService;
 import com.epam.test_generator.services.UserService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 
 @Component
@@ -31,17 +34,18 @@ public class InitialDataLoader implements
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        final List<Role> rolesFromProperties = roleService.getRolesFromProperties();
 
-        if (roleService.findAll().isEmpty()) {
-            roleService.addAllRolesToDB();
-        }
-        else {
-            List<Role> rolesFromProperties = roleService.getRolesFromProperties();
-            for(Role role: rolesFromProperties ){
-                if(roleService.getRoleByName(role.getName()) == null){
-                    roleService.addRole(role);
-                }
+        rolesFromProperties.stream().filter(isAlreadyContainsInBase()).forEach(roleService::addRole);
+
+        for (Role role : rolesFromProperties) {
+            if (roleService.getRoleByName(role.getName()) == null) {
+                roleService.addRole(role);
             }
         }
+    }
+
+    private Predicate<Role> isAlreadyContainsInBase() {
+        return r -> !Objects.isNull(roleService.getRoleByName(r.getName()));
     }
 }

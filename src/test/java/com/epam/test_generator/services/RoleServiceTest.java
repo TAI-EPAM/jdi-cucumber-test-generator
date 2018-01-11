@@ -1,0 +1,84 @@
+package com.epam.test_generator.services;
+
+import com.epam.test_generator.dao.interfaces.RoleDAO;
+import com.epam.test_generator.entities.Role;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+
+@RunWith(MockitoJUnitRunner.class)
+public class RoleServiceTest {
+
+
+    @Mock
+    private RoleDAO roleDAO;
+
+    @Mock
+    private Environment environment;
+
+    @InjectMocks
+    private RoleService sut;
+
+
+    private final List<Role> availableRoles = new ArrayList<>();
+    private final static String ROLE_NAME = "ADMIN";
+    private final Role adminRole = new Role(ROLE_NAME);
+    private final static String ROLES = "ADMIN, TEST_ENGINEER, TEST_LEAD, GUEST";
+
+    @Before
+    public void setUp() {
+        fillAllAvailableRoles(availableRoles);
+    }
+
+    @Test
+    public void getRoleByName() {
+        when(roleDAO.findByName(ROLE_NAME)).thenReturn(adminRole);
+
+        final Role retrievedRoleByName = sut.getRoleByName(ROLE_NAME);
+
+        Assert.assertThat(retrievedRoleByName, is(equalTo(adminRole)));
+    }
+
+    @Test
+    public void addRole() {
+        sut.addRole(adminRole);
+        verify(roleDAO).save(adminRole);
+    }
+
+    @Test
+    public void findAll() {
+        when(roleDAO.findAll()).thenReturn(availableRoles);
+        final List<Role> expectedRoles = sut.findAll();
+        Assert.assertEquals(expectedRoles, availableRoles);
+    }
+
+    @Test
+    public void getRolesFromProperties() {
+        when(environment.getProperty(anyString())).thenReturn(ROLES);
+
+        final List<Role> allRolesFromProperties = sut.getRolesFromProperties();
+
+        Assert.assertEquals(allRolesFromProperties, availableRoles);
+    }
+
+    private void fillAllAvailableRoles(List<Role> availableRoles) {
+        final List<String> possibleRolesNames = Arrays.asList("ADMIN", "TEST_ENGINEER", "TEST_LEAD", "GUEST");
+        possibleRolesNames.forEach(rn -> availableRoles.add(new Role(rn)));
+    }
+}
