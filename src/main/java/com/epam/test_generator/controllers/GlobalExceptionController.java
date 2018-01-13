@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.epam.test_generator.dto.ErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,10 @@ public class GlobalExceptionController {
     @ExceptionHandler(value = {AccessDeniedException.class})
     public ResponseEntity<ErrorDTO> roleInvalid(AccessDeniedException ex) {
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(value = {BadRoleException.class})
+    public ResponseEntity<ErrorDTO> roleUnexist(BadRoleException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
     }
 
 }

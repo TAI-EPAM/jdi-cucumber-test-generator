@@ -6,7 +6,9 @@ import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,8 +39,19 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-       return userDAO.findByEmail(email);
+        return userDAO.findByEmail(email);
 
+    }
+
+    public void createAdminIfDoesNotExist() {
+        final List<User> admin = userDAO.findByRole(roleService.getRoleByName("ADMIN"));
+        if(admin.isEmpty()){
+            final User user = new User();
+            user.setEmail("admin@mail.com");
+            user.setPassword(encoder.encode("admin"));
+            user.setRole(roleService.getRoleByName("ADMIN"));
+            userDAO.save(user);
+        }
     }
 
     public List<UserDTO> getUsers() {
@@ -48,13 +61,12 @@ public class UserService {
     public void createUser(LoginUserDTO loginUserDTO) {
         if (this.getUserByEmail(loginUserDTO.getEmail()) != null) {
             throw new UnauthorizedException(
-                "user with email:" + loginUserDTO.getEmail() + " already exist!");
+                    "user with email:" + loginUserDTO.getEmail() + " already exist!");
         } else {
-            final UserDTO userDTO = new UserDTO();
-            userDTO.setEmail(loginUserDTO.getEmail());
-            userDTO.setPassword(encoder.encode(loginUserDTO.getPassword()));
-            userDTO.setRole(roleService.getRoleByName(DEFAULT_ROLE).getName());
-            final User user = userTransformer.fromDto(userDTO);
+            final User user = new User();
+            user.setEmail(loginUserDTO.getEmail());
+            user.setPassword(encoder.encode(loginUserDTO.getPassword()));
+            user.setRole(roleService.getRoleByName(DEFAULT_ROLE));
             userDAO.save(user);
         }
     }

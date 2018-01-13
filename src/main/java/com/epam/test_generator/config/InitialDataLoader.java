@@ -31,9 +31,12 @@ public class InitialDataLoader implements
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+
+
         final List<Role> rolesFromProperties = roleService.getRolesFromProperties();
 
         rolesFromProperties.stream().filter(isAlreadyContainsInBase()).forEach(roleService::addRole);
@@ -43,6 +46,7 @@ public class InitialDataLoader implements
                 roleService.addRole(role);
             }
         }
+        userService.createAdminIfDoesNotExist();
     }
 
     private Predicate<Role> isAlreadyContainsInBase() {

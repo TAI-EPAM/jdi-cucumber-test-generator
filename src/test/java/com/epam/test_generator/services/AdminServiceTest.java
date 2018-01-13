@@ -3,6 +3,7 @@ package com.epam.test_generator.services;
 import com.epam.test_generator.dto.ChangeUserRoleDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +65,7 @@ public class AdminServiceTest {
     }
 
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = BadRoleException.class)
     public void changeUserRole_ARoleWillNotHaveBeenChanged() {
         assertThat(user.getRole(), is(equalTo(oldRole)));
 
