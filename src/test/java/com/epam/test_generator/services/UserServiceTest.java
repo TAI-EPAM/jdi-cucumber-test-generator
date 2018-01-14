@@ -15,11 +15,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -105,8 +109,8 @@ public class UserServiceTest {
 
     @Test
     public void createUser() throws Exception {
-      //  sut.createUser(loginUserDTO);
-      //  verify(userDAO).save(any(User.class));
+        sut.createUser(loginUserDTO);
+        verify(userDAO).save(any(User.class));
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -130,4 +134,17 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void createAdmin_ok() throws Exception{
+        sut.createAdminIfDoesNotExist();
+        verify(userDAO).save(any(User.class));
+
+    }
+
+    @Test
+    public void createAdmin_nok() throws Exception{
+        when(userDAO.findByRole(roleService.getRoleByName("ADMIN"))).thenReturn(Collections.singletonList(new User()));
+        sut.createAdminIfDoesNotExist();
+        verify(userDAO,times(0)).save(any(User.class));
+    }
 }
