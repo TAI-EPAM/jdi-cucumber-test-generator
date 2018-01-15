@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,9 +110,10 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to update",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseDTO", value = "Updated case object",
-            required = true, dataType = "CaseDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "editCaseDTO", value = "Updated case object",
+            required = true, dataType = "EditCaseDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.PUT, consumes = "application/json")
@@ -121,6 +123,29 @@ public class CaseController {
         caseService.updateCase(suitId, caseId, editCaseDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Update, create or delete list of cases", nickname = "updateCases")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK", response = Long.class, responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request"),
+        @ApiResponse(code = 404, message = "Some of Suits/cases not found")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "suitId", value = "ID of suit to operate cases",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
+    })
+    @RequestMapping(value = "/suits/{suitId}/cases",
+        method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<List<Long>> updateCases(@PathVariable("suitId") long suitId,
+                                                  @RequestBody @Valid List<EditCaseDTO> editDTOList)
+        throws MethodArgumentNotValidException {
+
+        List<Long> newCaseIds = caseService.updateCases(suitId, editDTOList);
+
+        return new ResponseEntity<>(newCaseIds, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete case by id", nickname = "removeCase")

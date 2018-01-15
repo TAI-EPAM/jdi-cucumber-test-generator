@@ -19,15 +19,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,14 +45,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseControllerTest {
 
-    private static final long SIMPLE_SUIT_ID = 1L;
-    private static final long SIMPLE_CASE_ID = 2L;
-    private static final Long[] CASE_IDS = {3L, 4L, 5L};
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private CaseDTO caseDTO;
     private SuitDTO suitDTO;
     private List<CaseDTO> caseDTOList;
+
+    private List<EditCaseDTO> editCaseDTOList;
+
+    private static final long SIMPLE_SUIT_ID = 1L;
+    private static final long SIMPLE_CASE_ID = 2L;
+    private static final Long[] CASE_IDS = {3L, 4L, 5L};
+
     @Mock
     private CaseService casesService;
 
@@ -103,6 +110,22 @@ public class CaseControllerTest {
         caseDTOList.add(caseDTO3);
 
         suitDTO.setCases(caseDTOList);
+
+        editCaseDTOList = new ArrayList<>();
+
+        EditCaseDTO editCaseDTO1 = new EditCaseDTO("descr", "name", 1,
+            Status.NOT_RUN, Action.CREATE);
+        editCaseDTO1.setId(CASE_IDS[0]);
+        EditCaseDTO editCaseDTO2 = new EditCaseDTO("descr","name", 1,
+            Status.NOT_RUN, Action.UPDATE);
+        editCaseDTO2.setId(CASE_IDS[1]);
+        EditCaseDTO editCaseDTO3 = new EditCaseDTO("descr", "name", 1,
+            Status.NOT_RUN, Action.UPDATE);
+        editCaseDTO3.setId(CASE_IDS[2]);
+
+        editCaseDTOList.add(editCaseDTO1);
+        editCaseDTOList.add(editCaseDTO2);
+        editCaseDTOList.add(editCaseDTO3);
 
         when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
     }
@@ -279,7 +302,7 @@ public class CaseControllerTest {
     public void testUpdateCase_return200whenUpdateCase() throws Exception {
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(caseDTO)))
+            .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isOk());
 
@@ -294,7 +317,7 @@ public class CaseControllerTest {
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(caseDTO)))
+            .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isNotFound());
 
@@ -309,7 +332,7 @@ public class CaseControllerTest {
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(caseDTO)))
+            .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
@@ -378,7 +401,7 @@ public class CaseControllerTest {
 
         mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(caseDTO)))
+            .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
@@ -543,5 +566,15 @@ public class CaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateCases_CorrectActions_StatusOk() throws Exception {
+        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(editCaseDTOList)))
+            .andExpect(status().isOk());
+
+        verify(casesService).updateCases(eq(SIMPLE_SUIT_ID), eq(editCaseDTOList));
     }
 }

@@ -16,13 +16,23 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
+import com.epam.test_generator.transformers.StepTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
+import com.epam.test_generator.transformers.TagTransformer;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Transactional
 @Service
@@ -33,6 +43,15 @@ public class CaseService {
 
     @Autowired
     private SuitTransformer suitTransformer;
+
+    @Autowired
+    private TagTransformer tagTransformer;
+
+    @Autowired
+    private StepTransformer stepTransformer;
+
+    @Autowired
+    private Validator validator;
 
     @Autowired
     private CaseDAO caseDAO;
@@ -61,11 +80,16 @@ public class CaseService {
         return caseTransformer.toDto(caze);
     }
 
-    public Long addCaseToSuit(Long suitId, CaseDTO caseDTO) {
+    public Long addCaseToSuit(Long suitId, @Valid CaseDTO caseDTO) {
         Suit suit = suitDAO.findOne(suitId);
         checkNotNull(suit);
 
         Case caze = caseTransformer.fromDto(caseDTO);
+
+        Date currentTime = Calendar.getInstance().getTime();
+
+        caze.setCreationDate(currentTime);
+        caze.setUpdateDate(currentTime);
 
         caze = caseDAO.save(caze);
         suit.getCases().add(caze);
@@ -73,6 +97,22 @@ public class CaseService {
         caseVersionDAO.save(caze);
 
         return caze.getId();
+    }
+
+    public Long addCaseToSuit(Long suitId, EditCaseDTO editCaseDTO)
+        throws MethodArgumentNotValidException {
+        CaseDTO caseDTO = new CaseDTO(editCaseDTO.getId(), editCaseDTO.getName(),
+            editCaseDTO.getDescription(), new ArrayList<>(),
+            editCaseDTO.getPriority(), new HashSet<>(), editCaseDTO.getStatus());
+
+        BeanPropertyBindingResult beanPropertyBindingResult =
+            new BeanPropertyBindingResult(caseDTO, CaseDTO.class.getSimpleName());
+
+        validator.validate(caseDTO, beanPropertyBindingResult);
+        if (beanPropertyBindingResult.hasErrors()) {
+            throw new MethodArgumentNotValidException(null, beanPropertyBindingResult);
+        }
+        return addCaseToSuit(suitId, caseDTO);
     }
 
     public void updateCase(Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
@@ -86,16 +126,12 @@ public class CaseService {
 
         caze.setUpdateDate(Calendar.getInstance().getTime());
 
-        if (editCaseDTO.getDescription() != null) {
-            caze.setDescription(editCaseDTO.getDescription());
-        }
-
-        if (editCaseDTO.getPriority() != null) {
-            caze.setPriority(editCaseDTO.getPriority());
-        }
+        caze.setDescription(editCaseDTO.getDescription());
+        caze.setPriority(editCaseDTO.getPriority());
+        caze.setStatus(editCaseDTO.getStatus());
+        caze.setName(editCaseDTO.getName());
 
         caseDAO.save(caze);
-
         caseVersionDAO.save(caze);
     }
 
@@ -125,6 +161,33 @@ public class CaseService {
                 caseDAO.delete(caze.getId());
                 caseVersionDAO.delete(caze);
             });
+    }
+
+    public List<Long> updateCases(long suitId, List<EditCaseDTO> editCaseDTOS)
+        throws MethodArgumentNotValidException {
+        List<Long> newCasesIds = new ArrayList<>();
+        for (EditCaseDTO caseDTO : editCaseDTOS) {
+            switch (caseDTO.getAction()) {
+                case DELETE:
+                    if (caseDTO.getId() == null) {
+                        throw new BadRequestException("No id in Case to remove");
+                    }
+                    removeCase(suitId, caseDTO.getId());
+                    break;
+                case CREATE:
+                    newCasesIds.add(addCaseToSuit(suitId, caseDTO));
+                    break;
+                case UPDATE:
+                    if (caseDTO.getId() == null) {
+                        throw new BadRequestException("No id in Case to update");
+                    }
+                    updateCase(suitId, caseDTO.getId(), caseDTO);
+                    break;
+                default:
+                    throw new BadRequestException("Wrong action argument");
+            }
+        }
+        return newCasesIds;
     }
 
     public Status performEvent(Long suitId, Long caseId, Event event) throws Exception {
