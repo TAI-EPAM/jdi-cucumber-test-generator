@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers;
 
+import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationProvider;
 import com.epam.test_generator.dao.interfaces.UserDAO;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 
-@ContextConfiguration(classes = {WebConfig.class})
+@ContextConfiguration(classes = {WebConfig.class, DatabaseConfigForTests.class})
 @WebAppConfiguration
 public class AdminControllerSecurityTest {
 

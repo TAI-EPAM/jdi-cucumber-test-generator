@@ -36,10 +36,7 @@ public class InitialDataLoader implements
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-
         final List<Role> rolesFromProperties = roleService.getRolesFromProperties();
-
-        rolesFromProperties.stream().filter(isAlreadyContainsInBase()).forEach(roleService::addRole);
 
         for (Role role : rolesFromProperties) {
             if (roleService.getRoleByName(role.getName()) == null) {
@@ -49,7 +46,4 @@ public class InitialDataLoader implements
         userService.createAdminIfDoesNotExist();
     }
 
-    private Predicate<Role> isAlreadyContainsInBase() {
-        return r -> !Objects.isNull(roleService.getRoleByName(r.getName()));
-    }
 }
