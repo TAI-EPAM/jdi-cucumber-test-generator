@@ -1,14 +1,9 @@
 package com.epam.test_generator.entities;
 
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import javax.persistence.*;
 
 @Entity
 public class User {
@@ -60,11 +55,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                '}';
+        return String.format("User {id= %s, password= %s, role= %s}", id, password, role);
     }
 
 }

@@ -1,8 +1,9 @@
 package com.epam.test_generator.dto;
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.Email;
 
 public class UserDTO {
 
@@ -64,11 +65,7 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return "UserDTO{" +
-            ", password='" + password + '\'' +
-            ", role='" + role + '\'' +
-            ", email='" + email + '\'' +
-            '}';
+        return String.format("UserDTO { password = %s, role = %s, email = %s}", password, role, email);
     }
 }
 

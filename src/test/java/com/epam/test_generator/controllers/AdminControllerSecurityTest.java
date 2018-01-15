@@ -7,7 +7,6 @@ import com.epam.test_generator.dto.ChangeUserRoleDTO;
 import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
-import com.epam.test_generator.services.RoleService;
 import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.UserService;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -61,9 +60,6 @@ public class AdminControllerSecurityTest {
     @InjectMocks
     @Autowired
     private TokenService tokenService;
-
-    @Mock
-    private RoleService roleService;
 
     @Autowired
     private WebApplicationContext context;
@@ -126,27 +122,6 @@ public class AdminControllerSecurityTest {
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
-
-
-    @Test
-    public void changeUserRole_code200_statusOk() throws Exception {
-        when(user.getRole()).thenReturn(new Role("ADMIN"));
-        when(userService.getUserById(anyLong())).thenReturn(user);
-        when(userService.getUserByEmail(anyString())).thenReturn(user).thenReturn(passiveUser);
-        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
-
-
-        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
-
-        final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
-
-        when(roleService.getRoleByName(anyString())).thenReturn(new Role("TEST_LEAD"));
-
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json).contentType("application/json"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
 
     @Test
     public void changeUserRole_code403_statusForbidden() throws Exception {
