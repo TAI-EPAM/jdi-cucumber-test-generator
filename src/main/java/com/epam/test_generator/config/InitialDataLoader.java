@@ -19,8 +19,6 @@ import java.util.function.Predicate;
 public class InitialDataLoader implements
     ApplicationListener<ContextRefreshedEvent> {
 
-    boolean alreadySetup = false;
-
     @Autowired
     private UserService userService;
 
