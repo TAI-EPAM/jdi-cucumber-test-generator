@@ -25,7 +25,6 @@ public class User {
     private Boolean locked;
 
 
-
     public User(String email, String password, Role role) {
         this();
         this.email = email;
@@ -86,7 +85,7 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("User {id= %s, password= %s, role= %s}", id, password, role);
+        return String.format("User {id= %s, password= %s, role= %s, locked = %S, attempts =%s}", id, password, role, locked, attempts);
     }
 
 }
