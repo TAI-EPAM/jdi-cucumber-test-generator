@@ -19,6 +19,10 @@ public class User {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     private Role role;
+    @JsonIgnore
+    private Integer attempts;
+    @JsonIgnore
+    private Boolean locked;
 
     public User(String email, String password, Role role) {
         this.email = email;
@@ -57,6 +61,22 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Integer getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     @Override

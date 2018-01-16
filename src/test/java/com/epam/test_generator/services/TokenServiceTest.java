@@ -2,7 +2,7 @@ package com.epam.test_generator.services;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.epam.test_generator.dto.LoginUserDTO;
@@ -37,6 +37,7 @@ public class TokenServiceTest {
     @Before
     public void setUp() throws Exception {
         when(environment.getProperty(anyString())).thenReturn("iteaky");
+        when(user.getAttempts()).thenReturn(5);
         badToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJciIsImlkIjoyfQ.dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
         goodToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjdWN1bWJlciIsImlkIjoyfQ.dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
 
@@ -74,4 +75,43 @@ public class TokenServiceTest {
         sut.getToken(loginUserDTO);
     }
 
+    @Test(expected = UnauthorizedException.class)
+    public void getToken_LockedUser_UnauthorizedException() throws Exception {
+        User user = new User();
+        user.setLocked(true);
+
+        when(loginUserDTO.getEmail()).thenReturn("email");
+        when(userService.getUserByEmail(any())).thenReturn(user);
+        sut.getToken(loginUserDTO);
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void getToken_LastFailureAttempt_UnauthorizedException() throws Exception {
+        User user = new User();
+        user.setAttempts(4);
+        user.setLocked(false);
+
+        when(loginUserDTO.getEmail()).thenReturn("email");
+        when(userService.getUserByEmail(any())).thenReturn(user);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(false);
+        sut.getToken(loginUserDTO);
+
+        verify(userService,times(1)).updateFailureAttempts(anyLong());
+        verify(userService,never()).invalidateAttempts(any());
+    }
+
+    @Test
+    public void getToken_SuccessAttempt_InvalidateUserAttempts(){
+        User user = new User();
+        user.setLocked(false);
+        user.setAttempts(0);
+
+        when(loginUserDTO.getEmail()).thenReturn("email");
+        when(userService.getUserByEmail(any())).thenReturn(user);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+        sut.getToken(loginUserDTO);
+
+        verify(userService,never()).updateFailureAttempts(any());
+        verify(userService,times(1)).invalidateAttempts(any());
+    }
 }

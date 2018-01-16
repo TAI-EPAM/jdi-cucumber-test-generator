@@ -16,13 +16,15 @@ public class AuthenticatedUser implements UserDetails {
     private String email;
     private String token;
     private Collection<? extends GrantedAuthority> authorityList;
+    private Boolean isAccountNonLocked;
 
     public AuthenticatedUser(Long id, String email, String token,
-                             Collection<? extends GrantedAuthority> authorityList) {
+                             Collection<? extends GrantedAuthority> authorityList, Boolean locked) {
         this.id = id;
         this.email = email;
         this.token = token;
         this.authorityList = authorityList;
+        this.isAccountNonLocked = !locked;
     }
 
     public Long getId() {
@@ -59,7 +61,7 @@ public class AuthenticatedUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isAccountNonLocked;
     }
 
     @Override

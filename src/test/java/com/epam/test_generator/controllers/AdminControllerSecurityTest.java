@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -91,7 +92,9 @@ public class AdminControllerSecurityTest {
         when(user.getEmail()).thenReturn("test@email.com");
         when(user.getPassword()).thenReturn("test");
         when(user.getId()).thenReturn(new Long(1));
+        when(user.isLocked()).thenReturn(false);
 
+        ReflectionTestUtils.setField(tokenService, "userService", userService);
     }
 
     @Test

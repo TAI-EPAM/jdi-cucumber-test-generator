@@ -15,12 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @PropertySource("classpath:application.properties")
+@Transactional(noRollbackFor=UnauthorizedException.class)
 public class TokenService {
 
-    
 
     @Resource
     private Environment environment;
@@ -46,14 +47,23 @@ public class TokenService {
                     "User with email: " + loginUserDTO.getEmail() + " not found.");
         }
 
+        if (user.isLocked()) {
+            throw new UnauthorizedException("User Account is locked!");
+        }
 
         if (!(userService.isSamePasswords(loginUserDTO.getPassword(), user.getPassword()))) {
+            int attempts = userService.updateFailureAttempts(user.getId());
+            if (user.isLocked()) {
+                throw new UnauthorizedException("Incorrect password entered " + attempts + " times. "
+                        + "User account has been locked!");
+            }
             throw new UnauthorizedException("Incorrect password.");
         } else {
             Builder builder = JWT.create()
                 .withIssuer("cucumber")
                 .withClaim("id", user.getId());
             try {
+                userService.invalidateAttempts(user.getId());
                 return builder.sign(Algorithm.HMAC256(environment.getProperty("jwt_secret")));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e.getMessage());

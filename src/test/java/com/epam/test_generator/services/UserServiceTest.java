@@ -135,6 +135,59 @@ public class UserServiceTest {
     }
 
     @Test
+    public void updateFailureAttempts_UnlockedUser_UpdatedAndNotLocked() {
+        int expectedAttempts = 3;
+        int actualAttempts;
+
+        User user = new User();
+        user.setLocked(false);
+        user.setAttempts(0);
+
+        when(userDAO.findById(anyLong())).thenReturn(user);
+
+        sut.updateFailureAttempts(1L);
+        sut.updateFailureAttempts(1L);
+        actualAttempts = sut.updateFailureAttempts(1L);
+
+        verify(userDAO,times(3)).save(any(User.class));
+
+        assertEquals(expectedAttempts,actualAttempts);
+        assertEquals(expectedAttempts, (long)user.getAttempts());
+        assertFalse(user.isLocked());
+    }
+
+    @Test
+    public void updateFailureAttempts_UnlockedUser_UpdatedAndLocked() {
+        int expectedAttempts = 5;
+        int actualAttempts;
+
+        User user = new User();
+        user.setLocked(false);
+        user.setAttempts(4);
+
+        when(userDAO.findById(anyLong())).thenReturn(user);
+
+        actualAttempts = sut.updateFailureAttempts(1L);
+        verify(userDAO,times(1)).save(any(User.class));
+        assertEquals(expectedAttempts,actualAttempts);
+        assertTrue(user.isLocked());
+    }
+
+    @Test
+    public void invalidateAttempts_LockedUser_UpdatedAndUnlocked() {
+        int expectedAttempts = 0;
+
+        User user = new User();
+        user.setLocked(true);
+        user.setAttempts(4);
+
+        when(userDAO.findById(anyLong())).thenReturn(user);
+
+        sut.invalidateAttempts(1L);
+        assertEquals(expectedAttempts, (long)user.getAttempts());
+        assertFalse(user.isLocked());
+    }
+    @Test
     public void createAdmin_ok() throws Exception{
         sut.createAdminIfDoesNotExist();
         verify(userDAO).save(any(User.class));

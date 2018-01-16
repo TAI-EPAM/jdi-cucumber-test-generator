@@ -6,9 +6,7 @@ import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 public class UserService {
+    private static final int MAX_ATTEMPTS = 5;
 
     private final static String DEFAULT_ROLE = "GUEST";
 
@@ -73,6 +72,8 @@ public class UserService {
                     encoder.encode(loginUserDTO.getPassword()),
                     roleService.getRoleByName(DEFAULT_ROLE));
 
+            user.setAttempts(0);
+            user.setLocked(false);
             userDAO.save(user);
         }
     }
@@ -81,5 +82,40 @@ public class UserService {
         return encoder.matches(passwordOne, passwordTwo);
     }
 
+    /**
+     * Method checks and increments the number of login attempts and locks the user
+     * in case of exceeding the maximum number of attempts
+     * @param userId id of the identified user
+     * @return number of incorrect attempts
+     */
+    public Integer updateFailureAttempts(Long userId) {
+        User user = getUserById(userId);
+
+        if (user != null) {
+            int attempts = user.getAttempts();
+            if (MAX_ATTEMPTS <= ++attempts) {
+                user.setLocked(true);
+            }
+
+            user.setAttempts(attempts);
+            userDAO.save(user);
+            return attempts;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Cancels the count of incorrect login attempts for user and unlocked them
+     * @param userId id of the identified user
+     */
+    public void invalidateAttempts(Long userId) {
+        User user = getUserById(userId);
+        if (user != null) {
+            user.setLocked(false);
+            user.setAttempts(0);
+            userDAO.save(user);
+        }
+    }
 
 }

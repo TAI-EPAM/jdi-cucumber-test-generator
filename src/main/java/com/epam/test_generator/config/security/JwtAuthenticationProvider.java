@@ -78,7 +78,7 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
         Collection<SimpleGrantedAuthority> authorityList = getSimpleGrantedAuthorities(roles);
 
         return new AuthenticatedUser(user.getId(), user.getEmail(), token,
-            authorityList);
+            authorityList, user.isLocked());
 
 
     }

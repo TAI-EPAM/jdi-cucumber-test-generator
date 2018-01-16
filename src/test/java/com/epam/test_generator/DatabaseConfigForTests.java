@@ -61,14 +61,14 @@ public class DatabaseConfigForTests {
         try {
             Properties properties = new Properties();
             InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream("hibernate.properties");
+                .getResourceAsStream("hibernate.test.properties");
 
             properties.load(inputStream);
 
             return properties;
         } catch (IOException e) {
             throw new IllegalArgumentException(
-                "Cannot find 'hibernate.properties' file in classpath!");
+                "Cannot find 'hibernate.test.properties' file in classpath!");
         }
     }
 
