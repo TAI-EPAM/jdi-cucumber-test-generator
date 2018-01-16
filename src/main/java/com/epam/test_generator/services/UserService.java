@@ -44,12 +44,16 @@ public class UserService {
     }
 
     public void createAdminIfDoesNotExist() {
+
         final List<User> admin = userDAO.findByRole(roleService.getRoleByName("ADMIN"));
-        if(admin.isEmpty()){
-            final User user = new User();
-            user.setEmail("admin@mail.com");
-            user.setPassword(encoder.encode("admin"));
-            user.setRole(roleService.getRoleByName("ADMIN"));
+
+        if (admin.isEmpty()) {
+
+            final User user = new User(
+                    "admin@mail.com",
+                    encoder.encode("admin"),
+                    roleService.getRoleByName("ADMIN"));
+
             userDAO.save(user);
         }
     }
@@ -63,10 +67,12 @@ public class UserService {
             throw new UnauthorizedException(
                     "user with email:" + loginUserDTO.getEmail() + " already exist!");
         } else {
-            final User user = new User();
-            user.setEmail(loginUserDTO.getEmail());
-            user.setPassword(encoder.encode(loginUserDTO.getPassword()));
-            user.setRole(roleService.getRoleByName(DEFAULT_ROLE));
+
+            final User user = new User(
+                    loginUserDTO.getEmail(),
+                    encoder.encode(loginUserDTO.getPassword()),
+                    roleService.getRoleByName(DEFAULT_ROLE));
+
             userDAO.save(user);
         }
     }

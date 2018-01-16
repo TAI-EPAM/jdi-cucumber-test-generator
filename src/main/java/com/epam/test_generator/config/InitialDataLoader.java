@@ -25,11 +25,6 @@ public class InitialDataLoader implements
     @Autowired
     private RoleService roleService;
 
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {

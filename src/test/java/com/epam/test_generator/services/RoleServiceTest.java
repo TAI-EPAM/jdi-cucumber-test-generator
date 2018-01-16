@@ -47,7 +47,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void getRoleByName() {
+    public void getRoleByName_ValidName_Ok() {
         when(roleDAO.findByName(ROLE_NAME)).thenReturn(adminRole);
 
         final Role retrievedRoleByName = sut.getRoleByName(ROLE_NAME);
@@ -56,20 +56,20 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void addRole() {
+    public void addRole_ValidName_Ok() {
         sut.addRole(adminRole);
         verify(roleDAO).save(adminRole);
     }
 
     @Test
-    public void findAll() {
+    public void findAll_SimpleRoles_Ok() {
         when(roleDAO.findAll()).thenReturn(availableRoles);
         final List<Role> expectedRoles = sut.findAll();
         Assert.assertEquals(expectedRoles, availableRoles);
     }
 
     @Test
-    public void getRolesFromProperties() {
+    public void getRolesFromProperties_SimpleRoles_Ok() {
         when(environment.getProperty(anyString())).thenReturn(ROLES);
 
         final List<Role> allRolesFromProperties = sut.getRolesFromProperties();

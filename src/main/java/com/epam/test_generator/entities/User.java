@@ -20,6 +20,12 @@ public class User {
     @ManyToOne(cascade = {CascadeType.ALL})
     private Role role;
 
+    public User(String email, String password, Role role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public User() {
     }
 

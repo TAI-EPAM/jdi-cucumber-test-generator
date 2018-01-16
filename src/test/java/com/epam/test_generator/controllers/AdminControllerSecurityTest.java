@@ -95,7 +95,7 @@ public class AdminControllerSecurityTest {
     }
 
     @Test
-    public void getUsers_code200_statusOk() throws Exception {
+    public void getUsers_SimpleUser_StatusOk() throws Exception {
         when(user.getRole()).thenReturn(new Role("ADMIN"));
         when(userService.getUserById(anyLong())).thenReturn(user);
         when(userService.getUserByEmail(anyString())).thenReturn(user);
@@ -109,7 +109,7 @@ public class AdminControllerSecurityTest {
     }
 
     @Test
-    public void getUsers_code403_statusForbidden() throws Exception {
+    public void getUsers_UserWithWrongRole_StatusForbidden() throws Exception {
 
         when(user.getRole()).thenReturn(new Role("GUEST"));
         when(userService.getUserById(anyLong())).thenReturn(user);
@@ -125,7 +125,7 @@ public class AdminControllerSecurityTest {
     }
 
     @Test
-    public void changeUserRole_code403_statusForbidden() throws Exception {
+    public void changeUserRole_UserWithWrongRole_StatusForbidden() throws Exception {
         when(user.getRole()).thenReturn(new Role("GUEST"));
         when(userService.getUserById(anyLong())).thenReturn(user);
         when(userService.getUserByEmail(anyString())).thenReturn(user).thenReturn(passiveUser);

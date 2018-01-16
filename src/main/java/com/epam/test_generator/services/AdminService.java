@@ -23,7 +23,7 @@ public class AdminService {
     @Autowired
     private RoleService roleService;
 
-    public void chaneUserRole(ChangeUserRoleDTO changeUserRoleDTO)  {
+    public void chaneUserRole(ChangeUserRoleDTO changeUserRoleDTO) {
 
         final User userByEmail = userService.getUserByEmail(changeUserRoleDTO.getEmail());
 
@@ -36,14 +36,13 @@ public class AdminService {
         userByEmail.setRole(aNewRole);
     }
 
-    private Role getRole(ChangeUserRoleDTO changeUserRoleDTO)  {
+    private Role getRole(ChangeUserRoleDTO changeUserRoleDTO) {
+
         final Role aRole = roleService.getRoleByName(changeUserRoleDTO.getRole());
-        try {
-            Objects.requireNonNull(aRole);
-        } catch (NullPointerException e) {
+
+        if (aRole == null) {
             throw new BadRoleException("Invalid name for Role");
         }
-
         return aRole;
     }
 

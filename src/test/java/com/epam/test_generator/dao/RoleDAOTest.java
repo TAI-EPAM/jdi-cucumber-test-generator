@@ -53,7 +53,7 @@ public class RoleDAOTest {
     }
 
     @Test
-    public void findByName_Null_ReturnsNullDueToAbsenceOfItemWithThisName() {
+    public void findByName_NullRole_ReturnsNullDueToAbsenceOfItemWithThisName() {
 
         final Role byName = roleDAO.findByName(ROLE_NAME);
         Assert.assertThat(byName, is(nullValue()));

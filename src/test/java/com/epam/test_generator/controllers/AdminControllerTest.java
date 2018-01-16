@@ -40,7 +40,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void changeUserRole_SimpleRole_Status200() throws Exception {
+    public void changeUserRole_SimpleRole_StatusOk() throws Exception {
         userChangeRole.setEmail("email@mail.com");
         userChangeRole.setRole("Role");
         final String json = mapper.writeValueAsString(userChangeRole);
