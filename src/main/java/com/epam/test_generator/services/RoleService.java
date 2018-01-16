@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @PropertySource("classpath:roles.properties")
 @Transactional
@@ -37,13 +37,10 @@ public class RoleService {
     }
 
     public List<Role> getRolesFromProperties() {
-        List<Role> roles = new ArrayList<>();
-        String stringOfRoles = environment.getProperty("roles");
-        String[] split = stringOfRoles.split(", ");
-        List<String> strings = Arrays.asList(split);
-        for (String s : strings) {
-            roles.add(new Role(s));
-        }
-        return roles;
+        final String[] split = environment.getProperty("roles").split(", ");
+        final List<String> roleNames = Arrays.asList(split);
+        return roleNames.stream().
+                map(Role::new).
+                collect(Collectors.toList());
     }
 }
