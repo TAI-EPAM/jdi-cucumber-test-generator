@@ -39,6 +39,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
         return resourceViewResolver;
     }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -50,13 +55,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfig() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
-            }
-        };
-    }
+
 }
