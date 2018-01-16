@@ -8,6 +8,8 @@ import com.epam.test_generator.dto.ChangeUserRoleDTO;
 import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.AdminService;
+import com.epam.test_generator.services.RoleService;
 import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.UserService;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -29,8 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -63,6 +64,14 @@ public class AdminControllerSecurityTest {
     @Autowired
     private TokenService tokenService;
 
+    @Mock
+    private RoleService roleService;
+
+    @InjectMocks
+    @Autowired
+    private AdminService adminService;
+
+
     @Autowired
     private WebApplicationContext context;
 
@@ -94,6 +103,9 @@ public class AdminControllerSecurityTest {
         when(user.getId()).thenReturn(new Long(1));
         when(user.isLocked()).thenReturn(false);
 
+
+        ReflectionTestUtils.setField(adminService, "userService", userService);
+        ReflectionTestUtils.setField(adminService, "roleService", roleService);
         ReflectionTestUtils.setField(tokenService, "userService", userService);
     }
 
@@ -126,6 +138,48 @@ public class AdminControllerSecurityTest {
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    public void changeUserRole_UserWithRightRole_StatusOk() throws Exception {
+        when(user.getRole()).thenReturn(new Role("ADMIN"));
+        when(userService.getUserById(anyLong())).thenReturn(user);
+        when(userService.getUserByEmail(anyString())).thenReturn(user);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+
+        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
+
+        when(userService.getUserByEmail(eq("admin@email.com"))).thenReturn(passiveUser);
+        when(roleService.getRoleByName(changeUserRoleDTO.getRole())).thenReturn(new Role("TEST_LEAD"));
+
+        final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
+
+
+        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json).contentType("application/json"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void changeUserRole_UserWithWrongRole_StatusBadRequest() throws Exception {
+        when(user.getRole()).thenReturn(new Role("ADMIN"));
+        when(userService.getUserById(anyLong())).thenReturn(user);
+        when(userService.getUserByEmail(anyString())).thenReturn(user);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+
+        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
+
+        when(userService.getUserByEmail(eq("admin@email.com"))).thenReturn(passiveUser);
+        when(roleService.getRoleByName(changeUserRoleDTO.getRole())).thenReturn(null);
+
+        final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
+
+
+        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json).contentType("application/json"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
 
     @Test
     public void changeUserRole_UserWithWrongRole_StatusForbidden() throws Exception {

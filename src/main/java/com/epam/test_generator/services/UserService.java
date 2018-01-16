@@ -6,11 +6,12 @@ import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Transactional
@@ -71,9 +72,6 @@ public class UserService {
                     loginUserDTO.getEmail(),
                     encoder.encode(loginUserDTO.getPassword()),
                     roleService.getRoleByName(DEFAULT_ROLE));
-
-            user.setAttempts(0);
-            user.setLocked(false);
             userDAO.save(user);
         }
     }

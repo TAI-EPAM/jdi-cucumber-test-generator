@@ -24,13 +24,18 @@ public class User {
     @JsonIgnore
     private Boolean locked;
 
+
+
     public User(String email, String password, Role role) {
+        this();
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
     public User() {
+        this.setAttempts(0);
+        this.locked = false;
     }
 
     public Long getId() {
