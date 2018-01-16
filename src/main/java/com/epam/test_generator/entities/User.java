@@ -19,9 +19,9 @@ public class User {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     private Role role;
-    @JsonIgnore
+
     private Integer attempts;
-    @JsonIgnore
+
     private Boolean locked;
 
 
@@ -85,7 +85,7 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("User {id= %s, password= %s, role= %s, locked = %S, attempts =%s}", id, password, role, locked, attempts);
+        return String.format("User {id= %s, password= %s, role= %s, locked = %s, attempts =%s}", id, password, role, locked, attempts);
     }
 
 }

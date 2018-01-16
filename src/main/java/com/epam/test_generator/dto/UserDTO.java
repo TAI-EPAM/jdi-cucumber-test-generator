@@ -21,6 +21,26 @@ public class UserDTO {
 
     private String role;
 
+    private Integer attempts;
+
+    private Boolean locked;
+
+    public Integer getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(Integer attempts) {
+        this.attempts = attempts;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
+
     public UserDTO(String password, String role, String email) {
         this.password = password;
         this.role = role;
@@ -65,7 +85,7 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return String.format("UserDTO { password = %s, role = %s, email = %s}", password, role, email);
+        return String.format("User {id= %s, password= %s, role= %s, locked = %s, attempts =%s}", id, password, role, locked, attempts);
     }
 }
 
