@@ -31,4 +31,12 @@
         <class-a>com.epam.test_generator.entities.User</class-a>
         <class-b>com.epam.test_generator.dto.UserDTO</class-b>
     </mapping>
+    <mapping map-null="false">
+        <class-a>com.epam.test_generator.pojo.CaseVersion</class-a>
+        <class-b>com.epam.test_generator.dto.CaseVersionDTO</class-b>
+    </mapping>
+    <mapping map-null="false">
+        <class-a>com.epam.test_generator.pojo.PropertyDifference</class-a>
+        <class-b>com.epam.test_generator.dto.PropertyDifferenceDTO</class-b>
+    </mapping>
 </mappings>

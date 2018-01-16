@@ -1,61 +1,72 @@
 package com.epam.test_generator.pojo;
 
 import com.epam.test_generator.entities.Case;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Represents specific version of a {@link Case}. Note, that CaseVersion object has list of {@link
+ * PropertyDifference} objects, which stores information only about properties that have been
+ * updated.
+ */
 
 public class CaseVersion {
 
-    private Case caze;
+    private String commitId;
 
-    private Long versionId;
+    private Date updatedDate;
 
-    public CaseVersion(Case caze, Long versionId) {
-        this.caze = caze;
-        this.versionId = versionId;
+    private String author;
+
+    private List<PropertyDifference> propertyDifferences;
+
+    public CaseVersion(String commitId, Date updatedDate, String author,
+                       List<PropertyDifference> propertyDifferences) {
+        this.commitId = commitId;
+        this.updatedDate = updatedDate;
+        this.author = author;
+        this.propertyDifferences = propertyDifferences;
     }
 
-    public Case getCaze() {
-        return caze;
+    public String getCommitId() {
+        return commitId;
     }
 
-    public void setCaze(Case caze) {
-        this.caze = caze;
+    public void setCommitId(String commitId) {
+        this.commitId = commitId;
     }
 
-    public Long getVersionId() {
-        return versionId;
+    public Date getUpdatedDate() {
+        return updatedDate;
     }
 
-    public void setVersionId(Long versionId) {
-        this.versionId = versionId;
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public List<PropertyDifference> getPropertyDifferences() {
+        return propertyDifferences;
+    }
+
+    public void setPropertyDifferences(
+        List<PropertyDifference> propertyDifferences) {
+        this.propertyDifferences = propertyDifferences;
+    }
+
+    public void addPropertyDefference(PropertyDifference propertyDifference) {
+        if (propertyDifferences == null) {
+            propertyDifferences = new ArrayList<>();
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
 
-        CaseVersion that = (CaseVersion) o;
-
-        return (caze != null ? caze.equals(that.caze) : that.caze == null)
-            && (versionId != null ? versionId.equals(that.versionId) : that.versionId == null);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = caze != null ? caze.hashCode() : 0;
-        result = 31 * result + (versionId != null ? versionId.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "CaseVersion{" +
-            "caze=" + caze +
-            ", versionId=" + versionId +
-            '}';
+        propertyDifferences.add(propertyDifference);
     }
 }

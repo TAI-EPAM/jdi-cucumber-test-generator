@@ -1,7 +1,7 @@
 package com.epam.test_generator.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.JaversConfig;
@@ -13,6 +13,7 @@ import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.pojo.CaseVersion;
+import com.epam.test_generator.pojo.PropertyDifference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class CaseVersionDAOTest {
     }
 
     @Test
-    public void testCommits() {
+    public void save_CreateAndEditSimpleCase_SavedAllVersions() {
         caseVersionDAO.save(caze);
 
         caze.setName("nameUpdate");
@@ -64,64 +65,148 @@ public class CaseVersionDAOTest {
         caze.setPriority(2);
         caseVersionDAO.save(caze);
 
-        final List<CaseVersion> caseVersionList = caseVersionDAO.find(CASE_ID);
+        final List<CaseVersion> caseVersionList = caseVersionDAO.findAll(CASE_ID);
 
         assertEquals(4, caseVersionList.size());
     }
 
     @Test
-    public void testProperty() {
+    public void find_SaveEditedCase_GetHistoryWithEditedCase() {
         caseVersionDAO.save(caze);
 
-        CaseVersion caseVersion = caseVersionDAO.find(CASE_ID).get(0);
+        String newDescription = "newDescription";
+        caze.setDescription(newDescription);
 
-        assertEquals(caze, caseVersion.getCaze());
+        caseVersionDAO.save(caze);
+
+        CaseVersion caseVersion = caseVersionDAO.findAll(CASE_ID).get(1);
+
+        assertEquals(1, caseVersion.getPropertyDifferences().size());
+        assertEquals(new PropertyDifference(
+            "description",
+            "description",
+            newDescription
+        ), caseVersion.getPropertyDifferences().get(0));
     }
 
     @Test
-    public void testStepSave() {
+    public void find_SaveAddedAndEditedStepInCase_GetHistoryWithAddedAndEditedStep() {
+        caseVersionDAO.save(caze);
+
         Step step = new Step(1L, 1, "description", StepType.GIVEN);
-        caze.addStep(step);
 
+        caze.addStep(step);
         caseVersionDAO.save(caze);
 
-        CaseVersion caseVersion = caseVersionDAO.find(CASE_ID).get(0);
+        step.setDescription("123");
+        caseVersionDAO.save(caze);
 
-        assertEquals(step, caseVersion.getCaze().getSteps().get(0));
+        CaseVersion caseVersionAddedStep = caseVersionDAO.findAll(CASE_ID).get(1);
+        CaseVersion caseVersionEditedStep = caseVersionDAO.findAll(CASE_ID).get(2);
+
+        Step originalStep = new Step(1L, 1, "description", StepType.GIVEN);
+        assertEquals(1, caseVersionAddedStep.getPropertyDifferences().size());
+        assertEquals(1, caseVersionEditedStep.getPropertyDifferences().size());
+
+        assertEquals(new PropertyDifference(
+            "steps",
+            null,
+            originalStep
+        ), caseVersionAddedStep.getPropertyDifferences().get(0));
+
+        assertEquals(new PropertyDifference(
+            "steps",
+            originalStep,
+            step
+        ), caseVersionEditedStep.getPropertyDifferences().get(0));
     }
 
     @Test
-    public void testTagSave() {
+    public void find_SaveAddedAndEditedTagInCase_GetHistoryWithAddedAndEditedTag() {
+        caseVersionDAO.save(caze);
+
         Tag tag = new Tag("name");
         tag.setId(1L);
 
         caze.addTag(tag);
-
         caseVersionDAO.save(caze);
 
-        CaseVersion caseVersion = caseVersionDAO.find(CASE_ID).get(0);
+        tag.setName("editedName");
+        caseVersionDAO.save(caze);
 
-        assertTrue(caseVersion.getCaze().getTags().contains(tag));
+        CaseVersion caseVersionAddedTag = caseVersionDAO.findAll(CASE_ID).get(1);
+        CaseVersion caseVersionEditedTag = caseVersionDAO.findAll(CASE_ID).get(2);
+
+        Tag originalTag = new Tag("name");
+        originalTag.setId(1L);
+
+        assertEquals(1, caseVersionAddedTag.getPropertyDifferences().size());
+        assertEquals(2, caseVersionEditedTag.getPropertyDifferences().size());
+
+        assertEquals(new PropertyDifference(
+            "tags",
+            null,
+            originalTag
+        ), caseVersionAddedTag.getPropertyDifferences().get(0));
+
+        assertEquals(new PropertyDifference(
+            "tags",
+            originalTag,
+            null
+        ), caseVersionEditedTag.getPropertyDifferences().get(0));
+
+        assertEquals(new PropertyDifference(
+            "tags",
+            null,
+            tag
+        ), caseVersionEditedTag.getPropertyDifferences().get(1));
+
     }
 
     @Test
-    public void testStatusSave() {
+    public void find_SaveEditedStatus_GetHistoryWithEditedStatus() {
+        caze.setStatus(Status.NOT_RUN);
+        caseVersionDAO.save(caze);
+
         Status status = Status.PASSED;
         caze.setStatus(status);
 
         caseVersionDAO.save(caze);
 
-        CaseVersion caseVersion = caseVersionDAO.find(CASE_ID).get(0);
+        CaseVersion caseVersion = caseVersionDAO.findAll(CASE_ID).get(1);
 
-        assertEquals(status, caseVersion.getCaze().getStatus());
+        assertEquals(1, caseVersion.getPropertyDifferences().size());
+        assertEquals(new PropertyDifference(
+            "status",
+            Status.NOT_RUN,
+            Status.PASSED
+        ), caseVersion.getPropertyDifferences().get(0));
     }
 
     @Test
-    public void testDelete() {
+    public void findById_ExistingId_Found() {
+        caseVersionDAO.save(caze);
+
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(CASE_ID);
+
+        Case actualCase = caseVersionDAO.findByCommitId(CASE_ID, caseVersions.get(0).getCommitId());
+
+        assertEquals(caze, actualCase);
+    }
+
+    @Test
+    public void findById_WrongId_ReturnNull() {
+        Case actualCase = caseVersionDAO.findByCommitId(CASE_ID, "5.3");
+
+        assertNull(actualCase);
+    }
+
+    @Test
+    public void delete_SimpleCase_Deleted() {
         caseVersionDAO.save(caze);
         caseVersionDAO.delete(caze);
 
-        List<CaseVersion> caseVersionList = caseVersionDAO.find(CASE_ID);
+        List<CaseVersion> caseVersionList = caseVersionDAO.findAll(CASE_ID);
 
         assertEquals(2, caseVersionList.size());
     }
@@ -131,8 +216,8 @@ public class CaseVersionDAOTest {
         caseVersionDAO.save(caseList);
         caseVersionDAO.delete(caseList);
 
-        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
-        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.findAll(CASE_ID2);
 
         assertEquals(2, caseVersions.size());
         assertEquals(2, caseVersions2.size());
@@ -143,8 +228,8 @@ public class CaseVersionDAOTest {
     public void save_SimpleCaseList_Saved() {
         caseVersionDAO.save(caseList);
 
-        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
-        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.findAll(CASE_ID2);
 
         assertEquals(1, caseVersions.size());
         assertEquals(1, caseVersions2.size());
@@ -155,8 +240,8 @@ public class CaseVersionDAOTest {
         caseVersionDAO.save(caseList);
         caseVersionDAO.delete((Iterable<Case>) null);
 
-        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
-        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.findAll(CASE_ID2);
 
         assertEquals(1, caseVersions.size());
         assertEquals(1, caseVersions2.size());
@@ -166,8 +251,8 @@ public class CaseVersionDAOTest {
     public void delete_NullSimpleCaseList_NothingSaved() {
         caseVersionDAO.save((Iterable<Case>) null);
 
-        List<CaseVersion> caseVersions = caseVersionDAO.find(CASE_ID);
-        List<CaseVersion> caseVersions2 = caseVersionDAO.find(CASE_ID2);
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(CASE_ID);
+        List<CaseVersion> caseVersions2 = caseVersionDAO.findAll(CASE_ID2);
 
         assertEquals(0, caseVersions.size());
         assertEquals(0, caseVersions2.size());

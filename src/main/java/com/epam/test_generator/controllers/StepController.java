@@ -140,14 +140,14 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
-                    required = true, dataType = "long", paramType = "path"),
-            @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
-                    required = true, dataType = "long", paramType = "path"),
-            @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
-                    required = true, dataType = "StepDTO", paramType = "body"),
-            @ApiImplicitParam(name = "Authorization", value = "add here your token",
-                paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
+            required = true, dataType = "StepDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
 
     })
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")

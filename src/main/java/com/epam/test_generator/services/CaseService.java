@@ -8,14 +8,17 @@ import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.CaseVersionDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.pojo.CaseVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
+import com.epam.test_generator.transformers.CaseVersionTransformer;
 import com.epam.test_generator.transformers.StepTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.transformers.TagTransformer;
@@ -31,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Transactional
@@ -52,6 +54,9 @@ public class CaseService {
 
     @Autowired
     private Validator validator;
+
+    @Autowired
+    private CaseVersionTransformer caseVersionTransformer;
 
     @Autowired
     private CaseDAO caseDAO;
@@ -161,6 +166,36 @@ public class CaseService {
                 caseDAO.delete(caze.getId());
                 caseVersionDAO.delete(caze);
             });
+    }
+
+    public List<CaseVersionDTO> getCaseVersions(Long suitId, Long caseId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+
+        Case caze = caseDAO.findOne(caseId);
+        checkNotNull(caze);
+
+        caseBelongsToSuit(caze, suit);
+
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(caseId);
+
+        return caseVersionTransformer.toDtoList(caseVersions);
+    }
+
+    public void restoreCase(Long suitId, Long caseId, String commitId) {
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+
+        Case caze = caseDAO.findOne(caseId);
+        checkNotNull(caze);
+
+        caseBelongsToSuit(caze, suit);
+
+        Case caseToRestore = caseVersionDAO.findByCommitId(caseId, commitId);
+        checkNotNull(caseToRestore);
+
+        caseDAO.save(caseToRestore);
+        caseVersionDAO.save(caseToRestore);
     }
 
     public List<Long> updateCases(long suitId, List<EditCaseDTO> editCaseDTOS)
