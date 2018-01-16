@@ -1,22 +1,11 @@
 package com.epam.test_generator.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,33 +14,51 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
-    List<User> users;
+    private List<User> users;
+    private List<UserDTO> userDTOS;
 
     @Mock
-    UserTransformer transformer;
+    private RoleService roleService;
 
     @Mock
-    PasswordEncoder encoder;
-    @Mock
-    UserDAO userDAO;
+    private UserTransformer transformer;
 
     @Mock
-    User user;
+    private PasswordEncoder encoder;
+    @Mock
+    private UserDAO userDAO;
 
     @Mock
-    LoginUserDTO loginUserDTO;
+    private User user;
+
+    @Mock
+    private UserDTO userDTO;
+
+    @Mock
+    private LoginUserDTO loginUserDTO;
 
     @InjectMocks
-    UserService sut;
+    private UserService sut;
 
     @Before
     public void setUp() throws Exception {
         users = new ArrayList<>();
-
-
+        userDTOS = new ArrayList<>();
     }
 
     @Test
@@ -86,15 +93,17 @@ public class UserServiceTest {
     @Test
     public void getAll() throws Exception {
         users.add(user);
+        userDTOS.add(userDTO);
         when(userDAO.findAll()).thenReturn(users);
-        List<User> users = sut.getAll();
-        assertFalse(users.isEmpty());
+        when(transformer.toDtoList(users)).thenReturn(userDTOS);
+        final List<UserDTO> usersDTO = sut.getUsers();
+        assertFalse(usersDTO.isEmpty());
     }
 
     @Test
     public void getAll_emptyDB() throws Exception {
         when(userDAO.findAll()).thenReturn(users);
-        List<User> users = sut.getAll();
+        final List<UserDTO> users = sut.getUsers();
         assertTrue(users.isEmpty());
     }
 
@@ -125,4 +134,17 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void createAdmin_ok() throws Exception{
+        sut.createAdminIfDoesNotExist();
+        verify(userDAO).save(any(User.class));
+
+    }
+
+    @Test
+    public void createAdmin_nok() throws Exception{
+        when(userDAO.findByRole(roleService.getRoleByName("ADMIN"))).thenReturn(Collections.singletonList(new User()));
+        sut.createAdminIfDoesNotExist();
+        verify(userDAO,times(0)).save(any(User.class));
+    }
 }

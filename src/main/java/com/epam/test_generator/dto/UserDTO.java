@@ -1,32 +1,37 @@
 package com.epam.test_generator.dto;
 
-import com.epam.test_generator.entities.Role;
+import org.hibernate.validator.constraints.Email;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.validator.constraints.Email;
 
 public class UserDTO {
 
 
     private Long id;
+
     @NotNull
     @Email
     @Size(min = 1, max = 255)
     private String email;
+
     @NotNull
     @Size(min = 1, max = 255)
     private String password;
-    @ColumnDefault(value = "USER")
-    private Role role;
 
-    public UserDTO(String password, Role role, String email) {
+    private String role;
+
+    public UserDTO(String password, String role, String email) {
         this.password = password;
         this.role = role;
         this.email = email;
     }
 
     public UserDTO() {
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -50,21 +55,17 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
     @Override
     public String toString() {
-        return "UserDTO{" +
-            ", password='" + password + '\'' +
-            ", role='" + role + '\'' +
-            ", email='" + email + '\'' +
-            '}';
+        return String.format("UserDTO { password = %s, role = %s, email = %s}", password, role, email);
     }
 }
 

@@ -15,6 +15,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/suits/{suitId}/cases/tags",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Set<TagDTO>> getAllTagsFromAllCasesInSuit(
@@ -61,6 +63,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Set<TagDTO>> getTags(@PathVariable("suitId") long suitId,
@@ -85,6 +88,7 @@ public class TagController {
             required = true, dataType = "TagDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST,
         produces = "application/json")
@@ -113,6 +117,7 @@ public class TagController {
             required = true, dataType = "TagDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateTag(@PathVariable("suitId") long suitId,
                                           @PathVariable("caseId") long caseId,
@@ -137,6 +142,7 @@ public class TagController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}",
         method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<Void> removeTagFromCase(@PathVariable("suitId") long suitId,

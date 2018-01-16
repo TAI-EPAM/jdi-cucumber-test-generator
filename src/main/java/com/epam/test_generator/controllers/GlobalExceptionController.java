@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.epam.test_generator.dto.ErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.security.access.AccessDeniedException;
 
 
 @ControllerAdvice
@@ -48,14 +50,25 @@ public class GlobalExceptionController {
         return new ResponseEntity<>(validationErrorsDTO, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<ErrorDTO> loginFailed(AuthenticationException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.UNAUTHORIZED);
+    }
+
+
+
     @ExceptionHandler(value = {JWTVerificationException.class})
     public ResponseEntity<ErrorDTO> tokenInvalid(JWTVerificationException ex) {
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(value = AuthenticationException.class)
-    public ResponseEntity<ErrorDTO> loginFailed(AuthenticationException ex) {
-        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    public ResponseEntity<ErrorDTO> roleInvalid(AccessDeniedException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(value = {BadRoleException.class})
+    public ResponseEntity<ErrorDTO> roleUnexist(BadRoleException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
     }
 
 }

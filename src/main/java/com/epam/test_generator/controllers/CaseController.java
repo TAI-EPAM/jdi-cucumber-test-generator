@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD","ROLE_GUEST"})
     @RequestMapping(value = "/suits/{suitId}/cases",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
@@ -68,10 +70,11 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId) {
+        @PathVariable("caseId") long caseId) {
 
         return new ResponseEntity<>(caseService.getCase(suitId, caseId), HttpStatus.OK);
     }
@@ -91,10 +94,11 @@ public class CaseController {
 
     })
     @ResponseStatus(HttpStatus.CREATED)
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addCaseToSuit(@PathVariable("suitId") long suitId,
-                                              @RequestBody @Valid CaseDTO caseDTO) {
+        @RequestBody @Valid CaseDTO caseDTO) {
 
         return new ResponseEntity<>(caseService.addCaseToSuit(suitId, caseDTO), HttpStatus.CREATED);
     }
@@ -115,11 +119,12 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Void> updateCase(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId,
-                                           @RequestBody @Valid EditCaseDTO editCaseDTO) {
+        @PathVariable("caseId") long caseId,
+        @RequestBody @Valid EditCaseDTO editCaseDTO) {
         caseService.updateCase(suitId, caseId, editCaseDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -161,9 +166,10 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId) {
+        @PathVariable("caseId") long caseId) {
         caseService.removeCase(suitId, caseId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -182,10 +188,11 @@ public class CaseController {
             required = true, dataType = "Long[]", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE,
         consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
-                                            @RequestBody Long[] removeCaseIds) {
+        @RequestBody Long[] removeCaseIds) {
         SuitDTO suitDTO = suitService.getSuit(suitId);
         List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
             .map(CaseDTO::getId)
@@ -214,11 +221,12 @@ public class CaseController {
             required = true, dataType = "String", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "suits/{suitId}/cases/{caseId}/events/{event}", method = RequestMethod.PUT,
         consumes = "application/json")
     public ResponseEntity<Status> performEvent(@PathVariable("suitId") long suitId,
-                                               @PathVariable("caseId") long caseId,
-                                               @PathVariable("event") Event event)
+        @PathVariable("caseId") long caseId,
+        @PathVariable("event") Event event)
         throws Exception {
 
         return new ResponseEntity<>(

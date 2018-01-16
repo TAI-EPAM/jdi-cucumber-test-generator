@@ -1,23 +1,30 @@
 package com.epam.test_generator.entities;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import javax.persistence.*;
 
 @Entity
 public class User {
 
-    @Id
     @GeneratedValue
+    @Id
     private Long id;
+
     @Column(unique = true)
     private String email;
     @JsonIgnore
     private String password;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Role role;
+
+    public User(String email, String password, Role role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
     public User() {
     }
@@ -54,11 +61,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-            "id=" + id +
-            ", password='" + password + '\'' +
-            ", role='" + role + '\'' +
-            '}';
+        return String.format("User {id= %s, password= %s, role= %s}", id, password, role);
     }
 
 }
