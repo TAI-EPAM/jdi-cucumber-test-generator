@@ -1,5 +1,6 @@
 package com.epam.test_generator.config;
 
+import com.epam.test_generator.config.security.AuthenticatedUser;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Tag;
 import org.javers.core.Javers;
@@ -9,11 +10,12 @@ import org.javers.repository.sql.DialectName;
 import org.javers.repository.sql.JaversSqlRepository;
 import org.javers.repository.sql.SqlRepositoryBuilder;
 import org.javers.spring.auditable.AuthorProvider;
-import org.javers.spring.auditable.MockAuthorProvider;
 import org.javers.spring.jpa.JpaHibernateConnectionProvider;
 import org.javers.spring.jpa.TransactionalJaversBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -44,13 +46,19 @@ public class JaversConfig {
     }
 
     /**
-     * Required by auto-audit aspect. <br/><br/>
-     *
-     * Creates {@link MockAuthorProvider} instance, suitable when using Spring Security
+     * Set up custom {@link AuthorProvider} to provide user email in commits info.
      */
     @Bean
     public AuthorProvider authorProvider() {
-        return new MockAuthorProvider();
+        return () -> {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+            if (auth == null) {
+                return "unauthenticated";
+            }
+
+            return ((AuthenticatedUser) auth.getPrincipal()).getEmail();
+        };
     }
 
     @Bean

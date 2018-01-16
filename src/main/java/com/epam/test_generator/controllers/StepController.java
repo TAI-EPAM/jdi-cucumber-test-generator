@@ -150,7 +150,10 @@ public class StepController {
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "steps", value = "Array of steps", allowMultiple = true,
-            required = true, dataType = "StepDTO", paramType = "body")
+            required = true, dataType = "StepDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
+
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")

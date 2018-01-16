@@ -1,5 +1,6 @@
 package com.epam.test_generator.config.security;
 
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 
 @EnableWebSecurity
@@ -21,7 +28,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
 
     private final JwtAuthenticationProvider authenticationProvider;
 
@@ -41,12 +47,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
         jwtAuthenticationFilter
-            .setAuthenticationSuccessHandler(new JwtAuthenticationSuccessHandler());
+                .setAuthenticationSuccessHandler(new JwtAuthenticationSuccessHandler());
         jwtAuthenticationFilter.setAuthenticationFailureHandler(
-            new JwtAuthenticationFailureHandler());
+                new JwtAuthenticationFailureHandler());
         return jwtAuthenticationFilter;
     }
-
 
     @Bean
     public PasswordEncoder encoder() {
@@ -55,29 +60,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * sessionCreationPolicy.STATELESS means that wee don't save cookies.
-     *
+     * <p>
      * We do not need csrf protection because our tokens are immune to it.
-     *
+     * <p>
      * Here we can configurate our security settings. We can give a permission fo all or any users
      * to visit some resources.
-     *
+     * <p>
      * We plug in our special authentication filter within the Spring’s predefined filter chain,
      * just before the form login filter.
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/registration", "/login")
-            .permitAll()
-            .and()
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-
+        http.cors().and()
+                .authorizeRequests()
+                .antMatchers("/registration", "/login")
+                .permitAll()
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(ImmutableList.of("*"));
+        configuration.setAllowedMethods(ImmutableList.of("HEAD",
+                "GET", "POST", "PUT", "DELETE", "PATCH"));
+         configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     /**
@@ -86,8 +102,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/login", "/registration", "/v2/api-docs",
-            "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
-            "/webjars/**");
+                "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
+                "/webjars/**");
     }
 
 }

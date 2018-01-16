@@ -9,7 +9,12 @@ public interface CaseVersionDAO {
     /**
      * Find all CaseVersions of Case with caseId.
      */
-    List<CaseVersion> find(Long caseId);
+    List<CaseVersion> findAll(Long caseId);
+
+    /**
+     * Find {@link CaseVersion} by commitId.
+     */
+    Case findByCommitId(Long caseId, String commitId);
 
     /**
      * Save new {@link CaseVersion} of current {@link Case}.
