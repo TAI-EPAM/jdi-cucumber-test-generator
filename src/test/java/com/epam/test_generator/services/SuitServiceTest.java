@@ -65,9 +65,18 @@ public class SuitServiceTest {
     @Test
     public void getSuitTest() {
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
-        when(suitTransformer.toDto(any(Suit.class))).thenReturn(expectedSuitDTO);
 
-        SuitDTO actual = suitService.getSuit(SIMPLE_SUIT_ID);
+        Suit actual = suitService.getSuit(SIMPLE_SUIT_ID);
+
+        assertEquals(expectedSuit, actual);
+    }
+
+    @Test
+    public void getSuitDTOTest() {
+        when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
+        when(suitTransformer.toDto(any())).thenReturn(expectedSuitDTO);
+
+        SuitDTO actual = suitService.getSuitDTO(SIMPLE_SUIT_ID);
 
         assertEquals(expectedSuitDTO, actual);
     }
@@ -82,7 +91,6 @@ public class SuitServiceTest {
     @Test
     public void addSuitTest() {
         when(suitDAO.save(any(Suit.class))).thenReturn(expectedSuit);
-        when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(expectedSuit);
 
         expectedSuitDTO.setId(null);
         Long actual = suitService.addSuit(expectedSuitDTO);

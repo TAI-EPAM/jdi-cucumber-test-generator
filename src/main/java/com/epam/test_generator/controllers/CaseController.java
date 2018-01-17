@@ -53,7 +53,7 @@ public class CaseController {
     @RequestMapping(value = "/suits/{suitId}/cases",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
-        SuitDTO suitDTO = suitService.getSuit(suitId);
+        SuitDTO suitDTO = suitService.getSuitDTO(suitId);
 
         return new ResponseEntity<>(suitDTO.getCases(), HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class CaseController {
     public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
         @PathVariable("caseId") long caseId) {
 
-        return new ResponseEntity<>(caseService.getCase(suitId, caseId), HttpStatus.OK);
+        return new ResponseEntity<>(caseService.getCaseDTO(suitId, caseId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Add a new case to the suit", nickname = "addCaseToSuit")
@@ -193,7 +193,7 @@ public class CaseController {
         consumes = "application/json")
     public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
         @RequestBody Long[] removeCaseIds) {
-        SuitDTO suitDTO = suitService.getSuit(suitId);
+        SuitDTO suitDTO = suitService.getSuitDTO(suitId);
         List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
             .map(CaseDTO::getId)
             .collect(Collectors.toList());

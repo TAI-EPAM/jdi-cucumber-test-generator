@@ -2,22 +2,19 @@ package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
 
-import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
-import com.epam.test_generator.dao.interfaces.SuitDAO;
+import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
+import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Step;
@@ -25,12 +22,15 @@ import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.services.exceptions.NotFoundException;
+import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.StepTransformer;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.epam.test_generator.transformers.SuitTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,26 +48,28 @@ public class StepServiceTest {
     private final List<StepDTO> expectedListSteps = new ArrayList<>();
     private final Set<Tag> setOfTags = new HashSet<>();
     private Suit suit;
+
     private Case caze;
+
     private Step step;
     private StepDTO expectedStep;
     @Mock
     private StepTransformer stepTransformer;
 
     @Mock
-    private SuitDAO suitDAO;
-
-    @Mock
-    private CaseDAO caseDAO;
-
-    @Mock
     private StepDAO stepDAO;
-
-    @Mock
-    private CaseVersionDAO caseVersionDAO;
 
     @InjectMocks
     private StepService stepService;
+
+    @Mock
+    private SuitService suitService;
+
+    @Mock
+    private CaseService caseService;
+
+    @Mock
+    private CaseVersionDAO caseVersionDAO;
 
     @Before
     public void setUp() {
@@ -96,81 +98,82 @@ public class StepServiceTest {
     }
 
     @Test
-    public void getStepsByCaseIdTest() throws Exception {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+    public void getStepsByCaseIdTest(){
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
+
         when(stepTransformer.toDtoList(anyList())).thenReturn(expectedListSteps);
 
         List<StepDTO> actualStepList = stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
         assertEquals(expectedListSteps, actualStepList);
 
-        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
-        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(caseService).getCase(eq(SIMPLE_SUIT_ID),eq(SIMPLE_CASE_ID));
         verify(stepTransformer).toDtoList(anyList());
     }
 
-    @Test(expected = NotFoundException.class)
-    public void getStepsByCaseIdTest_expectNotFoundExceptionFromSuit() {
-        when(suitDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void getStepsByCaseIdTest_expectNotFoundExceptionFromSuit() {
+        doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_SUIT_ID);
 
-        stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
-    }
+		stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void getStepsByCaseIdTest_expectNotFoundExceptionFromCase() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void getStepsByCaseIdTest_expectNotFoundExceptionFromCase() {
+        when(suitService.getSuit(anyLong())).thenReturn(suit);
+        doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
 
-        stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
-    }
+		stepService.getStepsByCaseId(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+	}
 
     @Test
-    public void getStepTest() throws Exception {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+    public void getStepTest() {
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.findOne(anyLong())).thenReturn(step);
         when(stepTransformer.toDto(any(Step.class))).thenReturn(expectedStep);
 
         StepDTO actualStep = stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
         assertEquals(expectedStep, actualStep);
 
-        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
-        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(caseService).getCase(eq(SIMPLE_SUIT_ID),eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepTransformer).toDto(any(Step.class));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void getStepTest_expectNotFoundExceptionFromSuit() {
-        when(suitDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void getStepTest_expectNotFoundExceptionFromSuit() {
+        doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_SUIT_ID);
 
-        stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
-    }
+		stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void getStepTest_expectNotFoundExceptionFromCase() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void getStepTest_expectNotFoundExceptionFromCase() {
+        when(suitService.getSuit(anyLong())).thenReturn(suit);
+        doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
 
-        stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
-    }
+		stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void getStepTest_expectNotFoundExceptionFromStep() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
-        when(stepDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void getStepTest_expectNotFoundExceptionFromStep() {
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
+		when(stepDAO.findOne(anyLong())).thenReturn(null);
 
-        stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
-    }
+		stepService.getStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
     @Test
-    public void addStepToCaseTest() throws Exception {
+    public void addStepToCaseTest() {
         Step newStep = new Step(3L, 3, "Step 3", StepType.AND);
         StepDTO newStepDTO = new StepDTO(null, 3, "Step 3", StepType.AND);
 
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
         when(stepTransformer.fromDto(any(StepDTO.class))).thenReturn(newStep);
 
@@ -178,110 +181,110 @@ public class StepServiceTest {
         assertEquals(newStep.getId(), actualId);
         assertTrue(caze.getSteps().contains(newStep));
 
-        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
-        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(caseService).getCase(eq(SIMPLE_SUIT_ID),eq(SIMPLE_CASE_ID));
         verify(stepDAO).save(any(Step.class));
         verify(stepTransformer).fromDto(any(StepDTO.class));
         verify(caseVersionDAO).save(eq(caze));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void addStepTest_expectNotFoundExceptionFromSuit() {
-        when(suitDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void addStepTest_expectNotFoundExceptionFromSuit() {
+        doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_SUIT_ID);
 
-        stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new StepDTO());
-    }
+		stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new StepDTO());
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void addStepTest_expectNotFoundExceptionFromCase() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void addStepTest_expectNotFoundExceptionFromCase() {
+        when(suitService.getSuit(anyLong())).thenReturn(suit);
+        doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
 
-        stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new StepDTO());
-    }
+		stepService.addStepToCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new StepDTO());
+	}
 
     @Test
-    public void updateStepTest() throws Exception {
+    public void updateStepTest() {
         StepDTO updateStepDTO = new StepDTO(null, 3, "New Step desc", null);
 
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.findOne(anyLong())).thenReturn(step);
 
         stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, updateStepDTO);
         assertTrue(caze.getSteps().contains(step));
 
-        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
-        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(caseService).getCase(eq(SIMPLE_SUIT_ID),eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepTransformer).mapDTOToEntity(any(StepDTO.class), eq(step));
         verify(stepDAO).save(eq(step));
         verify(caseVersionDAO).save(eq(caze));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void updateStepTest_expectNotFoundExceptionFromSuit() {
-        when(suitDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void updateStepTest_expectNotFoundExceptionFromSuit() {
+        doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_SUIT_ID);
 
-        stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
-    }
+		stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void updateStepTest_expectNotFoundExceptionFromCase() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void updateStepTest_expectNotFoundExceptionFromCase() {
+        when(suitService.getSuit(anyLong())).thenReturn(suit);
+        doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
 
-        stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
-    }
+		stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void updateStepTest_expectNotFoundExceptionFromStep() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
-        when(stepDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void updateStepTest_expectNotFoundExceptionFromStep() {
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
+		when(stepDAO.findOne(anyLong())).thenReturn(null);
 
-        stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
-    }
+		stepService.updateStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID, new StepDTO());
+	}
 
     @Test
-    public void removeStepTest() throws Exception {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
+    public void removeStepTest() {
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.findOne(anyLong())).thenReturn(step);
 
         stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
         assertTrue(!caze.getSteps().contains(step));
 
-        verify(suitDAO).findOne(eq(SIMPLE_SUIT_ID));
-        verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
+        verify(suitService).getSuit(eq(SIMPLE_SUIT_ID));
+        verify(caseService).getCase(eq(SIMPLE_SUIT_ID),eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepDAO).delete(eq(SIMPLE_STEP_ID));
         verify(caseVersionDAO).save(eq(caze));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void removeStepTest_expectNotFoundExceptionFromSuit() {
-        when(suitDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void removeStepTest_expectNotFoundExceptionFromSuit() {
+        doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_SUIT_ID);
 
-        stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
-    }
+		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void removeStepTest_expectNotFoundExceptionFromCase() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void removeStepTest_expectNotFoundExceptionFromCase() {
+        when(suitService.getSuit(anyLong())).thenReturn(suit);
+        doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
 
-        stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
-    }
+		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void removeStepTest_expectNotFoundExceptionFromStep() {
-        when(suitDAO.findOne(anyLong())).thenReturn(suit);
-        when(caseDAO.findOne(anyLong())).thenReturn(caze);
-        when(stepDAO.findOne(anyLong())).thenReturn(null);
+	@Test(expected = NotFoundException.class)
+	public void removeStepTest_expectNotFoundExceptionFromStep() {
+        when(suitService.getSuit(SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
+		when(stepDAO.findOne(anyLong())).thenReturn(null);
 
-        stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
-    }
+		stepService.removeStep(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+	}
 
     @Test
     public void cascadeUpdateSteps() {

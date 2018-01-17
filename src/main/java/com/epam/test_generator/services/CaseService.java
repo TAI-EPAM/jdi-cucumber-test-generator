@@ -5,8 +5,6 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
-import com.epam.test_generator.dao.interfaces.SuitDAO;
-import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.CaseVersionDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
@@ -19,9 +17,6 @@ import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.CaseVersionTransformer;
-import com.epam.test_generator.transformers.StepTransformer;
-import com.epam.test_generator.transformers.SuitTransformer;
-import com.epam.test_generator.transformers.TagTransformer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,15 +39,6 @@ public class CaseService {
     private CaseTransformer caseTransformer;
 
     @Autowired
-    private SuitTransformer suitTransformer;
-
-    @Autowired
-    private TagTransformer tagTransformer;
-
-    @Autowired
-    private StepTransformer stepTransformer;
-
-    @Autowired
     private Validator validator;
 
     @Autowired
@@ -62,10 +48,7 @@ public class CaseService {
     private CaseDAO caseDAO;
 
     @Autowired
-    private SuitDAO suitDAO;
-
-    @Autowired
-    private TagDAO tagDAO;
+    private SuitService suitService;
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
@@ -73,21 +56,23 @@ public class CaseService {
     @Autowired
     private StateMachineAdapter stateMachineAdapter;
 
-    public CaseDTO getCase(Long suitId, Long caseId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+    public Case getCase(Long suitId, Long caseId) {
+        Suit suit = suitService.getSuit(suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
 
         caseBelongsToSuit(caze, suit);
 
-        return caseTransformer.toDto(caze);
+        return caze;
+    }
+
+    public CaseDTO getCaseDTO(Long suitId, Long caseId) {
+        return caseTransformer.toDto(getCase(suitId,caseId));
     }
 
     public Long addCaseToSuit(Long suitId, @Valid CaseDTO caseDTO) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
         Case caze = caseTransformer.fromDto(caseDTO);
 
@@ -121,8 +106,7 @@ public class CaseService {
     }
 
     public void updateCase(Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -141,8 +125,7 @@ public class CaseService {
     }
 
     public void removeCase(Long suitId, Long caseId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -156,8 +139,7 @@ public class CaseService {
     }
 
     public void removeCases(Long suitId, List<Long> caseIds) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
         suit.getCases().stream()
             .filter(caze -> caseIds.stream()
@@ -169,8 +151,7 @@ public class CaseService {
     }
 
     public List<CaseVersionDTO> getCaseVersions(Long suitId, Long caseId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -183,8 +164,7 @@ public class CaseService {
     }
 
     public void restoreCase(Long suitId, Long caseId, String commitId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -226,7 +206,7 @@ public class CaseService {
     }
 
     public Status performEvent(Long suitId, Long caseId, Event event) throws Exception {
-        Case cs = caseTransformer.fromDto(getCase(suitId, caseId));
+        Case cs = getCase(suitId, caseId);
         StateMachine<Status, Event> stateMachine = stateMachineAdapter.restore(cs);
         if (stateMachine.sendEvent(event)) {
             stateMachineAdapter.persist(stateMachine, cs);

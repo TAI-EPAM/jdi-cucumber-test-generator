@@ -1,5 +1,11 @@
 package com.epam.test_generator.services;
 
+import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
+import com.epam.test_generator.transformers.CaseTransformer;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 import static com.epam.test_generator.services.utils.UtilsService.tagBelongsToCase;
@@ -15,30 +21,25 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.transformers.TagTransformer;
-import java.util.HashSet;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.epam.test_generator.services.utils.UtilsService.*;
 
 @Transactional
 @Service
 public class TagService {
 
     @Autowired
-    private SuitDAO suitDAO;
+    private SuitService suitService;
 
     @Autowired
-    private CaseDAO caseDAO;
-
-    @Autowired
-    private StepDAO stepDAO;
+    private CaseService caseService;
 
     @Autowired
     private TagDAO tagDAO;
 
-    @Autowired
-    private SuitTransformer suitTransformer;
 
     @Autowired
     private TagTransformer tagTransformer;
@@ -47,22 +48,18 @@ public class TagService {
     private CaseVersionDAO caseVersionDAO;
 
     public Set<TagDTO> getAllTagsFromAllCasesInSuit(Long suitId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Set<TagDTO> allTagsFromAllCases = new HashSet<>();
-        suit.getCases().forEach(caze -> caze.getTags()
-            .forEach(tag -> allTagsFromAllCases.add(tagTransformer.toDto(tag))));
-
-        return allTagsFromAllCases;
+        return suit.getCases().stream()
+                .flatMap(caze -> caze.getTags().stream())
+                .map(tagTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     public Long addTagToCase(Long suitId, Long caseId, TagDTO tagDTO) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
         Tag tag = tagTransformer.fromDto(tagDTO);
@@ -76,11 +73,9 @@ public class TagService {
     }
 
     public void updateTag(Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -97,11 +92,9 @@ public class TagService {
     }
 
     public void removeTag(Long suitId, Long caseId, Long tagId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 

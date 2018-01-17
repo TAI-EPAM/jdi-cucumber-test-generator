@@ -4,10 +4,8 @@ import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToS
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 import static com.epam.test_generator.services.utils.UtilsService.stepBelongsToCase;
 
-import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
-import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Case;
@@ -27,10 +25,10 @@ public class StepService {
     private StepDAO stepDAO;
 
     @Autowired
-    private CaseDAO caseDAO;
+    private CaseService caseService;
 
     @Autowired
-    private SuitDAO suitDAO;
+    private SuitService suitService;
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
@@ -39,11 +37,9 @@ public class StepService {
     private StepTransformer stepTransformer;
 
     public List<StepDTO> getStepsByCaseId(Long suitId, Long caseId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -51,11 +47,9 @@ public class StepService {
     }
 
     public StepDTO getStep(Long suitId, Long caseId, Long stepId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -68,11 +62,9 @@ public class StepService {
     }
 
     public Long addStepToCase(Long suitId, Long caseId, StepDTO stepDTO) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -87,11 +79,9 @@ public class StepService {
     }
 
     public void updateStep(Long suitId, Long caseId, Long stepId, StepDTO stepDTO) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -108,11 +98,9 @@ public class StepService {
     }
 
     public void removeStep(Long suitId, Long caseId, Long stepId) {
-        Suit suit = suitDAO.findOne(suitId);
-        checkNotNull(suit);
+        Suit suit = suitService.getSuit(suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-        checkNotNull(caze);
+        Case caze = caseService.getCase(suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 

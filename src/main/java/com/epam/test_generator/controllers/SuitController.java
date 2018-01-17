@@ -4,6 +4,7 @@ import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.SuitService;
+import com.epam.test_generator.services.IOService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,9 @@ public class SuitController {
 
     @Autowired
     private SuitService suitService;
+
+    @Autowired
+    private IOService ioService;
 
 
     @ApiOperation(value = "Get all suits", nickname = "getSuits")
@@ -60,7 +64,7 @@ public class SuitController {
     @RequestMapping(value = "/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getSuit(@PathVariable("suitId") long suitId) {
 
-        return new ResponseEntity<>(suitService.getSuit(suitId), HttpStatus.OK);
+        return new ResponseEntity<>(suitService.getSuitDTO(suitId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Add a new suit", nickname = "addSuit")
@@ -131,7 +135,7 @@ public class SuitController {
         List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)
             .collect(Collectors.toList());
 
-        return new ResponseEntity<>(suitService.generateFile(suitDTO.getId(), caseIds),
+        return new ResponseEntity<>(ioService.generateFile(suitDTO.getId(), caseIds),
             HttpStatus.OK);
     }
 }

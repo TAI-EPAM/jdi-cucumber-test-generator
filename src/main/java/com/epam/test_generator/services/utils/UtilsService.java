@@ -13,36 +13,10 @@ import java.util.Set;
 
 public class UtilsService {
 
-    public static void checkNotNull(Suit suit) {
-        if (suit == null) {
+    public static<T> void checkNotNull(T obj) {
+        if (obj == null)
             throw new NotFoundException();
-        }
     }
-
-    public static void checkNotNull(Case caze) {
-        if (caze == null) {
-            throw new NotFoundException();
-        }
-    }
-
-    public static void checkNotNull(Step step) {
-        if (step == null) {
-            throw new NotFoundException();
-        }
-    }
-
-    public static void checkNotNull(Tag tag) {
-        if (tag == null) {
-            throw new NotFoundException();
-        }
-    }
-
-    public static void checkNotNull(StepSuggestion stepSuggestion) {
-        if (stepSuggestion == null) {
-            throw new NotFoundException();
-        }
-    }
-
 
     public static void caseBelongsToSuit(Case caze, Suit suit) {
         List<Case> caseList = suit.getCases();

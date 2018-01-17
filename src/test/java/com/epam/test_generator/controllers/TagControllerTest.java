@@ -131,35 +131,35 @@ public class TagControllerTest {
 
     @Test
     public void testGetTags_return200whenGetTags() throws Exception {
-        when(caseService.getCase(anyLong(), anyLong())).thenReturn(caseDTO);
+        when(caseService.getCaseDTO(anyLong(), anyLong())).thenReturn(caseDTO);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(caseService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(caseService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetTags_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(caseService.getCase(anyLong(), anyLong())).thenThrow(NotFoundException.class);
+        when(caseService.getCaseDTO(anyLong(), anyLong())).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(caseService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(caseService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetTags_return400whenSuitNotContainsCase() throws Exception {
-        when(caseService.getCase(anyLong(), anyLong())).thenThrow(BadRequestException.class);
+        when(caseService.getCaseDTO(anyLong(), anyLong())).thenThrow(BadRequestException.class);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(caseService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(caseService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test

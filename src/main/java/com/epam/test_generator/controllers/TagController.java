@@ -68,7 +68,7 @@ public class TagController {
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Set<TagDTO>> getTags(@PathVariable("suitId") long suitId,
                                                @PathVariable("caseId") long caseId) {
-        CaseDTO caseDTO = casesService.getCase(suitId, caseId);
+        CaseDTO caseDTO = casesService.getCaseDTO(suitId, caseId);
 
         return new ResponseEntity<>(caseDTO.getTags(), HttpStatus.OK);
     }

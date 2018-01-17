@@ -80,35 +80,35 @@ public class SuitControllerTest {
 
     @Test
     public void getSuit_return200whenGetSuit() throws Exception {
-        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(suitService.getSuitDTO(anyLong())).thenReturn(suitDTO);
 
         mockMvc.perform(get("/suits/" + TEST_SUIT_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(suitService).getSuit(eq(TEST_SUIT_ID));
+        verify(suitService).getSuitDTO(eq(TEST_SUIT_ID));
     }
 
     @Test
     public void getSuit_return404whenSuitNotExist() throws Exception {
-        when(suitService.getSuit(anyLong())).thenThrow(new NotFoundException());
+        when(suitService.getSuitDTO(anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/suits/" + TEST_SUIT_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(suitService).getSuit(eq(TEST_SUIT_ID));
+        verify(suitService).getSuitDTO(eq(TEST_SUIT_ID));
     }
 
     @Test
     public void getSuit_return500whenRuntimeException() throws Exception {
-        when(suitService.getSuit(anyLong())).thenThrow(new RuntimeException());
+        when(suitService.getSuitDTO(anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/suits/" + TEST_SUIT_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(suitService).getSuit(eq(TEST_SUIT_ID));
+        verify(suitService).getSuitDTO(eq(TEST_SUIT_ID));
     }
 
     @Test

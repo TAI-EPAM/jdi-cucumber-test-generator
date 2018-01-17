@@ -127,53 +127,53 @@ public class CaseControllerTest {
         editCaseDTOList.add(editCaseDTO2);
         editCaseDTOList.add(editCaseDTO3);
 
-        when(suitService.getSuit(anyLong())).thenReturn(suitDTO);
+        when(suitService.getSuitDTO(anyLong())).thenReturn(suitDTO);
     }
 
     @Test
     public void testGetCase_return200whenGetCase() throws Exception {
-        when(casesService.getCase(anyLong(), anyLong())).thenReturn(caseDTO);
+        when(casesService.getCaseDTO(anyLong(), anyLong())).thenReturn(caseDTO);
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().string(mapper.writeValueAsString(caseDTO)));
 
-        verify(casesService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(casesService.getCase(anyLong(), anyLong())).thenThrow(new NotFoundException());
+        when(casesService.getCaseDTO(anyLong(), anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(casesService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetCase_return400whenSuitNotContainsCase() throws Exception {
         suitDTO.setCases(null);
-        when(casesService.getCase(anyLong(), anyLong())).thenThrow(new BadRequestException());
+        when(casesService.getCaseDTO(anyLong(), anyLong())).thenThrow(new BadRequestException());
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(casesService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetCase_return500whenRuntimeException() throws Exception {
-        when(casesService.getCase(anyLong(), anyLong())).thenThrow(new RuntimeException());
+        when(casesService.getCaseDTO(anyLong(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(casesService).getCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
