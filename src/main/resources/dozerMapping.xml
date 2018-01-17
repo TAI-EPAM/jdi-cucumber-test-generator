@@ -30,6 +30,10 @@
     <mapping map-null="false">
         <class-a>com.epam.test_generator.entities.User</class-a>
         <class-b>com.epam.test_generator.dto.UserDTO</class-b>
+        <field>
+            <a>role.name</a>
+            <b>role</b>
+        </field>
     </mapping>
     <mapping map-null="false">
         <class-a>com.epam.test_generator.pojo.CaseVersion</class-a>
