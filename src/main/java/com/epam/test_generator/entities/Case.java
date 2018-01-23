@@ -13,12 +13,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import org.springframework.data.domain.Persistable;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
 @Entity
 @WithStateMachine
-public class Case implements Serializable {
+public class Case implements Serializable, Persistable<Long> {
 
     @Id
     @GeneratedValue
@@ -40,7 +42,7 @@ public class Case implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Tag> tags;
 
     public Case() {
@@ -85,8 +87,25 @@ public class Case implements Serializable {
         this.status = status;
     }
 
+    @Override
     public Long getId() {
         return id;
+    }
+
+    /**
+     * Override in order entity manager use merge instead of persist when call with case id = null
+     *  and one of tag ids is not null.
+     *<br/>
+     * For example, with standard behaviour spring data jpa will call persist on this request
+     * {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10, "name":"soap"}]}
+     * and it will cause "detached entity passed to persist" error.
+     */
+    @Override
+    public boolean isNew() {
+        boolean isAllTagsWithNullId = tags == null
+            || tags.stream().allMatch(tag -> tag.getId() == null);
+
+        return id == null && isAllTagsWithNullId;
     }
 
     public void setId(Long id) {

@@ -2,8 +2,11 @@ package com.epam.test_generator.dao;
 
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
+import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
+import com.epam.test_generator.entities.Tag;
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -25,6 +28,9 @@ public class CaseDAOTest {
     @Autowired
     private CaseDAO caseDAO;
 
+    @Autowired
+    private TagDAO tagDAO;
+
     @Test
     public void testCreateAndRetrieve() {
         Case originalCase = retrieveCase();
@@ -34,6 +40,20 @@ public class CaseDAOTest {
         newCase.setId(id);
 
         Assert.assertEquals(newCase, caseDAO.findOne(id));
+    }
+
+    @Test
+    public void save_CaseWithNullIdAndNotNullTagId_Saved() {
+        Tag tagWithNullId = new Tag("tag with null id");
+        Tag tagWithNotNullId = tagDAO.save(new Tag("tag with not null id"));
+
+        Case caze = new Case("name", "desc", null, null, null, 3,
+            Sets.newHashSet(tagWithNotNullId, tagWithNullId), null);
+        Case savedCase = caseDAO.save(caze);
+
+        caze.setId(savedCase.getId());
+
+        Assert.assertEquals(caze, savedCase);
     }
 
     @Test
@@ -111,11 +131,10 @@ public class CaseDAOTest {
 
     @Test
     public void testRemove() {
-        Case originalCase = retrieveCase();
-        long id = caseDAO.save(originalCase).getId();
-        caseDAO.delete(originalCase);
+        Case savedCase = caseDAO.save(retrieveCase());
+        caseDAO.delete(savedCase);
 
-        Assert.assertTrue(!caseDAO.exists(id));
+        Assert.assertTrue(!caseDAO.exists(savedCase.getId()));
     }
 
     @Test
@@ -134,11 +153,9 @@ public class CaseDAOTest {
 
     @Test
     public void testRemoveList() {
-        List<Case> cases = retrieveCaseList();
+        List<Case> savedCases = caseDAO.save(retrieveCaseList());
 
-        caseDAO.save(cases);
-
-        caseDAO.delete(cases);
+        caseDAO.delete(savedCases);
 
         Assert.assertTrue(caseDAO.findAll().isEmpty());
     }

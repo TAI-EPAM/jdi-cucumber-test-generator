@@ -46,15 +46,12 @@ public class TagDTO implements Serializable {
 
         TagDTO tagDTO = (TagDTO) o;
 
-        return (id != null ? id.equals(tagDTO.id) : tagDTO.id == null)
-            && (name != null ? name.equals(tagDTO.name) : tagDTO.name == null);
+        return name != null ? name.equals(tagDTO.name) : tagDTO.name == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return (name != null ? name.hashCode() : 0);
     }
 
     @Override

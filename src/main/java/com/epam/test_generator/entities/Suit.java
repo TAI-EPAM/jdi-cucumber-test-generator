@@ -9,11 +9,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import org.springframework.data.domain.Persistable;
 
 
 @Entity
-public class Suit implements Serializable {
+public class Suit implements Serializable, Persistable<Long> {
 
     @Id
     @GeneratedValue
@@ -27,7 +29,7 @@ public class Suit implements Serializable {
 
     private Date creationDate;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Tag> tags;
 
     @OneToMany(cascade = {CascadeType.ALL})
@@ -79,8 +81,27 @@ public class Suit implements Serializable {
         this.description = description;
     }
 
+    @Override
     public Long getId() {
         return id;
+    }
+
+    /**
+     * Override in order entity manager use persist only when call with suit id = null
+     * and all tag ids is null and all cases is new.
+     *<br/>
+     * For example, with standard behaviour spring data jpa will call persist on this request
+     * {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10, "name":"soap"}]}
+     * and it will cause "detached entity passed to persist" error.
+     */
+    @Override
+    public boolean isNew() {
+        boolean isAllTagsWithNullId = tags == null
+            || tags.stream().allMatch(tag -> tag.getId() == null);
+
+        boolean isAllCasesNew = cases == null || cases.stream().allMatch(Case::isNew);
+
+        return id == null && isAllTagsWithNullId && isAllCasesNew;
     }
 
     public void setId(Long id) {

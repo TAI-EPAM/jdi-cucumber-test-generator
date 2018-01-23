@@ -55,14 +55,11 @@ public class Tag implements Serializable {
 
         Tag tag = (Tag) o;
 
-        return (id != null ? id.equals(tag.id) : tag.id == null)
-            && (name != null ? name.equals(tag.name) : tag.name == null);
+        return (name != null ? name.equals(tag.name) : tag.name == null);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return (name != null ? name.hashCode() : 0);
     }
 }
