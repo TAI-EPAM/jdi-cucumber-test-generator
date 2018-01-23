@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+        
+    <Appenders> 
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %clr{%5p} - %msg%n"/>    
+        </Console>
+         
+
+        <RollingFile name="RollingFile" fileName="log/system.log"
+            filepattern="log/%d{yyyyMMddHHmmss}-stickers.log">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5p - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
+

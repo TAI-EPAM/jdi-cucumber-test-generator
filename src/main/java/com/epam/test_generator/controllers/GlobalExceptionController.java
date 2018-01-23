@@ -6,6 +6,8 @@ import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -19,13 +21,19 @@ import org.springframework.security.access.AccessDeniedException;
 @ControllerAdvice
 public class GlobalExceptionController {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionController.class);
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Void> handleRunTimeException(Exception ex) {
+
+        logger.error("Internal Server Error occurred", ex);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Void> handleNotFoundException(NotFoundException ex) {
+        logger.warn("No data found for requested parameters", ex);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -33,12 +41,14 @@ public class GlobalExceptionController {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException ex) {
+        logger.warn("Invalid arguments entered", ex);
         return new ResponseEntity<>("Invalid argument: " + ex.getName(), HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Void> handleBadRequestException(BadRequestException ex) {
+        logger.warn("Invalid arguments entered", ex);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -46,28 +56,31 @@ public class GlobalExceptionController {
     public ResponseEntity<ValidationErrorsDTO> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException ex) {
         ValidationErrorsDTO validationErrorsDTO = new ValidationErrorsDTO(ex);
-
+        logger.warn("Validation Error: invalid arguments entered", ex);
         return new ResponseEntity<>(validationErrorsDTO, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = AuthenticationException.class)
     public ResponseEntity<ErrorDTO> loginFailed(AuthenticationException ex) {
+        logger.warn("Authentication Error: login failed", ex);
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.UNAUTHORIZED);
     }
 
-
-
     @ExceptionHandler(value = {JWTVerificationException.class})
     public ResponseEntity<ErrorDTO> tokenInvalid(JWTVerificationException ex) {
+        logger.warn("Authentication Error: invalid token entered", ex);
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
     public ResponseEntity<ErrorDTO> roleInvalid(AccessDeniedException ex) {
+        logger.warn("Access denied", ex);
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.FORBIDDEN);
     }
+
     @ExceptionHandler(value = {BadRoleException.class})
     public ResponseEntity<ErrorDTO> roleUnexist(BadRoleException ex) {
+        logger.warn("Access denied: role does not exist", ex);
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
     }
 
