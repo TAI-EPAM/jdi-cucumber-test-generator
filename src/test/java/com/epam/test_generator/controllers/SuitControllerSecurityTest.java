@@ -1,12 +1,5 @@
 package com.epam.test_generator.controllers;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationProvider;
@@ -16,7 +9,6 @@ import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.UserService;
-import javax.servlet.Filter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +25,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.Filter;
+
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class, DatabaseConfigForTests.class})
@@ -57,6 +58,9 @@ public class SuitControllerSecurityTest {
 
     @Mock
     private User validUser;
+
+    @Mock
+    private Role role;
 
     @Autowired
     private TokenService tokenService;
@@ -84,8 +88,12 @@ public class SuitControllerSecurityTest {
         loginUserDTO.setEmail("test@email.com");
         loginUserDTO.setPassword("test");
 
+        when(invalidUser.getName()).thenReturn("testInvalidName");
+        when(invalidUser.getSurname()).thenReturn("testValidName");
         when(invalidUser.getEmail()).thenReturn("test@email.com");
         when(invalidUser.getPassword()).thenReturn("test");
+        when(invalidUser.getRole()).thenReturn(role);
+        when(role.getName()).thenReturn("GUEST");
         when(invalidUser.getId()).thenReturn(new Long(0));
         when(invalidUser.getAttempts()).thenReturn(5);
         when(validUser.getEmail()).thenReturn("test@email.com");
@@ -103,7 +111,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        String token = "Bearer " + tokenService.getToken(loginUserDTO);
+        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
             .andDo(print())
@@ -116,7 +124,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(invalidUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        String token = "Bearer " + tokenService.getToken(loginUserDTO);
+        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
             .andDo(print())
@@ -140,7 +148,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        String token = "Bearer " + tokenService.getToken(loginUserDTO) + "something invalid";
+        final String token = "Bearer " + tokenService.getToken(loginUserDTO) + "something invalid";
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
             .andDo(print())
@@ -153,7 +161,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        String token = "Bearer " + tokenService.getToken(loginUserDTO);
+        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
 
         when(validUser.isLocked()).thenReturn(true);
 

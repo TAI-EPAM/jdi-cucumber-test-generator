@@ -12,6 +12,10 @@ public class User {
     @Id
     private Long id;
 
+    private String name;
+
+    private String surname;
+
     @Column(unique = true)
     private String email;
     @JsonIgnore
@@ -25,11 +29,14 @@ public class User {
     private Boolean locked;
 
 
-    public User(String email, String password, Role role) {
+    public User(String name, String surname, String email, String password, Role role) {
         this();
+        this.name = name;
+        this.surname = surname;
         this.email = email;
         this.password = password;
         this.role = role;
+
     }
 
     public User() {
@@ -39,6 +46,22 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getEmail() {
@@ -85,8 +108,44 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("User {id= %s, password= %s, role= %s, locked = %s, attempts =%s}", id, password, role, locked, attempts);
+        return String.format("User {id= %s, name= %s, surname= %s, email= %s, password= %s, role= %s, attempts =%s, locked = %s}",
+                id, name, surname, email, password, role, attempts, locked);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+
+        final User aUser = (User) o;
+
+        return (id != null ? id.equals(aUser.id) : aUser.id == null)
+                && (name != null ? name.equals(aUser.name) : aUser.name == null)
+                && (surname != null ? surname.equals(aUser.surname) : aUser.surname == null)
+                && (email != null ? email.equals(aUser.email) : aUser.email == null)
+                && (password != null ? password.equals(aUser.password) : aUser.password == null)
+                && (role != null ? role.equals(aUser.role) : aUser.role == null)
+                && (attempts != null ? attempts.equals(aUser.attempts) : aUser.attempts == null)
+                && (locked != null ? locked.equals(aUser.locked) : aUser.locked == null);
+
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (locked != null ? locked.hashCode() : 0);
+        result = 31 * result + (attempts != null ? attempts.hashCode() : 0);
+        return result;
+    }
 }
 

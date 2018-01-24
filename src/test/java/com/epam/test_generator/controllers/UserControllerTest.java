@@ -1,10 +1,6 @@
 package com.epam.test_generator.controllers;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.dto.RegistrationUserDTO;
 import com.epam.test_generator.services.UserService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -17,24 +13,26 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
 
     @Mock
-    UserService userService;
+    private UserService userService;
     @InjectMocks
-    UserController userController;
+    private UserController userController;
     private MockMvc mockMvc;
-    private LoginUserDTO userDTO;
-    private LoginUserDTO user;
+    private RegistrationUserDTO userDTO;
     private ObjectMapper mapper;
 
     @Before
     public void setUp() throws Exception {
-        user = new LoginUserDTO();
         mapper = new ObjectMapper();
-        userDTO = new LoginUserDTO();
+        userDTO = new RegistrationUserDTO();
         mockMvc = MockMvcBuilders.standaloneSetup(userController)
             .setControllerAdvice(new GlobalExceptionController())
             .build();
@@ -42,9 +40,11 @@ public class UserControllerTest {
 
     @Test
     public void registrationTest_200() throws Exception {
+        userDTO.setName("test_name");
+        userDTO.setSurname("test_sure_name");
         userDTO.setPassword("test");
         userDTO.setEmail("test@test.ru");
-        String json = mapper.writeValueAsString(userDTO);
+        final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print()).andExpect(status().isOk());
     }
@@ -52,9 +52,9 @@ public class UserControllerTest {
 
     @Test
     public void registrationTest_incorrectEmail_400() throws Exception {
-        user.setPassword("test");
-        user.setEmail("test");
-        String json = mapper.writeValueAsString(user);
+        userDTO.setPassword("test");
+        userDTO.setEmail("test");
+        final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print())
             .andExpect(status().isBadRequest());
@@ -62,8 +62,8 @@ public class UserControllerTest {
 
     @Test
     public void registrationTest_nullPassword400() throws Exception {
-        user.setEmail("test");
-        String json = mapper.writeValueAsString(user);
+        userDTO.setEmail("test");
+        final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print())
             .andExpect(status().isBadRequest());
@@ -71,8 +71,8 @@ public class UserControllerTest {
 
     @Test
     public void registrationTest_nullEmail400() throws Exception {
-        user.setEmail("test");
-        String json = mapper.writeValueAsString(user);
+        userDTO.setEmail("test");
+        final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print())
             .andExpect(status().isBadRequest());
@@ -80,7 +80,7 @@ public class UserControllerTest {
 
     @Test
     public void registrationTest_nullUser400() throws Exception {
-        String json = mapper.writeValueAsString(user);
+        String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print())
             .andExpect(status().isBadRequest());

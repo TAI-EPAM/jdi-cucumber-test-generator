@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.dto.RegistrationUserDTO;
 import com.epam.test_generator.services.UserService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ResponseEntity registerUserAccount(@RequestBody @Valid LoginUserDTO userDTO) {
+    public ResponseEntity registerUserAccount(@RequestBody @Valid RegistrationUserDTO userDTO) {
 
         userService.createUser(userDTO);
 

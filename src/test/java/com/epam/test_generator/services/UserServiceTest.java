@@ -2,6 +2,7 @@ package com.epam.test_generator.services;
 
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.dto.RegistrationUserDTO;
 import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
@@ -51,6 +52,9 @@ public class UserServiceTest {
 
     @Mock
     private LoginUserDTO loginUserDTO;
+
+    @Mock
+    private RegistrationUserDTO registrationUserDTO;
 
     @InjectMocks
     private UserService sut;
@@ -109,15 +113,14 @@ public class UserServiceTest {
 
     @Test
     public void createUser() throws Exception {
-        sut.createUser(loginUserDTO);
+        sut.createUser(registrationUserDTO);
         verify(userDAO).save(any(User.class));
     }
 
     @Test(expected = UnauthorizedException.class)
     public void createUser_ExistUser() throws Exception {
         when(sut.getUserByEmail(anyString())).thenReturn(user);
-        sut.createUser(loginUserDTO);
-
+        sut.createUser(registrationUserDTO);
     }
 
     @Test
