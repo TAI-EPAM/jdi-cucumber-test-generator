@@ -1,8 +1,10 @@
 package com.epam.test_generator.services;
 
+import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.RegistrationUserDTO;
 import com.epam.test_generator.dto.UserDTO;
+import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
@@ -17,7 +19,8 @@ import java.util.List;
 @Transactional
 @Service
 public class UserService {
-    private static final int MAX_ATTEMPTS = 5;
+
+    public static final int MAX_ATTEMPTS = 5;
 
     private final static String DEFAULT_ROLE = "GUEST";
 
@@ -31,7 +34,16 @@ public class UserService {
     private UserDAO userDAO;
 
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private UserTransformer userTransformer;
+
+    @Autowired
+    private PasswordService passwordService;
+
+    @Autowired
+    private TokenDAO tokenDAO;
 
     public User getUserById(Long id) {
         return userDAO.findById(id);
@@ -42,6 +54,11 @@ public class UserService {
         return userDAO.findByEmail(email);
 
     }
+
+    public void saveUser(User user) {
+        userDAO.save(user);
+    }
+
 
     public void createAdminIfDoesNotExist() {
 
@@ -64,7 +81,7 @@ public class UserService {
         return userTransformer.toDtoList(userDAO.findAll());
     }
 
-    public void createUser(RegistrationUserDTO registrationUserDTO) {
+    public User createUser(RegistrationUserDTO registrationUserDTO) {
         if (this.getUserByEmail(registrationUserDTO.getEmail()) != null) {
             throw new UnauthorizedException(
                     "user with email:" + registrationUserDTO.getEmail() + " already exist!");
@@ -76,7 +93,10 @@ public class UserService {
                     registrationUserDTO.getEmail(),
                     encoder.encode(registrationUserDTO.getPassword()),
                     roleService.getRoleByName(DEFAULT_ROLE));
+            user.setLocked(true);
             userDAO.save(user);
+            return user;
+
         }
     }
 
@@ -85,8 +105,9 @@ public class UserService {
     }
 
     /**
-     * Method checks and increments the number of login attempts and locks the user
-     * in case of exceeding the maximum number of attempts
+     * Method checks and increments the number of login attempts and locks the user in case of
+     * exceeding the maximum number of attempts
+     *
      * @param userId id of the identified user
      * @return number of incorrect attempts
      */
@@ -98,7 +119,6 @@ public class UserService {
             if (MAX_ATTEMPTS <= ++attempts) {
                 user.setLocked(true);
             }
-
             user.setAttempts(attempts);
             userDAO.save(user);
             return attempts;
@@ -109,6 +129,7 @@ public class UserService {
 
     /**
      * Cancels the count of incorrect login attempts for user and unlocked them
+     *
      * @param userId id of the identified user
      */
     public void invalidateAttempts(Long userId) {
@@ -120,4 +141,28 @@ public class UserService {
         }
     }
 
+    public void updatePassword(String password, String email) {
+        User byEmail = userDAO.findByEmail(email);
+        byEmail.setPassword(password);
+        byEmail.setLocked(false);
+        byEmail.setAttempts(0);
+        userDAO.save(byEmail);
+    }
+
+    public void checkUserExist(User user) {
+        if (user == null) {
+            throw new UnauthorizedException(
+                    "User not found.");
+        }
+    }
+
+    public void confirmUser(String token){
+        tokenService.checkToken(token);
+        Token tokenByName = passwordService.getTokenByName(token);
+        User user = tokenByName.getUser();
+        checkUserExist(user);
+        user.setLocked(false);
+        saveUser(user);
+        tokenDAO.delete(tokenByName);
+    }
 }

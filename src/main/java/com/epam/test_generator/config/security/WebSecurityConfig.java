@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,12 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 
 @EnableWebSecurity
@@ -32,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationProvider authenticationProvider;
 
     @Autowired
-    public WebSecurityConfig(JwtAuthenticationProvider authenticationProvider) {
+    public WebSecurityConfig(@Lazy JwtAuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
 
@@ -77,7 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable().cors().and()
                 .authorizeRequests()
-                .antMatchers("/registration", "/login")
+                .antMatchers("/registration", "/login","/passwordForgot","/passwordReset","/confirmAccount")
                 .permitAll()
                 .and()
                 .authenticationProvider(authenticationProvider)
@@ -103,7 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/login", "/registration", "/v2/api-docs",
                 "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
-                "/webjars/**");
+                "/webjars/**","/passwordForgot","/passwordReset","/confirmAccount");
     }
 
 }

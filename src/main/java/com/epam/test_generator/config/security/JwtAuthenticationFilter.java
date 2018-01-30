@@ -1,15 +1,16 @@
 package com.epam.test_generator.config.security;
 
 
-import com.epam.test_generator.services.exceptions.JwtTokenMissingException;
-import java.io.IOException;
+import com.epam.test_generator.services.exceptions.TokenMissingException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import java.io.IOException;
 
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -39,7 +40,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             token = request.getParameter("token");
         }
         if (token == null) {
-            throw new JwtTokenMissingException("No JWT token found in request headers");
+            throw new TokenMissingException("No JWT token found in request headers");
         }
 
         JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(token);

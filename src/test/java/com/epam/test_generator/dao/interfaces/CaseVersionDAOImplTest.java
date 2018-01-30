@@ -1,4 +1,4 @@
-package com.epam.test_generator.dao;
+package com.epam.test_generator.dao.interfaces;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;

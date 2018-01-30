@@ -3,14 +3,10 @@ package com.epam.test_generator.config.security;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
-import com.epam.test_generator.services.TokenService;
+import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
-import com.epam.test_generator.services.exceptions.JwtTokenMalformedException;
+import com.epam.test_generator.services.exceptions.TokenMalformedException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -18,6 +14,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * In this class, we are using Spring’s default AuthenticationManager, but we inject it with our own
@@ -32,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class JwtAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private TokenService tokenService;
+    private LoginService loginService;
 
     @Autowired
     private UserService userService;
@@ -62,9 +63,9 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
         String token = jwtAuthenticationToken.getToken();
         DecodedJWT jwt;
         try {
-            jwt = tokenService.validate(token);
+            jwt = loginService.validate(token);
         } catch (Exception e) {
-            throw new JwtTokenMalformedException("JWT token is not valid");
+            throw new TokenMalformedException("JWT token is not valid");
         }
         Long id = jwt.getClaim("id").asLong();
         User user = userService.getUserById(id);

@@ -5,17 +5,19 @@ import com.epam.test_generator.dto.ErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.BadRoleException;
+import com.epam.test_generator.services.exceptions.IncorrectURI;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.security.access.AccessDeniedException;
 
 
 @ControllerAdvice
@@ -23,6 +25,13 @@ public class GlobalExceptionController {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionController.class);
 
+
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<String> noInternetConnection(
+            MailSendException ex) {
+        logger.error("No connection to mail Server", ex);
+        return new ResponseEntity<>(ex.getMessage().substring(0,30), HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Void> handleRunTimeException(Exception ex) {
@@ -82,6 +91,13 @@ public class GlobalExceptionController {
     public ResponseEntity<ErrorDTO> roleUnexist(BadRoleException ex) {
         logger.warn("Access denied: role does not exist", ex);
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {IncorrectURI.class})
+    public ResponseEntity<ErrorDTO> incorrectURI(IncorrectURI ex) {
+        logger.warn("Incorrect URI", ex);
+
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.I_AM_A_TEAPOT);
     }
 
 }

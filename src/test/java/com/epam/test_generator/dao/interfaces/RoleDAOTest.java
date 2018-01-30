@@ -1,4 +1,4 @@
-package com.epam.test_generator.dao;
+package com.epam.test_generator.dao.interfaces;
 
 
 import com.epam.test_generator.DatabaseConfigForTests;

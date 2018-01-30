@@ -7,7 +7,7 @@ import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
-import com.epam.test_generator.services.TokenService;
+import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class SuitControllerSecurityTest {
     private Role role;
 
     @Autowired
-    private TokenService tokenService;
+    private LoginService loginService;
 
     @Mock
     private UserService userService;
@@ -102,7 +102,7 @@ public class SuitControllerSecurityTest {
         when(validUser.getRole()).thenReturn(new Role("GUEST"));
         when(validUser.isLocked()).thenReturn(false);
 
-        ReflectionTestUtils.setField(tokenService, "userService", userService);
+        ReflectionTestUtils.setField(loginService, "userService", userService);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
             .andDo(print())
@@ -124,7 +124,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(invalidUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
             .andDo(print())
@@ -148,7 +148,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + tokenService.getToken(loginUserDTO) + "something invalid";
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO) + "something invalid";
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
             .andDo(print())
@@ -161,7 +161,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + tokenService.getToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         when(validUser.isLocked()).thenReturn(true);
 

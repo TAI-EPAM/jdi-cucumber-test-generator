@@ -1,5 +1,7 @@
 package com.epam.test_generator.controllers;
 
+import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.services.EmailService;
 import com.epam.test_generator.dto.RegistrationUserDTO;
 import com.epam.test_generator.services.UserService;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -20,7 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
-
+    @Mock
+    private EmailService emailService;
     @Mock
     private UserService userService;
     @InjectMocks
