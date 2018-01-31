@@ -1,14 +1,14 @@
 package com.epam.test_generator.dto;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class SuitDTO {
 
@@ -34,6 +34,10 @@ public class SuitDTO {
 
     private Set<TagDTO> tags;
 
+    @NotNull
+    @Min(value = 1)
+    private Integer rowNumber;
+
     public SuitDTO() {
         creationDate = Calendar.getInstance().getTime();
     }
@@ -45,7 +49,7 @@ public class SuitDTO {
     }
 
     public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
-                   Date creationDate, Set<TagDTO> tags) {
+                   Date creationDate, Set<TagDTO> tags, Integer rowNumber) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -53,16 +57,18 @@ public class SuitDTO {
         this.priority = priority;
         this.creationDate = creationDate;
         this.tags = tags;
+        this.rowNumber = rowNumber;
     }
 
     public SuitDTO(Long id, String name, String description, List<CaseDTO> cases, Integer priority,
-                   Set<TagDTO> tags) {
+                   Set<TagDTO> tags, Integer rowNumber) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.cases = cases;
         this.priority = priority;
         this.tags = tags;
+        this.rowNumber = rowNumber;
     }
 
     public Long getId() {
@@ -121,6 +127,14 @@ public class SuitDTO {
         this.tags = tags;
     }
 
+    public Integer getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(Integer rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -138,7 +152,9 @@ public class SuitDTO {
             : suitDTO.description == null)
             && (cases != null ? cases.equals(suitDTO.cases) : suitDTO.cases == null)
             && (priority != null ? priority.equals(suitDTO.priority) : suitDTO.priority == null)
-            && (tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null);
+            && (tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null)
+            && (rowNumber != null ? rowNumber.equals(suitDTO.rowNumber)
+            : suitDTO.rowNumber == null);
     }
 
     @Override
@@ -149,6 +165,7 @@ public class SuitDTO {
         result = 31 * result + (cases != null ? cases.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (rowNumber != null ? rowNumber.hashCode() : 0);
         return result;
     }
 
@@ -159,6 +176,9 @@ public class SuitDTO {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", cases=" + cases +
+            ", priority=" + priority +
+            ", tags=" + tags +
+            ", rowNumber=" + rowNumber +
             '}';
     }
 }

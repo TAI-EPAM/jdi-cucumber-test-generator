@@ -20,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.security.access.AccessDeniedException;
 
 
 @ControllerAdvice
@@ -48,7 +49,6 @@ public class GlobalExceptionController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException ex) {
@@ -56,11 +56,9 @@ public class GlobalExceptionController {
         return new ResponseEntity<>("Invalid argument: " + ex.getName(), HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Void> handleBadRequestException(BadRequestException ex) {
-        logger.warn("Invalid arguments entered", ex);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorDTO> handleBadRequestException(BadRequestException ex) {
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ProjectClosedException.class)

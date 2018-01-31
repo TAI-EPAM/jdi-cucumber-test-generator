@@ -6,13 +6,20 @@ import static com.epam.test_generator.services.utils.UtilsService.suitBelongsToP
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.transformers.SuitTransformer;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 
 @Transactional
 @Service
@@ -46,7 +53,7 @@ public class SuitService {
         return suit;
     }
 
-    public SuitDTO getSuitDTO(long projectId, long suitId){
+    public SuitDTO getSuitDTO(long projectId, long suitId) {
         return suitTransformer.toDto(getSuit(projectId, suitId));
     }
 
@@ -80,10 +87,46 @@ public class SuitService {
         project.getSuits().remove(suit);
     }
 
-    public List<SuitDTO> getSuitsFromProject(Long projectId){
+    public List<SuitDTO> getSuitsFromProject(Long projectId) {
         Project project = projectService.getProjectByProjectId(projectId);
         checkNotNull(project);
 
         return suitTransformer.toDtoList(project.getSuits());
+    }
+
+    public void updateSuitRowNumber(List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
+        if (rowNumberUpdates.isEmpty()) {
+            throw new BadRequestException("The list has not to be empty");
+        }
+
+        for (SuitRowNumberUpdateDTO update : rowNumberUpdates) {
+            if (Objects.isNull(update.getId()) || Objects.isNull(update.getRowNumber())) {
+                throw new BadRequestException("Id or rowNumber has not to be null");
+            }
+        }
+
+        final Map<Long, Integer> patch = rowNumberUpdates
+            .stream()
+            .collect(Collectors
+                .toMap(SuitRowNumberUpdateDTO::getId, SuitRowNumberUpdateDTO::getRowNumber));
+
+        final List<Integer> distinct = patch.values().stream().distinct()
+            .collect(Collectors.toList());
+
+        if (rowNumberUpdates.size() != distinct.size()) {
+            throw new BadRequestException("One or more of the rowNumbers is a duplicate");
+        }
+
+        final List<Suit> suits = suitDAO.findByIdInOrderById(patch.keySet());
+
+        if (suits.size() != patch.size()) {
+            throw new BadRequestException(
+                "One or more of the ids is a duplicate or it does not exist in the database");
+        }
+        for (Suit suit : suits) {
+            suit.setRowNumber(patch.get(suit.getId()));
+        }
+
+        suitDAO.save(suits);
     }
 }

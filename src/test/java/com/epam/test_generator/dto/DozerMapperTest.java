@@ -33,6 +33,8 @@ public class DozerMapperTest {
         suit.setName("Suit name");
         suit.setDescription("Suit description");
         suit.setPriority(1);
+        suit.setRowNumber(1);
+
 
         dozerMapper.map(suit, suitDTO);
 

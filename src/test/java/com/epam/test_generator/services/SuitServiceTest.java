@@ -1,30 +1,30 @@
 package com.epam.test_generator.services;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyListOf;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitTransformer;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SuitServiceTest {
@@ -177,6 +177,84 @@ public class SuitServiceTest {
         when(projectService.getProjectByProjectId(SIMPLE_PROJECT_ID)).thenReturn(expectedProject);
         List<SuitDTO> suits = suitService.getSuitsFromProject(SIMPLE_PROJECT_ID);
         assertNotNull(suits);
+    }
+
+    @Test
+    public void updateSuitRowNumber_SimpleSuit_StatusOk() {
+        final SuitRowNumberUpdateDTO update = new SuitRowNumberUpdateDTO(5L, 2);
+        final SuitRowNumberUpdateDTO update1 = new SuitRowNumberUpdateDTO(4L, 1);
+
+        List<SuitRowNumberUpdateDTO> rowNumbers = new ArrayList<>(
+            Arrays.asList(update, update1)
+        );
+
+        List<Suit> suits = Lists.newArrayList(new Suit(
+                4L,
+                "name",
+                "description",
+                new ArrayList<>(),
+                3,
+                new HashSet<>(),
+                2
+            ),
+            new Suit(
+                5L,
+                "name2",
+                "description2",
+                new ArrayList<>(),
+                2,
+                new HashSet<>(),
+                1
+            ));
+
+        when(suitDAO.findByIdInOrderById(Sets.newHashSet(5L, 4L))).thenReturn(suits);
+        suitService.updateSuitRowNumber(rowNumbers);
+
+        assertThat(1, is(equalTo(suits.get(0).getRowNumber())));
+        assertThat(2, is(equalTo(suits.get(1).getRowNumber())));
+    }
+
+
+    @Test(expected = BadRequestException.class)
+    public void updateSuitRowNumber_throwsException_ThereIsNoSuchSuitWithSuchId() {
+
+        final List<SuitRowNumberUpdateDTO> rowNumbers = Lists.newArrayList(
+            new SuitRowNumberUpdateDTO(5L, 2),
+            new SuitRowNumberUpdateDTO(4L, 1)
+        );
+
+        when(suitDAO.findByIdInOrderById(Sets.newHashSet(5L, 4L))).thenReturn(new ArrayList<>());
+        suitService.updateSuitRowNumber(rowNumbers);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void updateSuitRowNumber_throwsException_IfIdOrRowNumberIsNull() {
+        final List<SuitRowNumberUpdateDTO> rowNumbers = Lists.newArrayList(
+            new SuitRowNumberUpdateDTO(null, null),
+            new SuitRowNumberUpdateDTO(null, null),
+            new SuitRowNumberUpdateDTO(null, null)
+        );
+
+        suitService.updateSuitRowNumber(rowNumbers);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void updateSuitRowNumber_throwsException_DuplicateRowNumber() {
+        final List<SuitRowNumberUpdateDTO> rowNumbers = Lists.newArrayList(
+            new SuitRowNumberUpdateDTO(5L, 2),
+            new SuitRowNumberUpdateDTO(4L, 1)
+        );
+
+        final List<Suit> retrievedListOfSuits = Collections.singletonList(new Suit(5L,
+            "name",
+            "description",
+            new ArrayList<>(),
+            3,
+            new HashSet<>(),
+            2));
+
+        when(suitDAO.findByIdInOrderById(Sets.newHashSet(5L, 4L))).thenReturn(retrievedListOfSuits);
+        suitService.updateSuitRowNumber(rowNumbers);
     }
 
     @Test(expected = NotFoundException.class)

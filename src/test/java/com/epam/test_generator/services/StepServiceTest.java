@@ -95,7 +95,7 @@ public class StepServiceTest {
         listCases.add(new Case(2L, "name 2", "Case 2", listSteps, 2, setOfTags));
         listCases.add(caze);
 
-        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags);
+        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags, 1);
     }
 
     @Test

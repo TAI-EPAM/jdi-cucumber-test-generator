@@ -2,28 +2,21 @@ package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.IOService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class SuitController {
@@ -90,7 +83,6 @@ public class SuitController {
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> createSuit(@PathVariable("projectId") long projectId,
                                            @RequestBody @Valid SuitDTO suitDTO) {
-
         return new ResponseEntity<>(suitService.addSuit(projectId, suitDTO), HttpStatus.CREATED);
     }
 
@@ -115,8 +107,26 @@ public class SuitController {
     public ResponseEntity<Void> updateSuit(@PathVariable("projectId") long projectId,
                                            @PathVariable("suitId") long suitId,
                                            @RequestBody @Valid SuitDTO suitDTO) {
-        suitService.updateSuit(projectId,suitId, suitDTO);
+        suitService.updateSuit(projectId, suitId, suitDTO);
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @ApiOperation(value = "Update suits by rowNumber", nickname = "updateSuitRowNumber")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
+        @ApiResponse(code = 404, message = "Suit not found")
+    })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
+    @RequestMapping(value = "/projects/{projectId}/suits/updateRowNumbers", method = RequestMethod.PUT,
+        consumes = "application/json")
+    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    public ResponseEntity<Void> updateSuitRowNumber
+        (@RequestBody @Valid List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
+
+        suitService.updateSuitRowNumber(rowNumberUpdates);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

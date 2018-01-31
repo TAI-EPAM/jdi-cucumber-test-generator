@@ -53,6 +53,7 @@ public class SuitControllerTest {
         suitDTO = new SuitDTO();
         suitDTO.setId(TEST_SUIT_ID);
         suitDTO.setName("Suit name");
+        suitDTO.setRowNumber(1);
         suitDTO.setPriority(1);
         suitDTO.setDescription("Suit description");
     }

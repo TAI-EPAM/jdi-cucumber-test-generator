@@ -124,13 +124,13 @@ public class CaseServiceTest {
         expectedCaseDTO = new CaseDTO(SIMPLE_CASE_ID, "Case name", "Case desc",
                 expectedListSteps, 1, expectedSetTags, Status.NOT_DONE);
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc",
-                listCases, 1, setOfTags);
+                listCases, 1, setOfTags, 1);
         caze = new Case(SIMPLE_CASE_ID, "Case name", "Case desc", listSteps, 1, setOfTags);
         expectedCaseDTO = new CaseDTO(SIMPLE_CASE_ID, "Case name", "Case desc", expectedListSteps, 1,
                 expectedSetTags, Status.NOT_DONE);
         caseToRestore = new Case(SIMPLE_CASE_ID, "new name", "new description",
                 Lists.newArrayList(), 3, Sets.newHashSet());
-        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags);
+        suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags, 1);
 
         caseVersions = new ArrayList<>();
         expectedCaseVersions = new ArrayList<>();
