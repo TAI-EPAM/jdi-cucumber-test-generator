@@ -9,6 +9,7 @@ import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.AdminService;
+import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.RoleService;
 import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
@@ -47,18 +48,27 @@ public class AdminControllerSecurityTest {
     private final ChangeUserRoleDTO changeUserRoleDTO = new ChangeUserRoleDTO();
 
     @Autowired
-    UserDAO userDAO;
+    private UserDAO userDAO;
+
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
+
+    @Mock
+    private ProjectService projectService;
+
     @InjectMocks
     @Autowired
-    JwtAuthenticationProvider jwtAuthenticationProvider;
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
+
     @Mock
     private User user;
+
     @Mock
     private User passiveUser;
+
     @Mock
     private UserService userService;
+
     @InjectMocks
     @Autowired
     private LoginService loginService;
@@ -102,6 +112,7 @@ public class AdminControllerSecurityTest {
         when(user.getId()).thenReturn(new Long(1));
         when(user.isLocked()).thenReturn(false);
 
+        when(projectService.getProjectByProjectId(anyLong())).thenReturn(null);
 
         ReflectionTestUtils.setField(adminService, "userService", userService);
         ReflectionTestUtils.setField(adminService, "roleService", roleService);

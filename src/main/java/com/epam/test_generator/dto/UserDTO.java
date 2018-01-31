@@ -1,5 +1,6 @@
 package com.epam.test_generator.dto;
 
+import java.util.List;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public class UserDTO {
     @Size(min = 1, max = 255)
     private String password;
 
+    @NotNull
     private String role;
 
     private Integer attempts;

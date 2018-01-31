@@ -1,8 +1,11 @@
 package com.epam.test_generator.config.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.ProjectService;
+import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
 import com.epam.test_generator.services.exceptions.TokenMalformedException;
@@ -38,6 +41,8 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProjectService projectService;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
@@ -71,15 +76,18 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
         User user = userService.getUserById(id);
         if (user == null) {
             throw new UnauthorizedException("no such user");
-
-
         }
 
         List<Role> roles = Collections.singletonList(user.getRole());
         Collection<SimpleGrantedAuthority> authorityList = getSimpleGrantedAuthorities(roles);
 
+
+        List<Long> projectIds = projectService.getProjectsByUserId(user.getId()).stream()
+            .map(Project::getId)
+            .collect(Collectors.toList());
+
         return new AuthenticatedUser(user.getId(), user.getEmail(), token,
-            authorityList, user.isLocked());
+            authorityList, projectIds, user.isLocked());
 
 
     }

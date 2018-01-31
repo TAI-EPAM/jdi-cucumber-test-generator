@@ -30,6 +30,8 @@ public class CaseVersionController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case",
@@ -37,12 +39,13 @@ public class CaseVersionController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
-    @RequestMapping(value = "suits/{suitId}/cases/{caseId}/versions",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/versions",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<CaseVersionDTO>> getCaseVersions(@PathVariable("suitId") long suitId,
+    public ResponseEntity<List<CaseVersionDTO>> getCaseVersions(@PathVariable("projectId") long projectId,
+                                                                @PathVariable("suitId") long suitId,
                                                                 @PathVariable("caseId") long caseId) {
 
-        return new ResponseEntity<>(caseService.getCaseVersions(suitId, caseId), HttpStatus.OK);
+        return new ResponseEntity<>(caseService.getCaseVersions(projectId, suitId, caseId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Restore case by commit id", nickname = "restoreCase")
@@ -52,6 +55,8 @@ public class CaseVersionController {
         @ApiResponse(code = 404, message = "Suit/Case/CaseToRestore not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case",
@@ -61,12 +66,13 @@ public class CaseVersionController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header",
             dataType = "string", required = true)
     })
-    @RequestMapping(value = "suits/{suitId}/cases/{caseId}/versions/{commitId:.+}",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/versions/{commitId:.+}",
         method = RequestMethod.PUT)
-    public ResponseEntity<Void> restoreCase(@PathVariable("suitId") long suitId,
+    public ResponseEntity<Void> restoreCase(@PathVariable("projectId") long projectId,
+                                            @PathVariable("suitId") long suitId,
                                             @PathVariable("caseId") long caseId,
                                             @PathVariable("commitId") String commitId) {
-        caseService.restoreCase(suitId, caseId, commitId);
+        caseService.restoreCase(projectId, suitId, caseId, commitId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -56,8 +56,8 @@ public class CaseService {
     @Autowired
     private StateMachineAdapter stateMachineAdapter;
 
-    public Case getCase(Long suitId, Long caseId) {
-        Suit suit = suitService.getSuit(suitId);
+    public Case getCase(Long projectId, Long suitId, Long caseId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -67,15 +67,14 @@ public class CaseService {
         return caze;
     }
 
-    public CaseDTO getCaseDTO(Long suitId, Long caseId) {
-        return caseTransformer.toDto(getCase(suitId,caseId));
+    public CaseDTO getCaseDTO(Long projectId, Long suitId, Long caseId) {
+        return caseTransformer.toDto(getCase(projectId,suitId,caseId));
     }
 
-    public Long addCaseToSuit(Long suitId, @Valid CaseDTO caseDTO) {
-        Suit suit = suitService.getSuit(suitId);
+    public Long addCaseToSuit(Long projectId, Long suitId, @Valid CaseDTO caseDTO) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseTransformer.fromDto(caseDTO);
-
         Date currentTime = Calendar.getInstance().getTime();
 
         caze.setCreationDate(currentTime);
@@ -89,7 +88,7 @@ public class CaseService {
         return caze.getId();
     }
 
-    public Long addCaseToSuit(Long suitId, EditCaseDTO editCaseDTO)
+    public Long addCaseToSuit(Long projectId, Long suitId, EditCaseDTO editCaseDTO)
         throws MethodArgumentNotValidException {
         CaseDTO caseDTO = new CaseDTO(editCaseDTO.getId(), editCaseDTO.getName(),
             editCaseDTO.getDescription(), new ArrayList<>(),
@@ -102,11 +101,11 @@ public class CaseService {
         if (beanPropertyBindingResult.hasErrors()) {
             throw new MethodArgumentNotValidException(null, beanPropertyBindingResult);
         }
-        return addCaseToSuit(suitId, caseDTO);
+        return addCaseToSuit(projectId, suitId, caseDTO);
     }
 
-    public void updateCase(Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
-        Suit suit = suitService.getSuit(suitId);
+    public void updateCase(Long projectId, Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -124,8 +123,8 @@ public class CaseService {
         caseVersionDAO.save(caze);
     }
 
-    public void removeCase(Long suitId, Long caseId) {
-        Suit suit = suitService.getSuit(suitId);
+    public void removeCase(Long projectId, Long suitId, Long caseId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -138,8 +137,8 @@ public class CaseService {
         caseVersionDAO.delete(caze);
     }
 
-    public void removeCases(Long suitId, List<Long> caseIds) {
-        Suit suit = suitService.getSuit(suitId);
+    public void removeCases(Long projectId, Long suitId, List<Long> caseIds) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         suit.getCases().stream()
             .filter(caze -> caseIds.stream()
@@ -150,8 +149,8 @@ public class CaseService {
             });
     }
 
-    public List<CaseVersionDTO> getCaseVersions(Long suitId, Long caseId) {
-        Suit suit = suitService.getSuit(suitId);
+    public List<CaseVersionDTO> getCaseVersions(Long projectId, Long suitId, Long caseId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -163,8 +162,8 @@ public class CaseService {
         return caseVersionTransformer.toDtoList(caseVersions);
     }
 
-    public void restoreCase(Long suitId, Long caseId, String commitId) {
-        Suit suit = suitService.getSuit(suitId);
+    public void restoreCase(Long projectId, Long suitId, Long caseId, String commitId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
@@ -178,7 +177,7 @@ public class CaseService {
         caseVersionDAO.save(caseToRestore);
     }
 
-    public List<Long> updateCases(long suitId, List<EditCaseDTO> editCaseDTOS)
+    public List<Long> updateCases(Long projectId, long suitId, List<EditCaseDTO> editCaseDTOS)
         throws MethodArgumentNotValidException {
         List<Long> newCasesIds = new ArrayList<>();
         for (EditCaseDTO caseDTO : editCaseDTOS) {
@@ -187,16 +186,16 @@ public class CaseService {
                     if (caseDTO.getId() == null) {
                         throw new BadRequestException("No id in Case to remove");
                     }
-                    removeCase(suitId, caseDTO.getId());
+                    removeCase(projectId, suitId, caseDTO.getId());
                     break;
                 case CREATE:
-                    newCasesIds.add(addCaseToSuit(suitId, caseDTO));
+                    newCasesIds.add(addCaseToSuit(projectId, suitId, caseDTO));
                     break;
                 case UPDATE:
                     if (caseDTO.getId() == null) {
                         throw new BadRequestException("No id in Case to update");
                     }
-                    updateCase(suitId, caseDTO.getId(), caseDTO);
+                    updateCase(projectId, suitId, caseDTO.getId(), caseDTO);
                     break;
                 default:
                     throw new BadRequestException("Wrong action argument");
@@ -205,8 +204,8 @@ public class CaseService {
         return newCasesIds;
     }
 
-    public Status performEvent(Long suitId, Long caseId, Event event) throws Exception {
-        Case cs = getCase(suitId, caseId);
+    public Status performEvent(Long projectId, Long suitId, Long caseId, Event event) throws Exception {
+        Case cs = getCase(projectId, suitId, caseId);
         StateMachine<Status, Event> stateMachine = stateMachineAdapter.restore(cs);
         if (stateMachine.sendEvent(event)) {
             stateMachineAdapter.persist(stateMachine, cs);

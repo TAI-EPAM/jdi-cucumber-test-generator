@@ -49,6 +49,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class StepControllerTest {
 
+    private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
     private static final long SIMPLE_STEP_ID = 3L;
@@ -111,108 +112,108 @@ public class StepControllerTest {
 
     @Test
     public void testGetStepsByCaseId_return200whenGetSteps() throws Exception {
-        when(stepService.getStepsByCaseId(anyLong(), anyLong())).thenReturn(stepDTOS);
+        when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenReturn(stepDTOS);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(stepService).getStepsByCaseId(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetStepsByCaseId_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(stepService.getStepsByCaseId(anyLong(), anyLong())).thenThrow(new NotFoundException());
+        when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenThrow(new NotFoundException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(stepService).getStepsByCaseId(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetStepsByCaseId_return400whenSuitNotContainsCase() throws Exception {
-        when(stepService.getStepsByCaseId(anyLong(), anyLong()))
+        when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong()))
             .thenThrow(new BadRequestException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(stepService).getStepsByCaseId(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetStepsByCaseId_return500whenRuntimeException() throws Exception {
-        when(stepService.getStepsByCaseId(anyLong(), anyLong())).thenThrow(new RuntimeException());
+        when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenThrow(new RuntimeException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(stepService).getStepsByCaseId(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetStepsById_return200whenGetSteps() throws Exception {
-        when(stepService.getStep(anyLong(), anyLong(), anyLong())).thenReturn(stepDTO);
+        when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong())).thenReturn(stepDTO);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(stepService).getStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testGetStepsById_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
         throws Exception {
-        when(stepService.getStep(anyLong(), anyLong(), anyLong()))
+        when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong()))
             .thenThrow(new NotFoundException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(stepService).getStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testGetStepsById_return400whenSuitNotContainsCaseOrCaseNotContainsStep()
         throws Exception {
-        when(stepService.getStep(anyLong(), anyLong(), anyLong()))
+        when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong()))
             .thenThrow(new BadRequestException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(stepService).getStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testGetStepsById_return500whenRuntimeException() throws Exception {
-        when(stepService.getStep(anyLong(), anyLong(), anyLong()))
+        when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong()))
             .thenThrow(new RuntimeException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(stepService).getStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testAddStepToCase_return201whenAddStepToCase() throws Exception {
-        when(stepService.addStepToCase(anyLong(), anyLong(), any(StepDTO.class)))
+        when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenReturn(SIMPLE_STEP_ID);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
@@ -220,65 +221,65 @@ public class StepControllerTest {
             .andExpect(content().string(String.valueOf(SIMPLE_STEP_ID)));
 
         verify(stepService)
-            .addStepToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
+            .addStepToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
 
     }
 
     @Test
     public void testAddStepToCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(stepService.addStepToCase(anyLong(), anyLong(), any(StepDTO.class)))
+        when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenThrow(new NotFoundException());
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService)
-            .addStepToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
+            .addStepToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
     }
 
     @Test
     public void testAddStepToCase_return400whenSuitNotContainsCase() throws Exception {
-        when(stepService.addStepToCase(anyLong(), anyLong(), any(StepDTO.class)))
+        when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenThrow(new BadRequestException());
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(stepService)
-            .addStepToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
+            .addStepToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
     }
 
     @Test
     public void testAddStepToCase_return500whenRuntimeException() throws Exception {
-        when(stepService.addStepToCase(anyLong(), anyLong(), any(StepDTO.class)))
+        when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenThrow(new RuntimeException());
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepService)
-            .addStepToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
+            .addStepToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
     }
 
     @Test
     public void testUpdateStep_return200whenUpdateStep() throws Exception {
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(stepService).updateStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
+        verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
             any(StepDTO.class));
     }
 
@@ -286,16 +287,16 @@ public class StepControllerTest {
     public void testUpdateStep_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
         throws Exception {
         doThrow(NotFoundException.class).when(stepService)
-            .updateStep(anyLong(), anyLong(), anyLong(), any(StepDTO.class));
+            .updateStep(anyLong(), anyLong(), anyLong(), anyLong(), any(StepDTO.class));
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(stepService).updateStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
+        verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
             any(StepDTO.class));
     }
 
@@ -303,101 +304,101 @@ public class StepControllerTest {
     public void testUpdateStep_return400whenSuitNotContainsCaseOrCaseNotContainsStep()
         throws Exception {
         doThrow(BadRequestException.class).when(stepService)
-            .updateStep(anyLong(), anyLong(), anyLong(), any(StepDTO.class));
+            .updateStep(anyLong(), anyLong(), anyLong(), anyLong(), any(StepDTO.class));
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(stepService).updateStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
+        verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
             any(StepDTO.class));
     }
 
     @Test
     public void testUpdateStep_return500whenRuntimeException() throws Exception {
         doThrow(RuntimeException.class).when(stepService)
-            .updateStep(anyLong(), anyLong(), anyLong(), any(StepDTO.class));
+            .updateStep(anyLong(), anyLong(), anyLong(), anyLong(), any(StepDTO.class));
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(stepService).updateStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
+        verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
             any(StepDTO.class));
     }
 
     @Test
     public void testRemoveCase_return200whenRemoveCase() throws Exception {
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(stepService).removeStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testRemoveCase_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
         throws Exception {
         doThrow(NotFoundException.class).when(stepService)
-            .removeStep(anyLong(), anyLong(), anyLong());
+            .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(stepService).removeStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testRemoveCase_return400whenSuitNotContainsCase() throws Exception {
         doThrow(BadRequestException.class).when(stepService)
-            .removeStep(anyLong(), anyLong(), anyLong());
+            .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(stepService).removeStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
     @Test
     public void testRemoveCase_return500whenRuntimeException() throws Exception {
         doThrow(RuntimeException.class).when(stepService)
-            .removeStep(anyLong(), anyLong(), anyLong());
+            .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(stepService).removeStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+        verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
     }
 
 
     @Test
     public void updateSteps_return200whenUpdateSteps() throws Exception {
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTOS)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(stepService).cascadeUpdateSteps(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), anyList());
+        verify(stepService).cascadeUpdateSteps(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), anyList());
         verify(stepService, never())
-            .addStepToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
+            .addStepToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepDTO.class));
         verify(stepService, never())
-            .removeStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
+            .removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
         verify(stepService, never())
-            .updateStep(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
+            .updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
                 any(StepDTO.class));
     }
 
@@ -405,21 +406,21 @@ public class StepControllerTest {
     public void updateSteps_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
         throws Exception {
         Mockito.doCallRealMethod().when(stepService)
-            .cascadeUpdateSteps(anyLong(), anyInt(), anyList());
+            .cascadeUpdateSteps(anyLong(), anyLong(), anyInt(), anyList());
         doThrow(NotFoundException.class).when(stepService)
-            .removeStep(anyLong(), anyLong(), anyLong());
+            .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
 
         String request = mapper.writeValueAsString(stepDTOS);
         // By default the action field is hidden in JSON, must added to request manually
         request = request.replace("}]", ",\"action\":\"DELETE\"}]");
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(request))
             .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService)
-            .cascadeUpdateSteps(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(stepDTOS));
+            .cascadeUpdateSteps(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(stepDTOS));
     }
 }

@@ -53,6 +53,7 @@ public class CaseControllerTest {
 
     private List<EditCaseDTO> editCaseDTOList;
 
+    private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
     private static final Long[] CASE_IDS = {3L, 4L, 5L};
@@ -127,83 +128,83 @@ public class CaseControllerTest {
         editCaseDTOList.add(editCaseDTO2);
         editCaseDTOList.add(editCaseDTO3);
 
-        when(suitService.getSuitDTO(anyLong())).thenReturn(suitDTO);
+        when(suitService.getSuitDTO(anyLong(), anyLong())).thenReturn(suitDTO);
     }
 
     @Test
     public void testGetCase_return200whenGetCase() throws Exception {
-        when(casesService.getCaseDTO(anyLong(), anyLong())).thenReturn(caseDTO);
+        when(casesService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenReturn(caseDTO);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().string(mapper.writeValueAsString(caseDTO)));
 
-        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(casesService.getCaseDTO(anyLong(), anyLong())).thenThrow(new NotFoundException());
+        when(casesService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(new NotFoundException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetCase_return400whenSuitNotContainsCase() throws Exception {
         suitDTO.setCases(null);
-        when(casesService.getCaseDTO(anyLong(), anyLong())).thenThrow(new BadRequestException());
+        when(casesService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(new BadRequestException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetCase_return500whenRuntimeException() throws Exception {
-        when(casesService.getCaseDTO(anyLong(), anyLong())).thenThrow(new RuntimeException());
+        when(casesService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(new RuntimeException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(casesService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testAddCase_return201whenAddNewCase() throws Exception {
         caseDTO.setId(null);
-        when(casesService.addCaseToSuit(anyLong(), any(CaseDTO.class))).thenReturn(SIMPLE_CASE_ID);
+        when(casesService.addCaseToSuit(anyLong(), anyLong(), any(CaseDTO.class))).thenReturn(SIMPLE_CASE_ID);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(content().string(String.valueOf(SIMPLE_CASE_ID)));
 
-        verify(casesService).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
     public void testAddCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
         caseDTO.setId(null);
-        when(casesService.addCaseToSuit(anyLong(), any(CaseDTO.class)))
+        when(casesService.addCaseToSuit(anyLong(), anyLong(), any(CaseDTO.class)))
             .thenThrow(new NotFoundException());
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(casesService).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -211,12 +212,12 @@ public class CaseControllerTest {
         caseDTO.setId(null);
         caseDTO.setDescription(null);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -224,12 +225,12 @@ public class CaseControllerTest {
         caseDTO.setId(null);
         caseDTO.setDescription("");
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -237,12 +238,12 @@ public class CaseControllerTest {
         caseDTO.setId(null);
         caseDTO.setPriority(null);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -250,12 +251,12 @@ public class CaseControllerTest {
         caseDTO.setId(null);
         caseDTO.setPriority(0);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -263,12 +264,12 @@ public class CaseControllerTest {
         caseDTO.setId(null);
         caseDTO.setPriority(6);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
@@ -276,81 +277,81 @@ public class CaseControllerTest {
         caseDTO.setId(null);
         caseDTO.setPriority(-4);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verify(casesService, times(0)).addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
 
     @Test
     public void testAddCase_return500whenRuntimeException() throws Exception {
-        when(casesService.addCaseToSuit(anyLong(), any(CaseDTO.class)))
+        when(casesService.addCaseToSuit(anyLong(), anyLong(), any(CaseDTO.class)))
             .thenThrow(new RuntimeException());
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(casesService).addCaseToSuit(anyLong(), any(CaseDTO.class));
+        verify(casesService).addCaseToSuit(anyLong(), anyLong(), any(CaseDTO.class));
     }
 
     @Test
     public void testUpdateCase_return200whenUpdateCase() throws Exception {
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isOk());
 
         verify(casesService)
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
     public void testUpdateCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
         doThrow(NotFoundException.class).when(casesService)
-            .updateCase(anyLong(), anyLong(), any(EditCaseDTO.class));
+            .updateCase(anyLong(), anyLong(), anyLong(), any(EditCaseDTO.class));
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(casesService)
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
     public void testUpdateCase_return400whenSuitNotContainsCase() throws Exception {
         doThrow(BadRequestException.class).when(casesService)
-            .updateCase(anyLong(), anyLong(), any(EditCaseDTO.class));
+            .updateCase(anyLong(), anyLong(), anyLong(), any(EditCaseDTO.class));
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(casesService)
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
     public void testUpdateCase_return422whenUpdateCaseWithZeroPriority() throws Exception {
         caseDTO.setPriority(0);
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
@@ -358,13 +359,13 @@ public class CaseControllerTest {
         throws Exception {
         caseDTO.setPriority(6);
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
@@ -372,138 +373,138 @@ public class CaseControllerTest {
         throws Exception {
         caseDTO.setPriority(-4);
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
     public void testUpdateCase_return422whenUpdateCaseWithEmptyDescription() throws Exception {
         caseDTO.setDescription("");
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
     public void testUpdateCase_return500whenRuntimeException() throws Exception {
         doThrow(RuntimeException.class).when(casesService)
-            .updateCase(anyLong(), anyLong(), any(EditCaseDTO.class));
+            .updateCase(anyLong(), anyLong(), anyLong(), any(EditCaseDTO.class));
 
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(casesService)
-            .updateCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
+            .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(EditCaseDTO.class));
     }
 
     @Test
     public void testRemoveCase_return200whenRemoveCase() throws Exception {
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(casesService).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testRemoveCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        doThrow(NotFoundException.class).when(casesService).removeCase(anyLong(), anyLong());
+        doThrow(NotFoundException.class).when(casesService).removeCase(anyLong(), anyLong(), anyLong());
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(casesService).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testRemoveCase_return400whenSuitNotContainsCase() throws Exception {
         suitDTO.setCases(null);
-        doThrow(BadRequestException.class).when(casesService).removeCase(anyLong(), anyLong());
+        doThrow(BadRequestException.class).when(casesService).removeCase(anyLong(), anyLong(), anyLong());
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(casesService).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testRemoveCase_return500whenRuntimeException() throws Exception {
-        doThrow(RuntimeException.class).when(casesService).removeCase(anyLong(), anyLong());
+        doThrow(RuntimeException.class).when(casesService).removeCase(anyLong(), anyLong(), anyLong());
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(casesService).removeCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(casesService).removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testRemoveCases_return200whenRemoveCases() throws Exception {
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(CASE_IDS)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
+        verify(casesService).removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
     }
 
     @Test
     public void testRemoveCases_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        doThrow(NotFoundException.class).when(casesService).removeCases(anyLong(),
+        doThrow(NotFoundException.class).when(casesService).removeCases(anyLong(), anyLong(),
             anyListOf(Long.class));
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(CASE_IDS)))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
+        verify(casesService).removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
     }
 
     @Test
     public void testRemoveCases_return400whenSuitNotContainsCase() throws Exception {
         doThrow(BadRequestException.class).when(casesService)
-            .removeCases(anyLong(), anyListOf(Long.class));
+            .removeCases(anyLong(), anyLong(), anyListOf(Long.class));
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(CASE_IDS)))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
+        verify(casesService).removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
     }
 
     @Test
     public void testRemoveCases_return500whenRuntimeException() throws Exception {
         doThrow(RuntimeException.class).when(casesService)
-            .removeCases(anyLong(), anyListOf(Long.class));
+            .removeCases(anyLong(), anyLong(), anyListOf(Long.class));
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(CASE_IDS)))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
+        verify(casesService).removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
     }
 
     @Test
@@ -511,7 +512,7 @@ public class CaseControllerTest {
 
         Long[] invalidCaseIds = {6L, 8L};
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(invalidCaseIds)))
             .andDo(print())
@@ -523,33 +524,33 @@ public class CaseControllerTest {
 
         Long[] invalidCaseIds = {3L, 4L, 4L};
 
-        mockMvc.perform(delete("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(invalidCaseIds)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(casesService).removeCases(eq(SIMPLE_SUIT_ID), eq(Arrays.asList(invalidCaseIds)));
+        verify(casesService).removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(Arrays.asList(invalidCaseIds)));
     }
 
     @Test
     public void testPerformEvent_return200() throws Exception {
 
         mockMvc
-            .perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/CREATE")
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/CREATE")
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk());
 
         verify(casesService)
-            .performEvent(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(Event.CREATE));
+            .performEvent(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(Event.CREATE));
     }
 
     @Test
     public void testPerformEvent_return400whenWrongEventName() throws Exception {
 
         mockMvc
-            .perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/WRONG")
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/WRONG")
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest());
@@ -559,10 +560,10 @@ public class CaseControllerTest {
     public void testPerformEvent_return400whenEventCantBePerformed() throws Exception {
 
         doThrow(BadRequestException.class).when(casesService)
-            .performEvent(anyLong(), anyLong(), eq(Event.PASS));
+            .performEvent(anyLong(), anyLong(), anyLong(), eq(Event.PASS));
 
         mockMvc
-            .perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/PASS")
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/events/PASS")
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest());
@@ -570,11 +571,11 @@ public class CaseControllerTest {
 
     @Test
     public void updateCases_CorrectActions_StatusOk() throws Exception {
-        mockMvc.perform(put("/suits/" + SIMPLE_SUIT_ID + "/cases")
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(editCaseDTOList)))
             .andExpect(status().isOk());
 
-        verify(casesService).updateCases(eq(SIMPLE_SUIT_ID), eq(editCaseDTOList));
+        verify(casesService).updateCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(editCaseDTOList));
     }
 }

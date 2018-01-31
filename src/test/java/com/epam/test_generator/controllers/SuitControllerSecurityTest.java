@@ -5,10 +5,16 @@ import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationProvider;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.IOService;
+import com.epam.test_generator.services.ProjectService;
+import com.epam.test_generator.services.SuitService;
+import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +74,16 @@ public class SuitControllerSecurityTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private ProjectService projectService;
+
+    @Mock
+    private SuitService suitService;
+
+    @InjectMocks
+    @Autowired
+    private SuitController suitController;
+
     @Autowired
     private WebApplicationContext context;
 
@@ -76,6 +92,9 @@ public class SuitControllerSecurityTest {
 
     private MockMvc mvc;
 
+    private Project project1 = new Project();
+
+    private Project project2 = new Project();
 
     @Before
     public void setup() {
@@ -103,6 +122,12 @@ public class SuitControllerSecurityTest {
         when(validUser.isLocked()).thenReturn(false);
 
         ReflectionTestUtils.setField(loginService, "userService", userService);
+        project1.setId(1L);
+        project2.setId(2L);
+
+        when(suitService.getSuitsFromProject(anyLong())).thenReturn(Lists.newArrayList());
+
+        ReflectionTestUtils.setField(suitController, "suitService", suitService);
     }
 
     @Test
@@ -110,6 +135,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserById(anyLong())).thenReturn(validUser);
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
 
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
@@ -123,6 +149,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserById(anyLong())).thenReturn(null);
         when(userService.getUserByEmail(anyString())).thenReturn(invalidUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
 
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
@@ -136,6 +163,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserById(anyLong())).thenReturn(validUser);
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
 
         mvc.perform(get("/suits").contentType("application/json"))
             .andDo(print())
@@ -147,6 +175,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserById(anyLong())).thenReturn(validUser);
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
 
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO) + "something invalid";
 
@@ -160,6 +189,7 @@ public class SuitControllerSecurityTest {
         when(userService.getUserById(anyLong())).thenReturn(validUser);
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
 
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
@@ -170,4 +200,35 @@ public class SuitControllerSecurityTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    public void getSuits_UserNotBelongsToThisProject_StatusForbidden() throws Exception {
+        when(userService.getUserById(anyLong())).thenReturn(validUser);
+        when(userService.getUserByEmail(anyString())).thenReturn(validUser);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList(
+            project1, project2));
+
+        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+
+        mvc.perform(get("/projects/" + 3L +"/suits").header("Authorization", token).contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void getSuits_UserBelongsToThisProject_StatusOk() throws Exception {
+        when(userService.getUserById(anyLong())).thenReturn(validUser);
+        when(userService.getUserByEmail(anyString())).thenReturn(validUser);
+        when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
+
+        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList(
+            project1, project2));
+
+        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+
+        mvc.perform(get("/projects/" + 2L +"/suits").header("Authorization", token).contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
 }

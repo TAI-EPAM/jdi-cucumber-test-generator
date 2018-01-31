@@ -9,8 +9,10 @@ import com.epam.test_generator.services.exceptions.IncorrectURI;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.mail.MailSendException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
@@ -59,6 +61,12 @@ public class GlobalExceptionController {
     public ResponseEntity<Void> handleBadRequestException(BadRequestException ex) {
         logger.warn("Invalid arguments entered", ex);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProjectClosedException.class)
+    public ResponseEntity<String> handleBadRequestException(ProjectClosedException ex) {
+        logger.warn("Error: The try to change closed project", ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

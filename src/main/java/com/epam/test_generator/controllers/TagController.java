@@ -38,17 +38,19 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases with tags",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/suits/{suitId}/cases/tags",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/tags",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<Set<TagDTO>> getAllTagsFromAllCasesInSuit(
-        @PathVariable("suitId") long suitId) {
+    public ResponseEntity<Set<TagDTO>> getAllTagsFromAllCasesInSuit(@PathVariable("projectId") long projectId,
+                                                                    @PathVariable("suitId") long suitId) {
 
-        return new ResponseEntity<>(tagService.getAllTagsFromAllCasesInSuit(suitId), HttpStatus.OK);
+        return new ResponseEntity<>(tagService.getAllTagsFromAllCasesInSuit(projectId, suitId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get all tags from the case", nickname = "getTags")
@@ -57,6 +59,8 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains tags",
@@ -64,11 +68,12 @@ public class TagController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<Set<TagDTO>> getTags(@PathVariable("suitId") long suitId,
+    public ResponseEntity<Set<TagDTO>> getTags(@PathVariable("projectId") long projectId,
+                                               @PathVariable("suitId") long suitId,
                                                @PathVariable("caseId") long caseId) {
-        CaseDTO caseDTO = casesService.getCaseDTO(suitId, caseId);
+        CaseDTO caseDTO = casesService.getCaseDTO(projectId, suitId, caseId);
 
         return new ResponseEntity<>(caseDTO.getTags(), HttpStatus.OK);
     }
@@ -80,6 +85,8 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new tag",
@@ -90,13 +97,14 @@ public class TagController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags", method = RequestMethod.POST,
         produces = "application/json")
-    public ResponseEntity<Long> addTagToCase(@PathVariable("suitId") long suitId,
+    public ResponseEntity<Long> addTagToCase(@PathVariable("projectId") long projectId,
+                                             @PathVariable("suitId") long suitId,
                                              @PathVariable("caseId") long caseId,
                                              @RequestBody TagDTO tagDTO) {
 
-        return new ResponseEntity<>(tagService.addTagToCase(suitId, caseId, tagDTO),
+        return new ResponseEntity<>(tagService.addTagToCase(projectId, suitId, caseId, tagDTO),
             HttpStatus.CREATED);
     }
 
@@ -107,6 +115,8 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case/Tag not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag",
@@ -118,12 +128,13 @@ public class TagController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> updateTag(@PathVariable("suitId") long suitId,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags/{tagId}", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<Void> updateTag(@PathVariable("projectId") long projectId,
+                                          @PathVariable("suitId") long suitId,
                                           @PathVariable("caseId") long caseId,
                                           @PathVariable("tagId") long tagId,
                                           @RequestBody TagDTO tagDTO) {
-        tagService.updateTag(suitId, caseId, tagId, tagDTO);
+        tagService.updateTag(projectId, suitId, caseId, tagId, tagDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -134,6 +145,8 @@ public class TagController {
         @ApiResponse(code = 404, message = "Suit/Case/Tag not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the tag",
@@ -143,12 +156,13 @@ public class TagController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/tags/{tagId}",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags/{tagId}",
         method = RequestMethod.DELETE, produces = "application/json")
-    public ResponseEntity<Void> removeTagFromCase(@PathVariable("suitId") long suitId,
+    public ResponseEntity<Void> removeTagFromCase(@PathVariable("projectId") long projectId,
+                                                  @PathVariable("suitId") long suitId,
                                                   @PathVariable("caseId") long caseId,
                                                   @PathVariable("tagId") long tagId) {
-        tagService.removeTag(suitId, caseId, tagId);
+        tagService.removeTag(projectId, suitId, caseId, tagId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

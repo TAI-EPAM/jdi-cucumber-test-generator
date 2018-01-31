@@ -1,6 +1,8 @@
 package com.epam.test_generator.config.security;
 
+import com.epam.test_generator.entities.Project;
 import java.util.Collection;
+import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,14 +18,17 @@ public class AuthenticatedUser implements UserDetails {
     private String email;
     private String token;
     private Collection<? extends GrantedAuthority> authorityList;
+    private List<Long> projectIds;
     private Boolean isAccountNonLocked;
 
     public AuthenticatedUser(Long id, String email, String token,
-                             Collection<? extends GrantedAuthority> authorityList, Boolean locked) {
+                             Collection<? extends GrantedAuthority> authorityList,
+                             List<Long> projectIds, Boolean locked) {
         this.id = id;
         this.email = email;
         this.token = token;
         this.authorityList = authorityList;
+        this.projectIds = projectIds;
         this.isAccountNonLocked = !locked;
     }
 
@@ -72,5 +77,9 @@ public class AuthenticatedUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public List<Long> getProjectIds() {
+        return projectIds;
     }
 }

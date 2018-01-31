@@ -35,6 +35,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains steps",
@@ -42,12 +44,13 @@ public class StepController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<StepDTO>> getStepsByCaseId(@PathVariable("suitId") long suitId,
+    public ResponseEntity<List<StepDTO>> getStepsByCaseId(@PathVariable("projectId") long projectId,
+                                                          @PathVariable("suitId") long suitId,
                                                           @PathVariable("caseId") long caseId) {
 
-        return new ResponseEntity<>(stepService.getStepsByCaseId(suitId, caseId), HttpStatus.OK);
+        return new ResponseEntity<>(stepService.getStepsByCaseId(projectId, suitId, caseId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get step by id", nickname = "getStep")
@@ -56,6 +59,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step",
@@ -65,13 +70,14 @@ public class StepController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<StepDTO> getStepByStepId(@PathVariable(value = "suitId") long suitId,
+    public ResponseEntity<StepDTO> getStepByStepId(@PathVariable("projectId") long projectId,
+                                                   @PathVariable(value = "suitId") long suitId,
                                                    @PathVariable("caseId") long caseId,
                                                    @PathVariable(value = "stepId") long stepId) {
 
-        return new ResponseEntity<>(stepService.getStep(suitId, caseId, stepId),
+        return new ResponseEntity<>(stepService.getStep(projectId, suitId, caseId, stepId),
             HttpStatus.OK);
 
     }
@@ -83,6 +89,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which will be added a new step",
@@ -93,13 +101,14 @@ public class StepController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.POST,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Long> addStepToCase(@PathVariable("suitId") long suitId,
+    public ResponseEntity<Long> addStepToCase(@PathVariable("projectId") long projectId,
+                                              @PathVariable("suitId") long suitId,
                                               @PathVariable("caseId") long caseId,
                                               @RequestBody @Valid StepDTO stepDTO) {
 
-        return new ResponseEntity<>(stepService.addStepToCase(suitId, caseId, stepDTO),
+        return new ResponseEntity<>(stepService.addStepToCase(projectId, suitId, caseId, stepDTO),
             HttpStatus.CREATED);
     }
 
@@ -110,6 +119,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step",
@@ -121,12 +132,13 @@ public class StepController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> updateStep(@PathVariable("suitId") long suitId,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps/{stepId}", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<Void> updateStep(@PathVariable("projectId") long projectId,
+                                           @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
                                            @PathVariable("stepId") long stepId,
                                            @RequestBody @Valid StepDTO stepDTO) {
-        stepService.updateStep(suitId, caseId, stepId, stepDTO);
+        stepService.updateStep(projectId, suitId, caseId, stepId, stepDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -145,6 +157,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the list of steps",
@@ -156,11 +170,12 @@ public class StepController {
 
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> updateSteps(@PathVariable("suitId") long suitId,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<Void> updateSteps(@PathVariable("projectId") long projectId,
+                                            @PathVariable("suitId") long suitId,
                                             @PathVariable("caseId") long caseId,
                                             @RequestBody @Valid List<StepDTO> steps) {
-        stepService.cascadeUpdateSteps(suitId, caseId, steps);
+        stepService.cascadeUpdateSteps(projectId, suitId, caseId, steps);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -172,6 +187,8 @@ public class StepController {
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains the step",
@@ -181,12 +198,13 @@ public class StepController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}/steps/{stepId}",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps/{stepId}",
         method = RequestMethod.DELETE)
-    public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
+    public ResponseEntity<Void> removeCase(@PathVariable("projectId") long projectId,
+                                           @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
                                            @PathVariable("stepId") long stepId) {
-        stepService.removeStep(suitId, caseId, stepId);
+        stepService.removeStep(projectId, suitId, caseId, stepId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

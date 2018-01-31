@@ -1,6 +1,7 @@
 package com.epam.test_generator.entities;
 
 
+import java.util.List;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
@@ -44,6 +45,9 @@ public class User {
         this.locked = false;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
     public Long getId() {
         return id;
     }

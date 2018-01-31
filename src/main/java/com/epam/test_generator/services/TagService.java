@@ -47,8 +47,8 @@ public class TagService {
     @Autowired
     private CaseVersionDAO caseVersionDAO;
 
-    public Set<TagDTO> getAllTagsFromAllCasesInSuit(Long suitId) {
-        Suit suit = suitService.getSuit(suitId);
+    public Set<TagDTO> getAllTagsFromAllCasesInSuit(Long projectId, Long suitId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
         return suit.getCases().stream()
                 .flatMap(caze -> caze.getTags().stream())
@@ -56,10 +56,10 @@ public class TagService {
                 .collect(Collectors.toSet());
     }
 
-    public Long addTagToCase(Long suitId, Long caseId, TagDTO tagDTO) {
-        Suit suit = suitService.getSuit(suitId);
+    public Long addTagToCase(Long projectId, Long suitId, Long caseId, TagDTO tagDTO) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
         Tag tag = tagTransformer.fromDto(tagDTO);
@@ -72,10 +72,10 @@ public class TagService {
         return tag.getId();
     }
 
-    public void updateTag(Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
-        Suit suit = suitService.getSuit(suitId);
+    public void updateTag(Long projectId, Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -91,10 +91,10 @@ public class TagService {
         caseVersionDAO.save(caze);
     }
 
-    public void removeTag(Long suitId, Long caseId, Long tagId) {
-        Suit suit = suitService.getSuit(suitId);
+    public void removeTag(Long projectId, Long suitId, Long caseId, Long tagId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 

@@ -44,16 +44,19 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD","ROLE_GUEST"})
-    @RequestMapping(value = "/suits/{suitId}/cases",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("suitId") long suitId) {
-        SuitDTO suitDTO = suitService.getSuitDTO(suitId);
+    public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("projectId") long projectId,
+                                                  @PathVariable("suitId") long suitId) {
+        SuitDTO suitDTO = suitService.getSuitDTO(projectId, suitId);
 
         return new ResponseEntity<>(suitDTO.getCases(), HttpStatus.OK);
     }
@@ -64,6 +67,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to return",
@@ -71,12 +76,13 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<CaseDTO> getCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId) {
+    public ResponseEntity<CaseDTO> getCase(@PathVariable("projectId") long projectId,
+                                           @PathVariable("suitId") long suitId,
+                                           @PathVariable("caseId") long caseId) {
 
-        return new ResponseEntity<>(caseService.getCaseDTO(suitId, caseId), HttpStatus.OK);
+        return new ResponseEntity<>(caseService.getCaseDTO(projectId, suitId, caseId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Add a new case to the suit", nickname = "addCaseToSuit")
@@ -86,6 +92,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseDTO", value = "Added case object",
@@ -95,12 +103,13 @@ public class CaseController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.POST,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Long> addCaseToSuit(@PathVariable("suitId") long suitId,
-        @RequestBody @Valid CaseDTO caseDTO) {
+    public ResponseEntity<Long> addCaseToSuit(@PathVariable("projectId") long projectId,
+                                              @PathVariable("suitId") long suitId,
+                                              @RequestBody @Valid CaseDTO caseDTO) {
 
-        return new ResponseEntity<>(caseService.addCaseToSuit(suitId, caseDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(caseService.addCaseToSuit(projectId, suitId, caseDTO), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update case by id", nickname = "updateCase")
@@ -110,6 +119,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to update",
@@ -120,12 +131,13 @@ public class CaseController {
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> updateCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId,
-        @RequestBody @Valid EditCaseDTO editCaseDTO) {
-        caseService.updateCase(suitId, caseId, editCaseDTO);
+    public ResponseEntity<Void> updateCase(@PathVariable("projectId") long projectId,
+                                           @PathVariable("suitId") long suitId,
+                                           @PathVariable("caseId") long caseId,
+                                           @RequestBody @Valid EditCaseDTO editCaseDTO) {
+        caseService.updateCase(projectId, suitId, caseId, editCaseDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -137,18 +149,21 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Some of Suits/cases not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit to operate cases",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
-    @RequestMapping(value = "/suits/{suitId}/cases",
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases",
         method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<List<Long>> updateCases(@PathVariable("suitId") long suitId,
+    public ResponseEntity<List<Long>> updateCases(@PathVariable("projectId") long projectId,
+                                                  @PathVariable("suitId") long suitId,
                                                   @RequestBody @Valid List<EditCaseDTO> editDTOList)
         throws MethodArgumentNotValidException {
 
-        List<Long> newCaseIds = caseService.updateCases(suitId, editDTOList);
+        List<Long> newCaseIds = caseService.updateCases(projectId, suitId, editDTOList);
 
         return new ResponseEntity<>(newCaseIds, HttpStatus.OK);
     }
@@ -160,6 +175,8 @@ public class CaseController {
         @ApiResponse(code = 404, message = "Suit/Case not found")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to delete",
@@ -167,10 +184,11 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> removeCase(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId) {
-        caseService.removeCase(suitId, caseId);
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> removeCase(@PathVariable("projectId") long projectId,
+                                           @PathVariable("suitId") long suitId,
+                                           @PathVariable("caseId") long caseId) {
+        caseService.removeCase(projectId, suitId, caseId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -182,6 +200,8 @@ public class CaseController {
         @ApiResponse(code = 400, message = "Suit doesn't contains some of cases")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "removeCaseIds", value = "IDs of cases to be removed",
@@ -189,11 +209,12 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/suits/{suitId}/cases", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases", method = RequestMethod.DELETE,
         consumes = "application/json")
-    public ResponseEntity<Void> removeCases(@PathVariable("suitId") long suitId,
-        @RequestBody Long[] removeCaseIds) {
-        SuitDTO suitDTO = suitService.getSuitDTO(suitId);
+    public ResponseEntity<Void> removeCases(@PathVariable("projectId") long projectId,
+                                            @PathVariable("suitId") long suitId,
+                                            @RequestBody Long[] removeCaseIds) {
+        SuitDTO suitDTO = suitService.getSuitDTO(projectId, suitId);
         List<Long> existentSuitCaseIds = suitDTO.getCases().stream()
             .map(CaseDTO::getId)
             .collect(Collectors.toList());
@@ -202,7 +223,7 @@ public class CaseController {
         if (!existentSuitCaseIds.containsAll(idsToRemove)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        caseService.removeCases(suitId, idsToRemove);
+        caseService.removeCases(projectId, suitId, idsToRemove);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -213,6 +234,8 @@ public class CaseController {
         @ApiResponse(code = 400, message = "Can't perform given event on current case")
     })
     @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "IDs of cases to perform event on",
@@ -222,14 +245,15 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "suits/{suitId}/cases/{caseId}/events/{event}", method = RequestMethod.PUT,
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/events/{event}", method = RequestMethod.PUT,
         consumes = "application/json")
-    public ResponseEntity<Status> performEvent(@PathVariable("suitId") long suitId,
-        @PathVariable("caseId") long caseId,
-        @PathVariable("event") Event event)
+    public ResponseEntity<Status> performEvent(@PathVariable("projectId") long projectId,
+                                               @PathVariable("suitId") long suitId,
+                                               @PathVariable("caseId") long caseId,
+                                               @PathVariable("event") Event event)
         throws Exception {
 
         return new ResponseEntity<>(
-            caseService.performEvent(suitId, caseId, event), HttpStatus.OK);
+            caseService.performEvent(projectId, suitId, caseId, event), HttpStatus.OK);
     }
 }

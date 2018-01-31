@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class TagControllerTest {
 
+    private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
     private static final long SIMPLE_TAG_ID = 3L;
@@ -98,155 +99,155 @@ public class TagControllerTest {
     @Test
     public void testGetAllTagsFromAllCasesInSuit_return200whenGetAllTagsFromAllCasesInSuit()
         throws Exception {
-        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenReturn(tagDTOSet);
+        when(tagService.getAllTagsFromAllCasesInSuit(anyLong(), anyLong())).thenReturn(tagDTOSet);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong());
+        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong(), anyLong());
     }
 
     @Test
     public void testGetAllTagsFromAllCasesInSuit_return404whenSuitNotExist() throws Exception {
-        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenThrow(NotFoundException.class);
+        when(tagService.getAllTagsFromAllCasesInSuit(anyLong(), anyLong())).thenThrow(NotFoundException.class);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong());
+        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong(), anyLong());
     }
 
     @Test
     public void testGetAllTagsFromAllCasesInSuit_return500whenRuntimeException() throws Exception {
-        when(tagService.getAllTagsFromAllCasesInSuit(anyLong())).thenThrow(new RuntimeException());
+        when(tagService.getAllTagsFromAllCasesInSuit(anyLong(), anyLong())).thenThrow(new RuntimeException());
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong());
+        verify(tagService).getAllTagsFromAllCasesInSuit(anyLong(), anyLong());
     }
 
     @Test
     public void testGetTags_return200whenGetTags() throws Exception {
-        when(caseService.getCaseDTO(anyLong(), anyLong())).thenReturn(caseDTO);
+        when(caseService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenReturn(caseDTO);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(caseService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(caseService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetTags_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(caseService.getCaseDTO(anyLong(), anyLong())).thenThrow(NotFoundException.class);
+        when(caseService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(NotFoundException.class);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(caseService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(caseService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testGetTags_return400whenSuitNotContainsCase() throws Exception {
-        when(caseService.getCaseDTO(anyLong(), anyLong())).thenThrow(BadRequestException.class);
+        when(caseService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(BadRequestException.class);
 
-        mockMvc.perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
+        mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(caseService).getCaseDTO(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verify(caseService).getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
     public void testAddTag_return201whenAddNewTag() throws Exception {
         tagDTO.setId(null);
-        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class)))
+        when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenReturn(SIMPLE_TAG_ID);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(content().string(String.valueOf(SIMPLE_TAG_ID)));
 
-        verify(tagService).addTagToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(tagDTO));
+        verify(tagService).addTagToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(tagDTO));
     }
 
     @Test
     public void testAddTag_return404whenSuitNotExistOrCaseNotExist() throws Exception {
-        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class)))
+        when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenThrow(NotFoundException.class);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(tagService).addTagToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(TagDTO.class));
+        verify(tagService).addTagToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
     public void testAddTag_return400whenSuitNotContainsCase() throws Exception {
-        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class)))
+        when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenThrow(BadRequestException.class);
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(tagService).addTagToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(TagDTO.class));
+        verify(tagService).addTagToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
     public void testAddTag_return500whenRuntimeException() throws Exception {
         tagDTO.setId(null);
-        when(tagService.addTagToCase(anyLong(), anyLong(), any(TagDTO.class)))
+        when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenThrow(new RuntimeException());
 
-        mockMvc.perform(post("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
+        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(tagService).addTagToCase(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(TagDTO.class));
+        verify(tagService).addTagToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(TagDTO.class));
     }
 
     @Test
     public void testUpdateTag_return200whenUpdateTag() throws Exception {
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(tagService).updateTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
+        verify(tagService).updateTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
             any(TagDTO.class));
     }
 
     @Test
     public void testUpdateTag_return404whenSuitNotExistOrCaseNotExist() throws Exception {
         doThrow(NotFoundException.class).when(tagService)
-            .updateTag(anyLong(), anyLong(), anyLong(), any(TagDTO.class));
+            .updateTag(anyLong(), anyLong(), anyLong(), anyLong(), any(TagDTO.class));
 
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(tagService).updateTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
+        verify(tagService).updateTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
             any(TagDTO.class));
     }
 
@@ -255,32 +256,32 @@ public class TagControllerTest {
         throws Exception {
         suitDTO.setCases(null);
         doThrow(BadRequestException.class).when(tagService)
-            .updateTag(anyLong(), anyLong(), anyLong(), any(TagDTO.class));
+            .updateTag(anyLong(), anyLong(), anyLong(), anyLong(), any(TagDTO.class));
 
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(tagService).updateTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
+        verify(tagService).updateTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
             any(TagDTO.class));
     }
 
     @Test
     public void testUpdateTag_return500whenRuntimeException() throws Exception {
         doThrow(RuntimeException.class).when(tagService)
-            .updateTag(anyLong(), anyLong(), anyLong(), any(TagDTO.class));
+            .updateTag(anyLong(), anyLong(), anyLong(), anyLong(), any(TagDTO.class));
 
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tagDTO)))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(tagService).updateTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
+        verify(tagService).updateTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID),
             any(TagDTO.class));
     }
 
@@ -288,50 +289,50 @@ public class TagControllerTest {
     public void testRemoveTag_return200whenRemoveTag() throws Exception {
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(tagService).removeTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
+        verify(tagService).removeTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
     }
 
     @Test
     public void testRemoveTag_return404whenSuitNotExistOrCaseNotExistOrTagNotExist()
         throws Exception {
         doThrow(NotFoundException.class).when(tagService)
-            .removeTag(anyLong(), anyLong(), anyLong());
+            .removeTag(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(tagService).removeTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
+        verify(tagService).removeTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
     }
 
     @Test
     public void testRemoveTag_return400whenSuitNotContainsCasOrCaseNotContainTage()
         throws Exception {
         doThrow(BadRequestException.class).when(tagService)
-            .removeTag(anyLong(), anyLong(), anyLong());
+            .removeTag(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(tagService).removeTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
+        verify(tagService).removeTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
     }
 
     @Test
     public void testRemoveTag_return500whenRuntimeException() throws Exception {
-        doThrow(RuntimeException.class).when(tagService).removeTag(anyLong(), anyLong(), anyLong());
+        doThrow(RuntimeException.class).when(tagService).removeTag(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(
-            "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
+            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
             .andDo(print())
             .andExpect(status().isInternalServerError());
 
-        verify(tagService).removeTag(eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
+        verify(tagService).removeTag(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_TAG_ID));
     }
 }

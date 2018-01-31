@@ -36,20 +36,20 @@ public class StepService {
     @Autowired
     private StepTransformer stepTransformer;
 
-    public List<StepDTO> getStepsByCaseId(Long suitId, Long caseId) {
-        Suit suit = suitService.getSuit(suitId);
+    public List<StepDTO> getStepsByCaseId(Long projectId, Long suitId, Long caseId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
         return stepTransformer.toDtoList(caze.getSteps());
     }
 
-    public StepDTO getStep(Long suitId, Long caseId, Long stepId) {
-        Suit suit = suitService.getSuit(suitId);
+    public StepDTO getStep(Long projectId, Long suitId, Long caseId, Long stepId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -61,10 +61,10 @@ public class StepService {
         return stepTransformer.toDto(step);
     }
 
-    public Long addStepToCase(Long suitId, Long caseId, StepDTO stepDTO) {
-        Suit suit = suitService.getSuit(suitId);
+    public Long addStepToCase(Long projectId, Long suitId, Long caseId, StepDTO stepDTO) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -78,10 +78,10 @@ public class StepService {
         return step.getId();
     }
 
-    public void updateStep(Long suitId, Long caseId, Long stepId, StepDTO stepDTO) {
-        Suit suit = suitService.getSuit(suitId);
+    public void updateStep(Long projectId, Long suitId, Long caseId, Long stepId, StepDTO stepDTO) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -97,10 +97,10 @@ public class StepService {
         caseVersionDAO.save(caze);
     }
 
-    public void removeStep(Long suitId, Long caseId, Long stepId) {
-        Suit suit = suitService.getSuit(suitId);
+    public void removeStep(Long projectId, Long suitId, Long caseId, Long stepId) {
+        Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseService.getCase(suitId, caseId);
+        Case caze = caseService.getCase(projectId, suitId, caseId);
 
         caseBelongsToSuit(caze, suit);
 
@@ -122,19 +122,19 @@ public class StepService {
      *
      * @param steps array list of steps
      */
-    public void cascadeUpdateSteps(long suitId, long caseId, List<StepDTO> steps) {
+    public void cascadeUpdateSteps(Long projectId, long suitId, long caseId, List<StepDTO> steps) {
         for (StepDTO stepDTO : steps) {
             Action action = stepDTO.getAction();
             if (action != null) {
                 switch (action) {
                     case UPDATE:
-                        updateStep(suitId, caseId, stepDTO.getId(), stepDTO);
+                        updateStep(projectId, suitId, caseId, stepDTO.getId(), stepDTO);
                         break;
                     case CREATE:
-                        addStepToCase(suitId, caseId, stepDTO);
+                        addStepToCase(projectId, suitId, caseId, stepDTO);
                         break;
                     case DELETE:
-                        removeStep(suitId, caseId, stepDTO.getId());
+                        removeStep(projectId, suitId, caseId, stepDTO.getId());
                         break;
                     default:
                         // Do nothing

@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseVersionControllerTest {
 
+    private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
     private static final String SIMPLE_COMMIT_ID = "3.0";
@@ -53,79 +54,79 @@ public class CaseVersionControllerTest {
 
     @Test
     public void getCaseVersions_CorrectIds_StatusOk() throws Exception {
-        when(caseService.getCaseVersions(anyLong(), anyLong())).thenReturn(caseVersionDTOs);
+        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong())).thenReturn(caseVersionDTOs);
 
         mockMvc
-            .perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
+            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(caseService).getCaseVersions(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+        verify(caseService).getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
     }
 
     @Test
     public void getCaseVersions_NotFoundException_StatusNotFound() throws Exception {
-        when(caseService.getCaseVersions(anyLong(), anyLong())).thenThrow(new NotFoundException());
+        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong())).thenThrow(new NotFoundException());
 
         mockMvc
-            .perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
+            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(caseService).getCaseVersions(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+        verify(caseService).getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
     }
 
     @Test
     public void getCaseVersions_BadRequestException_StatusBadRequest() throws Exception {
-        when(caseService.getCaseVersions(anyLong(), anyLong()))
+        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong()))
             .thenThrow(new BadRequestException());
 
         mockMvc
-            .perform(get("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
+            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(caseService).getCaseVersions(SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+        verify(caseService).getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
     }
 
     @Test
     public void restoreCase_CorrectIds_StatusOk() throws Exception {
 
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(caseService).restoreCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
+        verify(caseService).restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 
     @Test
     public void restoreCase_NotFoundException_StatusNotFound() throws Exception {
-        doThrow(new NotFoundException()).when(caseService).restoreCase(anyLong(), anyLong(),
+        doThrow(new NotFoundException()).when(caseService).restoreCase(anyLong(), anyLong(), anyLong(),
             anyString());
 
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(caseService).restoreCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
+        verify(caseService).restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 
     @Test
     public void restoreCase_BadRequestException_StatusBadRequest() throws Exception {
-        doThrow(new BadRequestException()).when(caseService).restoreCase(anyLong(), anyLong(),
+        doThrow(new BadRequestException()).when(caseService).restoreCase(anyLong(), anyLong(), anyLong(),
             anyString());
 
         mockMvc.perform(
-            put("/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID)
                 .param("commitId", SIMPLE_COMMIT_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(caseService).restoreCase(SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
+        verify(caseService).restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 }
