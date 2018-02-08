@@ -36,7 +36,7 @@ public class StatesControllerTest {
     }
 
     @Test
-    public void getAvailableEvents_status200() throws Exception {
+    public void get_AvailableEvents_StatusOk() throws Exception {
 
         mockMvc.perform(get("/events/" + status))
             .andDo(print())
@@ -47,7 +47,7 @@ public class StatesControllerTest {
     }
 
     @Test
-    public void getAvailableEvents_status400() throws Exception {
+    public void get_AvailableEvents_StatusBadRequest() throws Exception {
 
         mockMvc.perform(get("/events/WRONG"))
             .andDo(print())
@@ -55,7 +55,7 @@ public class StatesControllerTest {
     }
 
     @Test
-    public void getEvents_status200() throws Exception {
+    public void get_Events_StatusOk() throws Exception {
 
         mockMvc.perform(get("/events/"))
             .andDo(print())
@@ -63,7 +63,7 @@ public class StatesControllerTest {
     }
 
     @Test
-    public void getStatuses_status200() throws Exception {
+    public void get_Statuses_StatusOk() throws Exception {
 
         mockMvc.perform(get("/statuses/"))
             .andDo(print())

@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.access.StateMachineAccess;
-import org.springframework.statemachine.access.StateMachineAccessor;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.state.State;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -32,12 +30,6 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
 
     @Mock
     private State<Status, Event> state;
-
-    @Mock
-    private StateMachineAccessor<Status, Event> stateMachineAccessor;
-
-    @Mock
-    private StateMachineAccess<Status, Event> stateMachineAccess;
 
     @Autowired
     private StateMachineFactory<Status, Event> stateMachineFactory;
@@ -57,7 +49,7 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void persist_successful() {
+    public void persist_StateMachine_Success() {
         when(stateMachine.getState()).thenReturn(state);
         when(state.getId()).thenReturn(Status.PASSED);
         persister.persist(stateMachine, cs);
@@ -66,7 +58,7 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void restore_successful() {
+    public void restore_StatusNotRun_Success() {
         stateMachineFactory = applicationContext.getBean(StateMachineFactory.class);
         StateMachine<Status, Event> stateMachine1 = stateMachineFactory.getStateMachine();
 

@@ -50,7 +50,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepsSuggestionsTest() throws Exception {
+    public void get_StepsSuggestions_Success() {
         when(stepSuggestionDAO.findAll()).thenReturn(listSteps);
         when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
 
@@ -63,7 +63,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepSuggestionByIdTest() {
+    public void get_StepSuggestionById_Success() {
         StepSuggestion expected = new StepSuggestion(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1",
             StepType.GIVEN);
         StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID,
@@ -80,14 +80,14 @@ public class StepSuggestionServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void getStepSuggestionByIdTest_expectNotFoundException() {
+    public void get_StepSuggestionById_NotFoundException() {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
 
         stepSuggestionService.getStepsSuggestion(SIMPLE_STEP_SUGGESTION_ID);
     }
 
     @Test
-    public void getStepSuggestionByTypeTest() {
+    public void get_StepSuggestionByType_Success() {
         StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2",
             StepType.WHEN);
         StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN);
@@ -105,7 +105,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void testAddStepSuggestionTest() throws Exception {
+    public void add_StepSuggestion_Success() {
         StepSuggestion newStepSuggestion = new StepSuggestion(3L, "StepSuggestion 3", StepType.AND);
         StepSuggestionDTO newStepSuggestionDTO = new StepSuggestionDTO(3L, "StepSuggestion 3",
             StepType.AND);
@@ -123,7 +123,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void updateStepSuggestionTest() {
+    public void update_StepSuggestion_Success() {
         StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2",
             StepType.WHEN);
         StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN);
@@ -139,7 +139,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void updateStepSuggestionTest_expectNotFoundException() {
+    public void update_StepSuggestion_NotFoundException() {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
 
         stepSuggestionService
@@ -147,7 +147,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void removeStepSuggestionTest() throws Exception {
+    public void remove_StepSuggestion_Success() {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(listSteps.get(0));
 
         stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
@@ -157,7 +157,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void removeStepSuggestionTest_expectNotFoundException() {
+    public void remove_StepSuggestion_NotFoundException() {
         when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
 
         stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);

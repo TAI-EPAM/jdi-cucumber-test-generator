@@ -25,7 +25,7 @@ public class DozerMapperTest {
     }
 
     @Test
-    public void mapSuitToSuitDTO() {
+    public void map_SuitToSuitDTO_Valid() {
         Suit suit = new Suit();
         SuitDTO suitDTO = new SuitDTO();
 
@@ -45,7 +45,7 @@ public class DozerMapperTest {
     }
 
     @Test
-    public void mapCaseToCaseDTO() {
+    public void map_CaseToCaseDTO_Valid() {
         final Case caze = new Case();
         final CaseDTO caseDTO = new CaseDTO();
 
@@ -63,7 +63,7 @@ public class DozerMapperTest {
     }
 
     @Test
-    public void mapStepToStepDTO() {
+    public void map_StepToStepDTO_Valid() {
         Step step = new Step();
         StepDTO stepDTO = new StepDTO();
 
@@ -81,7 +81,7 @@ public class DozerMapperTest {
     }
 
     @Test
-    public void mapStepSuggestionToStepSuggestionDTO() {
+    public void map_StepSuggestionToStepSuggestionDTO_Valid() {
         StepSuggestion stepSuggestion = new StepSuggestion();
         StepSuggestionDTO stepSuggestionDTO = new StepSuggestionDTO();
 

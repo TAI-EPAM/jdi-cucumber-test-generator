@@ -70,7 +70,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void getProject_CorrectProjectId_Status200Ok() throws Exception {
+    public void getProject_CorrectProjectId_StatusOk() throws Exception {
         when(projectService.getAuthUserFullProject(anyLong(), any(Authentication.class))).thenReturn(new ProjectFullDTO());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID))
@@ -81,7 +81,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void getProject_IncorrectProjectId_Status404NotFound() throws Exception {
+    public void getProject_IncorrectProjectId_StatusNotFound() throws Exception {
         when(projectService.getAuthUserFullProject(anyLong(), anyObject())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID))
@@ -92,7 +92,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void createProject_CorrectDTO_Status201Created() throws Exception {
+    public void createProject_CorrectDTO_StatusCreated() throws Exception {
         projectDTO.setId(null);
         when(projectService.createProject(any(ProjectDTO.class), any(Authentication.class))).thenReturn(SIMPLE_PROJECT_ID);
 
@@ -107,7 +107,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void createProject_IncorrectDTO_Status400BadRequest() throws Exception {
+    public void createProject_IncorrectDTO_StatusBadRequest() throws Exception {
         projectDTO.setId(null);
         projectDTO.setName(null);
 
@@ -121,7 +121,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void updateProject_ValidInput_Status200Ok() throws Exception {
+    public void updateProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
@@ -132,7 +132,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void updateProject_InvalidInput_Status400BadRequest() throws Exception {
+    public void updateProject_InvalidInput_StatusBadRequest() throws Exception {
         projectDTO.setId(null);
         projectDTO.setName(null);
 
@@ -146,7 +146,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void updateProject_ValidUpdateDTO_Status404NotFound() throws Exception {
+    public void updateProject_ValidUpdateDTO_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class)
             .when(projectService).updateProject(anyLong(), any(ProjectDTO.class));
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID)
@@ -159,7 +159,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void updateProject_ValidUpdateDTO_Status403ProjectIsReadOnly() throws Exception {
+    public void updateProject_ValidUpdateDTO_StatusForbidden() throws Exception {
         projectDTO.setActive(false);
 
         doThrow(ProjectClosedException.class)
@@ -174,7 +174,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void closeProject_ProjectId_Status200ProjectClosed() throws Exception {
+    public void closeProject_ProjectId_StatusOk() throws Exception {
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID))
             .andDo(print())
             .andExpect(status().isOk());
@@ -183,7 +183,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void closeProject_ProjectId_Status404ProjectNotFound() throws Exception {
+    public void closeProject_ProjectId_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class)
             .when(projectService).closeProject(anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID))
@@ -194,7 +194,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void closeProject_ProjectId_Status403ProjectIsAlreadyClosed() throws Exception {
+    public void closeProject_ProjectId_StatusForbidden() throws Exception {
         doThrow(ProjectClosedException.class)
             .when(projectService).closeProject(anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID))
@@ -205,7 +205,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void assignUserToProject_ValidInput_Status200UserAssigned() throws Exception {
+    public void assignUserToProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
             .andDo(print())
@@ -215,7 +215,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void assignUserToProject_InvalidInput_Status404UserOrProjectNotFound() throws Exception {
+    public void assignUserToProject_InvalidInput_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class)
             .when(projectService).addUserToProject(anyLong(), anyLong());
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
@@ -227,7 +227,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void assignUserToProject_ValidInput_Status403ProjectIsReadOnly() throws Exception {
+    public void assignUserToProject_ValidInput_StatusForbidden() throws Exception {
         doThrow(ProjectClosedException.class)
             .when(projectService).addUserToProject(anyLong(), anyLong());
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
@@ -239,7 +239,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void removeUserFromProject_ValidInput_Status200UserRemovedFromProject() throws Exception {
+    public void removeUserFromProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
             .andDo(print())
@@ -249,7 +249,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void removeUserFromProject_InvalidInput_Status404UserOrProjectNotFound() throws Exception {
+    public void removeUserFromProject_InvalidInput_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class)
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
@@ -261,7 +261,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void removeUserFromProject_ValidInput_Status403ProjectIsReadOnly() throws Exception {
+    public void removeUserFromProject_ValidInput_StatusForbidden() throws Exception {
         doThrow(ProjectClosedException.class)
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")

@@ -1,10 +1,15 @@
 package com.epam.test_generator.services;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dto.PasswordResetDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMissingException;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PasswordServiceTest {
@@ -38,16 +37,16 @@ public class PasswordServiceTest {
     private User user;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
 
     @Mock
-    private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private PasswordService sut;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(request.getScheme()).thenReturn("scheme");
         when(request.getServerName()).thenReturn("serverName");
         when(request.getServerPort()).thenReturn(1);
@@ -55,7 +54,7 @@ public class PasswordServiceTest {
     }
 
     @Test
-    public void createResetUrl_simpleInputDate_ok() {
+    public void createResetUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createResetUrl(request, token);
         String resetUrlActual = "scheme://serverName:1/cucumber/passwordReset?token=token";
 
@@ -63,7 +62,7 @@ public class PasswordServiceTest {
     }
 
     @Test
-    public void createConfirmUrl_simpleInputDate_ok() {
+    public void createConfirmUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createConfirmUrl(request, token);
         String resetUrlActual = "scheme://serverName:1/cucumber/confirmAccount?token=token";
 
@@ -71,7 +70,7 @@ public class PasswordServiceTest {
     }
 
     @Test
-    public void passwordReset_simplePasswordResetDTO_ok() {
+    public void passwordReset_SimplePasswordResetDTO_Ok() {
         when(passwordResetDTO.getToken()).thenReturn("token");
         when(tokenDAO.findByToken(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(user);
@@ -82,7 +81,7 @@ public class PasswordServiceTest {
     }
 
     @Test(expected = TokenMissingException.class)
-    public void passwordReset_incorrectToken_expectException() {
+    public void passwordReset_IncorrectToken_Exception() {
         when(passwordResetDTO.getToken()).thenReturn("token");
         when(tokenDAO.findByToken(anyString())).thenReturn(null);
 
@@ -91,7 +90,7 @@ public class PasswordServiceTest {
     }
 
     @Test
-    public void getTokenByName_simpleToken_Ok() {
+    public void getTokenByName_SimpleToken_Ok() {
         sut.getTokenByName(anyString());
         verify(tokenDAO).findByToken(anyString());
     }

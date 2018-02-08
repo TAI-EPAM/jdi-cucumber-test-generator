@@ -1,5 +1,17 @@
 package com.epam.test_generator.services;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
@@ -9,6 +21,9 @@ import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.epam.test_generator.transformers.UserTransformer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,16 +31,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -82,7 +87,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserById() throws Exception {
+    public void getUser_ById_Valid() throws Exception {
         when(userDAO.findById(anyLong())).thenReturn(user);
         User userById = sut.getUserById(1L);
         assertNotNull(userById);
@@ -90,28 +95,28 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserById_noSuchUser() throws Exception {
+    public void getUserById_NoSuchUser_Success() throws Exception {
         when(userDAO.findById(anyLong())).thenReturn(null);
         User userById = sut.getUserById(1L);
         assertNull(userById);
     }
 
     @Test
-    public void getUserByEmail() throws Exception {
+    public void getUser_ByEmail_Success() throws Exception {
         when(userDAO.findByEmail(anyString())).thenReturn(user);
         User userById = sut.getUserByEmail("iteaky");
         assertNotNull(userById);
     }
 
     @Test
-    public void getUserByEmail_noSuchUser() throws Exception {
+    public void getUserByEmail_NoSuchUser_Success() throws Exception {
         when(userDAO.findByEmail(anyString())).thenReturn(null);
         User userById = sut.getUserByEmail("iteaky");
         assertNull(userById);
     }
 
     @Test
-    public void getAll() throws Exception {
+    public void getAll_Users_Success() throws Exception {
         users.add(user);
         userDTOS.add(userDTO);
         when(userDAO.findAll()).thenReturn(users);
@@ -121,33 +126,33 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getAll_emptyDB() throws Exception {
+    public void getAll_EmptyDataBase_Success() throws Exception {
         when(userDAO.findAll()).thenReturn(users);
         final List<UserDTO> users = sut.getUsers();
         assertTrue(users.isEmpty());
     }
 
     @Test
-    public void createUser() throws Exception {
+    public void createUser_RegistrationUserDTO_Success() throws Exception {
         sut.createUser(registrationUserDTO);
         verify(userDAO).save(any(User.class));
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void createUser_ExistUser() throws Exception {
+    public void createUser_ExistUser_Success() throws Exception {
         when(sut.getUserByEmail(anyString())).thenReturn(user);
         sut.createUser(registrationUserDTO);
     }
 
     @Test
-    public void isSamePasswords_true() throws Exception {
+    public void isSamePasswords_True_Valid() throws Exception {
         when(encoder.matches(anyString(), anyString())).thenReturn(true);
         assertTrue(sut.isSamePasswords(anyString(), anyString()));
 
     }
 
     @Test
-    public void isSamePasswords_false() throws Exception {
+    public void isSamePasswords_False_Valid() throws Exception {
         when(encoder.matches(anyString(), anyString())).thenReturn(false);
         assertFalse(sut.isSamePasswords(anyString(), anyString()));
 
@@ -217,7 +222,7 @@ public class UserServiceTest {
     @Test
     public void createAdmin_AlreadyExistedUser_Nok() throws Exception {
         when(userDAO.findByRole(roleService.getRoleByName("ADMIN")))
-                .thenReturn(Collections.singletonList(new User()));
+            .thenReturn(Collections.singletonList(new User()));
         sut.createAdminIfDoesNotExist();
         verify(userDAO, times(0)).save(any(User.class));
     }

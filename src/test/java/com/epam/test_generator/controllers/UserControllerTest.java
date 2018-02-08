@@ -42,7 +42,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void registrationTest_200() throws Exception {
+    public void registration_SimpleUser_StatusOk() throws Exception {
         userDTO.setName("test_name");
         userDTO.setSurname("test_sure_name");
         userDTO.setPassword("test");
@@ -54,7 +54,7 @@ public class UserControllerTest {
 
 
     @Test
-    public void registrationTest_incorrectEmail_400() throws Exception {
+    public void registration_IncorrectEmail_StatusBadRequest() throws Exception {
         userDTO.setPassword("test");
         userDTO.setEmail("test");
         final String json = mapper.writeValueAsString(userDTO);
@@ -64,7 +64,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void registrationTest_nullPassword400() throws Exception {
+    public void registration_NullPassword_StatusBadRequest() throws Exception {
         userDTO.setEmail("test");
         final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -73,7 +73,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void registrationTest_nullEmail400() throws Exception {
+    public void registration_NullEmail_StatusBadRequest() throws Exception {
         userDTO.setEmail("test");
         final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -82,7 +82,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void registrationTest_nullUser400() throws Exception {
+    public void registration_NullUser_StatusBadRequest() throws Exception {
         String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print())
@@ -90,7 +90,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void registrationTest_nullJson500() throws Exception {
+    public void registration_NullJson_StatusInternalServerError() throws Exception {
         String json = mapper.writeValueAsString(null);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andDo(print())

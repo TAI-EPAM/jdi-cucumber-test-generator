@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 
-
 public class EmailServiceTest {
 
     @Mock
@@ -57,7 +56,6 @@ public class EmailServiceTest {
         when(environment.getProperty(anyString())).thenReturn("environmentValue");
 
     }
-
 
     @Test
     public void sendRegistrationMessage_SimpleInputDate_Ok() {

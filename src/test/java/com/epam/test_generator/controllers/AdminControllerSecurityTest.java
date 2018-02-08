@@ -94,9 +94,9 @@ public class AdminControllerSecurityTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .addFilters(springSecurityFilterChain)
-                .build();
+            .webAppContextSetup(context)
+            .addFilters(springSecurityFilterChain)
+            .build();
 
         loginUserDTO.setEmail("test@email.com");
         loginUserDTO.setPassword("test");
@@ -128,9 +128,10 @@ public class AdminControllerSecurityTest {
 
         final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
-        mvc.perform(get("/admin/users").header("Authorization", token).contentType("application/json"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        mvc.perform(
+            get("/admin/users").header("Authorization", token).contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -143,10 +144,10 @@ public class AdminControllerSecurityTest {
 
         final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
-
-        mvc.perform(get("/admin/users").header("Authorization", token).contentType("application/json"))
-                .andDo(print())
-                .andExpect(status().isForbidden());
+        mvc.perform(
+            get("/admin/users").header("Authorization", token).contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isForbidden());
     }
 
     @Test
@@ -159,16 +160,16 @@ public class AdminControllerSecurityTest {
         final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         when(userService.getUserByEmail(eq("admin@email.com"))).thenReturn(passiveUser);
-        when(roleService.getRoleByName(changeUserRoleDTO.getRole())).thenReturn(new Role("TEST_LEAD"));
+        when(roleService.getRoleByName(changeUserRoleDTO.getRole()))
+            .thenReturn(new Role("TEST_LEAD"));
 
         final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
-
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json).contentType("application/json"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
+            .contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isOk());
     }
-
 
     @Test
     public void changeUserRole_UserWithWrongRole_StatusBadRequest() throws Exception {
@@ -184,12 +185,11 @@ public class AdminControllerSecurityTest {
 
         final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
-
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json).contentType("application/json"))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
+            .contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
-
 
     @Test
     public void changeUserRole_UserWithWrongRole_StatusForbidden() throws Exception {
@@ -202,10 +202,10 @@ public class AdminControllerSecurityTest {
 
         final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
-
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json).contentType("application/json"))
-                .andDo(print())
-                .andExpect(status().isForbidden());
+        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
+            .contentType("application/json"))
+            .andDo(print())
+            .andExpect(status().isForbidden());
     }
 
 }

@@ -60,7 +60,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void getSuggestionsList_return200whenGetStepsSuggestion() throws Exception {
+    public void getSuggestionsList_StepsSuggestion_StatusOk() throws Exception {
         when(stepSuggestionService.getStepsSuggestions()).thenReturn(stepSuggestionDTOS);
 
         mockMvc.perform(get("/stepSuggestions"))
@@ -71,7 +71,8 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void getSuggestionsList_return500whenGetStepsSuggestion() throws Exception {
+    public void getSuggestionsList_ThrowRuntimeException_StatusInternalServerError()
+        throws Exception {
         when(stepSuggestionService.getStepsSuggestions()).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/stepSuggestions"))
@@ -82,7 +83,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void getStepsSuggestionsByType_return200whenGetStepsSuggestion() throws Exception {
+    public void getStepsSuggestionsByType_StepsSuggestion_StatusOk() throws Exception {
         when(stepSuggestionService.getStepsSuggestionsByType(STEP_TYPE)).thenReturn
             (stepSuggestionDTOS);
 
@@ -95,7 +96,8 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void getStepsSuggestionsByType_return500whenGetStepsSuggestion() throws Exception {
+    public void getStepsSuggestionsByType_ThrowRuntimeException_StatusInternalServerError()
+        throws Exception {
         when(stepSuggestionService.getStepsSuggestionsByType(STEP_TYPE))
             .thenThrow(new RuntimeException());
 
@@ -108,7 +110,7 @@ public class StepSuggestionControllerTest {
 
 
     @Test
-    public void testAddStepSuggestion_return200whenAddNewStepSuggestion() throws Exception {
+    public void add_NewStepSuggestion_StatusOk() throws Exception {
         stepSuggestionDTO.setId(null);
         when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class)))
             .thenReturn(stepSuggestionDTO.getId());
@@ -122,7 +124,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testAddStepSuggestion_return400whenAddStepSuggestionWithNullContent()
+    public void add_StepSuggestionWithNullContent_StatusBadRequest()
         throws Exception {
         stepSuggestionDTO.setId(null);
         stepSuggestionDTO.setContent(null);
@@ -136,7 +138,8 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testAddStepSuggestion_return500whenRuntimeException() throws Exception {
+    public void addStepSuggestion_ThrowRuntimeException_StatusInternalServerError()
+        throws Exception {
         when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class)))
             .thenThrow(new RuntimeException());
 
@@ -149,7 +152,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testUpdateStepSuggestion_return200whenUpdateStepSuggestion() throws Exception {
+    public void update_StepSuggestion_StatusOk() throws Exception {
         when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(stepSuggestionDTO);
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
@@ -163,7 +166,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testUpdateStepSuggestion_return404WhenStepSuggestionNotExist() throws Exception {
+    public void update_StepSuggestionNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(stepSuggestionService)
             .updateStepSuggestion(anyLong(), any(StepSuggestionDTO.class));
 
@@ -178,7 +181,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testUpdateStepSuggestion_return500whenRuntimeException() throws Exception {
+    public void updateStepSuggestion_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(stepSuggestionService)
             .updateStepSuggestion(anyLong(), any(StepSuggestionDTO.class));
 
@@ -193,7 +196,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testRemoveSuggestion_return200whenRemoveStepSuggestion() throws Exception {
+    public void remove_StepSuggestion_StatusOk() throws Exception {
         when(stepSuggestionService.getStepsSuggestion(SIMPLE_AUTOCOMPLETE_ID))
             .thenReturn(stepSuggestionDTO);
 
@@ -204,7 +207,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testRemoveSuggestion_return404whenStepSuggestionNotExist() throws Exception {
+    public void remove_StepSuggestionNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(stepSuggestionService)
             .removeStepSuggestion(anyLong());
 
@@ -215,7 +218,7 @@ public class StepSuggestionControllerTest {
     }
 
     @Test
-    public void testRemoveSuggestion_return500whenRemoveStepSuggestion() throws Exception {
+    public void removeSuggestion_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(stepSuggestionService).removeStepSuggestion(anyLong());
 
         mockMvc.perform(delete("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID))

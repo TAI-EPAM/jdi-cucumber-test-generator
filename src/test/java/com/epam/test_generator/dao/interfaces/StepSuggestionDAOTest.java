@@ -1,7 +1,6 @@
 package com.epam.test_generator.dao.interfaces;
 
 import com.epam.test_generator.DatabaseConfigForTests;
-import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import java.util.ArrayList;
@@ -12,13 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class})
@@ -29,26 +23,26 @@ public class StepSuggestionDAOTest {
     StepSuggestionDAO stepSuggestionDAO;
 
     @Test
-    public void testCreateAndRetrieve() {
-        StepSuggestion originalStepSuggestion = retrieveStepUggestion();
+    public void createAndRetrieve_StepSuggestion_Success() {
+        StepSuggestion originalStepSuggestion = retrieveStepSuggestion();
 
         long id = stepSuggestionDAO.save(originalStepSuggestion).getId();
 
-        StepSuggestion newStepSuggestion = retrieveStepUggestion();
+        StepSuggestion newStepSuggestion = retrieveStepSuggestion();
         newStepSuggestion.setId(id);
 
         Assert.assertEquals(newStepSuggestion, stepSuggestionDAO.findOne(id));
     }
 
     @Test
-    public void testUpdateContent() {
-        StepSuggestion originalStepSuggestion = retrieveStepUggestion();
+    public void updateContent_StepSuggestion_Success() {
+        StepSuggestion originalStepSuggestion = retrieveStepSuggestion();
 
         stepSuggestionDAO.save(originalStepSuggestion);
         originalStepSuggestion.setContent("new content");
         long id = stepSuggestionDAO.save(originalStepSuggestion).getId();
 
-        StepSuggestion newStepSuggestion = retrieveStepUggestion();
+        StepSuggestion newStepSuggestion = retrieveStepSuggestion();
         newStepSuggestion.setId(id);
         newStepSuggestion.setContent("new content");
 
@@ -56,14 +50,14 @@ public class StepSuggestionDAOTest {
     }
 
     @Test
-    public void testUpdateType() {
-        StepSuggestion originalStepSuggestion = retrieveStepUggestion();
+    public void updateType_StepSuggestion_Success() {
+        StepSuggestion originalStepSuggestion = retrieveStepSuggestion();
 
         stepSuggestionDAO.save(originalStepSuggestion);
         originalStepSuggestion.setType(StepType.AND);
         long id = stepSuggestionDAO.save(originalStepSuggestion).getId();
 
-        StepSuggestion newStepSuggestion = retrieveStepUggestion();
+        StepSuggestion newStepSuggestion = retrieveStepSuggestion();
         newStepSuggestion.setId(id);
         newStepSuggestion.setType(StepType.AND);
 
@@ -71,8 +65,8 @@ public class StepSuggestionDAOTest {
     }
 
     @Test
-    public void testRemoveById() {
-        StepSuggestion originalStepSuggestion = retrieveStepUggestion();
+    public void removeById_StepSuggestion_Success() {
+        StepSuggestion originalStepSuggestion = retrieveStepSuggestion();
         long id = stepSuggestionDAO.save(originalStepSuggestion).getId();
 
         stepSuggestionDAO.delete(id);
@@ -81,8 +75,8 @@ public class StepSuggestionDAOTest {
     }
 
     @Test
-    public void testRemove() {
-        StepSuggestion originalStepSuggestion = retrieveStepUggestion();
+    public void remove_StepSuggestion_Success() {
+        StepSuggestion originalStepSuggestion = retrieveStepSuggestion();
 
         long id = stepSuggestionDAO.save(originalStepSuggestion).getId();
 
@@ -92,7 +86,7 @@ public class StepSuggestionDAOTest {
     }
 
     @Test
-    public void testAddList() {
+    public void addList_StepSuggestions_Success() {
         List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
 
         List<Long> ids = stepSuggestionDAO.save(stepSuggestions).stream().map(StepSuggestion::getId)
@@ -108,7 +102,7 @@ public class StepSuggestionDAOTest {
     }
 
     @Test
-    public void testRemoveList() {
+    public void removeList_StepSuggestions_Success() {
         List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
 
         stepSuggestionDAO.save(stepSuggestions);
@@ -118,7 +112,7 @@ public class StepSuggestionDAOTest {
         Assert.assertTrue(stepSuggestionDAO.findAll().isEmpty());
     }
 
-    private StepSuggestion retrieveStepUggestion() {
+    private StepSuggestion retrieveStepSuggestion() {
         StepSuggestion stepSuggestion = new StepSuggestion();
         stepSuggestion.setContent("content");
         stepSuggestion.setType(StepType.THEN);
@@ -134,7 +128,6 @@ public class StepSuggestionDAOTest {
         StepSuggestion stepSuggestion2 = new StepSuggestion();
         stepSuggestion2.setContent("content2");
         stepSuggestion2.setType(StepType.WHEN);
-        ;
 
         StepSuggestion stepSuggestion3 = new StepSuggestion();
         stepSuggestion3.setContent("content3");

@@ -111,7 +111,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsByCaseId_return200whenGetSteps() throws Exception {
+    public void getStepsByCaseId_StepDTOs_StatusOk() throws Exception {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenReturn(stepDTOS);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
@@ -122,7 +122,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsByCaseId_return404whenSuitNotExistOrCaseNotExist() throws Exception {
+    public void getStepsByCaseId_SuitOrCaseNotExist_StatusNotFound() throws Exception {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
@@ -133,7 +133,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsByCaseId_return400whenSuitNotContainsCase() throws Exception {
+    public void getStepsByCaseId_SuitNotContainsCase_StatusBadRequest() throws Exception {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong()))
             .thenThrow(new BadRequestException());
 
@@ -145,7 +145,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsByCaseId_return500whenRuntimeException() throws Exception {
+    public void getStepsByCaseId_RuntimeException_StatusInternalServerError() throws Exception {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
@@ -156,7 +156,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsById_return200whenGetSteps() throws Exception {
+    public void getStepsById_StepDTOs_StatusOk() throws Exception {
         when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong())).thenReturn(stepDTO);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
@@ -168,7 +168,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsById_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
+    public void getStepsById_SuitOrCaseOrStepNotExist_StatusNotFound()
         throws Exception {
         when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong()))
             .thenThrow(new NotFoundException());
@@ -182,7 +182,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsById_return400whenSuitNotContainsCaseOrCaseNotContainsStep()
+    public void getStepsById_SuitNotContainsCaseOrCaseNotContainsStep_StatusBadRequest()
         throws Exception {
         when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong()))
             .thenThrow(new BadRequestException());
@@ -196,7 +196,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testGetStepsById_return500whenRuntimeException() throws Exception {
+    public void getStepsById_RuntimeException_StatusInternalServerError() throws Exception {
         when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong()))
             .thenThrow(new RuntimeException());
 
@@ -209,7 +209,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testAddStepToCase_return201whenAddStepToCase() throws Exception {
+    public void addStepToCase_StepDTO_StatusCreated() throws Exception {
         when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenReturn(SIMPLE_STEP_ID);
 
@@ -226,7 +226,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testAddStepToCase_return404whenSuitNotExistOrCaseNotExist() throws Exception {
+    public void addStepToCase_SuitOrCaseNotExist_StatusNotFound() throws Exception {
         when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenThrow(new NotFoundException());
 
@@ -241,7 +241,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testAddStepToCase_return400whenSuitNotContainsCase() throws Exception {
+    public void addStepToCase_SuitNotContainsCase_StatusBadRequest() throws Exception {
         when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenThrow(new BadRequestException());
 
@@ -256,7 +256,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testAddStepToCase_return500whenRuntimeException() throws Exception {
+    public void addStepToCase_RuntimeException_StatusInternalServerError() throws Exception {
         when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepDTO.class)))
             .thenThrow(new RuntimeException());
 
@@ -271,7 +271,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testUpdateStep_return200whenUpdateStep() throws Exception {
+    public void updateStep_StepDTO_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
@@ -284,7 +284,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testUpdateStep_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
+    public void updateStep_SuitOrCaseOrStepNotExist_StatusNotFound()
         throws Exception {
         doThrow(NotFoundException.class).when(stepService)
             .updateStep(anyLong(), anyLong(), anyLong(), anyLong(), any(StepDTO.class));
@@ -301,7 +301,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testUpdateStep_return400whenSuitNotContainsCaseOrCaseNotContainsStep()
+    public void updateStep_SuitNotContainsCaseOrCaseNotContainsStep_StatusBadRequest()
         throws Exception {
         doThrow(BadRequestException.class).when(stepService)
             .updateStep(anyLong(), anyLong(), anyLong(), anyLong(), any(StepDTO.class));
@@ -318,7 +318,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testUpdateStep_return500whenRuntimeException() throws Exception {
+    public void updateStep_RuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(stepService)
             .updateStep(anyLong(), anyLong(), anyLong(), anyLong(), any(StepDTO.class));
 
@@ -334,7 +334,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testRemoveCase_return200whenRemoveCase() throws Exception {
+    public void removeCase_CaseDTO_StatusOk() throws Exception {
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
             .andDo(print())
@@ -344,7 +344,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testRemoveCase_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
+    public void removeCase_SuitOrCaseOrStepNotExist_StatusNotFound()
         throws Exception {
         doThrow(NotFoundException.class).when(stepService)
             .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
@@ -358,7 +358,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testRemoveCase_return400whenSuitNotContainsCase() throws Exception {
+    public void removeCase_SuitNotContainsCase_BadRequest() throws Exception {
         doThrow(BadRequestException.class).when(stepService)
             .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
 
@@ -371,7 +371,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void testRemoveCase_return500whenRuntimeException() throws Exception {
+    public void removeCase_RuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(stepService)
             .removeStep(anyLong(), anyLong(), anyLong(), anyLong());
 
@@ -385,7 +385,7 @@ public class StepControllerTest {
 
 
     @Test
-    public void updateSteps_return200whenUpdateSteps() throws Exception {
+    public void updateSteps_StepDTO_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTOS)))
@@ -403,7 +403,7 @@ public class StepControllerTest {
     }
 
     @Test
-    public void updateSteps_return404whenSuitNotExistOrCaseNotExistOrStepNotExist()
+    public void updateSteps_SuitOrCaseOrStepNotExist_StatusNotFound()
         throws Exception {
         Mockito.doCallRealMethod().when(stepService)
             .cascadeUpdateSteps(anyLong(), anyLong(), anyInt(), anyList());

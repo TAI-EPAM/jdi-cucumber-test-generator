@@ -35,8 +35,8 @@ public class AdminControllerTest {
         mapper = new ObjectMapper();
         userChangeRole = new ChangeUserRoleDTO();
         mockMvc = MockMvcBuilders.standaloneSetup(adminController)
-                .setControllerAdvice(new GlobalExceptionController())
-                .build();
+            .setControllerAdvice(new GlobalExceptionController())
+            .build();
     }
 
     @Test
@@ -45,7 +45,8 @@ public class AdminControllerTest {
         userChangeRole.setRole("Role");
         final String json = mapper.writeValueAsString(userChangeRole);
 
-        mockMvc.perform(put("/admin/changeroles").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isOk());
+        mockMvc.perform(
+            put("/admin/changeroles").contentType(MediaType.APPLICATION_JSON).content(json))
+            .andDo(print()).andExpect(status().isOk());
     }
 }

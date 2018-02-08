@@ -32,7 +32,7 @@ public class CaseDAOTest {
     private TagDAO tagDAO;
 
     @Test
-    public void testCreateAndRetrieve() {
+    public void createAndRetrieve_CaseById_Valid() {
         Case originalCase = retrieveCase();
         long id = caseDAO.save(originalCase).getId();
 
@@ -43,7 +43,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void save_CaseWithNullIdAndNotNullTagId_Saved() {
+    public void save_CaseWithNullIdAndNotNullTagId_Success() {
         Tag tagWithNullId = new Tag("tag with null id");
         Tag tagWithNotNullId = tagDAO.save(new Tag("tag with not null id"));
 
@@ -57,7 +57,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testUpdateName() {
+    public void updateName_Case_Success() {
         final Case originalCase = retrieveCase();
         caseDAO.save(originalCase);
 
@@ -73,7 +73,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testUpdateDescription() {
+    public void updateDescription_Case_Success() {
         Case originalCase = retrieveCase();
         caseDAO.save(originalCase);
         originalCase.setDescription("modified description");
@@ -87,7 +87,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testUpdatePriority() {
+    public void updatePriority_Case_Success() {
         Case originalCase = retrieveCase();
         caseDAO.save(originalCase);
         originalCase.setPriority(5);
@@ -102,7 +102,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testChangeUpdateDate() {
+    public void updateDate_Case_Success() {
         Case originalCase = retrieveCase();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, Calendar.SEPTEMBER, 9);
@@ -121,7 +121,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testRemoveById() {
+    public void removeById_Case_Success() {
         Case originalCase = retrieveCase();
         long id = caseDAO.save(originalCase).getId();
         caseDAO.delete(id);
@@ -130,7 +130,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testRemove() {
+    public void remove_Case_Success() {
         Case savedCase = caseDAO.save(retrieveCase());
         caseDAO.delete(savedCase);
 
@@ -138,7 +138,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testAddList() {
+    public void addList_Cases_Success() {
         List<Case> cases = retrieveCaseList();
 
         List<Long> ids = caseDAO.save(cases).stream().map(Case::getId).collect(Collectors.toList());
@@ -152,7 +152,7 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void testRemoveList() {
+    public void removeList_Cases_Success() {
         List<Case> savedCases = caseDAO.save(retrieveCaseList());
 
         caseDAO.delete(savedCases);

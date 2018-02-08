@@ -33,7 +33,7 @@ public class UserConfirmationControllerTest {
     }
 
     @Test
-    public void displayResetPasswordPage_SimpleToken_200() throws Exception {
+    public void displayResetPasswordPage_SimpleToken_StatusOk() throws Exception {
         mockMvc.perform(get("/confirmAccount").param("token", "value"))
                 .andDo(print()).andExpect(status().isOk());
     }

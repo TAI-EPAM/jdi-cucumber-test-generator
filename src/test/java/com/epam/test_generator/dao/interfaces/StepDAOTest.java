@@ -1,7 +1,6 @@
 package com.epam.test_generator.dao.interfaces;
 
 import com.epam.test_generator.DatabaseConfigForTests;
-import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepType;
 import java.util.ArrayList;
@@ -24,38 +23,38 @@ public class StepDAOTest {
     StepDAO stepDAO;
 
     @Test
-    public void testCreateAndRetrieve() {
-        Step originalStep = retriveStep();
+    public void createAndRetrieve_Step_Success() {
+        Step originalStep = retrieveStep();
         long id = stepDAO.save(originalStep).getId();
 
-        Step newStep = retriveStep();
+        Step newStep = retrieveStep();
         newStep.setId(id);
 
         Assert.assertEquals(newStep, stepDAO.findOne(id));
     }
 
     @Test
-    public void testUpdateDescription() {
-        Step originalStep = retriveStep();
+    public void updateDescription_Step_Success() {
+        Step originalStep = retrieveStep();
         stepDAO.save(originalStep);
         originalStep.setDescription("Modified description");
         long id = stepDAO.save(originalStep).getId();
 
-        Step newStep = retriveStep();
+        Step newStep = retrieveStep();
         newStep.setId(id);
         newStep.setDescription("Modified description");
         Assert.assertEquals(newStep, stepDAO.findOne(id));
     }
 
     @Test
-    public void testUpdateRowNumber() {
-        Step originalStep = retriveStep();
+    public void updateRowNumber_Step_Success() {
+        Step originalStep = retrieveStep();
 
         stepDAO.save(originalStep);
         originalStep.setRowNumber(3);
         long id = stepDAO.save(originalStep).getId();
 
-        Step newStep = retriveStep();
+        Step newStep = retrieveStep();
         newStep.setId(id);
         newStep.setRowNumber(3);
 
@@ -63,13 +62,13 @@ public class StepDAOTest {
     }
 
     @Test
-    public void testUpdateType() {
-        Step originalStep = retriveStep();
+    public void updateType_Step_Success() {
+        Step originalStep = retrieveStep();
         stepDAO.save(originalStep);
         originalStep.setType(StepType.THEN);
         long id = stepDAO.save(originalStep).getId();
 
-        Step newStep = retriveStep();
+        Step newStep = retrieveStep();
         newStep.setId(id);
         newStep.setType(StepType.THEN);
 
@@ -77,8 +76,8 @@ public class StepDAOTest {
     }
 
     @Test
-    public void testRemoveById() {
-        Step step = retriveStep();
+    public void removeById_Step_Success() {
+        Step step = retrieveStep();
         long id = stepDAO.save(step).getId();
 
         stepDAO.delete(id);
@@ -87,8 +86,8 @@ public class StepDAOTest {
     }
 
     @Test
-    public void testRemove() {
-        Step step = retriveStep();
+    public void remove_Step_Success() {
+        Step step = retrieveStep();
         long id = stepDAO.save(step).getId();
 
         stepDAO.delete(step);
@@ -97,12 +96,12 @@ public class StepDAOTest {
     }
 
     @Test
-    public void testAddList() {
-        List<Step> steps = retriveStepList();
+    public void addList_Steps_Success() {
+        List<Step> steps = retrieveStepList();
 
         List<Long> ids = stepDAO.save(steps).stream().map(Step::getId).collect(Collectors.toList());
 
-        List<Step> newSteps = retriveStepList();
+        List<Step> newSteps = retrieveStepList();
         newSteps.get(0).setId(ids.get(0));
         newSteps.get(1).setId(ids.get(1));
         newSteps.get(2).setId(ids.get(2));
@@ -111,8 +110,8 @@ public class StepDAOTest {
     }
 
     @Test
-    public void testRemoveList() {
-        List<Step> steps = retriveStepList();
+    public void removeList_Steps_Success() {
+        List<Step> steps = retrieveStepList();
 
         stepDAO.save(steps);
 
@@ -121,7 +120,7 @@ public class StepDAOTest {
         Assert.assertTrue(stepDAO.findAll().isEmpty());
     }
 
-    private Step retriveStep() {
+    private Step retrieveStep() {
         Step step = new Step();
         step.setDescription("Step description");
         step.setRowNumber(5);
@@ -130,7 +129,7 @@ public class StepDAOTest {
         return step;
     }
 
-    private List<Step> retriveStepList() {
+    private List<Step> retrieveStepList() {
         Step step1 = new Step();
         step1.setDescription("Step1 description");
         step1.setRowNumber(5);

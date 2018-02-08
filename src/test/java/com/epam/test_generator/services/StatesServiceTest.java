@@ -22,7 +22,7 @@ public class StatesServiceTest {
     Status status = Status.NOT_RUN;
 
     @Test
-    public void availableTransitions() {
+    public void availableTransitions_StatusNOTRUN_Valid() {
         statesService.availableTransitions(status);
 
         verify(stateMachineAdapter).availableTransitions(status);

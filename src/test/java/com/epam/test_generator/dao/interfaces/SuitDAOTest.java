@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,7 +38,7 @@ public class SuitDAOTest {
 
 
     @Test
-    public void testCreateAndRetrieve() {
+    public void createAndRetrieve_Suit_Success() {
         final Suit originalSuit = retrieveSuit();
         final long id = suitDAO.save(originalSuit).getId();
 
@@ -111,7 +110,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testUpdatePriority() {
+    public void updatePriority_Suit_Success() {
         final Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
@@ -135,7 +134,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testUpdateDescription() {
+    public void updateDescription_Suit_Success() {
         final Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
@@ -159,7 +158,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testUpdateTags() {
+    public void updateTags_Suit_Success() {
         final Suit originalSuit = retrieveSuit();
         Suit savedSuit = suitDAO.save(originalSuit);
         final Set<Tag> tags = retrieveTagList("tag1", "tag2", "tag3");
@@ -173,7 +172,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testUpdateName() {
+    public void updateName_Suit_Success() {
         final Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
@@ -198,7 +197,7 @@ public class SuitDAOTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void testUpdateRowNumber() {
+    public void updateRowNumber_Suit_Success() {
 
         suitDAO.save(Arrays.asList(
             new Suit(null, "1", "1", new ArrayList<>(), 1, new HashSet<>(), 1),
@@ -221,7 +220,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testRemoveById() {
+    public void removeById_Suit_Success() {
         Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         suitDAO.delete(id);
@@ -230,7 +229,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testRemove() {
+    public void remove_Suit_Success() {
         Suit originalSuit = retrieveSuit();
         Suit savedSuit = suitDAO.save(originalSuit);
         suitDAO.delete(originalSuit);
@@ -239,7 +238,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testAddList() {
+    public void addList_Suits_Success() {
         final List<Suit> savedSuits = suitDAO.save(retrieveSuiteList());
 
         final List<Suit> newSuits = retrieveSuiteList();
@@ -254,7 +253,7 @@ public class SuitDAOTest {
     }
 
     @Test
-    public void testRemoveList() {
+    public void removeList_Suits_Success() {
         List<Suit> savedSuits = suitDAO.save(retrieveSuiteList());
 
         suitDAO.delete(savedSuits);
@@ -268,7 +267,6 @@ public class SuitDAOTest {
     }
 
     private Suit retrieveSuit() {
-        final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         return new Suit(
             "Suit1",
             "Suit1 description",
@@ -280,7 +278,6 @@ public class SuitDAOTest {
     }
 
     private List<Suit> retrieveSuiteList() {
-        final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         final Suit suit1 = new Suit(
             "Suit1",
             "Suit1 description",

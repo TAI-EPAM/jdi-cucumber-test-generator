@@ -39,62 +39,62 @@ public class LoginControllerTest {
         user = new LoginUserDTO();
         mapper = new ObjectMapper();
         mockMvc = MockMvcBuilders.standaloneSetup(loginController)
-                .setControllerAdvice(new GlobalExceptionController())
-                .build();
+            .setControllerAdvice(new GlobalExceptionController())
+            .build();
     }
 
     @Test
-    public void loginTest_simpleUser_200() throws Exception {
+    public void loginTest_SimpleUser_StatusOk() throws Exception {
         user.setPassword("test");
         user.setEmail("test@test.ru");
         when(loginService.getLoginJWTToken(loginUserDTO)).thenReturn("token");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isOk());
+            .andDo(print()).andExpect(status().isOk());
     }
 
     @Test
-    public void loginTest_incorrectEmail_400() throws Exception {
+    public void loginTest_IncorrectEmail_StatusBadRequest() throws Exception {
         user.setPassword("test");
         user.setEmail("test");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void loginTest_nullPassword400() throws Exception {
+    public void loginTest_NullPassword_StatusBadRequest() throws Exception {
         user.setEmail("test");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void loginTest_nullEmail400() throws Exception {
+    public void loginTest_NullEmail_StatusBadRequest() throws Exception {
         user.setEmail("test");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void loginTest_nullUser400() throws Exception {
+    public void loginTest_NullUser_StatusBadRequest() throws Exception {
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void loginTest_nullJson500() throws Exception {
+    public void loginTest_NullJson_StatusInternalServerError() throws Exception {
         String json = mapper.writeValueAsString(null);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print())
-                .andExpect(status().isInternalServerError());
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
     }
 
 }

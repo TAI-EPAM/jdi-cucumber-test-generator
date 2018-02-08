@@ -97,7 +97,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testGetAllTagsFromAllCasesInSuit_return200whenGetAllTagsFromAllCasesInSuit()
+    public void get_AllTagsFromAllCasesInSuit_StatusOk()
         throws Exception {
         when(tagService.getAllTagsFromAllCasesInSuit(anyLong(), anyLong())).thenReturn(tagDTOSet);
 
@@ -109,7 +109,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testGetAllTagsFromAllCasesInSuit_return404whenSuitNotExist() throws Exception {
+    public void getAllTagsFromAllCasesInSuit_SuitNotExist_StatusNotFound() throws Exception {
         when(tagService.getAllTagsFromAllCasesInSuit(anyLong(), anyLong())).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
@@ -120,7 +120,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testGetAllTagsFromAllCasesInSuit_return500whenRuntimeException() throws Exception {
+    public void getAllTagsFromAllCasesInSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         when(tagService.getAllTagsFromAllCasesInSuit(anyLong(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/tags"))
@@ -131,7 +131,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testGetTags_return200whenGetTags() throws Exception {
+    public void get_Tags_StatusOk() throws Exception {
         when(caseService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenReturn(caseDTO);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
@@ -142,7 +142,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testGetTags_return404whenSuitNotExistOrCaseNotExist() throws Exception {
+    public void getTags_SuitOrCaseNotExist_StatusNotFound() throws Exception {
         when(caseService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
@@ -153,7 +153,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testGetTags_return400whenSuitNotContainsCase() throws Exception {
+    public void getTags_SuitNotContainsCase_StatusBadRequest() throws Exception {
         when(caseService.getCaseDTO(anyLong(), anyLong(), anyLong())).thenThrow(BadRequestException.class);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags"))
@@ -164,7 +164,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testAddTag_return201whenAddNewTag() throws Exception {
+    public void add_NewTag_StatusOk() throws Exception {
         tagDTO.setId(null);
         when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenReturn(SIMPLE_TAG_ID);
@@ -180,7 +180,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testAddTag_return404whenSuitNotExistOrCaseNotExist() throws Exception {
+    public void addTag_SuitOrCaseNotExist_StatusNotFound() throws Exception {
         when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenThrow(NotFoundException.class);
 
@@ -194,7 +194,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testAddTag_return400whenSuitNotContainsCase() throws Exception {
+    public void addTag_SuitNotContainsCase_StatusBadRequest() throws Exception {
         when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenThrow(BadRequestException.class);
 
@@ -208,7 +208,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testAddTag_return500whenRuntimeException() throws Exception {
+    public void addTag_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         tagDTO.setId(null);
         when(tagService.addTagToCase(anyLong(), anyLong(), anyLong(), any(TagDTO.class)))
             .thenThrow(new RuntimeException());
@@ -223,7 +223,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testUpdateTag_return200whenUpdateTag() throws Exception {
+    public void update_Tag_StatusOk() throws Exception {
         mockMvc.perform(
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -236,7 +236,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testUpdateTag_return404whenSuitNotExistOrCaseNotExist() throws Exception {
+    public void updateTag_SuitOrCaseNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(tagService)
             .updateTag(anyLong(), anyLong(), anyLong(), anyLong(), any(TagDTO.class));
 
@@ -252,7 +252,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testUpdateTag_return400whenSuitNotContainsCaseOrCaseNotContainTag()
+    public void updateTag_SuitNotContainsCaseOrCaseNotContainTag_StatusBadRequest()
         throws Exception {
         suitDTO.setCases(null);
         doThrow(BadRequestException.class).when(tagService)
@@ -270,7 +270,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testUpdateTag_return500whenRuntimeException() throws Exception {
+    public void updateTag_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(tagService)
             .updateTag(anyLong(), anyLong(), anyLong(), anyLong(), any(TagDTO.class));
 
@@ -286,7 +286,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testRemoveTag_return200whenRemoveTag() throws Exception {
+    public void remove_Tag_StatusOk() throws Exception {
 
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/tags/" + SIMPLE_TAG_ID))
@@ -297,7 +297,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testRemoveTag_return404whenSuitNotExistOrCaseNotExistOrTagNotExist()
+    public void removeTag_SuitOrCaseOrTagNotExist_StatusNotFound()
         throws Exception {
         doThrow(NotFoundException.class).when(tagService)
             .removeTag(anyLong(), anyLong(), anyLong(), anyLong());
@@ -311,7 +311,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testRemoveTag_return400whenSuitNotContainsCasOrCaseNotContainTage()
+    public void removeTag_SuitNotContainsCasOrCaseNotContainTag_StatusBadRequest()
         throws Exception {
         doThrow(BadRequestException.class).when(tagService)
             .removeTag(anyLong(), anyLong(), anyLong(), anyLong());
@@ -325,7 +325,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void testRemoveTag_return500whenRuntimeException() throws Exception {
+    public void removeTag_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(tagService).removeTag(anyLong(), anyLong(), anyLong(), anyLong());
 
         mockMvc.perform(delete(

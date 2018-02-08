@@ -52,21 +52,21 @@ public class StateMachineAdapterTest {
     }
 
     @Test
-    public void restore_successful() throws Exception {
+    public void restore_Case_Success() throws Exception {
         stateMachineAdapter.restore(cs);
 
         verify(persister).restore(eq(stateMachine), eq(cs));
     }
 
     @Test
-    public void persist_successful() throws Exception {
+    public void persist_Case_Success() throws Exception {
         stateMachineAdapter.persist(stateMachine, cs);
 
         verify(persister).persist(eq(stateMachine), eq(cs));
     }
 
     @Test
-    public void availableTransitions_notDone() {
+    public void availableTransitions_StatusNotDone_Success() {
         when(stateMachineFactory.getStateMachine())
             .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
         Status status = Status.NOT_DONE;
@@ -77,7 +77,7 @@ public class StateMachineAdapterTest {
     }
 
     @Test
-    public void availableTransitions_notRun() {
+    public void availableTransitions_StatusNotRun_Success() {
         when(stateMachineFactory.getStateMachine())
             .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
         Status status = Status.NOT_RUN;
@@ -88,7 +88,7 @@ public class StateMachineAdapterTest {
     }
 
     @Test
-    public void availableTransitions_passed() {
+    public void availableTransitions_StatusPassed_Success() {
         when(stateMachineFactory.getStateMachine())
             .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
         Status status = Status.PASSED;
@@ -100,7 +100,7 @@ public class StateMachineAdapterTest {
     }
 
     @Test
-    public void availableTransitions_failed() {
+    public void availableTransitions_StatusFailed_Success() {
         when(stateMachineFactory.getStateMachine())
             .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
         Status status = Status.FAILED;
@@ -112,7 +112,7 @@ public class StateMachineAdapterTest {
     }
 
     @Test
-    public void availableTransitions_skipped() {
+    public void availableTransitions_StatusSkipped_Success() {
         when(stateMachineFactory.getStateMachine())
             .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
         Status status = Status.SKIPPED;

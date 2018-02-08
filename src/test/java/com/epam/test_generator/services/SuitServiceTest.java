@@ -65,7 +65,7 @@ public class SuitServiceTest {
     }
 
     @Test
-    public void getSuitsTest() {
+    public void get_Suits_Success() {
         when(suitDAO.findAll()).thenReturn(expectedSuitList);
         when(suitTransformer.toDtoList(anyListOf(Suit.class))).thenReturn(expectedSuitDTOList);
 
@@ -85,7 +85,7 @@ public class SuitServiceTest {
     }
 
     @Test
-    public void getSuitDTOTest() {
+    public void get_SuitDTO_Success() {
         when(projectService.getProjectByProjectId(anyLong())).thenReturn(expectedProject);
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
         when(suitTransformer.toDto(any())).thenReturn(expectedSuitDTO);
@@ -96,14 +96,14 @@ public class SuitServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void getSuitTest_expectNotFoundException() {
+    public void get_Suit_NotFoundException() {
         when(suitDAO.findOne(anyLong())).thenReturn(null);
 
         suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
     }
 
     @Test
-    public void addSuitTest() {
+    public void add_Suit_Success() {
         when(projectService.getProjectByProjectId(anyLong())).thenReturn(expectedProject);
         when(suitDAO.save(any(Suit.class))).thenReturn(expectedSuit);
 
@@ -115,7 +115,7 @@ public class SuitServiceTest {
     }
 
     @Test
-    public void updateSuitTest() {
+    public void update_Suit_Success() {
         when(projectService.getProjectByProjectId(anyLong())).thenReturn(expectedProject);
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
         when(suitDAO.save(any(Suit.class))).thenAnswer(invocationOnMock -> {
@@ -130,7 +130,7 @@ public class SuitServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void updateSuitTest_expectNotFoundException() {
+    public void update_Suit_NotFoundException() {
         when(suitDAO.findOne(anyLong())).thenReturn(null);
 
         suitService.updateSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, new SuitDTO());
@@ -145,7 +145,7 @@ public class SuitServiceTest {
     }
 
     @Test
-    public void removeSuitTest() {
+    public void remove_Suit_Success() {
         when(projectService.getProjectByProjectId(anyLong())).thenReturn(expectedProject);
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
 
@@ -158,7 +158,7 @@ public class SuitServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void removeSuitTest_expectNotFoundException() {
+    public void remove_Suit_NotFoundException() {
         when(suitDAO.findOne(anyLong())).thenReturn(null);
 
         suitService.removeSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);

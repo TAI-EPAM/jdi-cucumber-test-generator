@@ -1,7 +1,6 @@
 package com.epam.test_generator.dao.interfaces;
 
 import com.epam.test_generator.DatabaseConfigForTests;
-import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.entities.Tag;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class TagDAOTest {
     TagDAO tagDAO;
 
     @Test
-    public void testCreateAndRetrieve() {
+    public void createAndRetrieve_Tag_Success() {
         Tag originalTag = retrieveTag();
 
         long id = tagDAO.save(originalTag).getId();
@@ -35,7 +34,7 @@ public class TagDAOTest {
     }
 
     @Test
-    public void testRemove() {
+    public void remove_Tag_Success() {
         Tag originalTag = retrieveTag();
 
         long id = tagDAO.save(originalTag).getId();
@@ -45,7 +44,7 @@ public class TagDAOTest {
     }
 
     @Test
-    public void testRemoveById() {
+    public void removeById_Tag_Success() {
         Tag originalTag = retrieveTag();
 
         long id = tagDAO.save(originalTag).getId();
@@ -55,7 +54,7 @@ public class TagDAOTest {
     }
 
     @Test
-    public void testAddList() {
+    public void addList_Tags_Success() {
         List<Tag> tags = retrieveTagList();
 
         List<Long> ids = tagDAO.save(tags).stream().map(Tag::getId).collect(Collectors.toList());
@@ -69,7 +68,7 @@ public class TagDAOTest {
     }
 
     @Test
-    public void testRemoveList() {
+    public void removeList_Tags_Success() {
         List<Tag> tags = retrieveTagList();
 
         tagDAO.save(tags);

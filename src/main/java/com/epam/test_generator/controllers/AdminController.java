@@ -41,7 +41,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/changeroles", method = RequestMethod.PUT)
     public ResponseEntity changeUserRole(@RequestBody @Valid ChangeUserRoleDTO changeUserRoleDTO) {
 
-        adminService.chaneUserRole(changeUserRoleDTO);
+        adminService.changeUserRole(changeUserRoleDTO);
 
         return new ResponseEntity(HttpStatus.OK);
     }

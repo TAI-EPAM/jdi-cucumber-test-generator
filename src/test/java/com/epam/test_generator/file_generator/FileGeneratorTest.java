@@ -31,8 +31,7 @@ public class FileGeneratorTest extends Assert {
     }
 
     @Test
-    public void suitWithCasesTest1() throws IOException {
-        String result;
+    public void generate_SuitWithCases_Success() throws IOException {
         suit = new SuitDTO();
         suit.setId(1L);
         suit.setName("suit1");
@@ -41,20 +40,23 @@ public class FileGeneratorTest extends Assert {
         suit.setTags(new HashSet<>());
 
         cases = new ArrayList<>();
-        final CaseDTO caze1 = new CaseDTO();
-        caze1.setId(1L);
-        caze1.setName("name1");
-        caze1.setDescription("case1");
-        caze1.setPriority(1);
-        caze1.setTags(null);
-        final CaseDTO caze2 = new CaseDTO();
-        caze2.setId(2L);
-        caze2.setName("name2");
-        caze2.setDescription("case2");
-        caze2.setPriority(1);
+
         tags = new HashSet<>();
         tags.add(new TagDTO("@tags"));
-        caze2.setTags(tags);
+
+        final CaseDTO case1 = new CaseDTO();
+        case1.setId(1L);
+        case1.setName("name1");
+        case1.setDescription("case1");
+        case1.setPriority(1);
+        case1.setTags(null);
+
+        final CaseDTO case2 = new CaseDTO();
+        case2.setId(2L);
+        case2.setName("name2");
+        case2.setDescription("case2");
+        case2.setPriority(1);
+        case2.setTags(tags);
 
         final List<StepDTO> steps = new ArrayList<>();
         final StepDTO step1 = new StepDTO();
@@ -78,19 +80,20 @@ public class FileGeneratorTest extends Assert {
         steps.add(step1);
         steps.add(step2);
         steps.add(step3);
-        caze1.setSteps(steps);
+        case1.setSteps(steps);
 
         final StepDTO step4 = new StepDTO();
         step4.setId(4L);
         step4.setRowNumber(4);
         step4.setDescription("given2");
         step4.setType(StepType.GIVEN);
+
         final List<StepDTO> steps2 = new ArrayList<>();
         steps2.add(step4);
-        caze2.setSteps(steps2);
+        case2.setSteps(steps2);
 
-        cases.add(caze1);
-        cases.add(caze2);
+        cases.add(case1);
+        cases.add(case2);
         suit.setCases(cases);
 
         final File expectedFile = new File("src/test/resources/FileGeneratorTest1");
@@ -100,9 +103,8 @@ public class FileGeneratorTest extends Assert {
     }
 
     @Test
-    public void suitWithCaseWithoutSteps() throws IOException {
+    public void generate_SuitWithCaseWithoutSteps_Success() throws IOException {
 
-        String result;
         suit = new SuitDTO();
         suit.setId(1L);
         suit.setName("suit1");
@@ -111,14 +113,15 @@ public class FileGeneratorTest extends Assert {
         suit.setTags(new HashSet<>());
 
         cases = new ArrayList<>();
-        final CaseDTO caze1 = new CaseDTO();
-        caze1.setId(1L);
-        caze1.setName("name3");
-        caze1.setDescription("case3");
-        caze1.setPriority(1);
-        caze1.setTags(null);
-        caze1.setSteps(new ArrayList<StepDTO>());
-        cases.add(caze1);
+
+        final CaseDTO case1 = new CaseDTO();
+        case1.setId(1L);
+        case1.setName("name3");
+        case1.setDescription("case3");
+        case1.setPriority(1);
+        case1.setTags(null);
+        case1.setSteps(new ArrayList<StepDTO>());
+        cases.add(case1);
         suit.setCases(cases);
 
         final File expectedFile = new File("src/test/resources/FileGeneratorTest2");
@@ -130,13 +133,13 @@ public class FileGeneratorTest extends Assert {
     }
 
     @Test(expected = NullPointerException.class)
-    public void nullPointerSuitTest() throws IOException {
+    public void generate_NullSuitAndEmptyCasesList_NullPointerException() throws IOException {
         fileGenerator.generate(null, new ArrayList<>());
     }
 
     @Test(expected = NullPointerException.class)
-    public void nullPointerCasesTest() throws IOException {
-        String result;
+    public void generate_SuitWithNullCasesList_NullPointerException() throws IOException {
+
         suit = new SuitDTO();
         suit.setId(1L);
         suit.setName("suit1");
@@ -147,7 +150,7 @@ public class FileGeneratorTest extends Assert {
     }
 
     @Test
-    public void suitWithoutInnerCasesTest() throws IOException {
+    public void generate_SuitWithoutInnerCases_Success() throws IOException {
         suit = new SuitDTO();
         suit.setId(1L);
         suit.setName("suit1");

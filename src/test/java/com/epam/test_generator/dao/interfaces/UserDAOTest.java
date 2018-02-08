@@ -1,7 +1,6 @@
 package com.epam.test_generator.dao.interfaces;
 
 import com.epam.test_generator.DatabaseConfigForTests;
-import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import org.junit.After;
@@ -93,7 +92,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void findByEmail_test() throws Exception {
+    public void findByEmail_test() {
         String email = "test@email.ru";
         User user = new User();
         user.setEmail(email);
@@ -103,8 +102,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void findByID_test() throws Exception {
-        String email = "test@email.ru";
+    public void findByID_test() {
         User user = new User();
 
         userDAO.save(user);

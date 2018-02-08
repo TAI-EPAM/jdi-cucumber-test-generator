@@ -59,7 +59,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void getSuits_return200whenGetSuits() throws Exception {
+    public void get_Suits_StatusOk() throws Exception {
         when(suitService.getSuitsFromProject(SIMPLE_PROJECT_ID))
             .thenReturn(Collections.emptyList());
 
@@ -71,7 +71,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void getSuits_return500whenRuntimeException() throws Exception {
+    public void getSuits_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         when(suitService.getSuitsFromProject(SIMPLE_PROJECT_ID)).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits"))
@@ -82,7 +82,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void getSuit_return200whenGetSuit() throws Exception {
+    public void get_Suit_StatusOk() throws Exception {
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenReturn(suitDTO);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
@@ -93,7 +93,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void getSuit_return404whenSuitNotExist() throws Exception {
+    public void get_SuitNotExist_StatusNotFound() throws Exception {
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
@@ -104,7 +104,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void getSuit_return500whenRuntimeException() throws Exception {
+    public void getSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
@@ -115,7 +115,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void updateSuit_return200whenEditSuit() throws Exception {
+    public void update_Suit_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
@@ -126,7 +126,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void updateSuit_return400whenEditSuitWithNullName() throws Exception {
+    public void update_SuitWithNullName_StatusBadRequest() throws Exception {
         suitDTO.setName(null);
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
@@ -139,7 +139,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void updateSuit_return400whenEditWithMoreThanTheRequiredPriority() throws Exception {
+    public void update_SuitWithMoreThanTheRequiredPriority_StatusBadRequest() throws Exception {
         suitDTO.setPriority(6);
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
@@ -152,7 +152,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void updateSuit_return400whenEditWithLessThanTheRequiredPriority() throws Exception {
+    public void update_SuitWithLessThanTheRequiredPriority_StatusBadRequest() throws Exception {
         suitDTO.setPriority(-1);
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
@@ -165,7 +165,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void updateSuit_return404whenSuitNotExist() throws Exception {
+    public void update_SuitNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(suitService)
             .updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
 
@@ -179,7 +179,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void updateSuit_return500whenRuntimeException() throws Exception {
+    public void updateSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(suitService)
             .updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
 
@@ -193,7 +193,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void removeSuit_return200whenRemoveSuit() throws Exception {
+    public void remove_Suit_StatusOk() throws Exception {
         doNothing().when(suitService).removeSuit(anyLong(), anyLong());
 
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
@@ -204,7 +204,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void removeSuit_return404whenSuitNotExist() throws Exception {
+    public void remove_SuitNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(suitService).removeSuit(anyLong(), anyLong());
 
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
@@ -215,7 +215,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void removeSuit_return500whenRuntimeException() throws Exception {
+    public void removeSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(suitService).removeSuit(anyLong(), anyLong());
 
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
@@ -226,7 +226,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void addSuit_return201whenAddSuit() throws Exception {
+    public void add_Suit_StatusCreated() throws Exception {
         suitDTO.setId(null);
         when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenReturn(TEST_SUIT_ID);
 
@@ -241,7 +241,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void addSuit_return400whenAddSuitWithNullName() throws Exception {
+    public void add_SuitWithNullName_StatusBadRequest() throws Exception {
         suitDTO.setId(null);
         suitDTO.setName(null);
         when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
@@ -256,7 +256,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void addSuit_return400whenAddSuitWithMoreThanTheRequiredPriority() throws Exception {
+    public void add_SuitWithMoreThanTheRequiredPriority_StatusBadRequest() throws Exception {
         suitDTO.setId(null);
         suitDTO.setPriority(6);
         when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
@@ -271,7 +271,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void addSuit_return400whenAddSuitWithLessThanTheRequiredPriority() throws Exception {
+    public void add_SuitWithLessThanTheRequiredPriority_StatusbadRequest() throws Exception {
         suitDTO.setId(null);
         suitDTO.setPriority(-1);
         when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
@@ -286,7 +286,7 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void addSuit_return500whenRuntimeException() throws Exception {
+    public void addSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         suitDTO.setId(null);
         when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
 

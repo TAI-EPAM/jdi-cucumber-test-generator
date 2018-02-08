@@ -64,9 +64,7 @@ public class TagServiceTest {
 	private Tag expectedTag;
     private TagDTO expectedTagDTO;
     private Suit suit;
-    private SuitDTO suitDTO;
     private Case caze;
-    private CaseDTO caseDTO;
 
     @Before
     public void setUp() {
@@ -89,7 +87,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void getAllTagsFromAllCasesInSuitTest() {
+    public void get_AllTagsFromAllCasesInSuit_Success() {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         //when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
 
@@ -103,14 +101,14 @@ public class TagServiceTest {
     }
 
 	@Test(expected = NotFoundException.class)
-	public void getAllTagsFromAllCasesInSuitTest_expectNotFoundExceptionFromSuit() {
+	public void get_AllTagsFromAllCasesInSuit_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
 
         tagService.getAllTagsFromAllCasesInSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
     }
 
     @Test
-    public void addTagToCaseTest() {
+    public void add_TagToCase_Success() {
         Tag tag = new Tag();
         tag.setId(1L);
         tag.setName("name");
@@ -138,14 +136,14 @@ public class TagServiceTest {
     }
 
 	@Test(expected = NotFoundException.class)
-	public void addTagToCaseTest_expectNotFoundExceptionFromSuit() {
+	public void add_TagToCase_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
 
         tagService.addTagToCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new TagDTO());
     }
 
 	@Test(expected = NotFoundException.class)
-	public void addTagToCaseTest_expectNotFoundExceptionFromCase() {
+	public void addTagToCase_NotFoundExceptionFromCase() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
@@ -154,7 +152,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void updateTagTest() {
+    public void update_Tag_Success() {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
@@ -173,14 +171,14 @@ public class TagServiceTest {
     }
 
 	@Test(expected = NotFoundException.class)
-	public void updateTagTest_expectNotFoundExceptionFromSuit() {
+	public void update_Tag_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
 
         tagService.updateTag(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_TAG_ID, new TagDTO());
     }
 
 	@Test(expected = NotFoundException.class)
-	public void updateTagTest_expectNotFoundExceptionFromCase() {
+	public void update_Tag_NotFoundExceptionFromCase() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
@@ -189,7 +187,7 @@ public class TagServiceTest {
     }
 
 	@Test(expected = NotFoundException.class)
-	public void updateTagTest_expectNotFoundExceptionFromTag() {
+	public void update_Tag_NotFoundExceptionFromTag() {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
@@ -200,7 +198,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void removeTagTest() {
+    public void remove_Tag_Success() {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
@@ -214,14 +212,14 @@ public class TagServiceTest {
     }
 
 	@Test(expected = NotFoundException.class)
-	public void removeTagTest_expectNotFoundExceptionFromSuit() {
+	public void remove_Tag_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
 
         tagService.removeTag(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_TAG_ID);
     }
 
 	@Test(expected = NotFoundException.class)
-	public void removeTagTest_expectNotFoundExceptionFromCase() {
+	public void remove_Tag_NotFoundExceptionFromCase() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         doThrow(NotFoundException.class).when(caseService).getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID);
@@ -230,7 +228,7 @@ public class TagServiceTest {
     }
 
 	@Test(expected = NotFoundException.class)
-	public void removeTagTest_expectNotFoundExceptionFromTag() {
+	public void remove_Tag_NotFoundExceptionFromTag() {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);

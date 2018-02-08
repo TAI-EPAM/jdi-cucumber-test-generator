@@ -4,7 +4,6 @@ import com.epam.test_generator.dto.ChangeUserRoleDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRoleException;
-import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,24 +53,24 @@ public class AdminServiceTest {
 
 
     @Test
-    public void chaneUserRole_ARoleWillHaveBeenChangedSuccessfully() {
+    public void change_UserRole_Success() {
         assertThat(user.getRole(), is(equalTo(oldRole)));
 
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         when(roleService.getRoleByName(anyString())).thenReturn(newRole);
-        adminService.chaneUserRole(userRoleDTO);
+        adminService.changeUserRole(userRoleDTO);
 
         assertThat(user.getRole(), is(equalTo(newRole)));
     }
 
 
     @Test(expected = BadRoleException.class)
-    public void changeUserRole_ARoleWillNotHaveBeenChanged() {
+    public void change_UserRole_Exception() {
         assertThat(user.getRole(), is(equalTo(oldRole)));
 
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         when(roleService.getRoleByName(anyString())).thenReturn(null);
-        adminService.chaneUserRole(userRoleDTO);
+        adminService.changeUserRole(userRoleDTO);
 
     }
 

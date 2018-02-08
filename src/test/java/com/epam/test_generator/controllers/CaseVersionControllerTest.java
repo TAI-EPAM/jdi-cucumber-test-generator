@@ -54,10 +54,12 @@ public class CaseVersionControllerTest {
 
     @Test
     public void getCaseVersions_CorrectIds_StatusOk() throws Exception {
-        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong())).thenReturn(caseVersionDTOs);
+        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong()))
+            .thenReturn(caseVersionDTOs);
 
         mockMvc
-            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
+            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
+                + SIMPLE_CASE_ID + "/versions"))
             .andDo(print())
             .andExpect(status().isOk());
 
@@ -66,10 +68,12 @@ public class CaseVersionControllerTest {
 
     @Test
     public void getCaseVersions_NotFoundException_StatusNotFound() throws Exception {
-        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong())).thenThrow(new NotFoundException());
+        when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong()))
+            .thenThrow(new NotFoundException());
 
         mockMvc
-            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
+            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
+                + SIMPLE_CASE_ID + "/versions"))
             .andDo(print())
             .andExpect(status().isNotFound());
 
@@ -82,7 +86,8 @@ public class CaseVersionControllerTest {
             .thenThrow(new BadRequestException());
 
         mockMvc
-            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions"))
+            .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
+                + SIMPLE_CASE_ID + "/versions"))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
@@ -93,40 +98,48 @@ public class CaseVersionControllerTest {
     public void restoreCase_CorrectIds_StatusOk() throws Exception {
 
         mockMvc.perform(
-            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
+                + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(caseService).restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
+        verify(caseService)
+            .restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 
     @Test
     public void restoreCase_NotFoundException_StatusNotFound() throws Exception {
-        doThrow(new NotFoundException()).when(caseService).restoreCase(anyLong(), anyLong(), anyLong(),
-            anyString());
+        doThrow(new NotFoundException()).when(caseService)
+            .restoreCase(anyLong(), anyLong(), anyLong(),
+                anyString());
 
         mockMvc.perform(
-            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
+                + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID))
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(caseService).restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
+        verify(caseService)
+            .restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 
     @Test
     public void restoreCase_BadRequestException_StatusBadRequest() throws Exception {
-        doThrow(new BadRequestException()).when(caseService).restoreCase(anyLong(), anyLong(), anyLong(),
-            anyString());
+        doThrow(new BadRequestException()).when(caseService)
+            .restoreCase(anyLong(), anyLong(), anyLong(),
+                anyString());
 
         mockMvc.perform(
-            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/versions/"
+            put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
+                + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID)
                 .param("commitId", SIMPLE_COMMIT_ID))
             .andDo(print())
             .andExpect(status().isBadRequest());
 
-        verify(caseService).restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
+        verify(caseService)
+            .restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 }

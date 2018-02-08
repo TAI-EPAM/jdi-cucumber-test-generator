@@ -154,7 +154,7 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void getCaseTest(){
+    public void get_Case_Success(){
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
@@ -167,7 +167,7 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void getCaseDTOTest(){
+    public void get_CaseDTO_Success(){
         when(caseTransformer.toDto(any())).thenReturn(expectedCaseDTO);
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
@@ -181,14 +181,14 @@ public class CaseServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void getCaseTest_expectNotFoundExceptionFromSuit() {
+    public void get_Case_expectNotFoundExceptionFromSuit() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(null);
 
         caseService.getCase(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
     }
 
     @Test(expected = NotFoundException.class)
-    public void getCaseTest_expectNotFoundExceptionFromCase() {
+    public void get_Case_expectNotFoundExceptionFromCase() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(null);
 
@@ -196,7 +196,7 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void addCaseToSuitTest()  {
+    public void add_CaseToSuit_Success()  {
         final Case newCase = new Case(3L, "Case name", "Case 3", listSteps, 2, setOfTags);
         final CaseDTO newCaseDTO = new CaseDTO(null, "Case name", "Case 3", expectedListSteps, 2,
             expectedSetTags, Status.NOT_DONE);
@@ -215,14 +215,14 @@ public class CaseServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void addCaseToSuitTest_expectNotFoundExceptionFromSuit() {
+    public void add_CaseToSuit_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(anyLong(), anyLong());
         when(suitTransformer.fromDto(any(SuitDTO.class))).thenReturn(null);
         caseService.addCaseToSuit(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, new CaseDTO());
     }
 
     @Test
-    public void updateCaseTest(){
+    public void update_Case_Success(){
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
 
@@ -237,14 +237,14 @@ public class CaseServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void updateCaseTest_expectNotFoundExceptionFromSuit() {
+    public void update_Case_NotFoundExceptionFromSuit() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(null);
 
         caseService.updateCase(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, SIMPLE_CASE_ID, new EditCaseDTO());
     }
 
     @Test(expected = NotFoundException.class)
-    public void updateCaseTest_expectNotFoundExceptionFromCase() {
+    public void update_Case_NotFoundExceptionFromCase() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(null);
 
@@ -252,7 +252,7 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void removeCaseTest(){
+    public void remove_Case_Success(){
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         doNothing().when(caseDAO).delete(caze);
@@ -265,14 +265,14 @@ public class CaseServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void removeCaseTest_expectNotFoundExceptionFromSuit() {
+    public void remove_Case_NotFoundExceptionFromSuit() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(null);
 
         caseService.removeCase(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
     }
 
     @Test(expected = NotFoundException.class)
-    public void removeCaseTest_expectNotFoundExceptionFromCase() {
+    public void remove_Case_NotFoundExceptionFromCase() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(null);
 
@@ -280,7 +280,7 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void removeCasesTest(){
+    public void remove_Cases_Success(){
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         List<Long> deleteCaseIds = Arrays.asList(1L, 2L);
 
@@ -293,7 +293,7 @@ public class CaseServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void removeCasesTest_expectNotFoundExceptionFromSuit() {
+    public void remove_Cases_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(anyLong(), anyLong());
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(null);
 
@@ -390,7 +390,7 @@ public class CaseServiceTest {
     }
 
     @Test
-    public void performEventTest_changingStatusFromNotDoneToNotRun() throws Exception {
+    public void performEvent_StatusFromNotDoneToNotRun_Valid() throws Exception {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(stateMachine.sendEvent(any(Event.class))).thenReturn(true);
@@ -406,7 +406,7 @@ public class CaseServiceTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void performEventTest_sendEventFalse() throws Exception {
+    public void perform_Event_BadRequestException() throws Exception {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(stateMachine.sendEvent(any(Event.class))).thenReturn(false);

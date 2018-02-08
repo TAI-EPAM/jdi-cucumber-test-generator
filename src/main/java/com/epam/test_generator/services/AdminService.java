@@ -23,7 +23,7 @@ public class AdminService {
     @Autowired
     private RoleService roleService;
 
-    public void chaneUserRole(ChangeUserRoleDTO changeUserRoleDTO) {
+    public void changeUserRole(ChangeUserRoleDTO changeUserRoleDTO) {
 
         final User userByEmail = userService.getUserByEmail(changeUserRoleDTO.getEmail());
 
