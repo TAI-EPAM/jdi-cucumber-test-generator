@@ -135,22 +135,38 @@ public class CaseServiceTest {
         caseVersions = new ArrayList<>();
         expectedCaseVersions = new ArrayList<>();
 
+        StepDTO stepDTO = new StepDTO();
         PropertyDifference propertyDifference1 = new PropertyDifference("1", null, "3");
-        PropertyDifference propertyDifference2 = new PropertyDifference("2", 1, 2);
+        PropertyDifference propertyDifference2 = new PropertyDifference("2", "1", "2");
+        PropertyDifference propertyDifference3 = new PropertyDifference("3", null, stepDTO);
+
+        PropertyDifference propertyDifference4 = new PropertyDifference("4", stepDTO, stepDTO);
         PropertyDifferenceDTO propertyDifferenceDTO1 =
                 new PropertyDifferenceDTO("1", null, "3");
         PropertyDifferenceDTO propertyDifferenceDTO2 =
                 new PropertyDifferenceDTO("2", "1", "2");
+        PropertyDifferenceDTO propertyDifferenceDTO3 =
+            new PropertyDifferenceDTO("1", null, stepDTO);
+        PropertyDifferenceDTO propertyDifferenceDTO4 =
+            new PropertyDifferenceDTO("2", stepDTO, stepDTO);
 
         caseVersions.add(new CaseVersion("1.3", new Date(), "author",
                 Lists.newArrayList(propertyDifference1, propertyDifference2)));
         caseVersions.add(new CaseVersion("2.4", new Date(), "autho2",
-                Lists.newArrayList()));
+            Lists.newArrayList()));
+        caseVersions.add(new CaseVersion("3.5", new Date(), "author3",
+            Lists.newArrayList(propertyDifference3, propertyDifference4)));
+        caseVersions.add(new CaseVersion("4.6", new Date(), "autho4",
+            Lists.newArrayList()));
 
         expectedCaseVersions.add(new CaseVersionDTO("1.3", "", "author",
                 Lists.newArrayList(propertyDifferenceDTO1, propertyDifferenceDTO2)));
         expectedCaseVersions.add(new CaseVersionDTO("2.4", "", "autho2",
                 Lists.newArrayList()));
+        expectedCaseVersions.add(new CaseVersionDTO("3.5", "", "author3",
+            Lists.newArrayList(propertyDifferenceDTO3, propertyDifferenceDTO4)));
+        expectedCaseVersions.add(new CaseVersionDTO("4.6", "", "autho4",
+            Lists.newArrayList()));
     }
 
     @Test

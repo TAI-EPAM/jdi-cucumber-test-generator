@@ -1,19 +1,41 @@
 package com.epam.test_generator.dto;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * The PropertyDifferenceDTO uses only in one-way transformation from {@link
+ * com.epam.test_generator.pojo.PropertyDifference} to ResponseEntity controller output.
+ */
 public class PropertyDifferenceDTO {
 
+    private static final Logger logger = LoggerFactory.getLogger(PropertyDifferenceDTO.class);
+
     private String propertyName;
-    private String oldValue;
-    private String newValue;
+    private Object oldValue;        // By default can be String or StepDTO, TagDTO objects
+    private Object newValue;        // By default can be String or StepDTO, TagDTO objects
 
     public PropertyDifferenceDTO() {
 
     }
 
-    public PropertyDifferenceDTO(String propertyName, String oldValue, String newValue) {
+    public PropertyDifferenceDTO(String propertyName, Object oldValue, Object newValue) {
         this.propertyName = propertyName;
-        this.oldValue = oldValue;
-        this.newValue = newValue;
+        if (oldValue == null || oldValue instanceof String || oldValue instanceof StepDTO
+            || oldValue instanceof TagDTO) {
+            this.oldValue = oldValue;
+        } else {
+            logger.warn("Unknown conversion type: " + oldValue.getClass());
+            throw new ClassCastException("Unknown conversion type: " + oldValue.getClass());
+        }
+
+        if (newValue == null || newValue instanceof String || newValue instanceof StepDTO
+            || newValue instanceof TagDTO) {
+            this.newValue = newValue;
+        } else {
+            logger.warn("Unknown conversion type: " + newValue.getClass());
+            throw new ClassCastException("Unknown conversion type: " + newValue.getClass());
+        }
     }
 
     public String getPropertyName() {
@@ -24,20 +46,32 @@ public class PropertyDifferenceDTO {
         this.propertyName = propertyName;
     }
 
-    public String getOldValue() {
+    public Object getOldValue() {
         return oldValue;
     }
 
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
+    public void setOldValue(Object oldValue) {
+        if (oldValue == null ||oldValue instanceof String || oldValue instanceof StepDTO
+            || oldValue instanceof TagDTO) {
+            this.oldValue = oldValue;
+        } else {
+            logger.warn("Unknown conversion type: " + oldValue.getClass());
+            throw new ClassCastException("Unknown conversion type: " + oldValue.getClass());
+        }
     }
 
-    public String getNewValue() {
+    public Object getNewValue() {
         return newValue;
     }
 
-    public void setNewValue(String newValue) {
-        this.newValue = newValue;
+    public void setNewValue(Object newValue) {
+        if (newValue == null || newValue instanceof String || newValue instanceof StepDTO
+            || newValue instanceof TagDTO) {
+            this.newValue = newValue;
+        } else {
+            logger.warn("Unknown conversion type: " + newValue.getClass());
+            throw new ClassCastException("Unknown conversion type: " + newValue.getClass());
+        }
     }
 
     @Override

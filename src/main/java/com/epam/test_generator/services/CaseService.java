@@ -8,6 +8,7 @@ import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.CaseVersionDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
+import com.epam.test_generator.dto.PropertyDifferenceDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
@@ -22,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
@@ -68,7 +70,7 @@ public class CaseService {
     }
 
     public CaseDTO getCaseDTO(Long projectId, Long suitId, Long caseId) {
-        return caseTransformer.toDto(getCase(projectId,suitId,caseId));
+        return caseTransformer.toDto(getCase(projectId, suitId, caseId));
     }
 
     public Long addCaseToSuit(Long projectId, Long suitId, @Valid CaseDTO caseDTO) {
@@ -204,7 +206,8 @@ public class CaseService {
         return newCasesIds;
     }
 
-    public Status performEvent(Long projectId, Long suitId, Long caseId, Event event) throws Exception {
+    public Status performEvent(Long projectId, Long suitId, Long caseId, Event event)
+        throws Exception {
         Case cs = getCase(projectId, suitId, caseId);
         StateMachine<Status, Event> stateMachine = stateMachineAdapter.restore(cs);
         if (stateMachine.sendEvent(event)) {
