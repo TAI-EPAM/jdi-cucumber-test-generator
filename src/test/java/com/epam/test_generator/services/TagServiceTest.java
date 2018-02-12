@@ -79,11 +79,11 @@ public class TagServiceTest {
 
         final List<Case> expectedCaseList = new ArrayList<>();
 
-        expectedCaseList.add(new Case(1L, "name1", "case1", new ArrayList<>(), 1, expectedTagsSet));
-        expectedCaseList.add(new Case(2L, "name2", "case2", new ArrayList<>(), 1, expectedTagsSet));
+        expectedCaseList.add(new Case(1L, "name1", "case1", new ArrayList<>(), 1, expectedTagsSet, "comment1"));
+        expectedCaseList.add(new Case(2L, "name2", "case2", new ArrayList<>(), 1, expectedTagsSet, "comment2"));
 
         suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, expectedTagsSet, 1);
-        caze = new Case(2L, "name1", "desc2", new ArrayList<>(), 1, expectedTagsSet);
+        caze = new Case(2L, "name1", "desc2", new ArrayList<>(), 1, expectedTagsSet, "comment");
     }
 
     @Test

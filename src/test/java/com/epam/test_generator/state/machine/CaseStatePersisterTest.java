@@ -45,7 +45,7 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
     public void onStartUp() {
         persister = new CaseStatePersister();
         cs = new Case("name", "descr", new ArrayList<>(), 1, new HashSet<>(),
-            Status.NOT_RUN);
+            Status.NOT_RUN, "comment");
     }
 
     @Test

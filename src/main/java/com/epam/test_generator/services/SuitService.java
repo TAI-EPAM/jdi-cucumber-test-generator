@@ -1,8 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-import static com.epam.test_generator.services.utils.UtilsService.suitBelongsToProject;
-
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
@@ -14,11 +11,15 @@ import com.epam.test_generator.transformers.SuitTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+import static com.epam.test_generator.services.utils.UtilsService.suitBelongsToProject;
 
 
 @Transactional
@@ -36,6 +37,9 @@ public class SuitService {
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
+
+    @Autowired
+    private CascadeUpdateService cascadeUpdateService;
 
     public List<SuitDTO> getSuits() {
         return suitTransformer.toDtoList(suitDAO.findAll());
@@ -70,10 +74,13 @@ public class SuitService {
         return suit.getId();
     }
 
-    public void updateSuit(long projectId, long suitId, SuitDTO suitDTO) {
-        Suit suit = getSuit(projectId, suitId);
-        suitTransformer.mapDTOToEntity(suitDTO, suit);
+    public List<Long> updateSuit(long projectId, long suitId, SuitDTO suitDTO) throws MethodArgumentNotValidException {
+        final List<Long> failedStepIds = cascadeUpdateService.cascadeSuitCasesUpdate(projectId, suitId, suitDTO);
+        final Suit suit = getSuit(projectId, suitId);
+        final SuitDTO simpleSuitDTO = getSimpleSuitDTO(suitDTO);
+        suitTransformer.mapDTOToEntity(simpleSuitDTO, suit);
         suitDAO.save(suit);
+        return failedStepIds;
     }
 
     public void removeSuit(long projectId, long suitId) {
@@ -128,5 +135,17 @@ public class SuitService {
         }
 
         suitDAO.save(suits);
+    }
+
+    private SuitDTO getSimpleSuitDTO(SuitDTO suitDTO) {
+        final SuitDTO snapShot = new SuitDTO();
+        snapShot.setId(suitDTO.getId());
+        snapShot.setName(suitDTO.getName());
+        snapShot.setDescription(suitDTO.getDescription());
+        snapShot.setPriority(suitDTO.getPriority());
+        snapShot.setTags(suitDTO.getTags());
+        snapShot.setCreationDate(suitDTO.getCreationDate());
+        snapShot.setRowNumber(suitDTO.getRowNumber());
+        return snapShot;
     }
 }

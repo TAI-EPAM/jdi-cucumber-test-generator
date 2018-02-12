@@ -1,6 +1,7 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Action;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.StepType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.Min;
@@ -25,14 +26,20 @@ public class StepDTO {
     @NotNull
     private StepType type;
 
+    private String comment;
+
+    @NotNull
+    private Status status;
+
     public StepDTO() {
     }
 
-    public StepDTO(Long id, int rowNumber, String description, StepType type) {
+    public StepDTO(Long id, int rowNumber, String description, StepType type, String comment, Status status) {
         this.id = id;
         this.rowNumber = rowNumber;
         this.description = description;
         this.type = type;
+        this.comment = comment;
     }
 
     public Long getId() {
@@ -75,13 +82,32 @@ public class StepDTO {
         this.action = action;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "StepDTO{" +
             "id=" + id +
+            ", action=" + action +
             ", rowNumber=" + rowNumber +
             ", description='" + description + '\'' +
-            ", type='" + type + '\'' +
+            ", type=" + type +
+            ", comment='" + comment + '\'' +
+            ", status=" + status +
             '}';
     }
 
@@ -100,6 +126,8 @@ public class StepDTO {
             (id != null ? id.equals(stepDTO.id) : stepDTO.id == null)
             && (description != null ? description.equals(stepDTO.description)
             : stepDTO.description == null)
+            && (comment != null ? comment.equals(stepDTO.comment) : stepDTO.comment == null)
+            && (status != null ? status.equals(stepDTO.status) : stepDTO.status == null)
             && (type != null ? type.equals(stepDTO.type) : stepDTO.type == null);
     }
 
@@ -109,6 +137,8 @@ public class StepDTO {
         result = 31 * result + rowNumber;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
 }

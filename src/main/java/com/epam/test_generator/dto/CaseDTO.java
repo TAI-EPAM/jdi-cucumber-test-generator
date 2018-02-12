@@ -42,13 +42,15 @@ public class CaseDTO {
     @NotNull
     private Status status;
 
+    private String comment;
+
     public CaseDTO() {
         creationDate = Calendar.getInstance().getTime();
         updateDate = creationDate;
     }
 
     public CaseDTO(Long id, String name, String description, List<StepDTO> steps, Integer priority,
-                   Set<TagDTO> tags, Status status) {
+                   Set<TagDTO> tags, Status status, String comment) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -130,6 +132,14 @@ public class CaseDTO {
         this.status = status;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -148,6 +158,7 @@ public class CaseDTO {
             && (steps != null ? steps.equals(caseDTO.steps) : caseDTO.steps == null)
             && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
             && (tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null)
+            && (comment != null ? comment.equals(caseDTO.comment) : caseDTO.comment == null)
             && (status != null ? status.equals(caseDTO.status) : caseDTO.status == null);
     }
 
@@ -159,6 +170,7 @@ public class CaseDTO {
         result = 31 * result + (steps != null ? steps.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
@@ -166,8 +178,8 @@ public class CaseDTO {
     @Override
     public String toString() {
         return String.format(
-            "CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s};",
-            id, name, description, steps, creationDate, priority, tags, steps);
+            "CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s, comment= %s};",
+            id, name, description, steps, creationDate, priority, tags, steps, comment);
     }
 }
 

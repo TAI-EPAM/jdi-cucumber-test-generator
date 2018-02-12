@@ -53,6 +53,9 @@ public class CaseService {
     private SuitService suitService;
 
     @Autowired
+    private CascadeUpdateService cascadeUpdateService;
+
+    @Autowired
     private CaseVersionDAO caseVersionDAO;
 
     @Autowired
@@ -94,7 +97,7 @@ public class CaseService {
         throws MethodArgumentNotValidException {
         CaseDTO caseDTO = new CaseDTO(editCaseDTO.getId(), editCaseDTO.getName(),
             editCaseDTO.getDescription(), new ArrayList<>(),
-            editCaseDTO.getPriority(), new HashSet<>(), editCaseDTO.getStatus());
+            editCaseDTO.getPriority(), new HashSet<>(), editCaseDTO.getStatus(), editCaseDTO.getComment());
 
         BeanPropertyBindingResult beanPropertyBindingResult =
             new BeanPropertyBindingResult(caseDTO, CaseDTO.class.getSimpleName());
@@ -106,13 +109,16 @@ public class CaseService {
         return addCaseToSuit(projectId, suitId, caseDTO);
     }
 
-    public void updateCase(Long projectId, Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
+    public List<Long> updateCase(Long projectId, Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
         checkNotNull(caze);
 
         caseBelongsToSuit(caze, suit);
+
+        final List<Long> failedStepIds = cascadeUpdateService
+            .cascadeCaseStepsUpdate(projectId, suitId, caseId, editCaseDTO);
 
         caze.setUpdateDate(Calendar.getInstance().getTime());
 
@@ -123,6 +129,7 @@ public class CaseService {
 
         caseDAO.save(caze);
         caseVersionDAO.save(caze);
+        return failedStepIds;
     }
 
     public void removeCase(Long projectId, Long suitId, Long caseId) {

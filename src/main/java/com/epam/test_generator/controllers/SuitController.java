@@ -4,13 +4,14 @@ import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
-import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.IOService;
+import com.epam.test_generator.services.SuitService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -104,12 +105,12 @@ public class SuitController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}", method = RequestMethod.PUT,
         consumes = "application/json")
-    public ResponseEntity<Void> updateSuit(@PathVariable("projectId") long projectId,
-                                           @PathVariable("suitId") long suitId,
-                                           @RequestBody @Valid SuitDTO suitDTO) {
-        suitService.updateSuit(projectId, suitId, suitDTO);
+    public ResponseEntity<List<Long>> updateSuit(@PathVariable("projectId") long projectId,
+                                                 @PathVariable("suitId") long suitId,
+                                                 @RequestBody @Valid SuitDTO suitDTO) throws MethodArgumentNotValidException {
+        final List<Long> failedStepIds = suitService.updateSuit(projectId, suitId, suitDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(failedStepIds, HttpStatus.OK);
     }
 
 

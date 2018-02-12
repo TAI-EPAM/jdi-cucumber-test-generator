@@ -51,7 +51,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     })
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD","ROLE_GUEST"})
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases",
         method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("projectId") long projectId,
@@ -82,7 +82,8 @@ public class CaseController {
                                            @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId) {
 
-        return new ResponseEntity<>(caseService.getCaseDTO(projectId, suitId, caseId), HttpStatus.OK);
+        return new ResponseEntity<>(caseService.getCaseDTO(projectId, suitId, caseId),
+            HttpStatus.OK);
     }
 
     @ApiOperation(value = "Add a new case to the suit", nickname = "addCaseToSuit")
@@ -109,7 +110,8 @@ public class CaseController {
                                               @PathVariable("suitId") long suitId,
                                               @RequestBody @Valid CaseDTO caseDTO) {
 
-        return new ResponseEntity<>(caseService.addCaseToSuit(projectId, suitId, caseDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(caseService.addCaseToSuit(projectId, suitId, caseDTO),
+            HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update case by id", nickname = "updateCase")
@@ -133,13 +135,14 @@ public class CaseController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Void> updateCase(@PathVariable("projectId") long projectId,
-                                           @PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId,
-                                           @RequestBody @Valid EditCaseDTO editCaseDTO) {
-        caseService.updateCase(projectId, suitId, caseId, editCaseDTO);
+    public ResponseEntity<List<Long>> updateCase(@PathVariable("projectId") long projectId,
+                                                 @PathVariable("suitId") long suitId,
+                                                 @PathVariable("caseId") long caseId,
+                                                 @RequestBody @Valid EditCaseDTO editCaseDTO) {
+        final List<Long> failedStepIds = caseService
+            .updateCase(projectId, suitId, caseId, editCaseDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(failedStepIds, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Update, create or delete list of cases", nickname = "updateCases")

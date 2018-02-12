@@ -2,6 +2,7 @@ package com.epam.test_generator.transformers;
 
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.TagDTO;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Tag;
 import org.dozer.CustomConverter;
@@ -28,7 +29,7 @@ public class CustomCaseVersionConverter implements CustomConverter {
         if (sourceFieldValue instanceof Step) {
             Step source = (Step) sourceFieldValue;
             return new StepDTO(source.getId(), source.getRowNumber(), source.getDescription(),
-                source.getType());
+                source.getType(), "", Status.NOT_RUN);
         } else if (sourceFieldValue instanceof Tag) {
             Tag source = (Tag) sourceFieldValue;
             TagDTO tag = new TagDTO();

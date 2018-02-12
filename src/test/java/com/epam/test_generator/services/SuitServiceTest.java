@@ -1,6 +1,18 @@
 package com.epam.test_generator.services;
 
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyListOf;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.SuitDTO;
@@ -12,19 +24,18 @@ import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SuitServiceTest {
@@ -37,6 +48,10 @@ public class SuitServiceTest {
     private CaseVersionDAO caseVersionDAO;
     @Mock
     private ProjectService projectService;
+
+    @Mock
+    private CascadeUpdateService cascadeUpdateService;
+
     @Mock
     private SuitDAO suitDAO;
     @Mock
@@ -115,29 +130,33 @@ public class SuitServiceTest {
     }
 
     @Test
-    public void update_Suit_Success() {
+    public void update_Suit_Success() throws MethodArgumentNotValidException {
+        final SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
+        when(cascadeUpdateService.cascadeSuitCasesUpdate(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, newSuitDTO)).thenReturn(null);
         when(projectService.getProjectByProjectId(anyLong())).thenReturn(expectedProject);
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);
         when(suitDAO.save(any(Suit.class))).thenAnswer(invocationOnMock -> {
             expectedSuitDTO.setName("new name");
-
             return null;
         });
 
-        SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
         suitService.updateSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, newSuitDTO);
         assertEquals(expectedSuitDTO.getName(), newSuitDTO.getName());
     }
 
     @Test(expected = NotFoundException.class)
-    public void update_Suit_NotFoundException() {
+    public void update_Suit_NotFoundException() throws MethodArgumentNotValidException {
+        final SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
+        when(cascadeUpdateService.cascadeSuitCasesUpdate(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, newSuitDTO)).thenReturn(null);
         when(suitDAO.findOne(anyLong())).thenReturn(null);
 
         suitService.updateSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, new SuitDTO());
     }
 
     @Test(expected = NotFoundException.class)
-    public void updateSuitInProject_InvalidProjectId_NotFound() {
+    public void updateSuitInProject_InvalidProjectId_NotFound() throws MethodArgumentNotValidException {
+        final SuitDTO newSuitDTO = new SuitDTO(SIMPLE_SUIT_ID, "new name", "desc1");
+        when(cascadeUpdateService.cascadeSuitCasesUpdate(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, newSuitDTO)).thenReturn(null);
         when(projectService.getProjectByProjectId(SIMPLE_PROJECT_ID)).thenReturn(expectedProject);
         when(suitTransformer.fromDto(any())).thenReturn(expectedSuit);
         when(suitDAO.findOne(anyLong())).thenReturn(expectedSuit);

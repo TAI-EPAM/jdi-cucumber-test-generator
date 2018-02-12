@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.JaversConfig;
 import com.epam.test_generator.dao.impl.CaseVersionDAOImpl;
-import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
@@ -45,9 +44,9 @@ public class CaseVersionDAOTest {
     public void setUp() {
 
         caze = new Case(CASE_ID, "name", "description", Lists.newArrayList(), 1,
-            Sets.newHashSet());
+            Sets.newHashSet(),  "comment");
         Case caze2 = new Case(CASE_ID2, "name", "description2", Lists.newArrayList(), 1,
-            Sets.newHashSet());
+            Sets.newHashSet(),  "comment");
         caseList = Arrays.asList(caze, caze2);
 
     }
@@ -93,7 +92,7 @@ public class CaseVersionDAOTest {
     public void find_SaveAddedAndEditedStepInCase_GetHistoryWithAddedAndEditedStep() {
         caseVersionDAO.save(caze);
 
-        Step step = new Step(1L, 1, "description", StepType.GIVEN);
+        Step step = new Step(1L, 1, "description", StepType.GIVEN, "Comment", Status.NOT_RUN);
 
         caze.addStep(step);
         caseVersionDAO.save(caze);
@@ -104,7 +103,7 @@ public class CaseVersionDAOTest {
         CaseVersion caseVersionAddedStep = caseVersionDAO.findAll(CASE_ID).get(1);
         CaseVersion caseVersionEditedStep = caseVersionDAO.findAll(CASE_ID).get(2);
 
-        Step originalStep = new Step(1L, 1, "description", StepType.GIVEN);
+        Step originalStep = new Step(1L, 1, "description", StepType.GIVEN, "Comment", Status.NOT_RUN);
         assertEquals(1, caseVersionAddedStep.getPropertyDifferences().size());
         assertEquals(1, caseVersionEditedStep.getPropertyDifferences().size());
 

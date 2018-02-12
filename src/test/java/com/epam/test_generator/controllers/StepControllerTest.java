@@ -22,6 +22,7 @@ import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.TagDTO;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.StepService;
@@ -79,7 +80,7 @@ public class StepControllerTest {
         stepDTO.setDescription("description of step");
         stepDTO.setRowNumber(1);
         stepDTO.setType(StepType.THEN);
-
+        stepDTO.setStatus(Status.NOT_RUN);
         stepDTOS = new ArrayList<>();
         stepDTOS.add(stepDTO);
 

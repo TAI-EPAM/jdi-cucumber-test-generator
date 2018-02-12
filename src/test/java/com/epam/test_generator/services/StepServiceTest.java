@@ -3,34 +3,30 @@ package com.epam.test_generator.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
 
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
-import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.StepTransformer;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.epam.test_generator.transformers.SuitTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,25 +70,25 @@ public class StepServiceTest {
 
     @Before
     public void setUp() {
-        step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
-        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN);
+        step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN, "Comment", Status.NOT_RUN);
+        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN, "Comment", Status.NOT_RUN);
 
         final List<Step> listSteps = new ArrayList<>();
 
-        listSteps.add(new Step(1L, 1, "Step 1", StepType.GIVEN));
-        listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN));
+        listSteps.add(new Step(1L, 1, "Step 1", StepType.GIVEN, "Comment", Status.NOT_RUN));
+        listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN, "Comment", Status.NOT_RUN));
         listSteps.add(step);
 
-        expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN));
-        expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN));
+        expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN, "Comment", Status.NOT_RUN));
+        expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN, "Comment", Status.NOT_RUN));
         expectedListSteps.add(expectedStep);
 
-        caze = new Case(SIMPLE_CASE_ID, "name", "Case desc", listSteps, 1, setOfTags);
+        caze = new Case(SIMPLE_CASE_ID, "name", "Case desc", listSteps, 1, setOfTags, "comment");
 
         final List<Case> listCases = new ArrayList<>();
 
-        listCases.add(new Case(1L, "name 1", "Case 1", listSteps, 1, setOfTags));
-        listCases.add(new Case(2L, "name 2", "Case 2", listSteps, 2, setOfTags));
+        listCases.add(new Case(1L, "name 1", "Case 1", listSteps, 1, setOfTags, "comment1"));
+        listCases.add(new Case(2L, "name 2", "Case 2", listSteps, 2, setOfTags, "comment2"));
         listCases.add(caze);
 
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags, 1);
@@ -170,8 +166,8 @@ public class StepServiceTest {
 
     @Test
     public void add_StepToCase_Success() {
-        Step newStep = new Step(3L, 3, "Step 3", StepType.AND);
-        StepDTO newStepDTO = new StepDTO(null, 3, "Step 3", StepType.AND);
+        Step newStep = new Step(3L, 3, "Step 3", StepType.AND, "Comment", Status.NOT_RUN);
+        StepDTO newStepDTO = new StepDTO(null, 3, "Step 3", StepType.AND, "Comment", Status.NOT_RUN);
 
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
@@ -206,7 +202,7 @@ public class StepServiceTest {
 
     @Test
     public void update_Step_Success() {
-        StepDTO updateStepDTO = new StepDTO(null, 3, "New Step desc", null);
+        StepDTO updateStepDTO = new StepDTO(null, 3, "New Step desc", null, "Comment", Status.NOT_RUN);
 
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
@@ -289,9 +285,9 @@ public class StepServiceTest {
 
     @Test
     public void cascadeUpdate_Steps_Success() {
-        StepDTO actionCreateDTO = new StepDTO(null, 1, "New Step 1", null);
-        StepDTO actionDeleteDTO = new StepDTO(3L, 2, "New Step 2", null);
-        StepDTO actionUpdateDTO = new StepDTO(4L, 3, "New Step 3", null);
+        StepDTO actionCreateDTO = new StepDTO(null, 1, "New Step 1", null, "Comment", Status.NOT_RUN);
+        StepDTO actionDeleteDTO = new StepDTO(3L, 2, "New Step 2", null, "Comment", Status.NOT_RUN);
+        StepDTO actionUpdateDTO = new StepDTO(4L, 3, "New Step 3", null, "Comment", Status.NOT_RUN);
         actionCreateDTO.setAction(Action.CREATE);
         actionDeleteDTO.setAction(Action.DELETE);
         actionUpdateDTO.setAction(Action.UPDATE);
@@ -309,9 +305,9 @@ public class StepServiceTest {
 
     @Test
     public void cascadeUpdate_StepsWithoutActions_Success() {
-        StepDTO actionCreateDTO = new StepDTO(null, 1, "New Step 1", null);
-        StepDTO actionDeleteDTO = new StepDTO(3L, 2, "New Step 2", null);
-        StepDTO actionUpdateDTO = new StepDTO(4L, 3, "New Step 3", null);
+        StepDTO actionCreateDTO = new StepDTO(null, 1, "New Step 1", null, "Comment", Status.NOT_RUN);
+        StepDTO actionDeleteDTO = new StepDTO(3L, 2, "New Step 2", null, "Comment", Status.NOT_RUN);
+        StepDTO actionUpdateDTO = new StepDTO(4L, 3, "New Step 3", null, "Comment", Status.NOT_RUN);
 
         StepService mock = mock(StepService.class);
         Mockito.doCallRealMethod().when(mock).cascadeUpdateSteps(anyLong(), anyLong(), anyInt(), anyList());

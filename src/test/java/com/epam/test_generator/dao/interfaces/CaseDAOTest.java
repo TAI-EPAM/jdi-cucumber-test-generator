@@ -1,8 +1,6 @@
 package com.epam.test_generator.dao.interfaces;
 
 import com.epam.test_generator.DatabaseConfigForTests;
-import com.epam.test_generator.dao.interfaces.CaseDAO;
-import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Tag;
@@ -48,7 +46,7 @@ public class CaseDAOTest {
         Tag tagWithNotNullId = tagDAO.save(new Tag("tag with not null id"));
 
         Case caze = new Case("name", "desc", null, null, null, 3,
-            Sets.newHashSet(tagWithNotNullId, tagWithNullId), null);
+            Sets.newHashSet(tagWithNotNullId, tagWithNullId), null, "comment");
         Case savedCase = caseDAO.save(caze);
 
         caze.setId(savedCase.getId());
@@ -164,20 +162,20 @@ public class CaseDAOTest {
 
         return new Case("Case name", "Case description", new ArrayList<>(),
             Calendar.getInstance().getTime(), Calendar.getInstance().getTime(),
-            3, new HashSet<>(), Status.NOT_RUN);
+            3, new HashSet<>(), Status.NOT_RUN, "comment");
     }
 
     private List<Case> retrieveCaseList() {
 
         final Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(),
             Calendar.getInstance().getTime(),
-            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
+            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
         final Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(),
             Calendar.getInstance().getTime(),
-            Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN);
+            Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN, "comment");
         final Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(),
             Calendar.getInstance().getTime(),
-            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN);
+            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
 
         ArrayList<Case> cases = new ArrayList<>();
         cases.add(case1);

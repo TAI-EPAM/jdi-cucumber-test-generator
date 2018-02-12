@@ -26,11 +26,10 @@ import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,14 +113,14 @@ public class CaseControllerTest {
 
         editCaseDTOList = new ArrayList<>();
 
-        EditCaseDTO editCaseDTO1 = new EditCaseDTO("descr", "name", 1,
-            Status.NOT_RUN, Action.CREATE);
+        EditCaseDTO editCaseDTO1 = new EditCaseDTO(1l,"descr", "name", 1,
+            Status.NOT_RUN, Collections.emptyList(), Action.CREATE, "comment");
         editCaseDTO1.setId(CASE_IDS[0]);
-        EditCaseDTO editCaseDTO2 = new EditCaseDTO("descr", "name", 1,
-            Status.NOT_RUN, Action.UPDATE);
+        EditCaseDTO editCaseDTO2 = new EditCaseDTO(1l,"descr", "name", 1,
+            Status.NOT_RUN, Collections.emptyList(), Action.UPDATE, "comment");
         editCaseDTO2.setId(CASE_IDS[1]);
-        EditCaseDTO editCaseDTO3 = new EditCaseDTO("descr", "name", 1,
-            Status.NOT_RUN, Action.UPDATE);
+        EditCaseDTO editCaseDTO3 = new EditCaseDTO(1l,"descr", "name", 1,
+            Status.NOT_RUN, Collections.emptyList(), Action.UPDATE, "comment");
         editCaseDTO3.setId(CASE_IDS[2]);
 
         editCaseDTOList.add(editCaseDTO1);
