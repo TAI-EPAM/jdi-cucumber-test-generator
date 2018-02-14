@@ -5,6 +5,12 @@ import org.hibernate.validator.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * This DTO represents {@Link User} essence, but only at the time of it's registration in the system. DTO is used only
+ * to retrieve information about user without his role in the system or profile's status. In other situations it's more
+ * convenient to use {@Link UserDTO}.
+ *
+ */
 public class RegistrationUserDTO {
 
     @NotNull

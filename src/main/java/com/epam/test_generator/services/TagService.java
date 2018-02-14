@@ -56,6 +56,14 @@ public class TagService {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Adds tag with info specified in tagDTO
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param tagDTO info to add
+     * @return id of tag
+     */
     public Long addTagToCase(Long projectId, Long suitId, Long caseId, TagDTO tagDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -72,6 +80,14 @@ public class TagService {
         return tag.getId();
     }
 
+    /**
+     * Updates tag by id to info specified in tagDTO
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param tagId id of tag to update
+     * @param tagDTO info to update
+     */
     public void updateTag(Long projectId, Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -91,6 +107,13 @@ public class TagService {
         caseVersionDAO.save(caze);
     }
 
+    /**
+     * Removes tag from case by id and saves case version to database
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param tagId id of tag to delete
+     */
     public void removeTag(Long projectId, Long suitId, Long caseId, Long tagId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 

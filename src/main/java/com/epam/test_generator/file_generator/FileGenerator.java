@@ -15,6 +15,14 @@ import java.util.Locale;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * This class is used to create information about suit with all test cases according to specified template.
+ * For text generation FreeMaker API is used. {@Link Configuration} object is used for configure information about
+ * template that is used for text creation and {@Link Template} object stores already parsed template that is ready
+ * for work.
+ *
+ */
 @Component
 public class FileGenerator {
 

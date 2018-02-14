@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+/**
+ * Controls user registration process.
+ */
 @RestController
 public class UserController {
 

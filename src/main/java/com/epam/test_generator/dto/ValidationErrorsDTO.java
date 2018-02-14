@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+
+/**
+ * This DTO is a list of {@Link ValidationErrorDTO}. It's used for retrieving and sending validation errors' information
+ * respectively from and to API.
+ */
 public class ValidationErrorsDTO {
 
     private Boolean isError = true;

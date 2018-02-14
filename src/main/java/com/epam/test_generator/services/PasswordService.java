@@ -29,6 +29,12 @@ public class PasswordService {
     private final static String CONFIRM_ACCOUNT_PATH = "/cucumber/confirmAccount";
     private final static String TOKEN = "token=";
 
+    /**
+     * Generates URI path to reset password by user token
+     * @param request
+     * @param token user token
+     * @return URI path
+     */
     public String createResetUrl(HttpServletRequest request, Token token) {
         URI uri;
         try {
@@ -46,6 +52,12 @@ public class PasswordService {
         return uri.toString();
     }
 
+    /**
+     * Generates URI path to confirm user account by token
+     * @param request
+     * @param token user token
+     * @return URI path
+     */
     public String createConfirmUrl(HttpServletRequest request, Token token) {
         URI uri;
         try {
@@ -63,6 +75,10 @@ public class PasswordService {
     }
 
 
+    /**
+     * Resets password for user specified in passwordResetDTO
+     * @param passwordResetDTO info about user token and password
+     */
     public void passwordReset(PasswordResetDTO passwordResetDTO) {
         String token = passwordResetDTO.getToken();
         Token resetToken = tokenDAO.findByToken(token);

@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Allow work with steps of specified case.
+ */
 @RestController
 public class StepController {
 

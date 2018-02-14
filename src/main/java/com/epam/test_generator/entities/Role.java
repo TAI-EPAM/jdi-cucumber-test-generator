@@ -4,6 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+
+/**
+ * This class represents role essence. Role is a named group for some privileges. Each user is assigned with a role that
+ * determines his rights in the system. 
+ */
 @Entity
 public class Role {
 

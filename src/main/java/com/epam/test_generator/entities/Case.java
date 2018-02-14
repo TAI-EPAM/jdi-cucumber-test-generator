@@ -18,6 +18,14 @@ import javax.persistence.OneToMany;
 import org.springframework.data.domain.Persistable;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
+
+/**
+ * This class represents Test case essence. Test Case is a set of actions that are used for checking some
+ * software's behavior. Case consists of some simple fields like id of the case, it's name, description,
+ * history information, result of testing and etc, also it includes sequence of steps and tags. List of
+ * {@link Step} objects represents steps that must be done for verification within current case. List of
+ * {@Link Tag} objects represents types of current case.
+ */
 @Entity
 @WithStateMachine
 public class Case implements Serializable, Persistable<Long> {

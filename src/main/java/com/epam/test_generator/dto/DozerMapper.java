@@ -6,6 +6,10 @@ import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
 
+
+/** DozerMapper is used to set configuration mapping file for Dozer. Find usage in {@Link AbstractDozerTransformer}.
+ * @param <E>
+ */
 @Component
 public class DozerMapper<E> {
 

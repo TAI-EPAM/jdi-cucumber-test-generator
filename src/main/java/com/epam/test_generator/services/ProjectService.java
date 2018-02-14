@@ -72,6 +72,12 @@ public class ProjectService {
         return projectFullTransformer.toDto(project);
     }
 
+    /**
+     * Creates project specified in projectDTO for current authorized user
+     * @param projectDTO project info
+     * @param authentication current authorized user
+     * @return id of project
+     */
     public Long createProject(ProjectDTO projectDTO, Authentication authentication) {
         AuthenticatedUser userDetails = (AuthenticatedUser) authentication.getPrincipal();
         User authUser = userService.getUserByEmail(userDetails.getEmail());
@@ -85,6 +91,11 @@ public class ProjectService {
         return project.getId();
     }
 
+    /**
+     * Updates project by id with info specified in ProjectDTO
+     * @param projectId id of project to update
+     * @param projectDTO update info
+     */
     public void updateProject(Long projectId, ProjectDTO projectDTO) {
         Project project = projectDAO.findOne(projectId);
         checkNotNull(project);
@@ -95,12 +106,21 @@ public class ProjectService {
         projectDAO.save(project);
     }
 
+    /**
+     * Deletes project from database by id
+     * @param projectId id of project to delete
+     */
     public void removeProject(Long projectId) {
         Project project = projectDAO.findOne(projectId);
         checkNotNull(project);
         projectDAO.delete(projectId);
     }
 
+    /**
+     * Adds user to existing project by user id
+     * @param projectId id of project where to add user
+     * @param userId id of user to add
+     */
     public void addUserToProject(long projectId, long userId) {
         Project project = projectDAO.findOne(projectId);
         checkNotNull(project);
@@ -112,6 +132,11 @@ public class ProjectService {
         projectDAO.save(project);
     }
 
+    /**
+     * Removes user from project by user id
+     * @param projectId id of project
+     * @param userId id of user to remove
+     */
     public void removeUserFromProject(long projectId, long userId) {
         Project project = projectDAO.findOne(projectId);
         checkNotNull(project);
@@ -123,6 +148,10 @@ public class ProjectService {
         projectDAO.save(project);
     }
 
+    /**
+     * Sets project status to inactive and saves to database
+     * @param projectId id of project to close
+     */
     public void closeProject(long projectId) {
         Project project = projectDAO.findOne(projectId);
         checkNotNull(project);

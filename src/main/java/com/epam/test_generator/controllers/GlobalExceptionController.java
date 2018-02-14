@@ -23,6 +23,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.security.access.AccessDeniedException;
 
 
+/**
+ * This class handles all exceptions to make sure that in case of error server will not stop
+ * and client will receive response with error code.
+ */
 @ControllerAdvice
 public class GlobalExceptionController {
 

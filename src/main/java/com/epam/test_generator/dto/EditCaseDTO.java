@@ -10,6 +10,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+
+/**
+ * This DTO fully represent {@Link Case} entity. {@Link EditCaseDTO} is used only  for cascade work with cases
+ * in situation when it's necessary to manipulate (create, delete or change) multiple cases for one request.
+ * In other situations it's better to use {@Link CaseDTO}.
+ */
 public class EditCaseDTO {
 
     private Long id;

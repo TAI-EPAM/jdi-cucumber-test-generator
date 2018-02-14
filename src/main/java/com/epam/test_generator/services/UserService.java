@@ -55,11 +55,18 @@ public class UserService {
 
     }
 
+    /**
+     * Saves user to database
+     * @param user
+     */
     public void saveUser(User user) {
         userDAO.save(user);
     }
 
 
+    /**
+     * Creates in database user with admin role if none exists
+     */
     public void createAdminIfDoesNotExist() {
 
         final List<User> admin = userDAO.findByRole(roleService.getRoleByName("ADMIN"));
@@ -81,6 +88,11 @@ public class UserService {
         return userTransformer.toDtoList(userDAO.findAll());
     }
 
+    /**
+     * Creates user with info specified in RegistrationUserDTO
+     * @param registrationUserDTO user info
+     * @return created user instance
+     */
     public User createUser(RegistrationUserDTO registrationUserDTO) {
         if (this.getUserByEmail(registrationUserDTO.getEmail()) != null) {
             throw new UnauthorizedException(
@@ -96,7 +108,6 @@ public class UserService {
             user.setLocked(true);
             userDAO.save(user);
             return user;
-
         }
     }
 
@@ -141,6 +152,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Updates user password by Email
+     * @param password new password
+     * @param email user's Email
+     */
     public void updatePassword(String password, String email) {
         User byEmail = userDAO.findByEmail(email);
         byEmail.setPassword(password);

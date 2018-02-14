@@ -13,6 +13,9 @@ public class StatesService {
     @Autowired
     private StateMachineAdapter stateMachineAdapter;
 
+    /**
+     * @return List of transitions applicable to given state
+     */
     public List<Event> availableTransitions(Status status) {
 
         return stateMachineAdapter.availableTransitions(status);

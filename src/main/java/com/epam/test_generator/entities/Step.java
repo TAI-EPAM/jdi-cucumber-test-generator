@@ -7,6 +7,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+
+/**
+ * This class represents step essence. Step means one of the actions that should be done within the relative test case.
+ * Step consist of simple fields: id, number, description of action and {@Link StepType} which describe type of action
+ * in test case.
+ */
 @Entity
 public class Step implements Serializable {
 

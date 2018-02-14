@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+/**
+ * An application event listener interested in {@link ContextRefreshedEvent} which is raised
+ * when an ApplicationContext gets initialized or refreshed.
+ */
 @Component
-public class InitialDataLoader implements
-    ApplicationListener<ContextRefreshedEvent> {
+public class InitialDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private UserService userService;
@@ -22,6 +24,11 @@ public class InitialDataLoader implements
     @Autowired
     private RoleService roleService;
 
+    /**
+     * Handle an application event: adds roles from roles.properties
+     * file to the database and creates admin role if it doesn't exist
+     * @param event
+     */
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {

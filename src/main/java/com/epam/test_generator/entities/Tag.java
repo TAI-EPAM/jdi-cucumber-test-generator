@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+
+/**
+ * This class represents tag essence. Tag is a type or small characteristic of test cases or even all test suit.
+ */
 @Entity
 public class Tag implements Serializable {
 

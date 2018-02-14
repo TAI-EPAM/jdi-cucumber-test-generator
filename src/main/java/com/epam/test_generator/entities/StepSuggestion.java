@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
+/**
+ * This class represents example of possible steps for user.
+ */
 @Entity
 public class StepSuggestion {
 

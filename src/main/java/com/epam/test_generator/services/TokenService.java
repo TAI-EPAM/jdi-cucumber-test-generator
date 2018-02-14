@@ -20,6 +20,12 @@ public class TokenService {
     @Autowired
     private TokenDAO tokenDAO;
 
+    /**
+     * Creates token for user for limited time
+     * @param user
+     * @param minutes time limit
+     * @return user's token
+     */
     public Token createToken(User user, Integer minutes) {
         Token token = new Token();
         token.setToken(UUID.randomUUID().toString());
@@ -29,6 +35,10 @@ public class TokenService {
         return tokenDAO.save(token);
     }
 
+    /**
+     * Checks token for existing and expiring. Throws exceptions if there is problems with token.
+     * @param token
+     */
     public void checkToken(String token) {
         Token resetToken = tokenDAO.findByToken(token);
         if (resetToken == null) {

@@ -28,14 +28,26 @@ public class RoleService {
         return roleDAO.findByName(name);
     }
 
+    /**
+     * Adds role to database via roleDAO
+     * @param role role to add
+     */
     public void addRole(Role role) {
         roleDAO.save(role);
     }
 
+    /**
+     * Returns all roles from database in list
+     * @return list of all roles from db
+     */
     public List<Role> findAll() {
         return roleDAO.findAll();
     }
 
+    /**
+     * Returns all roles from properties file in list
+     * @return list of all roles from properties
+     */
     public List<Role> getRolesFromProperties() {
         final String[] split = environment.getProperty("roles").split(", ");
         final List<String> roleNames = Arrays.asList(split);

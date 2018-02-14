@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * Allow to change password.
+ */
 @RestController
 public class PasswordResetController {
 

@@ -1,5 +1,11 @@
 package com.epam.test_generator.dto;
 
+
+/**
+ * THis DTO is practically the same as {@Link ErrorDTO}, but have information about only fields validation errors
+ * (problems of unsuitable types and formats of fields values). It is used only in {@Link ValidationErrorsDTO}.
+ *
+ */
 public class ValidationErrorDTO {
 
     private String type;

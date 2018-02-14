@@ -36,6 +36,13 @@ public class StepService {
     @Autowired
     private StepTransformer stepTransformer;
 
+    /**
+     *
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case where to get steps
+     * @return List of all StepDTOs for specified case
+     */
     public List<StepDTO> getStepsByCaseId(Long projectId, Long suitId, Long caseId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -46,6 +53,14 @@ public class StepService {
         return stepTransformer.toDtoList(caze.getSteps());
     }
 
+    /**
+     *
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param stepId id of step
+     * @return StepDTO of specified step
+     */
     public StepDTO getStep(Long projectId, Long suitId, Long caseId, Long stepId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -61,6 +76,14 @@ public class StepService {
         return stepTransformer.toDto(step);
     }
 
+    /**
+     * Adds step specified in StepDTO to case by id
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param stepDTO DTO where step specified
+     * @return id of added step
+     */
     public Long addStepToCase(Long projectId, Long suitId, Long caseId, StepDTO stepDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -78,6 +101,14 @@ public class StepService {
         return step.getId();
     }
 
+    /**
+     * Updates step specified in StepDTO by id
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param stepDTO DTO where step specified
+     * @param stepId id of step which to update
+     */
     public void updateStep(Long projectId, Long suitId, Long caseId, Long stepId, StepDTO stepDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -97,6 +128,13 @@ public class StepService {
         caseVersionDAO.save(caze);
     }
 
+    /**
+     * Deletes step from case by id
+     * @param projectId id of project
+     * @param suitId id of suit
+     * @param caseId id of case
+     * @param stepId id of step to delete
+     */
     public void removeStep(Long projectId, Long suitId, Long caseId, Long stepId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 

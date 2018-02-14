@@ -6,6 +6,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 
+/**
+ * This class represents user essence. User is a person who uses system. Besides simple fields like personal information,
+ * data for log in and status it includes {@Link Role}. One user can have only one role. Role represents set of
+ * privileges for users of current role.
+ */
 @Entity
 public class User {
 

@@ -17,6 +17,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Spring configuration class for database connectivity
+ */
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
@@ -26,6 +29,12 @@ public class DatabaseConfig {
     @Resource
     private Environment environment;
 
+    /**
+     * Set up custom {@link LocalContainerEntityManagerFactoryBean} to have shared JPA
+     * in a Spring application context according to JPA's standard container bootstrap contract.
+     * The JPA can then be passed to JPA-based DAOs via dependency injection.
+     * @return entityManagerFactory bean
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManager =
@@ -39,6 +48,10 @@ public class DatabaseConfig {
         return entityManager;
     }
 
+    /**
+     * Set up custom {@link DataSource} using H2 database.
+     * @return dataSource
+     */
     @Bean
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -49,6 +62,11 @@ public class DatabaseConfig {
         return dataSource;
     }
 
+    /**
+     * Set up custom {@link JpaTransactionManager} and binds it to
+     * entityManagerFactory bean to manage transactions for it
+     * @return transactionManager binded to entityManagerFactory
+     */
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager manager = new JpaTransactionManager();
@@ -58,6 +76,11 @@ public class DatabaseConfig {
         return manager;
     }
 
+    /**
+     * Load properties from hibernate.properties file to a {@link Properties} object.
+     * @return properties object containing Hibernate properties if hibernate.properties file exists in classpath
+     * @throws IllegalArgumentException if hibernate.properties file doesn't exist in classpath
+     */
     private Properties getHibernateProperties() {
         try {
             Properties properties = new Properties();

@@ -36,6 +36,11 @@ public class EmailService {
     @Resource
     private Environment environment;
 
+    /**
+     * Sends message to register user
+     * @param user entity of user who will be registered
+     * @param request
+     */
     public void sendRegistrationMessage(User user, HttpServletRequest request) {
         Token userConformationToken = tokenService.createToken(user, CONFIRMATION_TIME);
         String confirmUrl = passwordService.createConfirmUrl(request, userConformationToken);
@@ -46,6 +51,11 @@ public class EmailService {
         sendSimpleMessage(user.getEmail(), subject, text);
     }
 
+    /**
+     * Sends message to reset password for user
+     * @param user entity of user for who password will be reset
+     * @param request
+     */
     public void sendResetPasswordMessage(User user, HttpServletRequest request) {
         Token token = tokenService.createToken(user, PASSWORD_RESET_TIME);
         String resetUrl = passwordService.createResetUrl(request, token);
@@ -56,6 +66,12 @@ public class EmailService {
         sendSimpleMessage(user.getEmail(), subject, text);
     }
 
+    /**
+     * Creates SimpleMailMessage from params and sends it via emailSender.send() method
+     * @param to addressee
+     * @param subject message subject
+     * @param text message text
+     */
     private void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

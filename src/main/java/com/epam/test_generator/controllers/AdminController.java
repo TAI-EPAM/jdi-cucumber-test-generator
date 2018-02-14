@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Controls performing of administration actions such as change user role or remove project.
+ * All included actions require user to have role ADMIN.
+ */
 @RestController
 public class AdminController {
 
@@ -46,14 +50,12 @@ public class AdminController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
     public ResponseEntity<List<UserDTO>> getUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
-
 
     @ApiOperation(value = "Get all projects", nickname = "getProjects")
     @ApiResponses(value = {

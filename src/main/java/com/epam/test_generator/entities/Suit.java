@@ -9,6 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+
+/**
+ * This class represents test suit essence. Test suit is a collection of test cases that are intended to be used
+ * for testing software's behaviour. Besides some simple fields like id, name, description, history it consists of
+ * tags and cases. List of {@Link cases} represents sequence of test cases that are linked to current {@Link Suit}.
+ * List of {@Link Tag} represents types of {@Link Suit} object.
+ */
 @Entity
 public class Suit implements Serializable, Persistable<Long> {
 

@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Sends reset password message to user email.
+ */
 @RestController
 public class PasswordForgotController {
 

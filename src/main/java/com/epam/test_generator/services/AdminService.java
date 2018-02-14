@@ -23,6 +23,11 @@ public class AdminService {
     @Autowired
     private RoleService roleService;
 
+    /**
+     * Changes user role to role specified in changeUserRoleDTO.
+     * Searching user occurs by e-mail address.
+     * @param changeUserRoleDTO
+     */
     public void changeUserRole(ChangeUserRoleDTO changeUserRoleDTO) {
 
         final User userByEmail = userService.getUserByEmail(changeUserRoleDTO.getEmail());

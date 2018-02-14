@@ -9,6 +9,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 
+
+/**
+ * This class represents token essence. Token is a special key that is used for user identification.
+ */
 @Entity
 public class Token {
 

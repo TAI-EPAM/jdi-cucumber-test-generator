@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 
+/**
+ * Controls login process.
+ */
 @RestController
 public class LoginController {
 

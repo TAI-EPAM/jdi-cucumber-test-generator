@@ -4,6 +4,11 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
 
+
+/**
+ * This DTO is used in password recovery scenario. The first step is to identify user by email and send him letter
+ * with instructions.
+ */
 public class EmailDTO {
     @NotNull
     @Email

@@ -61,6 +61,12 @@ public class SuitService {
         return suitTransformer.toDto(getSuit(projectId, suitId));
     }
 
+    /**
+     * Adds suit specified in suitDTO to project by id
+     * @param projectId if of project where to add case
+     * @param suitDTO suit info
+     * @return id of added suit
+     */
     public Long addSuit(Long projectId, SuitDTO suitDTO) {
         Project project = projectService.getProjectByProjectId(projectId);
         checkNotNull(project);
@@ -74,6 +80,12 @@ public class SuitService {
         return suit.getId();
     }
 
+    /**
+     * Updates suit by id with info specified in suitDTO
+     * @param projectId id of project
+     * @param suitId id of suit to update
+     * @param suitDTO info to update
+     */
     public List<Long> updateSuit(long projectId, long suitId, SuitDTO suitDTO) throws MethodArgumentNotValidException {
         final List<Long> failedStepIds = cascadeUpdateService.cascadeSuitCasesUpdate(projectId, suitId, suitDTO);
         final Suit suit = getSuit(projectId, suitId);
@@ -83,6 +95,11 @@ public class SuitService {
         return failedStepIds;
     }
 
+    /**
+     * Removes suit from project by id
+     * @param projectId id of project where to delete case
+     * @param suitId id of case to delete
+     */
     public void removeSuit(long projectId, long suitId) {
         Suit suit = getSuit(projectId, suitId);
         checkNotNull(suit);
@@ -101,6 +118,10 @@ public class SuitService {
         return suitTransformer.toDtoList(project.getSuits());
     }
 
+    /**
+     * Updates suit's rowNumbers by suit's ids specified in List of SuitRowNumberUpdateDTOs
+     * @param rowNumberUpdates List of SuitRowNumberUpdateDTOs
+     */
     public void updateSuitRowNumber(List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
         if (rowNumberUpdates.isEmpty()) {
             throw new BadRequestException("The list has not to be empty");
