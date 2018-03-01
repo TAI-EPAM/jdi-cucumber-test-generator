@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers;
 
+import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.CaseVersionDTO;
 import com.epam.test_generator.services.CaseService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -71,11 +72,11 @@ public class CaseVersionController {
     })
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/versions/{commitId:.+}",
         method = RequestMethod.PUT)
-    public ResponseEntity<Void> restoreCase(@PathVariable("projectId") long projectId,
-                                            @PathVariable("suitId") long suitId,
-                                            @PathVariable("caseId") long caseId,
-                                            @PathVariable("commitId") String commitId) {
-        caseService.restoreCase(projectId, suitId, caseId, commitId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<CaseDTO> restoreCase(@PathVariable("projectId") long projectId,
+                                               @PathVariable("suitId") long suitId,
+                                               @PathVariable("caseId") long caseId,
+                                               @PathVariable("commitId") String commitId) {
+        CaseDTO restoredCaseDTO = caseService.restoreCase(projectId, suitId, caseId, commitId);
+        return new ResponseEntity<>(restoredCaseDTO, HttpStatus.OK);
     }
 }

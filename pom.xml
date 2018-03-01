@@ -129,10 +129,22 @@
             <version>1.13.6.RELEASE</version>
         </dependency>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -302,11 +314,20 @@
         </dependency>
 
         <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+            <version>2.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.offbytwo.jenkins</groupId>
             <artifactId>jenkins-client</artifactId>
             <version>0.3.7</version>
         </dependency>
-
     </dependencies>
-
 </project>

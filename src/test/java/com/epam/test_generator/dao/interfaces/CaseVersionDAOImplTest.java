@@ -80,4 +80,5 @@ public class CaseVersionDAOImplTest {
                 .map(CaseVersion::getCommitId)
                 .collect(Collectors.toList()));
     }
+
 }

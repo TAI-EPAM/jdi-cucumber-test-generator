@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.CaseUpdateDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
@@ -109,7 +110,7 @@ public class CaseController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Long> addCaseToSuit(@PathVariable("projectId") long projectId,
+    public ResponseEntity<CaseDTO> addCaseToSuit(@PathVariable("projectId") long projectId,
                                               @PathVariable("suitId") long suitId,
                                               @RequestBody @Valid CaseDTO caseDTO) {
 
@@ -138,14 +139,14 @@ public class CaseController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}",
         method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<List<Long>> updateCase(@PathVariable("projectId") long projectId,
-                                                 @PathVariable("suitId") long suitId,
-                                                 @PathVariable("caseId") long caseId,
-                                                 @RequestBody @Valid EditCaseDTO editCaseDTO) {
-        final List<Long> failedStepIds = caseService
+    public ResponseEntity<CaseUpdateDTO> updateCase(@PathVariable("projectId") long projectId,
+                                                             @PathVariable("suitId") long suitId,
+                                                             @PathVariable("caseId") long caseId,
+                                                             @RequestBody @Valid EditCaseDTO editCaseDTO) {
+        final CaseUpdateDTO updatedCaseDTOwithFailedStepIds = caseService
             .updateCase(projectId, suitId, caseId, editCaseDTO);
 
-        return new ResponseEntity<>(failedStepIds, HttpStatus.OK);
+        return new ResponseEntity<>(updatedCaseDTOwithFailedStepIds, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Update, create or delete list of cases", nickname = "updateCases")
@@ -164,14 +165,14 @@ public class CaseController {
     })
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases",
         method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<List<Long>> updateCases(@PathVariable("projectId") long projectId,
+    public ResponseEntity<List<CaseDTO>> updateCases(@PathVariable("projectId") long projectId,
                                                   @PathVariable("suitId") long suitId,
                                                   @RequestBody @Valid List<EditCaseDTO> editDTOList)
         throws MethodArgumentNotValidException {
 
-        List<Long> newCaseIds = caseService.updateCases(projectId, suitId, editDTOList);
+        List<CaseDTO> updatedCasesDTO = caseService.updateCases(projectId, suitId, editDTOList);
 
-        return new ResponseEntity<>(newCaseIds, HttpStatus.OK);
+        return new ResponseEntity<>(updatedCasesDTO, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete case by id", nickname = "removeCase")
@@ -191,12 +192,12 @@ public class CaseController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> removeCase(@PathVariable("projectId") long projectId,
+    public ResponseEntity<CaseDTO> removeCase(@PathVariable("projectId") long projectId,
                                            @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId) {
-        caseService.removeCase(projectId, suitId, caseId);
+        CaseDTO removedCaseDTO = caseService.removeCase(projectId, suitId, caseId);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(removedCaseDTO, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete cases from suit", nickname = "removeCases")
@@ -217,7 +218,7 @@ public class CaseController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases", method = RequestMethod.DELETE,
         consumes = "application/json")
-    public ResponseEntity<Void> removeCases(@PathVariable("projectId") long projectId,
+    public ResponseEntity<List<CaseDTO>> removeCases(@PathVariable("projectId") long projectId,
                                             @PathVariable("suitId") long suitId,
                                             @RequestBody Long[] removeCaseIds) {
         SuitDTO suitDTO = suitService.getSuitDTO(projectId, suitId);
@@ -229,9 +230,9 @@ public class CaseController {
         if (!existentSuitCaseIds.containsAll(idsToRemove)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        caseService.removeCases(projectId, suitId, idsToRemove);
+        List<CaseDTO> removedCasesDTO = caseService.removeCases(projectId, suitId, idsToRemove);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(removedCasesDTO, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Perform status changing event on given case", nickname = "performEvent")

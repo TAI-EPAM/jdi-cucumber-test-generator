@@ -1,12 +1,13 @@
 package com.epam.test_generator.controllers;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,12 +15,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,14 +119,26 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void update_Suit_StatusOk() throws Exception {
+    public void updateSuit_StatusOk() throws Exception {
+
+        SuitUpdateDTO expectedUpdatedSuitDTOwithFailedStepIds =
+             new SuitUpdateDTO(suitDTO,  Arrays.asList(1L, 3L, 5L));
+        when(suitService.updateSuit(0L, 1L, suitDTO))
+            .thenReturn(expectedUpdatedSuitDTOwithFailedStepIds);
+
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
-            .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(suitDTO))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.updatedSuitDto.id", is((int)TEST_SUIT_ID)))
+                .andExpect(jsonPath("$.updatedSuitDto.name", is(suitDTO.getName())))
+                .andExpect(jsonPath("$.failedStepIds", is(Arrays.asList(1, 3, 5))));
 
         verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+        verifyNoMoreInteractions(suitService);
     }
 
     @Test
@@ -194,8 +210,6 @@ public class SuitControllerTest {
 
     @Test
     public void remove_Suit_StatusOk() throws Exception {
-        doNothing().when(suitService).removeSuit(anyLong(), anyLong());
-
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
             .andDo(print())
             .andExpect(status().isOk());
@@ -228,14 +242,14 @@ public class SuitControllerTest {
     @Test
     public void add_Suit_StatusCreated() throws Exception {
         suitDTO.setId(null);
-        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenReturn(TEST_SUIT_ID);
+        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenReturn(suitDTO);
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(content().string(String.valueOf(TEST_SUIT_ID)));
+            .andExpect(content().string(mapper.writeValueAsString(suitDTO)));
 
         verify(suitService).addSuit(anyLong(), any(SuitDTO.class));
     }

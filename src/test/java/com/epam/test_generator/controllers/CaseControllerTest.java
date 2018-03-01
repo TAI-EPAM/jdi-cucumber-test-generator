@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
@@ -7,6 +8,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,9 +16,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.CaseUpdateDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.entities.Action;
@@ -139,10 +143,14 @@ public class CaseControllerTest {
                 + SIMPLE_CASE_ID))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(content().string(mapper.writeValueAsString(caseDTO)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
+            .andExpect(jsonPath("$.name", is(caseDTO.getName())))
+            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
 
-        verify(casesService)
+        verify(casesService,  times(1))
             .getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test
@@ -193,9 +201,8 @@ public class CaseControllerTest {
 
     @Test
     public void addCase_CaseDTO_Created() throws Exception {
-        caseDTO.setId(null);
         when(casesService.addCaseToSuit(anyLong(), anyLong(), any(CaseDTO.class)))
-            .thenReturn(SIMPLE_CASE_ID);
+            .thenReturn(caseDTO);
 
         mockMvc
             .perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
@@ -203,10 +210,14 @@ public class CaseControllerTest {
                 .content(mapper.writeValueAsString(caseDTO)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(content().string(String.valueOf(SIMPLE_CASE_ID)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
+            .andExpect(jsonPath("$.name", is(caseDTO.getName())))
+            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
 
-        verify(casesService)
+        verify(casesService, times(1))
             .addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test
@@ -333,17 +344,26 @@ public class CaseControllerTest {
 
     @Test
     public void updateCase_UpdateCase_StatusOk() throws Exception {
+        CaseUpdateDTO expectedDto = new CaseUpdateDTO(caseDTO, Arrays.asList(1L, 3L, 5L));
+        when(casesService.updateCase(SIMPLE_PROJECT_ID,SIMPLE_SUIT_ID, SIMPLE_CASE_ID, editCaseDTOList.get(0))).thenReturn(expectedDto);
         mockMvc.perform(
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
             .andDo(print())
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.updatedCaseDto.id", is((int)SIMPLE_CASE_ID)))
+            .andExpect(jsonPath("$.updatedCaseDto.name", is(caseDTO.getName())))
+            .andExpect(jsonPath("$.updatedCaseDto.status", is(caseDTO.getStatus().toString())))
+            .andExpect(jsonPath("$.failedStepIds", is(Arrays.asList(1, 3, 5))));
 
-        verify(casesService)
+
+        verify(casesService, times(1))
             .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),
                 any(EditCaseDTO.class));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test
@@ -468,14 +488,20 @@ public class CaseControllerTest {
 
     @Test
     public void removeCase_Case_StatusOk() throws Exception {
+        when(casesService.removeCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID)).thenReturn(caseDTO);
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
             .andDo(print())
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
+            .andExpect(jsonPath("$.name", is(caseDTO.getName())))
+            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
 
         verify(casesService)
             .removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test
@@ -526,16 +552,25 @@ public class CaseControllerTest {
 
     @Test
     public void removeCases_Cases_StatusOk() throws Exception {
+        when(casesService.removeCases(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, Arrays.asList(CASE_IDS))).thenReturn(caseDTOList);
 
         mockMvc.perform(
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(CASE_IDS)))
             .andDo(print())
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[0].id", is((int)SIMPLE_CASE_ID)))
+            .andExpect(jsonPath("$.[0].name", is(caseDTO.getName())))
+            .andExpect(jsonPath("$.[0].status", is(caseDTO.getStatus().toString())))
+            .andExpect(jsonPath("$.[1].id", is(CASE_IDS[0].intValue())))
+            .andExpect(jsonPath("$.[2].id", is(CASE_IDS[1].intValue())))
+            .andExpect(jsonPath("$.[3].id", is(CASE_IDS[2].intValue())));
 
         verify(casesService)
             .removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(Arrays.asList(CASE_IDS)));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test
@@ -601,33 +636,44 @@ public class CaseControllerTest {
 
     @Test
     public void removeCases_DuplicatedCaseIds_StatusOk() throws Exception {
+        List<CaseDTO> expectedRemovedCasesDTO = caseDTOList;
+        List<Integer> expectedIds= Arrays.asList(2, 3, 4, 5);
+        Long[] invalidCaseIds = {2L, 3L, 4L, 5L, 2L};
 
-        Long[] invalidCaseIds = {3L, 4L, 4L};
+        when(casesService.removeCases(SIMPLE_PROJECT_ID,SIMPLE_SUIT_ID, Arrays.asList(invalidCaseIds)))
+            .thenReturn(expectedRemovedCasesDTO);
 
         mockMvc.perform(
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidCaseIds)))
             .andDo(print())
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id", is(expectedIds)));
 
         verify(casesService).removeCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID),
             eq(Arrays.asList(invalidCaseIds)));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test
     public void performEvent_CreateCase_StatusOk() throws Exception {
+        when(casesService.performEvent(anyLong(), anyLong(), anyLong(), any(Event.class))).thenReturn(Status.NOT_DONE);
 
         mockMvc
             .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/events/CREATE")
                 .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$", is(Status.NOT_DONE.toString())))
             .andExpect(status().isOk());
 
         verify(casesService)
             .performEvent(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),
                 eq(Event.CREATE));
+        verifyNoMoreInteractions(casesService);
     }
 
     @Test

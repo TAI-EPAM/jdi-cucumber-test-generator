@@ -6,9 +6,11 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.CaseUpdateDTO;
 import com.epam.test_generator.dto.CaseVersionDTO;
 import com.epam.test_generator.dto.EditCaseDTO;
-import com.epam.test_generator.dto.PropertyDifferenceDTO;
+import com.epam.test_generator.dto.StepDTO;
+import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
@@ -23,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
@@ -76,24 +77,41 @@ public class CaseService {
         return caseTransformer.toDto(getCase(projectId, suitId, caseId));
     }
 
-    public Long addCaseToSuit(Long projectId, Long suitId, @Valid CaseDTO caseDTO) {
+    /**
+     * Adds case to existing suit
+     * @param projectId id of project where to add case
+     * @param suitId id of suit where to add case
+     * @param caseDTO case to add
+     * @return {@link CaseDTO} of added case to suit
+     */
+    public CaseDTO addCaseToSuit(Long projectId, Long suitId, @Valid CaseDTO caseDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseTransformer.fromDto(caseDTO);
+
         Date currentTime = Calendar.getInstance().getTime();
 
         caze.setCreationDate(currentTime);
         caze.setUpdateDate(currentTime);
-
         caze = caseDAO.save(caze);
+
         suit.getCases().add(caze);
 
         caseVersionDAO.save(caze);
 
-        return caze.getId();
+        CaseDTO addedCaseDTO = caseTransformer.toDto(caze);
+
+        return addedCaseDTO;
     }
 
-    public Long addCaseToSuit(Long projectId, Long suitId, EditCaseDTO editCaseDTO)
+    /**
+     * Adds case to existing suit using editCaseDTO
+     * @param projectId id of project where to add case
+     * @param suitId id of suit where to add case
+     * @param editCaseDTO case to add
+     * @return {@link CaseDTO} of added case to suit
+     */
+    public CaseDTO addCaseToSuit(Long projectId, Long suitId, EditCaseDTO editCaseDTO)
         throws MethodArgumentNotValidException {
         CaseDTO caseDTO = new CaseDTO(editCaseDTO.getId(), editCaseDTO.getName(),
             editCaseDTO.getDescription(), new ArrayList<>(),
@@ -109,7 +127,16 @@ public class CaseService {
         return addCaseToSuit(projectId, suitId, caseDTO);
     }
 
-    public List<Long> updateCase(Long projectId, Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
+    /**
+     * Updates case info to info specified in editCaseDTO
+     * @param projectId id of project where to update case
+     * @param suitId id of suit where to update case
+     * @param caseId id of case which to update
+     * @param editCaseDTO info to update
+     * @return {@link SuitUpdateDTO} which contains {@link CaseDTO} and {@link List<Long>}
+     * (in fact id of {@link StepDTO} with FAILED {@link Status} which belong this suit)
+     */
+    public CaseUpdateDTO updateCase(Long projectId, Long suitId, Long caseId, EditCaseDTO editCaseDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
@@ -127,12 +154,24 @@ public class CaseService {
         caze.setStatus(editCaseDTO.getStatus());
         caze.setName(editCaseDTO.getName());
 
-        caseDAO.save(caze);
+        caze = caseDAO.save(caze);
+
+        CaseDTO updatedCaseDTO = caseTransformer.toDto(caze);
+        CaseUpdateDTO updatedCaseDTOwithFailedStepIds =
+            new CaseUpdateDTO(updatedCaseDTO, failedStepIds);
+
         caseVersionDAO.save(caze);
-        return failedStepIds;
+        return updatedCaseDTOwithFailedStepIds;
     }
 
-    public void removeCase(Long projectId, Long suitId, Long caseId) {
+    /**
+     * Deletes one case by id
+     * @param projectId id of project where to delete case
+     * @param suitId id of suit where to delete case
+     * @param caseId id of case to delete
+     * @return removed {@link CaseDTO}
+     */
+    public CaseDTO removeCase(Long projectId, Long suitId, Long caseId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
@@ -144,10 +183,23 @@ public class CaseService {
         caseDAO.delete(caseId);
 
         caseVersionDAO.delete(caze);
+
+        CaseDTO removedCaseDTO = caseTransformer.toDto(caze);
+
+        return removedCaseDTO;
     }
 
-    public void removeCases(Long projectId, Long suitId, List<Long> caseIds) {
+    /**
+     * Deletes multiple cases by ids
+     * @param projectId id of project where to delete cases
+     * @param suitId id of suit where to delete cases
+     * @param caseIds list of cases ids to delete
+     * @return removed list of {@link CaseDTO}
+     */
+    public List<CaseDTO> removeCases(Long projectId, Long suitId, List<Long> caseIds) {
         Suit suit = suitService.getSuit(projectId, suitId);
+
+        List<Case> removedCases = new ArrayList<>();
 
         suit.getCases().stream()
             .filter(caze -> caseIds.stream()
@@ -155,7 +207,13 @@ public class CaseService {
             .forEach(caze -> {
                 caseDAO.delete(caze.getId());
                 caseVersionDAO.delete(caze);
+                removedCases.add(caze);
             });
+
+        removedCases.forEach(caze -> suit.getCases().remove(caze));
+
+        List<CaseDTO> removedCasesDTO = caseTransformer.toDtoList(removedCases);
+        return removedCasesDTO;
     }
 
     public List<CaseVersionDTO> getCaseVersions(Long projectId, Long suitId, Long caseId) {
@@ -171,7 +229,15 @@ public class CaseService {
         return caseVersionTransformer.toDtoList(caseVersions);
     }
 
-    public void restoreCase(Long projectId, Long suitId, Long caseId, String commitId) {
+    /**
+     * Restores case to previous version by caseId and commitId
+     * @param projectId id of project where to restore case
+     * @param suitId id of suit where to restore case
+     * @param caseId id of case to restore
+     * @param commitId id of commit to restore version
+     * @return {@link CaseDTO} of restored by the commitId case
+     */
+    public CaseDTO restoreCase(Long projectId, Long suitId, Long caseId, String commitId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseDAO.findOne(caseId);
@@ -182,35 +248,50 @@ public class CaseService {
         Case caseToRestore = caseVersionDAO.findByCommitId(caseId, commitId);
         checkNotNull(caseToRestore);
 
-        caseDAO.save(caseToRestore);
+        Case restoredCase = caseDAO.save(caseToRestore);
         caseVersionDAO.save(caseToRestore);
+
+        CaseDTO restoredCaseDTO = caseTransformer.toDto(restoredCase);
+
+        return restoredCaseDTO;
     }
 
-    public List<Long> updateCases(Long projectId, long suitId, List<EditCaseDTO> editCaseDTOS)
+    /**
+     * Updates all cases to specified in list of editCaseDTOS
+     * @param projectId id of project where to update cases
+     * @param suitId id of suit where to update cases
+     * @param editCaseDTOS list of cases to update
+     * @return list {@link CaseDTO} with all changed cases
+     * @throws MethodArgumentNotValidException
+     */
+    public List<CaseDTO> updateCases(Long projectId, long suitId, List<EditCaseDTO> editCaseDTOS)
         throws MethodArgumentNotValidException {
-        List<Long> newCasesIds = new ArrayList<>();
+        List<CaseDTO> updatedCases = new ArrayList<>();
         for (EditCaseDTO caseDTO : editCaseDTOS) {
             switch (caseDTO.getAction()) {
                 case DELETE:
                     if (caseDTO.getId() == null) {
                         throw new BadRequestException("No id in Case to remove");
                     }
-                    removeCase(projectId, suitId, caseDTO.getId());
+                    updatedCases.add(removeCase(projectId, suitId, caseDTO.getId()));
                     break;
                 case CREATE:
-                    newCasesIds.add(addCaseToSuit(projectId, suitId, caseDTO));
+                    updatedCases.add(addCaseToSuit(projectId, suitId, caseDTO));
                     break;
                 case UPDATE:
                     if (caseDTO.getId() == null) {
                         throw new BadRequestException("No id in Case to update");
                     }
-                    updateCase(projectId, suitId, caseDTO.getId(), caseDTO);
+                    CaseDTO updatedCaseDTO = updateCase(projectId, suitId, caseDTO.getId(), caseDTO)
+                        .getUpdatedCaseDto();
+                    updatedCases.add(updatedCaseDTO);
                     break;
                 default:
                     throw new BadRequestException("Wrong action argument");
             }
         }
-        return newCasesIds;
+
+        return updatedCases;
     }
 
     public Status performEvent(Long projectId, Long suitId, Long caseId, Event event)
