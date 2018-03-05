@@ -1,9 +1,9 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.dto.CaseDTO;
-import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
+import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.IOService;
 import com.epam.test_generator.services.SuitService;
@@ -48,11 +48,13 @@ public class SuitController {
     })
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}/suits", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/projects/{projectId}/suits", method = RequestMethod.GET,
+        produces = "application/json")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project with suits",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     public ResponseEntity<List<SuitDTO>> getSuits(@PathVariable("projectId") long projectId) {
         return new ResponseEntity<>(suitService.getSuitsFromProject(projectId), HttpStatus.OK);
@@ -68,10 +70,12 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit to return",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}",
+        method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<SuitDTO> getProjectSuit(@PathVariable("projectId") long projectId,
                                                   @PathVariable("suitId") long suitId) {
 
@@ -88,7 +92,8 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitDTO", value = "Added suit object",
             required = true, dataType = "SuitDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -112,14 +117,17 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitDTO", value = "Updated suit object",
             required = true, dataType = "SuitDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}", method = RequestMethod.PUT,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<SuitUpdateDTO> updateSuit(@PathVariable("projectId") long projectId,
-                                                             @PathVariable("suitId") long suitId,
-                                                             @RequestBody @Valid SuitDTO suitDTO) throws MethodArgumentNotValidException {
+                                                    @PathVariable("suitId") long suitId,
+                                                    @RequestBody @Valid SuitDTO suitDTO)
+        throws MethodArgumentNotValidException {
+
         final SuitUpdateDTO updatedSuitDTOwithFailedStepIds = suitService.updateSuit(projectId, suitId, suitDTO);
 
         return new ResponseEntity<>(updatedSuitDTOwithFailedStepIds, HttpStatus.OK);
@@ -132,14 +140,21 @@ public class SuitController {
         @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
         @ApiResponse(code = 404, message = "Suit not found")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "projectId", value = "ID of project",
+                    required = true, dataType = "long", paramType = "path"),
+            @ApiImplicitParam(name = "Authorization", value = "add here your token",
+                    paramType = "header", dataType = "string", required = true)
+    })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/updateRowNumbers", method = RequestMethod.PUT,
-        consumes = "application/json")
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
-    public ResponseEntity<List<SuitRowNumberUpdateDTO>> updateSuitRowNumber
-        (@RequestBody @Valid List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
+    @RequestMapping(value = "/projects/{projectId}/suits/updateRowNumbers",
+            method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<List<SuitRowNumberUpdateDTO>> updateSuitRowNumber(
+        @PathVariable("projectId") long projectId,
+             @RequestBody @Valid List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
 
-        List<SuitRowNumberUpdateDTO> updatedSuitRowNumberUpdateDTOs = suitService.updateSuitRowNumber(rowNumberUpdates);
+        final List<SuitRowNumberUpdateDTO> updatedSuitRowNumberUpdateDTOs =
+            suitService.updateSuitRowNumber(projectId, rowNumberUpdates);
         return new ResponseEntity<>(updatedSuitRowNumberUpdateDTOs, HttpStatus.OK);
     }
 
@@ -153,7 +168,8 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit to delete",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}", method = RequestMethod.DELETE)
@@ -167,10 +183,12 @@ public class SuitController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/featureFile",
         method = RequestMethod.POST, consumes = "application/json")
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        paramType = "header", dataType = "string", required = true)
     public ResponseEntity<String> downloadFile(@RequestBody @Valid SuitDTO suitDTO)
         throws IOException {
-        List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)
+        final List<Long> caseIds = suitDTO.getCases().stream()
+            .map(CaseDTO::getId)
             .collect(Collectors.toList());
 
         return new ResponseEntity<>(ioService.generateFile(suitDTO.getId(), caseIds),

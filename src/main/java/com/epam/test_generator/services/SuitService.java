@@ -6,9 +6,9 @@ import static com.epam.test_generator.services.utils.UtilsService.suitBelongsToP
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
+import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
@@ -17,6 +17,7 @@ import com.epam.test_generator.transformers.SuitTransformer;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,7 +137,8 @@ public class SuitService {
      * @param rowNumberUpdates List of SuitRowNumberUpdateDTOs
      * @return list of {@link SuitRowNumberUpdateDTO} to check on the frontend
      */
-    public List<SuitRowNumberUpdateDTO> updateSuitRowNumber(List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
+    public List<SuitRowNumberUpdateDTO> updateSuitRowNumber(
+        long projectId, List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
         if (rowNumberUpdates.isEmpty()) {
             throw new BadRequestException("The list has not to be empty");
         }
@@ -159,7 +161,10 @@ public class SuitService {
             throw new BadRequestException("One or more of the rowNumbers is a duplicate");
         }
 
-        final List<Suit> suits = suitDAO.findByIdInOrderById(patch.keySet());
+
+        final Project currentProject = projectService.getProjectByProjectId(projectId);
+        final List<Suit> suits = retrieveSuitsFromProjectBySuitIds(currentProject, patch.keySet());
+
 
         if (suits.size() != patch.size()) {
             throw new BadRequestException(
@@ -172,6 +177,17 @@ public class SuitService {
         suitDAO.save(suits);
 
         return rowNumberUpdates;
+    }
+
+    private List<Suit> retrieveSuitsFromProjectBySuitIds(Project currentProject,
+                                                         Set<Long> suitsIds) {
+        final List<Suit> neededSuits = currentProject.getSuits().stream()
+            .filter(s -> suitsIds.contains(s.getId()))
+            .collect(Collectors.toList());
+        if (neededSuits.size() != suitsIds.size()) {
+            throw new BadRequestException("Some Id of suit doesn't belong to current Project");
+        }
+        return neededSuits;
     }
 
     private SuitDTO getSimpleSuitDTO(SuitDTO suitDTO) {
