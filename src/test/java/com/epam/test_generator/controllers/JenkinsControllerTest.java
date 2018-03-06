@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -70,6 +69,14 @@ public class JenkinsControllerTest {
     }
 
     @Test
+    public void getJobs_Jobs_StatusInternalServerError() throws Exception {
+        when(jenkinsJobService.getJobs()).thenThrow(Exception.class);
+        mockMvc.perform(get("/jenkins/job/"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
     public void executeJob_Job_StatusOK() throws Exception {
         ExecuteJenkinsJobDTO jobDTO = new ExecuteJenkinsJobDTO();
         jobDTO.setJobName(jobName);
@@ -85,6 +92,7 @@ public class JenkinsControllerTest {
         verifyNoMoreInteractions(jenkinsJobService);
     }
 
+
     @Test
     public void executeJob_JobWithoutJobName_StatusBadRequest() throws Exception {
         ExecuteJenkinsJobDTO jobDTO = new ExecuteJenkinsJobDTO();
@@ -98,7 +106,7 @@ public class JenkinsControllerTest {
     }
 
     @Test
-    public void executeJob_UnexpectedException_StatusInternalServerErro() throws Exception {
+    public void executeJob_UnexpectedException_StatusInternalServerError() throws Exception {
         ExecuteJenkinsJobDTO jobDTO = new ExecuteJenkinsJobDTO();
         jobDTO.setJobName(jobName);
 
