@@ -17,8 +17,8 @@ import java.util.Objects;
 @Entity
 public class Project {
 
-    @GeneratedValue
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;

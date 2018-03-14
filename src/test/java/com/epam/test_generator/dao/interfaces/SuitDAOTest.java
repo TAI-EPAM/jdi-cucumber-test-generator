@@ -76,6 +76,7 @@ public class SuitDAOTest {
         Tag tag = tagDAO.save(new Tag("tag"));
 
         Case caze = new Case();
+        caze.setName("test");
         caze.addTag(tag);
 
         Suit suit = new Suit("name", "desc", 4, null, null,
@@ -199,24 +200,25 @@ public class SuitDAOTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void updateRowNumber_Suit_Success() {
 
-        suitDAO.save(Arrays.asList(
+        ArrayList<Suit> suits = new ArrayList<>(Arrays.asList(
             new Suit(null, "1", "1", new ArrayList<>(), 1, new HashSet<>(), 1),
             new Suit(null, "2", "2", new ArrayList<>(), 2, new HashSet<>(), 2),
             new Suit(null, "3", "3", new ArrayList<>(), 3, new HashSet<>(), 3)
         ));
+        suitDAO.save(suits);
 
-        final Suit suit1 = suitDAO.findOne(1L);
+        final Suit suit1 = suitDAO.findOne(suits.get(0).getId());
         suit1.setRowNumber(3);
-        final Suit suit2 = suitDAO.findOne(2L);
+        final Suit suit2 = suitDAO.findOne(suits.get(1).getId());
         suit2.setRowNumber(1);
-        final Suit suit3 = suitDAO.findOne(3L);
+        final Suit suit3 = suitDAO.findOne(suits.get(2).getId());
         suit3.setRowNumber(2);
 
         suitDAO.save(Arrays.asList(suit1, suit2, suit3));
 
-        assertThat(3, is(equalTo(suitDAO.findOne(1L).getRowNumber())));
-        assertThat(1, is(equalTo(suitDAO.findOne(2L).getRowNumber())));
-        assertThat(2, is(equalTo(suitDAO.findOne(3L).getRowNumber())));
+        assertThat(3, is(equalTo(suitDAO.findOne(suits.get(0).getId()).getRowNumber())));
+        assertThat(1, is(equalTo(suitDAO.findOne(suits.get(1).getId()).getRowNumber())));
+        assertThat(2, is(equalTo(suitDAO.findOne(suits.get(2).getId()).getRowNumber())));
     }
 
     @Test

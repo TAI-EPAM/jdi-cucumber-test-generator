@@ -14,8 +14,8 @@ import javax.persistence.*;
 @Entity
 public class User {
 
-    @GeneratedValue
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;

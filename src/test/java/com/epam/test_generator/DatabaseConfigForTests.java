@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -28,7 +29,8 @@ public class DatabaseConfigForTests {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
+        LocalContainerEntityManagerFactoryBean entityManager =
+            new LocalContainerEntityManagerFactoryBean();
 
         entityManager.setDataSource(dataSource());
         entityManager.setPackagesToScan(environment.getRequiredProperty("db.entity.package"));
@@ -46,6 +48,14 @@ public class DatabaseConfigForTests {
         dataSource.setUrl("jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1");
 
         return dataSource;
+    }
+
+    @Bean
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setChangeLog("classpath:db/changelog/db.changelog-master.xml");
+        liquibase.setDataSource(dataSource());
+        return liquibase;
     }
 
     @Bean

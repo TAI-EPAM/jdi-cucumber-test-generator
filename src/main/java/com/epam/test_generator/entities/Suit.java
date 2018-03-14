@@ -20,7 +20,7 @@ import java.util.Set;
 public class Suit implements Serializable, Persistable<Long> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;

@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.*;
 @Transactional
 public class RoleDAOTest {
 
-    private final static String ROLE_NAME = "GUEST";
+    private final static String ROLE_NAME = "NEW_ROLE";
 
     @Autowired
     private RoleDAO roleDAO;
@@ -29,14 +29,12 @@ public class RoleDAOTest {
 
     @Test
     public void save_SimpleRole_SaveAnInstance() {
-        final List<Role> expectedEmptyList = roleDAO.findAll();
-        Assert.assertThat(expectedEmptyList.size(), is(equalTo(0)));
+        final int expectedSize = roleDAO.findAll().size() + 1;
 
         final Role someRole = new Role();
         roleDAO.save(someRole);
 
-        final List<Role> expectedNonEmptyList = roleDAO.findAll();
-        Assert.assertThat(expectedNonEmptyList.size(), is(equalTo(1)));
+        Assert.assertEquals(expectedSize, roleDAO.findAll().size());
     }
 
 

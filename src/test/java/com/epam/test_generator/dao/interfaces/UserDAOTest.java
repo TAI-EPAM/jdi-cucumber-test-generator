@@ -111,12 +111,13 @@ public class UserDAOTest {
 
     @Test
     public void findAll_test() {
+        int previousSize = userDAO.findAll().size();
         List<User> users = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             users.add(new User());
         }
         userDAO.save(users);
-        assertEquals(users.size(), userDAO.findAll().size());
+        assertEquals(users.size(), userDAO.findAll().size() - previousSize);
     }
 
 

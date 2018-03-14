@@ -89,6 +89,8 @@ public class StepSuggestionDAOTest {
     public void addList_StepSuggestions_Success() {
         List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
 
+        int expectedSize = stepSuggestionDAO.findAll().size();
+
         List<Long> ids = stepSuggestionDAO.save(stepSuggestions).stream().map(StepSuggestion::getId)
             .collect(Collectors.toList());
 
@@ -98,18 +100,22 @@ public class StepSuggestionDAOTest {
         newStepSuggestions.get(1).setId(ids.get(1));
         newStepSuggestions.get(2).setId(ids.get(2));
 
-        Assert.assertTrue(newStepSuggestions.equals(stepSuggestionDAO.findAll()));
+        expectedSize += newStepSuggestions.size();
+
+        Assert.assertEquals(expectedSize, stepSuggestionDAO.findAll().size());
     }
 
     @Test
     public void removeList_StepSuggestions_Success() {
         List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
 
+        final int expectedSize = stepSuggestionDAO.findAll().size();
+
         stepSuggestionDAO.save(stepSuggestions);
 
         stepSuggestionDAO.delete(stepSuggestions);
 
-        Assert.assertTrue(stepSuggestionDAO.findAll().isEmpty());
+        Assert.assertEquals(expectedSize, stepSuggestionDAO.findAll().size());
     }
 
     private StepSuggestion retrieveStepSuggestion() {

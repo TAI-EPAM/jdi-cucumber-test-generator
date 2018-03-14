@@ -1,0 +1,134 @@
+<!--ChangeLog for entities created in EPMLSTRTAI-494
+TODO move to proper changelogs()see comments after merging 494 to master-->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--Entities-->
+    <changeSet author="" id="new_caseresult_table">
+        <createTable tableName="CASERESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="COMMENT" type="VARCHAR(255)"/>
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="RESULT" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_stepresult_table">
+        <createTable tableName="STEPRESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_suit_result_table">
+        <createTable tableName="SUITRESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_testresult_table">
+        <createTable tableName="TESTRESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="AMOUNTOFFAILED" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNTOFPASSED" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNTOFSKIPPED" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXECUTEDBY" type="VARCHAR(255)"/>
+            <column name="RESULT" type="VARCHAR(255)"/>
+            <column name="PROJECT_ID" type="BIGINT(19)">
+                <constraints foreignKeyName="fk_project" references="project(id)"/>
+            </column>
+            <column name="STATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!--References-->
+    <changeSet author="" id="new_suitresult_caseresult_table">
+        <createTable tableName="SUITRESULT_CASERESULT">
+            <column name="SUITRESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitresultCaseresult_suitresult" references="suitresult(id)"/>
+            </column>
+            <column name="CASES_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitresultCaseresult_case" references="case(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="" id="new_testresult_suitresult_table">
+        <createTable tableName="TESTRESULT_SUITRESULT">
+            <column name="TESTRESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_testresultSuitresult_testresult" references="testresult(id)"/>
+            </column>
+            <column name="SUITS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_testresultSuitresult_suitresult" references="suitresult(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new caseresult_stepresult_table">
+        <createTable tableName="CASERESULT_STEPRESULT">
+            <column name="CASERESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseresultStepresult_caseresult" references="caseresult(id)"/>
+            </column>
+            <column name="STEPS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseresultStepresult_stepresult" references="stepresult(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--Indexes-->
+    <changeSet author="" id="new_suitresultCaseresult_idx">
+        <createIndex indexName="idx_suitresultCaseresult_suitresultId"
+            tableName="SUITRESULT_CASERESULT">
+            <column name="SUITRESULT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_caseresultStepresult_idx">
+        <createIndex indexName="idx_caseresultStepresult_casereusltId"
+            tableName="CASERESULT_STEPRESULT">
+            <column name="CASERESULT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_testresultSuitresult_idx">
+        <createIndex indexName="idx_testresultSuitresult_testresultId"
+            tableName="TESTRESULT_SUITRESULT">
+            <column name="TESTRESULT_ID"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -60,6 +61,18 @@ public class DatabaseConfig {
         dataSource.setUrl("jdbc:h2:file:~/h2/app_db");
 
         return dataSource;
+    }
+
+    /**
+     * Sets up liquibase plugin for initializing database from changestets stored in resource folder
+     * @return liquibase
+     */
+    @Bean
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setChangeLog("classpath:db/changelog/db.changelog-master.xml");
+        liquibase.setDataSource(dataSource());
+        return liquibase;
     }
 
     /**
