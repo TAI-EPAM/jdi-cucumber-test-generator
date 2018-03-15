@@ -1,0 +1,3493 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "REST Api Documentation",
+    "version": "1.0",
+    "title": "Cucumber test generator REST API",
+    "termsOfService": "urn:tos",
+    "contact": {},
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "localhost:8080",
+  "basePath": "/cucumber",
+  "tags": [
+    {
+      "name": "password-forgot-controller",
+      "description": "Password Forgot Controller"
+    },
+    {
+      "name": "case-controller",
+      "description": "Case Controller"
+    },
+    {
+      "name": "admin-controller",
+      "description": "Admin Controller"
+    },
+    {
+      "name": "suit-controller",
+      "description": "Suit Controller"
+    },
+    {
+      "name": "project-controller",
+      "description": "Project Controller"
+    },
+    {
+      "name": "user-confirmation-controller",
+      "description": "User Confirmation Controller"
+    },
+    {
+      "name": "case-version-controller",
+      "description": "Case Version Controller"
+    },
+    {
+      "name": "step-controller",
+      "description": "Step Controller"
+    },
+    {
+      "name": "tag-controller",
+      "description": "Tag Controller"
+    },
+    {
+      "name": "password-reset-controller",
+      "description": "Password Reset Controller"
+    },
+    {
+      "name": "login-controller",
+      "description": "Login Controller"
+    },
+    {
+      "name": "user-controller",
+      "description": "User Controller"
+    },
+    {
+      "name": "general-controller",
+      "description": "General Controller"
+    },
+    {
+      "name": "step-suggestion-controller",
+      "description": "Step Suggestion Controller"
+    },
+    {
+      "name": "jenkins-controller",
+      "description": "Jenkins Controller"
+    },
+    {
+      "name": "states-controller",
+      "description": "States Controller"
+    }
+  ],
+  "paths": {
+    "/admin/changeroles": {
+      "put": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "changeUserRole",
+        "operationId": "changeUserRoleUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "changeUserRoleDTO",
+            "description": "changeUserRoleDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangeUserRoleDTO"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        }
+      }
+    },
+    "/admin/projects": {
+      "get": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "Get all projects",
+        "operationId": "getProjects",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProjectDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/projects/{projectId}": {
+      "delete": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "Delete project by id",
+        "operationId": "removeProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "project not found"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "getUsers",
+        "operationId": "getUsersUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/confirmAccount": {
+      "get": {
+        "tags": [
+          "user-confirmation-controller"
+        ],
+        "summary": "displayResetPasswordPage",
+        "operationId": "displayResetPasswordPageUsingGET_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": [
+          "states-controller"
+        ],
+        "summary": "Get list of Case events",
+        "operationId": "getEvents",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATE",
+                  "PASS",
+                  "FAIL",
+                  "SKIP",
+                  "EDIT"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{status}": {
+      "get": {
+        "tags": [
+          "states-controller"
+        ],
+        "summary": "Get list of Case events available for given status",
+        "operationId": "getAvailableEvents",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "description": "Case status",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "NOT_DONE",
+              "NOT_RUN",
+              "PASSED",
+              "FAILED",
+              "SKIPPED"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CREATE",
+                  "PASS",
+                  "FAIL",
+                  "SKIP",
+                  "EDIT"
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status name"
+          }
+        }
+      }
+    },
+    "/jenkins/job": {
+      "get": {
+        "tags": [
+          "jenkins-controller"
+        ],
+        "summary": "getJobs",
+        "operationId": "getJobsUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CommonJenkinsJobResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jenkins/job/execute": {
+      "post": {
+        "tags": [
+          "jenkins-controller"
+        ],
+        "summary": "executeJob",
+        "operationId": "executeJobUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "jobDTO",
+            "description": "jobDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ExecuteJenkinsJobDTO"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ExecuteJenkinsJobResponse"
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "login-controller"
+        ],
+        "summary": "login",
+        "operationId": "loginUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "userDTO",
+            "description": "userDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginUserDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TokenDTO"
+            }
+          }
+        }
+      }
+    },
+    "/passwordForgot": {
+      "post": {
+        "tags": [
+          "password-forgot-controller"
+        ],
+        "summary": "passwordForgot",
+        "operationId": "passwordForgotUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "email",
+            "description": "email",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EmailDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        }
+      }
+    },
+    "/passwordReset": {
+      "get": {
+        "tags": [
+          "password-reset-controller"
+        ],
+        "summary": "displayResetPasswordPage",
+        "operationId": "displayResetPasswordPageUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "password-reset-controller"
+        ],
+        "summary": "passwordReset",
+        "operationId": "passwordResetUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "passwordResetDTO",
+            "description": "passwordResetDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PasswordResetDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Get all projects of an authorized user",
+        "operationId": "getUserProjects",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProjectDTO"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Create a new project",
+        "operationId": "createProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "projectDTO",
+            "description": "Create a new project",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "get": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Get project by id",
+        "operationId": "getProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ProjectFullDTO"
+            }
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Update project by id",
+        "operationId": "updateProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "projectDTO",
+            "description": "Updated project object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProjectDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "403": {
+            "description": "Project is closed(readonly)"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Close project by id",
+        "operationId": "closeProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project to close",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Project id closed(readonly)"
+          },
+          "404": {
+            "description": "project not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits": {
+      "get": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "Get all suits",
+        "operationId": "getSuits",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project with suits",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SuitDTO"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "Add a new suit to project",
+        "operationId": "createSuit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "suitDTO",
+            "description": "Added suit object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SuitDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/updateRowNumbers": {
+      "put": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "Update suits by rowNumber",
+        "operationId": "updateSuitRowNumber",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "rowNumberUpdates",
+            "description": "rowNumberUpdates",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SuitRowNumberUpdateDTO"
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}": {
+      "get": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "Get suit by id",
+        "operationId": "getProjectSuit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/SuitDTO"
+            }
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "Update suit by id",
+        "operationId": "updateSuit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "suitDTO",
+            "description": "Updated suit object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SuitDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "Delete suit by id",
+        "operationId": "removeSuit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases": {
+      "get": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Get all cases from the suit",
+        "operationId": "getCases",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains cases",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CaseDTO"
+              }
+            }
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Add a new case to the suit",
+        "operationId": "addCaseToSuit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which will be added a new case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "caseDTO",
+            "description": "Added case object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CaseDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Update, create or delete list of cases",
+        "operationId": "updateCases",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "editDTOList",
+            "description": "editDTOList",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EditCaseDTO"
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit to operate cases",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Some of Suits/cases not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Delete cases from suit",
+        "operationId": "removeCases",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "removeCaseIds",
+            "description": "IDs of cases to be removed",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Long[]"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Suit doesn't contains some of cases"
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/tags": {
+      "get": {
+        "tags": [
+          "tag-controller"
+        ],
+        "summary": "Get all tags from all cases in suit",
+        "operationId": "getAllTagsFromAllCasesInSuit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains cases with tags",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TagDTO"
+              }
+            }
+          },
+          "404": {
+            "description": "Suit not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}": {
+      "get": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Get case by id",
+        "operationId": "getCase",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CaseDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Update case by id",
+        "operationId": "updateCase",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "editCaseDTO",
+            "description": "Updated case object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EditCaseDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Delete case by id",
+        "operationId": "removeCase",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Suit doesn't contain the case"
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/events/{event}": {
+      "put": {
+        "tags": [
+          "case-controller"
+        ],
+        "summary": "Perform status changing event on given case",
+        "operationId": "performEvent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "IDs of cases to perform event on",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "event",
+            "in": "path",
+            "description": "Name of event to be performed",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "PASS",
+              "FAIL",
+              "SKIP",
+              "EDIT"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NOT_DONE",
+                "NOT_RUN",
+                "PASSED",
+                "FAILED",
+                "SKIPPED"
+              ]
+            }
+          },
+          "400": {
+            "description": "Can't perform given event on current case"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps": {
+      "get": {
+        "tags": [
+          "step-controller"
+        ],
+        "summary": "Get all steps from the case",
+        "operationId": "getSteps",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains steps",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StepDTO"
+              }
+            }
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "step-controller"
+        ],
+        "summary": "Add a new step to the case",
+        "operationId": "addStepToCase",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which will be added a new step",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "stepDTO",
+            "description": "Added step object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StepDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "step-controller"
+        ],
+        "summary": "Cascade update of the list with steps",
+        "operationId": "updateSteps",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains the list of steps",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "steps",
+            "description": "Array of steps",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StepDTO"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case/Step not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps/{stepId}": {
+      "get": {
+        "tags": [
+          "step-controller"
+        ],
+        "summary": "Get step by id",
+        "operationId": "getStep",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains the step",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "description": "ID of step to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StepDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case/Step not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "step-controller"
+        ],
+        "summary": "Update step by id",
+        "operationId": "updateStep",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains the step",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "description": "ID of step to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "stepDTO",
+            "description": "Updated step object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StepDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case/Step not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "step-controller"
+        ],
+        "summary": "Delete step by id",
+        "operationId": "removeCase_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains the step",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "description": "ID of step to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Suit/Case/Step not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags": {
+      "get": {
+        "tags": [
+          "tag-controller"
+        ],
+        "summary": "Get all tags from the case",
+        "operationId": "getTags",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains tags",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TagDTO"
+              }
+            }
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "tag-controller"
+        ],
+        "summary": "Add a new tag to the case",
+        "operationId": "addTagToCase",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which will be added a new tag",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "tagDTO",
+            "description": "Added tag object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TagDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags/{tagId}": {
+      "put": {
+        "tags": [
+          "tag-controller"
+        ],
+        "summary": "Update tag by id",
+        "operationId": "updateTag",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains the tag",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "ID of tag to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "tagDTO",
+            "description": "Updated tag object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TagDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrorsDTO"
+            }
+          },
+          "404": {
+            "description": "Suit/Case/Tag not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tag-controller"
+        ],
+        "summary": "Delete tag by id",
+        "operationId": "removeTag",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case which contains the tag",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "ID of tag to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Suit/Case/Tag not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/versions": {
+      "get": {
+        "tags": [
+          "case-version-controller"
+        ],
+        "summary": "Get case versions by id",
+        "operationId": "getCaseVersions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CaseVersionDTO"
+              }
+            }
+          },
+          "400": {
+            "description": "Suit doesn't contain the case"
+          },
+          "404": {
+            "description": "Suit/Case not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/cases/{caseId}/versions/{commitId}": {
+      "put": {
+        "tags": [
+          "case-version-controller"
+        ],
+        "summary": "Restore case by commit id",
+        "operationId": "restoreCase",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "suitId",
+            "in": "path",
+            "description": "ID of suit which contains the case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "ID of case",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "commitId",
+            "in": "path",
+            "description": "ID of commit to which state you want restore",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Suit doesn't contain the case"
+          },
+          "404": {
+            "description": "Suit/Case/CaseToRestore not found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/suits/{suitId}/featureFile": {
+      "post": {
+        "tags": [
+          "suit-controller"
+        ],
+        "summary": "downloadFile",
+        "operationId": "downloadFileUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "suitDTO",
+            "description": "suitDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SuitDTO"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/users": {
+      "put": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Assign user to project",
+        "operationId": "addUserToProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project to which user will be added",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "Id of user to be added",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Added",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "403": {
+            "description": "Project id closed(readonly)"
+          },
+          "404": {
+            "description": "Project or user not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Remove user from project",
+        "operationId": "removeUserFromProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "Id of user to be removed",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Removed",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "403": {
+            "description": "Project id closed(readonly)"
+          },
+          "404": {
+            "description": "Project or user not found"
+          }
+        }
+      }
+    },
+    "/registration": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "registerUserAccount",
+        "operationId": "registerUserAccountUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "userDTO",
+            "description": "userDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegistrationUserDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        }
+      }
+    },
+    "/statuses": {
+      "get": {
+        "tags": [
+          "states-controller"
+        ],
+        "summary": "Get list of Case statuses",
+        "operationId": "getEvents_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "NOT_DONE",
+                  "NOT_RUN",
+                  "PASSED",
+                  "FAILED",
+                  "SKIPPED"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stepSuggestions": {
+      "get": {
+        "tags": [
+          "step-suggestion-controller"
+        ],
+        "summary": "Get all step suggestions",
+        "operationId": "getStepsSuggestions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StepSuggestionDTO"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "step-suggestion-controller"
+        ],
+        "summary": "Add a new step suggestion",
+        "operationId": "addStepSuggestion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "stepSuggestionDTO",
+            "description": "Added step suggestion object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StepSuggestionDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/stepSuggestions/{stepSuggestionId}": {
+      "put": {
+        "tags": [
+          "step-suggestion-controller"
+        ],
+        "summary": "Update step suggestion by id",
+        "operationId": "updateStepSuggestion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "stepSuggestionId",
+            "in": "path",
+            "description": "ID of step suggestion to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "stepSuggestionDTO",
+            "description": "Updated step suggestion object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StepSuggestionDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "StepSuggestion not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "step-suggestion-controller"
+        ],
+        "summary": "Delete step suggestion by id",
+        "operationId": "removeStepSuggestion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "stepSuggestionId",
+            "in": "path",
+            "description": "ID of step suggestion to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "StepSuggestion not found"
+          }
+        }
+      }
+    },
+    "/stepSuggestions/{stepType}": {
+      "get": {
+        "tags": [
+          "step-suggestion-controller"
+        ],
+        "summary": "Get all step suggestions by type",
+        "operationId": "getStepsSuggestionsByType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "add here your token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "stepType",
+            "in": "path",
+            "description": "Type of step suggestion that we want to return",
+            "required": true,
+            "type": "ref",
+            "enum": [
+              "GIVEN",
+              "WHEN",
+              "THEN",
+              "AND",
+              "BUT",
+              "ANY"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StepSuggestionDTO"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CaseDTO": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "NOT_DONE",
+            "NOT_RUN",
+            "PASSED",
+            "FAILED",
+            "SKIPPED"
+          ]
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StepDTO"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagDTO"
+          }
+        },
+        "updateDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "CaseVersionDTO": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "commitId": {
+          "type": "string"
+        },
+        "propertyDifferences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PropertyDifferenceDTO"
+          }
+        },
+        "updatedDate": {
+          "type": "string"
+        }
+      }
+    },
+    "ChangeUserRoleDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "CommonJenkinsJobResponse": {
+      "type": "object",
+      "properties": {
+        "jobName": {
+          "type": "string"
+        },
+        "jobUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "EditCaseDTO": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "CREATE",
+            "UPDATE",
+            "DELETE"
+          ]
+        },
+        "comment": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "NOT_DONE",
+            "NOT_RUN",
+            "PASSED",
+            "FAILED",
+            "SKIPPED"
+          ]
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StepDTO"
+          }
+        }
+      }
+    },
+    "EmailDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "ExecuteJenkinsJobDTO": {
+      "type": "object",
+      "properties": {
+        "jobName": {
+          "type": "string"
+        }
+      }
+    },
+    "ExecuteJenkinsJobResponse": {
+      "type": "object",
+      "properties": {
+        "jobName": {
+          "type": "string"
+        },
+        "jobUrl": {
+          "type": "string"
+        },
+        "queueExecutableId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "queueExecutableUrl": {
+          "type": "string"
+        },
+        "queueUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginUserDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "PasswordResetDTO": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "ProjectDTO": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserDTO"
+          }
+        }
+      }
+    },
+    "ProjectFullDTO": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "suits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SuitDTO"
+          }
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserDTO"
+          }
+        }
+      }
+    },
+    "PropertyDifferenceDTO": {
+      "type": "object",
+      "properties": {
+        "newValue": {
+          "type": "object"
+        },
+        "oldValue": {
+          "type": "object"
+        },
+        "propertyName": {
+          "type": "string"
+        }
+      }
+    },
+    "RegistrationUserDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseEntity": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "object"
+        },
+        "statusCode": {
+          "type": "string",
+          "enum": [
+            "100",
+            "101",
+            "102",
+            "103",
+            "200",
+            "201",
+            "202",
+            "203",
+            "204",
+            "205",
+            "206",
+            "207",
+            "208",
+            "226",
+            "300",
+            "301",
+            "302",
+            "303",
+            "304",
+            "305",
+            "307",
+            "308",
+            "400",
+            "401",
+            "402",
+            "403",
+            "404",
+            "405",
+            "406",
+            "407",
+            "408",
+            "409",
+            "410",
+            "411",
+            "412",
+            "413",
+            "414",
+            "415",
+            "416",
+            "417",
+            "418",
+            "419",
+            "420",
+            "421",
+            "422",
+            "423",
+            "424",
+            "426",
+            "428",
+            "429",
+            "431",
+            "451",
+            "500",
+            "501",
+            "502",
+            "503",
+            "504",
+            "505",
+            "506",
+            "507",
+            "508",
+            "509",
+            "510",
+            "511"
+          ]
+        },
+        "statusCodeValue": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "StepDTO": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "CREATE",
+            "UPDATE",
+            "DELETE"
+          ]
+        },
+        "comment": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rowNumber": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "NOT_DONE",
+            "NOT_RUN",
+            "PASSED",
+            "FAILED",
+            "SKIPPED"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "GIVEN",
+            "WHEN",
+            "THEN",
+            "AND",
+            "BUT",
+            "ANY"
+          ]
+        }
+      }
+    },
+    "StepSuggestionDTO": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "GIVEN",
+            "WHEN",
+            "THEN",
+            "AND",
+            "BUT",
+            "ANY"
+          ]
+        }
+      }
+    },
+    "SuitDTO": {
+      "type": "object",
+      "properties": {
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CaseDTO"
+          }
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rowNumber": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagDTO"
+          }
+        }
+      }
+    },
+    "SuitRowNumberUpdateDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rowNumber": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "TagDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "TokenDTO": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "UserDTO": {
+      "type": "object",
+      "properties": {
+        "attempts": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "locked": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        }
+      }
+    },
+    "ValidationErrorDTO": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "ValidationErrorsDTO": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ValidationErrorDTO"
+          }
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
