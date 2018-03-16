@@ -1,18 +1,14 @@
 package com.epam.test_generator.entities;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * This class represents Project essence. Besides simple fields like id, name and description,
  * objects of {@link Project} contain suits and users fields. List of {@link Suit} objects
- * represents suits that are linked with current {@link Project}. Set of {@link User} objects
- * that are assigned to current project. "Assigned" means that user has rights at least to
- * see contents of current project. More rights are granted with more significant {@link Role} of
- * a user.
+ * represents suits that are linked with current {@link Project}. Set of {@link User} objects that
+ * are assigned to current project. "Assigned" means that user has rights at least to see contents
+ * of current project. More rights are granted with more significant {@link Role} of a user.
  */
 @Entity
 public class Project {
@@ -21,15 +17,20 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * This field is used for jira communication.
+     */
+    private String jiraKey;
+
     private String name;
 
     private String description;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Suit> suits;
+    private List<Suit> suits = new ArrayList<>();
 
     @ManyToMany
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @Column(columnDefinition = "boolean default true", nullable = false)
     private boolean active;
@@ -107,16 +108,26 @@ public class Project {
         this.active = active;
     }
 
+    public String getJiraKey() {
+        return jiraKey;
+    }
+
+    public void setJiraKey(String jiraKey) {
+        this.jiraKey = jiraKey;
+    }
+
+
     @Override
     public String toString() {
         return "Project{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", suits=" + suits +
-            ", users=" + users +
-            ", active=" + active +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", jiraKey='" + jiraKey + '\'' +
+                ", suits=" + suits +
+                ", users=" + users +
+                ", active=" + active +
+                '}';
     }
 
     @Override
@@ -129,17 +140,18 @@ public class Project {
         }
         Project project = (Project) o;
         return active == project.active &&
-            Objects.equals(id, project.id) &&
-            Objects.equals(name, project.name) &&
-            Objects.equals(description, project.description) &&
-            Objects.equals(suits, project.suits) &&
-            Objects.equals(users, project.users);
+                Objects.equals(id, project.id) &&
+                Objects.equals(name, project.name) &&
+                Objects.equals(description, project.description) &&
+                Objects.equals(suits, project.suits) &&
+                Objects.equals(jiraKey, project.jiraKey) &&
+                Objects.equals(users, project.users);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, description, suits, users, active);
+        return Objects.hash(id, name, description, suits, users, active, jiraKey);
     }
 
 }

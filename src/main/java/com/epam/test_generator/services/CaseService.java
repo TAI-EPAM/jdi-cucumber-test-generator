@@ -1,31 +1,15 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
-import com.epam.test_generator.dto.CaseDTO;
-import com.epam.test_generator.dto.CaseUpdateDTO;
-import com.epam.test_generator.dto.CaseVersionDTO;
-import com.epam.test_generator.dto.EditCaseDTO;
-import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.dto.SuitUpdateDTO;
-import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.Event;
-import com.epam.test_generator.entities.Status;
-import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
+import com.epam.test_generator.dto.*;
+import com.epam.test_generator.entities.*;
 import com.epam.test_generator.pojo.CaseVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.CaseVersionTransformer;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
@@ -33,6 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 @Transactional
 @Service
@@ -62,6 +53,13 @@ public class CaseService {
     @Autowired
     private StateMachineAdapter stateMachineAdapter;
 
+    @Autowired
+    private RemovedIssueDAO removedIssueDAO;
+
+    public List<Case> getCases() {
+        return caseDAO.findAll();
+    }
+
     public Case getCase(Long projectId, Long suitId, Long caseId) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
@@ -79,13 +77,17 @@ public class CaseService {
 
     /**
      * Adds case to existing suit
+     *
      * @param projectId id of project where to add case
-     * @param suitId id of suit where to add case
-     * @param caseDTO case to add
+     * @param suitId    id of suit where to add case
+     * @param caseDTO   case to add
      * @return {@link CaseDTO} of added case to suit
      */
     public CaseDTO addCaseToSuit(Long projectId, Long suitId, @Valid CaseDTO caseDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
+
+        caseDTO.setJiraParentKey(suit.getJiraKey());
+        caseDTO.setJiraProjectKey(suit.getJiraProjectKey());
 
         Case caze = caseTransformer.fromDto(caseDTO);
 
@@ -93,6 +95,7 @@ public class CaseService {
 
         caze.setCreationDate(currentTime);
         caze.setUpdateDate(currentTime);
+        caze.setLastModifiedDate(LocalDateTime.now());
         caze = caseDAO.save(caze);
 
         suit.getCases().add(caze);
@@ -103,6 +106,7 @@ public class CaseService {
 
         return addedCaseDTO;
     }
+
 
     /**
      * Adds case to existing suit using editCaseDTO
@@ -153,6 +157,8 @@ public class CaseService {
         caze.setPriority(editCaseDTO.getPriority());
         caze.setStatus(editCaseDTO.getStatus());
         caze.setName(editCaseDTO.getName());
+        caze.setLastModifiedDate(LocalDateTime.now());
+
 
         caze = caseDAO.save(caze);
 
@@ -178,6 +184,8 @@ public class CaseService {
         checkNotNull(caze);
 
         caseBelongsToSuit(caze, suit);
+
+        saveIssueToDeleteInJira(caze);
 
         suit.getCases().remove(caze);
         caseDAO.delete(caseId);
@@ -208,12 +216,20 @@ public class CaseService {
                 caseDAO.delete(caze.getId());
                 caseVersionDAO.delete(caze);
                 removedCases.add(caze);
+                saveIssueToDeleteInJira(caze);
+
             });
 
         removedCases.forEach(caze -> suit.getCases().remove(caze));
 
         List<CaseDTO> removedCasesDTO = caseTransformer.toDtoList(removedCases);
         return removedCasesDTO;
+    }
+
+    private void saveIssueToDeleteInJira(Case caze) {
+        if (caze.getJiraKey() != null) {
+            removedIssueDAO.save(new RemovedIssue(caze.getJiraKey()));
+        }
     }
 
     public List<CaseVersionDTO> getCaseVersions(Long projectId, Long suitId, Long caseId) {

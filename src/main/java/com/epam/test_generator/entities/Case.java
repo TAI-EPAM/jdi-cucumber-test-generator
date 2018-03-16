@@ -19,6 +19,11 @@ import javax.persistence.OneToMany;
 import org.springframework.data.domain.Persistable;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.*;
+
 
 /**
  * This class represents Test case essence. Test Case is a set of actions that are used for checking some
@@ -38,6 +43,17 @@ public class Case implements Serializable, Persistable<Long> {
     private String name;
 
     private String description;
+
+    private String jiraKey;
+
+    private String jiraProjectKey;
+
+    private String jiraParentKey;
+
+    private LocalDateTime lastModifiedDate;
+
+    private LocalDateTime lastJiraSyncDate;
+
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Step> steps;
@@ -60,6 +76,7 @@ public class Case implements Serializable, Persistable<Long> {
         creationDate = Calendar.getInstance().getTime();
         updateDate = creationDate;
     }
+
 
     public Case(Long id, String name, String description, List<Step> steps,
                 Integer priority, Set<Tag> tags, String comment) {
@@ -106,8 +123,8 @@ public class Case implements Serializable, Persistable<Long> {
 
     /**
      * Override in order entity manager use merge instead of persist when call with case id = null
-     *  and one of tag ids is not null.
-     *<br/>
+     * and one of tag ids is not null.
+     * <br/>
      * For example, with standard behaviour spring data jpa will call persist on this request
      * {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10, "name":"soap"}]}
      * and it will cause "detached entity passed to persist" error.
@@ -115,7 +132,7 @@ public class Case implements Serializable, Persistable<Long> {
     @Override
     public boolean isNew() {
         boolean isAllTagsWithNullId = tags == null
-            || tags.stream().allMatch(tag -> tag.getId() == null);
+                || tags.stream().allMatch(tag -> tag.getId() == null);
 
         return id == null && isAllTagsWithNullId;
     }
@@ -215,11 +232,51 @@ public class Case implements Serializable, Persistable<Long> {
         this.comment = comment;
     }
 
+    public String getJiraKey() {
+        return jiraKey;
+    }
+
+    public void setJiraKey(String jiraKey) {
+        this.jiraKey = jiraKey;
+    }
+
+    public String getJiraProjectKey() {
+        return jiraProjectKey;
+    }
+
+    public void setJiraProjectKey(String jiraProjectKey) {
+        this.jiraProjectKey = jiraProjectKey;
+    }
+
+    public String getJiraParentKey() {
+        return jiraParentKey;
+    }
+
+    public void setJiraParentKey(String jiraParentKey) {
+        this.jiraParentKey = jiraParentKey;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public LocalDateTime getLastJiraSyncDate() {
+        return lastJiraSyncDate;
+    }
+
+    public void setLastJiraSyncDate(LocalDateTime lastJiraSyncDate) {
+        this.lastJiraSyncDate = lastJiraSyncDate;
+    }
+
     @Override
     public String toString() {
         return String.format(
-            "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s, comment= %s};",
-            id, name, description, steps, creationDate, priority, tags, steps, comment);
+                "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s, comment= %s};",
+                id, name, description, steps, creationDate, priority, tags, steps, comment);
     }
 
     @Override
@@ -234,14 +291,14 @@ public class Case implements Serializable, Persistable<Long> {
         final Case aCase = (Case) o;
 
         return (id != null ? id.equals(aCase.id) : aCase.id == null)
-            && (name != null ? name.equals(aCase.name) : aCase.name == null)
-            && (description != null ? description.equals(aCase.description)
-            : aCase.description == null)
-            && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
-            && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
-            && (status != null ? status.equals(aCase.status) : aCase.status == null)
-            && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null)
-            && (comment != null ? comment.equals(aCase.comment) : aCase.comment == null);
+                && (name != null ? name.equals(aCase.name) : aCase.name == null)
+                && (description != null ? description.equals(aCase.description)
+                : aCase.description == null)
+                && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
+                && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
+                && (status != null ? status.equals(aCase.status) : aCase.status == null)
+                && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null)
+                && (comment != null ? comment.equals(aCase.comment) : aCase.comment == null);
     }
 
     @Override

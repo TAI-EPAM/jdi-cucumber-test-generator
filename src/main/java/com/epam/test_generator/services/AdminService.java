@@ -4,13 +4,10 @@ import com.epam.test_generator.dto.ChangeUserRoleDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRoleException;
-import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @Transactional
 @Service

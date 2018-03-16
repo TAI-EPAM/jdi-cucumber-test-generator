@@ -24,7 +24,6 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
     private JenkinsServerFactory jenkinsServerFactory;
     private static final long QUEUE_WAITING_PERIOD = 1000L;
     private static final long QUEUE_WAITING_DELAY = 2000L;
-    private static final long QUEUE_WAITING_COUNTER = 25;
 
 
     public JenkinsJobServiceImpl(
@@ -34,7 +33,6 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
 
     /**
      * Gets list of all jobs from jenkins server
-     *
      * @return list of found jobs
      */
     @Override
@@ -43,16 +41,17 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
             Map<String, Job> jobs = jenkinsServerFactory.getJenkinsServer().getJobs();
 
             List<CommonJenkinsJobResponse> response = jobs.values().stream()
-                .map(this::transform).collect(Collectors.toList());
+                .map(job -> transform(job)).collect(Collectors.toList());
             return response;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
      * Runs job on jenkins server by job name
-     *
+     * @param jobName
      * @return json with job name, url and build url
      */
     @Override
@@ -64,9 +63,6 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
             QueueReference queueReference = job.build(true);
 
             QueueItem queueItem = getExecutedQueueItem(jenkinsServer, queueReference);
-            if (queueItem == null) {
-                throw new RuntimeException("Executed queueItem not found");
-            }
             Executable executable = queueItem.getExecutable();
 
             ExecuteJenkinsJobResponse response = new ExecuteJenkinsJobResponse();
@@ -79,14 +75,17 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
             return response;
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
      * Method for receiving response from jenkins server after job runs
-     *
+     * @param jenkinsServer
+     * @param queueReference
      * @return queue item with  executable id and url
+     * @throws Exception
      */
     private QueueItem getExecutedQueueItem(JenkinsServer jenkinsServer,
                                            QueueReference queueReference) throws Exception {
@@ -94,35 +93,18 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
         Exchanger<QueueItem> exchanger = new Exchanger<>();
 
         TimerTask waitingTask = new TimerTask() {
-
-            int count = 0;
-
             @Override
             public void run() {
                 QueueItem queueItem;
                 try {
                     queueItem = jenkinsServer.getQueueItem(queueReference);
-                    count++;
 
-                    boolean timeout = count >= QUEUE_WAITING_COUNTER;
-                    boolean gotExecutableQueueItem =
-                        queueItem != null && queueItem.getExecutable() != null;
-                    if (gotExecutableQueueItem) {
+                    if (queueItem != null && queueItem.getExecutable() != null) {
+                        time.cancel();
                         exchanger.exchange(queueItem);
-                        time.cancel();
                     }
-
-                    if (timeout) {
-                        time.cancel();
-                        exchanger.exchange(null);
-                    }
-
                 } catch (Exception e) {
-                    try {
-                        exchanger.exchange(null);
-                    } catch (InterruptedException e1) {
-                    }
-                    time.cancel();
+                    e.printStackTrace();
                 }
             }
         };

@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
@@ -32,6 +33,9 @@ public class LoginService {
 
     @Resource
     private Environment environment;
+
+    @Autowired
+    private UserDAO userDAO;
 
     private final static String ELEMENT_FOR_UNIQUE_TOKEN = "cucumber";
 

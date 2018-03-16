@@ -1,9 +1,9 @@
 package com.epam.test_generator.dto;
 
-import java.util.Objects;
-import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
+import java.util.Set;
 
 public class ProjectDTO {
 
@@ -20,6 +20,8 @@ public class ProjectDTO {
 
     private Set<UserDTO> users;
 
+    private String jiraKey;
+
     public ProjectDTO(String name, String description, boolean active, Set<UserDTO> users) {
         this.name = name;
         this.description = description;
@@ -29,6 +31,14 @@ public class ProjectDTO {
 
     public ProjectDTO() {
 
+    }
+
+    public String getJiraKey() {
+        return jiraKey;
+    }
+
+    public void setJiraKey(String jiraKey) {
+        this.jiraKey = jiraKey;
     }
 
     public Set<UserDTO> getUsers() {

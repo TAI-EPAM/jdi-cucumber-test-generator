@@ -4,16 +4,14 @@ import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 /**
  * This class represents test suit essence. Test suit is a collection of test cases that are intended to be used
  * for testing software's behaviour. Besides some simple fields like id, name, description, history it consists of
- * tags and cases. List of {@Link cases} represents sequence of test cases that are linked to current {@Link Suit}.
+ * tags and cases. List of {@Link Case} represents sequence of test cases that are linked to current {@Link Suit}.
  * List of {@Link Tag} represents types of {@Link Suit} object.
  */
 @Entity
@@ -31,11 +29,19 @@ public class Suit implements Serializable, Persistable<Long> {
 
     private Date creationDate;
 
+    private String jiraKey;
+
+    private String jiraProjectKey;
+
+    private LocalDateTime lastModifiedDate;
+
+    private LocalDateTime lastJiraSyncDate;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Tag> tags;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Case> cases;
+    private List<Case> cases = new ArrayList<>();
 
     private Integer rowNumber;
 
@@ -109,6 +115,14 @@ public class Suit implements Serializable, Persistable<Long> {
         return id == null && isAllTagsWithNullId && isAllCasesNew;
     }
 
+    public String getJiraKey() {
+        return jiraKey;
+    }
+
+    public void setJiraKey(String jiraKey) {
+        this.jiraKey = jiraKey;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -169,6 +183,30 @@ public class Suit implements Serializable, Persistable<Long> {
         this.rowNumber = rowNumber;
     }
 
+    public String getJiraProjectKey() {
+        return jiraProjectKey;
+    }
+
+    public void setJiraProjectKey(String jiraProjectKey) {
+        this.jiraProjectKey = jiraProjectKey;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public LocalDateTime getLastJiraSyncDate() {
+        return lastJiraSyncDate;
+    }
+
+    public void setLastJiraSyncDate(LocalDateTime lastJiraSyncDate) {
+        this.lastJiraSyncDate = lastJiraSyncDate;
+    }
+
     public Case getCaseById(Long id) {
         Case result = null;
 
@@ -190,9 +228,11 @@ public class Suit implements Serializable, Persistable<Long> {
             ", description='" + description + '\'' +
             ", priority=" + priority +
             ", creationDate=" + creationDate +
-            ", tags='" + tags + '\'' +
+            ", jiraKey='" + jiraKey + '\'' +
+            ", jiraProjectKey='" + jiraProjectKey + '\'' +
+            ", tags=" + tags +
             ", cases=" + cases +
-            ", rowNumber=" + cases +
+            ", rowNumber=" + rowNumber +
             '}';
     }
 
@@ -204,28 +244,24 @@ public class Suit implements Serializable, Persistable<Long> {
         if (!(o instanceof Suit)) {
             return false;
         }
-
-        final Suit suit = (Suit) o;
-
-        return (id != null ? id.equals(suit.id) : suit.id == null)
-            && (name != null ? name.equals(suit.name) : suit.name == null)
-            && (description != null ? description.equals(suit.description)
-            : suit.description == null)
-            && (priority != null ? priority.equals(suit.priority) : suit.priority == null)
-            && (tags != null ? tags.equals(suit.tags) : suit.tags == null)
-            && (cases != null ? cases.equals(suit.cases) : suit.cases == null)
-            && (rowNumber != null ? rowNumber.equals(suit.rowNumber) : suit.rowNumber == null);
+        Suit suit = (Suit) o;
+        return Objects.equals(id, suit.id) &&
+            Objects.equals(name, suit.name) &&
+            Objects.equals(description, suit.description) &&
+            Objects.equals(priority, suit.priority) &&
+            Objects.equals(jiraKey, suit.jiraKey) &&
+            Objects.equals(jiraProjectKey, suit.jiraProjectKey) &&
+            Objects.equals(tags, suit.tags) &&
+            Objects.equals(cases, suit.cases) &&
+            Objects.equals(rowNumber, suit.rowNumber);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        result = 31 * result + (cases != null ? cases.hashCode() : 0);
-        result = 31 * result + (rowNumber != null ? rowNumber.hashCode() : 0);
-        return result;
+
+        return Objects
+            .hash(id, name, description, priority, jiraKey, jiraProjectKey, tags,
+                cases,
+                rowNumber);
     }
 }

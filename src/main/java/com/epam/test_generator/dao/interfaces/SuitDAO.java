@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface SuitDAO extends JpaRepository<Suit, Long> {
-
     List<Suit> findByIdInOrderById(Collection<Long> ids);
-
+    Suit findByJiraKey(String jiraKey);
 }

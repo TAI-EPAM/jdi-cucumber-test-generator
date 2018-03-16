@@ -1,6 +1,7 @@
 package com.epam.test_generator.config;
 
 import com.epam.test_generator.entities.Role;
+import com.epam.test_generator.services.JiraService;
 import com.epam.test_generator.services.RoleService;
 import com.epam.test_generator.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,13 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private JiraService jiraService;
+
     /**
      * Handle an application event: adds roles from roles.properties
      * file to the database and creates admin role if it doesn't exist
+     *
      * @param event
      */
     @Override
@@ -40,7 +45,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
                 roleService.addRole(role);
             }
         }
+
         userService.createAdminIfDoesNotExist();
     }
+
 
 }

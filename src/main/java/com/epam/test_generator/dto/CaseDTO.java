@@ -1,15 +1,16 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class CaseDTO {
 
@@ -44,6 +45,12 @@ public class CaseDTO {
 
     private String comment;
 
+    private String jiraProjectKey;
+
+    private String jiraParentKey;
+
+    private String jiraKey;
+
     public CaseDTO() {
         creationDate = Calendar.getInstance().getTime();
         updateDate = creationDate;
@@ -58,6 +65,30 @@ public class CaseDTO {
         this.priority = priority;
         this.tags = tags;
         this.status = status;
+    }
+
+    public String getJiraProjectKey() {
+        return jiraProjectKey;
+    }
+
+    public void setJiraProjectKey(String jiraProjectKey) {
+        this.jiraProjectKey = jiraProjectKey;
+    }
+
+    public String getJiraParentKey() {
+        return jiraParentKey;
+    }
+
+    public void setJiraParentKey(String jiraParentKey) {
+        this.jiraParentKey = jiraParentKey;
+    }
+
+    public String getJiraKey() {
+        return jiraKey;
+    }
+
+    public void setJiraKey(String jiraKey) {
+        this.jiraKey = jiraKey;
     }
 
     public Long getId() {

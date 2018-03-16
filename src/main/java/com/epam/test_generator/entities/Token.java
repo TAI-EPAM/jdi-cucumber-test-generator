@@ -38,8 +38,8 @@ public class Token {
         this.user = user;
     }
 
-
     public Token() {
+
     }
 
     public Long getId() {

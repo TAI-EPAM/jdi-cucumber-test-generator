@@ -109,7 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/login", "/registration", "/v2/api-docs",
                 "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
-                "/webjars/**","/passwordForgot","/passwordReset","/confirmAccount");
+                "/webjars/**","/passwordForgot","/passwordReset","/confirmAccount", "/webapp/vue-static", "/index.html");
     }
 
 }

@@ -1,9 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-import static com.epam.test_generator.services.utils.UtilsService.checkProjectIsActive;
-import static com.epam.test_generator.services.utils.UtilsService.userBelongsToProject;
-
 import com.epam.test_generator.config.security.AuthenticatedUser;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.dto.ProjectDTO;
@@ -12,12 +8,14 @@ import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.transformers.ProjectFullTransformer;
 import com.epam.test_generator.transformers.ProjectTransformer;
-import com.google.common.collect.Sets;
-import java.util.List;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+
+import static com.epam.test_generator.services.utils.UtilsService.*;
 
 @Service
 @Transactional
@@ -59,6 +57,12 @@ public class ProjectService {
     public Project getProjectByProjectId(Long projectId) {
         Project project = projectDAO.findOne(projectId);
         checkNotNull(project);
+        return project;
+    }
+
+    public Project getProjectByJiraKey(String key) {
+        Project project = projectDAO.findByJiraKey(key);
+        checkNotNull(project);
 
         return project;
     }
@@ -84,6 +88,15 @@ public class ProjectService {
 
         Project project = projectTransformer.fromDto(projectDTO);
         project.addUser(authUser);
+        project.setActive(true);
+        project = projectDAO.save(project);
+
+        return project.getId();
+    }
+
+    public Long createProjectwithoutPrincipal(ProjectDTO projectDTO) {
+
+        Project project = projectTransformer.fromDto(projectDTO);
         project.setActive(true);
 
         project = projectDAO.save(project);
