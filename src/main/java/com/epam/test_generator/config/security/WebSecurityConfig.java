@@ -23,9 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-
 @Configuration
-
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationProvider authenticationProvider;
@@ -46,9 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
         jwtAuthenticationFilter
-                .setAuthenticationSuccessHandler(new JwtAuthenticationSuccessHandler());
+            .setAuthenticationSuccessHandler(new JwtAuthenticationSuccessHandler());
         jwtAuthenticationFilter.setAuthenticationFailureHandler(
-                new JwtAuthenticationFailureHandler());
+            new JwtAuthenticationFailureHandler());
         return jwtAuthenticationFilter;
     }
 
@@ -62,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * <p>
      * We do not need csrf protection because our tokens are immune to it.
      * <p>
-     * Here we can configurate our security settings. We can give a permission fo all or any users
+     * Here we can configure our security settings. We can give a permission fo all or any users
      * to visit some resources.
      * <p>
      * We plug in our special authentication filter within the Spring’s predefined filter chain,
@@ -72,17 +70,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.csrf().disable().cors().and()
-                .authorizeRequests()
-                .antMatchers("/registration", "/login","/passwordForgot","/passwordReset","/confirmAccount")
-                .permitAll()
-                .antMatchers("/projects/{projectId}/**")
-                .access("@webSecurityConfig.checkProjectId(authentication,#projectId)")
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.csrf().disable().cors().disable()
+            .authorizeRequests()
+            .antMatchers("/registration", "/login", "/passwordForgot",
+                "/passwordReset", "/confirmAccount")
+            .permitAll()
+            .antMatchers("/projects/{projectId}/**")
+            .access("@webSecurityConfig.checkProjectId(authentication,#projectId)")
+            .and()
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     public boolean checkProjectId(Authentication authentication, Long projectId) {
@@ -108,8 +107,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/login", "/registration", "/v2/api-docs",
-                "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
-                "/webjars/**","/passwordForgot","/passwordReset","/confirmAccount", "/webapp/vue-static", "/index.html");
+            "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
+            "/webjars/**", "/passwordForgot", "/passwordReset", "/confirmAccount", "/static/**",
+            "/index.html");
     }
 
 }

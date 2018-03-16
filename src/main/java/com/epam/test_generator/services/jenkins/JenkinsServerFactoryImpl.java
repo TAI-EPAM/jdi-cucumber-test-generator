@@ -33,8 +33,7 @@ public class JenkinsServerFactoryImpl implements JenkinsServerFactory {
     @Override
     @PostConstruct
     public void updateCredentials() {
-        this.defaultCredentials = new JenkinsCredentials("_",
-            "_", "_");
+        this.defaultCredentials = new JenkinsCredentials("", "", "");
         //TODO consider where we save credentials
     }
 }

@@ -1,8 +1,9 @@
 package com.epam.test_generator.config;
 
+import java.util.Properties;
+import javax.annotation.Resource;
 import net.rcarz.jiraclient.BasicCredentials;
 import net.rcarz.jiraclient.JiraClient;
-import org.javers.core.metamodel.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +11,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
-import javax.annotation.Resource;
-import java.util.Properties;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * Configuration class customizing the default Java-based configuration for Spring MVC.
@@ -84,20 +84,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     /**
-     * Set up custom {@link ViewResolver} - an object that can resolve views by name.
-     * @return view resolver bean
-     */
-    @Bean(name = "viewResolver")
-    public ViewResolver getViewResolver() {
-        InternalResourceViewResolver resourceViewResolver = new InternalResourceViewResolver();
-
-        resourceViewResolver.setPrefix("/WEB-INF/static/views");
-        resourceViewResolver.setSuffix(".html");
-
-        return resourceViewResolver;
-    }
-
-    /**
      * Configure cross origin requests processing.
      * @param registry assists with the registration of CorsConfiguration mapped to a path pattern
      */
@@ -115,11 +101,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-            .addResourceLocations("/WEB-INF/static/");
+        registry.addResourceHandler("/static/views/vue-static/**")
+            .addResourceLocations("/WEB-INF/vue-static/");
+        registry.addResourceHandler("/index.html")
+            .addResourceLocations("/WEB-INF/index.html");
         registry.addResourceHandler("swagger-ui.html")
             .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-            .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }

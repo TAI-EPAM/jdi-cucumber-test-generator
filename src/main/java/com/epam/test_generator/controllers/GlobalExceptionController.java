@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
+
 /**
  * This class handles all exceptions to make sure that in case of error server will not stop
  * and client will receive response with error code.
