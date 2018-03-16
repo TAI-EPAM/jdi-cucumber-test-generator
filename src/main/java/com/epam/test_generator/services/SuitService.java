@@ -65,6 +65,7 @@ public class SuitService {
 
     /**
      * Adds suit specified in suitDTO to project by id
+     *
      * @param projectId if of project where to add case
      * @param suitDTO suit info
      * @return {@link SuitDTO} of added suit
@@ -86,14 +87,17 @@ public class SuitService {
 
     /**
      * Updates suit by id with info specified in suitDTO
+     *
      * @param projectId id of project
      * @param suitId id of suit to update
      * @param suitDTO info to update
      * @return {@link SuitUpdateDTO} which contains {@link SuitDTO} and {@link List<Long>}
      * (in fact id of {@link StepDTO} with FAILED {@link Status} which belong this suit)
      */
-    public SuitUpdateDTO updateSuit(long projectId, long suitId, SuitDTO suitDTO) throws MethodArgumentNotValidException {
-        final List<Long> failedStepIds = cascadeUpdateService.cascadeSuitCasesUpdate(projectId, suitId, suitDTO);
+    public SuitUpdateDTO updateSuit(long projectId, long suitId, SuitDTO suitDTO)
+        throws MethodArgumentNotValidException {
+        final List<Long> failedStepIds = cascadeUpdateService
+            .cascadeSuitCasesUpdate(projectId, suitId, suitDTO);
         Suit suit = getSuit(projectId, suitId);
         final SuitDTO simpleSuitDTO = getSimpleSuitDTO(suitDTO);
 
@@ -101,13 +105,15 @@ public class SuitService {
         suit = suitDAO.save(suit);
 
         SuitDTO updatedSuitDTO = suitTransformer.toDto(suit);
-        SuitUpdateDTO updatedSuitDTOwithFailedStepIds = new SuitUpdateDTO(updatedSuitDTO, failedStepIds);
+        SuitUpdateDTO updatedSuitDTOwithFailedStepIds = new SuitUpdateDTO(updatedSuitDTO,
+            failedStepIds);
 
         return updatedSuitDTOwithFailedStepIds;
     }
 
     /**
      * Removes suit from project by id
+     *
      * @param projectId id of project where to delete case
      * @param suitId id of case to delete
      * @return {@link SuitDTO) of removed suit
@@ -134,6 +140,7 @@ public class SuitService {
 
     /**
      * Updates suit's rowNumbers by suit's ids specified in List of SuitRowNumberUpdateDTOs
+     *
      * @param rowNumberUpdates List of SuitRowNumberUpdateDTOs
      * @return list of {@link SuitRowNumberUpdateDTO} to check on the frontend
      */

@@ -140,7 +140,6 @@ public class SuitControllerSecurityTest {
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isOk());
     }
 
@@ -154,7 +153,6 @@ public class SuitControllerSecurityTest {
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 
@@ -166,7 +164,6 @@ public class SuitControllerSecurityTest {
         when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
 
         mvc.perform(get("/suits").contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 
@@ -181,7 +178,6 @@ public class SuitControllerSecurityTest {
             "Bearer " + loginService.getLoginJWTToken(loginUserDTO) + "something invalid";
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 
@@ -197,7 +193,6 @@ public class SuitControllerSecurityTest {
         when(validUser.isLocked()).thenReturn(true);
 
         mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 
@@ -214,7 +209,6 @@ public class SuitControllerSecurityTest {
 
         mvc.perform(get("/projects/" + 3L + "/suits").header("Authorization", token)
             .contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 
@@ -231,7 +225,6 @@ public class SuitControllerSecurityTest {
 
         mvc.perform(get("/projects/" + 2L + "/suits").header("Authorization", token)
             .contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isOk());
     }
 }

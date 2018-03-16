@@ -100,7 +100,7 @@ public class SuitController {
     @RequestMapping(value = "/projects/{projectId}/suits", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<SuitDTO> createSuit(@PathVariable("projectId") long projectId,
-                                           @RequestBody @Valid SuitDTO suitDTO) {
+                                              @RequestBody @Valid SuitDTO suitDTO) {
         return new ResponseEntity<>(suitService.addSuit(projectId, suitDTO), HttpStatus.CREATED);
     }
 
@@ -174,7 +174,7 @@ public class SuitController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/projects/{projectId}/suits/{suitId}", method = RequestMethod.DELETE)
     public ResponseEntity<SuitDTO> removeSuit(@PathVariable("projectId") long projectId,
-                                           @PathVariable("suitId") long suitId) {
+                                              @PathVariable("suitId") long suitId) {
         SuitDTO removedSuitDTO = suitService.removeSuit(projectId, suitId);
 
         return new ResponseEntity<>(removedSuitDTO, HttpStatus.OK);

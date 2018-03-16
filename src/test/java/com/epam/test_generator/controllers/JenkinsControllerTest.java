@@ -63,7 +63,6 @@ public class JenkinsControllerTest {
     public void getJobs_Jobs_StatusOK() throws Exception {
         when(jenkinsJobService.getJobs()).thenReturn(jobsList);
         mockMvc.perform(get("/jenkins/job/"))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().string(jobsList.toString()));
     }
@@ -72,7 +71,6 @@ public class JenkinsControllerTest {
     public void getJobs_Jobs_StatusInternalServerError() throws Exception {
         when(jenkinsJobService.getJobs()).thenThrow(Exception.class);
         mockMvc.perform(get("/jenkins/job/"))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
     }
 
@@ -85,7 +83,7 @@ public class JenkinsControllerTest {
         String json = mapper.writeValueAsString(jobDTO);
         mockMvc.perform(
             post("/jenkins/job/execute").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print()).andExpect(status().isOk())
+            .andExpect(status().isOk())
             .andExpect(content().string(mapper.writeValueAsString(executeJenkinsJobResponse)));
 
         verify(jenkinsJobService).runJob(eq(jobName));
@@ -101,7 +99,7 @@ public class JenkinsControllerTest {
         String json = mapper.writeValueAsString(jobDTO);
         mockMvc.perform(
             post("/jenkins/job/execute").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print()).andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(jenkinsJobService);
     }
 
@@ -114,7 +112,7 @@ public class JenkinsControllerTest {
         String json = mapper.writeValueAsString(jobDTO);
         mockMvc.perform(
             post("/jenkins/job/execute").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print()).andExpect(status().isInternalServerError());
+            .andExpect(status().isInternalServerError());
 
         verify(jenkinsJobService).runJob(eq(jobName));
         verifyNoMoreInteractions(jenkinsJobService);

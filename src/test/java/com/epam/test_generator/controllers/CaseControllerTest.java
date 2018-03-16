@@ -141,7 +141,6 @@ public class CaseControllerTest {
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
@@ -161,7 +160,6 @@ public class CaseControllerTest {
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(casesService)
@@ -177,7 +175,6 @@ public class CaseControllerTest {
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(casesService)
@@ -192,7 +189,6 @@ public class CaseControllerTest {
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(casesService)
@@ -208,7 +204,6 @@ public class CaseControllerTest {
             .perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-            .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
@@ -230,7 +225,6 @@ public class CaseControllerTest {
             .perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(casesService)
@@ -247,7 +241,6 @@ public class CaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
             .andExpect(status().isBadRequest());
-
         verify(casesService, times(0))
             .addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseDTO.class));
     }
@@ -336,7 +329,6 @@ public class CaseControllerTest {
             .perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(caseDTO)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(casesService).addCaseToSuit(anyLong(), anyLong(), any(CaseDTO.class));
@@ -351,7 +343,6 @@ public class CaseControllerTest {
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.updatedCaseDto.id", is((int)SIMPLE_CASE_ID)))
@@ -376,7 +367,6 @@ public class CaseControllerTest {
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(casesService)
@@ -394,7 +384,6 @@ public class CaseControllerTest {
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(casesService)
@@ -478,7 +467,6 @@ public class CaseControllerTest {
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(editCaseDTOList.get(0))))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(casesService)
@@ -492,7 +480,6 @@ public class CaseControllerTest {
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
@@ -512,7 +499,6 @@ public class CaseControllerTest {
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(casesService)
@@ -528,7 +514,6 @@ public class CaseControllerTest {
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(casesService)
@@ -543,7 +528,6 @@ public class CaseControllerTest {
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(casesService)
@@ -558,7 +542,6 @@ public class CaseControllerTest {
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(CASE_IDS)))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[0].id", is((int)SIMPLE_CASE_ID)))
@@ -582,7 +565,6 @@ public class CaseControllerTest {
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(CASE_IDS)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(casesService)
@@ -598,7 +580,6 @@ public class CaseControllerTest {
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(CASE_IDS)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(casesService)
@@ -614,7 +595,6 @@ public class CaseControllerTest {
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(CASE_IDS)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(casesService)
@@ -630,7 +610,6 @@ public class CaseControllerTest {
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidCaseIds)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -647,7 +626,6 @@ public class CaseControllerTest {
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidCaseIds)))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id", is(expectedIds)));
@@ -665,7 +643,6 @@ public class CaseControllerTest {
             .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/events/CREATE")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$", is(Status.NOT_DONE.toString())))
             .andExpect(status().isOk());
@@ -683,7 +660,6 @@ public class CaseControllerTest {
             .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/events/WRONG")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -697,7 +673,6 @@ public class CaseControllerTest {
             .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/events/PASS")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 

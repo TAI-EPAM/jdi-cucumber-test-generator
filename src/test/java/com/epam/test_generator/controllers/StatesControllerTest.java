@@ -39,7 +39,6 @@ public class StatesControllerTest {
     public void get_AvailableEvents_StatusOk() throws Exception {
 
         mockMvc.perform(get("/events/" + status))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(statesService).availableTransitions(eq(status));
@@ -50,7 +49,6 @@ public class StatesControllerTest {
     public void get_AvailableEvents_StatusBadRequest() throws Exception {
 
         mockMvc.perform(get("/events/WRONG"))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -58,7 +56,6 @@ public class StatesControllerTest {
     public void get_Events_StatusOk() throws Exception {
 
         mockMvc.perform(get("/events/"))
-            .andDo(print())
             .andExpect(status().isOk());
     }
 
@@ -66,7 +63,6 @@ public class StatesControllerTest {
     public void get_Statuses_StatusOk() throws Exception {
 
         mockMvc.perform(get("/statuses/"))
-            .andDo(print())
             .andExpect(status().isOk());
     }
 }

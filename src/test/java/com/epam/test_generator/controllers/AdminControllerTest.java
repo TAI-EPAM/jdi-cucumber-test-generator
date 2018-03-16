@@ -47,6 +47,6 @@ public class AdminControllerTest {
 
         mockMvc.perform(
             put("/admin/changeroles").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print()).andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 }

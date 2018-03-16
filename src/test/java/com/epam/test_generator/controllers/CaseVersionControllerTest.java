@@ -60,7 +60,6 @@ public class CaseVersionControllerTest {
         mockMvc
             .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/versions"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(caseService).getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
@@ -74,7 +73,6 @@ public class CaseVersionControllerTest {
         mockMvc
             .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/versions"))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(caseService).getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
@@ -88,7 +86,6 @@ public class CaseVersionControllerTest {
         mockMvc
             .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/versions"))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(caseService).getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
@@ -101,7 +98,6 @@ public class CaseVersionControllerTest {
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(caseService)
@@ -118,7 +114,6 @@ public class CaseVersionControllerTest {
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(caseService)
@@ -136,7 +131,6 @@ public class CaseVersionControllerTest {
                 + SIMPLE_CASE_ID + "/versions/"
                 + SIMPLE_COMMIT_ID)
                 .param("commitId", SIMPLE_COMMIT_ID))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(caseService)

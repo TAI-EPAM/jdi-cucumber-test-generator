@@ -1,5 +1,13 @@
 package com.epam.test_generator.controllers;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationProvider;
@@ -9,10 +17,11 @@ import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.AdminService;
+import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.RoleService;
-import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
+import javax.servlet.Filter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,15 +38,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import javax.servlet.Filter;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class, DatabaseConfigForTests.class})
@@ -130,7 +130,6 @@ public class AdminControllerSecurityTest {
 
         mvc.perform(
             get("/admin/users").header("Authorization", token).contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isOk());
     }
 
@@ -146,7 +145,6 @@ public class AdminControllerSecurityTest {
 
         mvc.perform(
             get("/admin/users").header("Authorization", token).contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 
@@ -167,7 +165,6 @@ public class AdminControllerSecurityTest {
 
         mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
             .contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isOk());
     }
 
@@ -187,7 +184,6 @@ public class AdminControllerSecurityTest {
 
         mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
             .contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -204,7 +200,6 @@ public class AdminControllerSecurityTest {
 
         mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
             .contentType("application/json"))
-            .andDo(print())
             .andExpect(status().isForbidden());
     }
 

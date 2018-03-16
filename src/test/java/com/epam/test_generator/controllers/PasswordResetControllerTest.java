@@ -57,20 +57,20 @@ public class PasswordResetControllerTest {
         passwordReset.setToken("token");
         String json = mapper.writeValueAsString(passwordReset);
         mockMvc.perform(post("/passwordReset").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 
     @Test
     public void displayResetPasswordPage_SimpleToken_StatusOk() throws Exception {
         mockMvc.perform(get("/passwordReset").param("token","value"))
-                .andDo(print()).andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 
     @Test
     public void passwordReset_NullJson_StatusInternalServerError() throws Exception {
         String json = mapper.writeValueAsString(null);
         mockMvc.perform(post("/passwordReset").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isInternalServerError());
+                .andExpect(status().isInternalServerError());
     }
 
 }

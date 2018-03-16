@@ -84,4 +84,42 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="" id="new_suitresult_caseresult_table">
+        <createTable tableName="SUITRESULT_CASERESULT">
+            <column name="SUITRESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitresultCaseresult_suitresult" references="suitresult(id)"/>
+            </column>
+            <column name="CASERESULTS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitresultCaseresult_case" references="case(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="" id="new_testresult_suitresult_table">
+        <createTable tableName="TESTRESULT_SUITRESULT">
+            <column name="TESTRESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_testresultSuitresult_testresult" references="testresult(id)"/>
+            </column>
+            <column name="SUITS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_testresultSuitresult_suitresult" references="suitresult(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new caseresult_stepresult_table">
+        <createTable tableName="CASERESULT_STEPRESULT">
+            <column name="CASERESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseresultStepresult_caseresult" references="caseresult(id)"/>
+            </column>
+            <column name="STEPS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseresultStepresult_stepresult" references="stepresult(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

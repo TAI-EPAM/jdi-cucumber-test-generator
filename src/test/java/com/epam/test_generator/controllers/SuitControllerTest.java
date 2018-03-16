@@ -68,7 +68,6 @@ public class SuitControllerTest {
             .thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(suitService).getSuitsFromProject(SIMPLE_PROJECT_ID);
@@ -79,7 +78,6 @@ public class SuitControllerTest {
         when(suitService.getSuitsFromProject(SIMPLE_PROJECT_ID)).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits"))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(suitService).getSuitsFromProject(SIMPLE_PROJECT_ID);
@@ -90,7 +88,6 @@ public class SuitControllerTest {
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenReturn(suitDTO);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(suitService).getSuitDTO(eq(SIMPLE_PROJECT_ID), eq(TEST_SUIT_ID));
@@ -101,7 +98,6 @@ public class SuitControllerTest {
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(suitService).getSuitDTO(eq(SIMPLE_PROJECT_ID), eq(TEST_SUIT_ID));
@@ -112,7 +108,6 @@ public class SuitControllerTest {
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(suitService).getSuitDTO(eq(SIMPLE_PROJECT_ID), eq(TEST_SUIT_ID));
@@ -130,7 +125,6 @@ public class SuitControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(suitDTO))
         )
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.updatedSuitDto.id", is((int)TEST_SUIT_ID)))
@@ -148,7 +142,6 @@ public class SuitControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
@@ -161,7 +154,6 @@ public class SuitControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
@@ -174,7 +166,6 @@ public class SuitControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
@@ -188,7 +179,6 @@ public class SuitControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
@@ -202,7 +192,6 @@ public class SuitControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
@@ -211,7 +200,6 @@ public class SuitControllerTest {
     @Test
     public void remove_Suit_StatusOk() throws Exception {
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(suitService).removeSuit(anyLong(), anyLong());
@@ -222,7 +210,6 @@ public class SuitControllerTest {
         doThrow(NotFoundException.class).when(suitService).removeSuit(anyLong(), anyLong());
 
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(suitService).removeSuit(anyLong(), anyLong());
@@ -233,7 +220,6 @@ public class SuitControllerTest {
         doThrow(RuntimeException.class).when(suitService).removeSuit(anyLong(), anyLong());
 
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(suitService).removeSuit(anyLong(), anyLong());
@@ -247,7 +233,6 @@ public class SuitControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(content().string(mapper.writeValueAsString(suitDTO)));
 
@@ -263,7 +248,6 @@ public class SuitControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).addSuit(anyLong(), any(SuitDTO.class));
@@ -278,7 +262,6 @@ public class SuitControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).addSuit(anyLong(), any(SuitDTO.class));
@@ -293,7 +276,6 @@ public class SuitControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).addSuit(anyLong(), any(SuitDTO.class));
@@ -307,7 +289,6 @@ public class SuitControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(suitService).addSuit(anyLong(), any(SuitDTO.class));

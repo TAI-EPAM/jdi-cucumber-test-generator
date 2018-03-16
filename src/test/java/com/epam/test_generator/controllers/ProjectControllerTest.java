@@ -63,7 +63,6 @@ public class ProjectControllerTest {
         when(projectService.getAuthenticatedUserProjects(any(Authentication.class))).thenReturn(Arrays.asList(projectDTO));
 
         mockMvc.perform(get("/projects"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(projectService).getAuthenticatedUserProjects(anyObject());
@@ -74,7 +73,6 @@ public class ProjectControllerTest {
         when(projectService.getAuthUserFullProject(anyLong(), any(Authentication.class))).thenReturn(new ProjectFullDTO());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(projectService).getAuthUserFullProject(eq(SIMPLE_PROJECT_ID), anyObject());
@@ -85,7 +83,6 @@ public class ProjectControllerTest {
         when(projectService.getAuthUserFullProject(anyLong(), anyObject())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(projectService).getAuthUserFullProject(eq(SIMPLE_PROJECT_ID), anyObject());
@@ -99,7 +96,6 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(content().string(String.valueOf(SIMPLE_PROJECT_ID)));
 
@@ -114,7 +110,6 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(projectService,never()).createProject(any(ProjectDTO.class), any(Authentication.class));
@@ -125,7 +120,6 @@ public class ProjectControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(projectService).updateProject((anyLong()), any(ProjectDTO.class));
@@ -139,7 +133,6 @@ public class ProjectControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(projectService, never()).updateProject(anyLong(), any(ProjectDTO.class));
@@ -152,7 +145,6 @@ public class ProjectControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(projectService).updateProject((anyLong()), any(ProjectDTO.class));
@@ -167,7 +159,6 @@ public class ProjectControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andDo(print())
             .andExpect(status().isForbidden());
 
         verify(projectService).updateProject((anyLong()), any(ProjectDTO.class));
@@ -176,7 +167,6 @@ public class ProjectControllerTest {
     @Test
     public void closeProject_ProjectId_StatusOk() throws Exception {
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(projectService).closeProject((anyLong()));
@@ -187,7 +177,6 @@ public class ProjectControllerTest {
         doThrow(NotFoundException.class)
             .when(projectService).closeProject(anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(projectService).closeProject((anyLong()));
@@ -198,7 +187,6 @@ public class ProjectControllerTest {
         doThrow(ProjectClosedException.class)
             .when(projectService).closeProject(anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID))
-            .andDo(print())
             .andExpect(status().isForbidden());
 
         verify(projectService).closeProject((anyLong()));
@@ -208,7 +196,6 @@ public class ProjectControllerTest {
     public void assignUserToProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(projectService).addUserToProject(anyLong(), anyLong());
@@ -220,7 +207,6 @@ public class ProjectControllerTest {
             .when(projectService).addUserToProject(anyLong(), anyLong());
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(projectService).addUserToProject(anyLong(), anyLong());
@@ -232,7 +218,6 @@ public class ProjectControllerTest {
             .when(projectService).addUserToProject(anyLong(), anyLong());
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
-            .andDo(print())
             .andExpect(status().isForbidden());
 
         verify(projectService).addUserToProject(anyLong(), anyLong());
@@ -242,7 +227,6 @@ public class ProjectControllerTest {
     public void removeUserFromProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(projectService).removeUserFromProject(anyLong(), anyLong());
@@ -254,7 +238,6 @@ public class ProjectControllerTest {
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(projectService).removeUserFromProject(anyLong(), anyLong());
@@ -266,7 +249,6 @@ public class ProjectControllerTest {
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
             .param("userId", "0"))
-            .andDo(print())
             .andExpect(status().isForbidden());
 
         verify(projectService).removeUserFromProject(anyLong(), anyLong());

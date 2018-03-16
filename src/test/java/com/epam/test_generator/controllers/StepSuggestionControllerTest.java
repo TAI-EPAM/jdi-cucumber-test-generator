@@ -64,7 +64,6 @@ public class StepSuggestionControllerTest {
         when(stepSuggestionService.getStepsSuggestions()).thenReturn(stepSuggestionDTOS);
 
         mockMvc.perform(get("/stepSuggestions"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepSuggestionService).getStepsSuggestions();
@@ -76,7 +75,6 @@ public class StepSuggestionControllerTest {
         when(stepSuggestionService.getStepsSuggestions()).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/stepSuggestions"))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepSuggestionService).getStepsSuggestions();
@@ -88,7 +86,6 @@ public class StepSuggestionControllerTest {
             (stepSuggestionDTOS);
 
         mockMvc.perform(get("/stepSuggestions/" + STEP_TYPE))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepSuggestionService).getStepsSuggestionsByType(eq(STEP_TYPE));
@@ -102,7 +99,6 @@ public class StepSuggestionControllerTest {
             .thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/stepSuggestions/" + STEP_TYPE))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepSuggestionService).getStepsSuggestionsByType(eq(STEP_TYPE));
@@ -158,7 +154,6 @@ public class StepSuggestionControllerTest {
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepSuggestionDTO)))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepSuggestionService)
@@ -173,7 +168,6 @@ public class StepSuggestionControllerTest {
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepSuggestionDTO)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepSuggestionService)
@@ -188,7 +182,6 @@ public class StepSuggestionControllerTest {
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepSuggestionDTO)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepSuggestionService)

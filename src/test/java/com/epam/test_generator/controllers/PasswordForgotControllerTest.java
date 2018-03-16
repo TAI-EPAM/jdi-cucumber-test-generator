@@ -55,7 +55,7 @@ public class PasswordForgotControllerTest {
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         String json = mapper.writeValueAsString(email);
         mockMvc.perform(post("/passwordForgot").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -64,14 +64,14 @@ public class PasswordForgotControllerTest {
         doCallRealMethod().when(userService).checkUserExist(any(User.class));
         String json = mapper.writeValueAsString(email);
         mockMvc.perform(post("/passwordForgot").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void passwordForgot_NullJson_StatusInternalServerError() throws Exception {
         String json = mapper.writeValueAsString(null);
         mockMvc.perform(post("/passwordForgot").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print()).andExpect(status().isInternalServerError());
+                .andExpect(status().isInternalServerError());
     }
 
 }

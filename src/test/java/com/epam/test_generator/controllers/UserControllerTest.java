@@ -49,7 +49,7 @@ public class UserControllerTest {
         userDTO.setEmail("test@test.ru");
         final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print()).andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
 
@@ -59,7 +59,6 @@ public class UserControllerTest {
         userDTO.setEmail("test");
         final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -68,7 +67,6 @@ public class UserControllerTest {
         userDTO.setEmail("test");
         final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -77,7 +75,6 @@ public class UserControllerTest {
         userDTO.setEmail("test");
         final String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -85,7 +82,6 @@ public class UserControllerTest {
     public void registration_NullUser_StatusBadRequest() throws Exception {
         String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -93,7 +89,6 @@ public class UserControllerTest {
     public void registration_NullJson_StatusInternalServerError() throws Exception {
         String json = mapper.writeValueAsString(null);
         mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
     }
 

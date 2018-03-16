@@ -50,7 +50,7 @@ public class LoginControllerTest {
         when(loginService.getLoginJWTToken(loginUserDTO)).thenReturn("token");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print()).andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -59,7 +59,6 @@ public class LoginControllerTest {
         user.setEmail("test");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -68,7 +67,7 @@ public class LoginControllerTest {
         user.setEmail("test");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
+
             .andExpect(status().isBadRequest());
     }
 
@@ -77,7 +76,6 @@ public class LoginControllerTest {
         user.setEmail("test");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -85,7 +83,6 @@ public class LoginControllerTest {
     public void loginTest_NullUser_StatusBadRequest() throws Exception {
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isBadRequest());
     }
 
@@ -93,7 +90,6 @@ public class LoginControllerTest {
     public void loginTest_NullJson_StatusInternalServerError() throws Exception {
         String json = mapper.writeValueAsString(null);
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
     }
 

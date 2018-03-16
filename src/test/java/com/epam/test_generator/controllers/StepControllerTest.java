@@ -116,7 +116,6 @@ public class StepControllerTest {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenReturn(stepDTOS);
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
@@ -127,7 +126,6 @@ public class StepControllerTest {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
@@ -139,7 +137,6 @@ public class StepControllerTest {
             .thenThrow(new BadRequestException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
@@ -150,7 +147,6 @@ public class StepControllerTest {
         when(stepService.getStepsByCaseId(anyLong(), anyLong(), anyLong())).thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps"))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepService).getStepsByCaseId(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
@@ -162,7 +158,6 @@ public class StepControllerTest {
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -176,7 +171,6 @@ public class StepControllerTest {
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -190,7 +184,6 @@ public class StepControllerTest {
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -203,7 +196,6 @@ public class StepControllerTest {
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/"
             + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepService).getStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -217,7 +209,6 @@ public class StepControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(content().string(String.valueOf(SIMPLE_STEP_ID)));
 
@@ -234,7 +225,6 @@ public class StepControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService)
@@ -249,7 +239,6 @@ public class StepControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(stepService)
@@ -264,7 +253,6 @@ public class StepControllerTest {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepService)
@@ -277,7 +265,6 @@ public class StepControllerTest {
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
@@ -294,7 +281,6 @@ public class StepControllerTest {
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
@@ -311,7 +297,6 @@ public class StepControllerTest {
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
@@ -327,7 +312,6 @@ public class StepControllerTest {
             + SIMPLE_STEP_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTO)))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepService).updateStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID),
@@ -338,7 +322,6 @@ public class StepControllerTest {
     public void removeCase_CaseDTO_StatusOk() throws Exception {
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -352,7 +335,6 @@ public class StepControllerTest {
 
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -365,7 +347,6 @@ public class StepControllerTest {
 
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isBadRequest());
 
         verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -378,7 +359,6 @@ public class StepControllerTest {
 
         mockMvc.perform(delete(
             "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps/" + SIMPLE_STEP_ID))
-            .andDo(print())
             .andExpect(status().isInternalServerError());
 
         verify(stepService).removeStep(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), eq(SIMPLE_STEP_ID));
@@ -390,7 +370,6 @@ public class StepControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepDTOS)))
-            .andDo(print())
             .andExpect(status().isOk());
 
         verify(stepService).cascadeUpdateSteps(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), anyList());
@@ -418,7 +397,6 @@ public class StepControllerTest {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(request))
-            .andDo(print())
             .andExpect(status().isNotFound());
 
         verify(stepService)
