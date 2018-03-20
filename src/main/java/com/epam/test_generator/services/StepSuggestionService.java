@@ -21,46 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @DependsOn("liquibase")
 public class StepSuggestionService {
 
-    List<StepSuggestionDTO> allSuggestionSteps;
     @Autowired
     private StepSuggestionTransformer stepSuggestionTransformer;
     @Autowired
     private StepSuggestionDAO stepSuggestionDAO;
-    @Value("#{'${suggestions.given}'.split(',')}")
-    private List<String> given;
-    @Value("#{'${suggestions.when}'.split(',')}")
-    private List<String> when;
-    @Value("#{'${suggestions.then}'.split(',')}")
-    private List<String> then;
-    @Value("#{'${suggestions.and}'.split(',')}")
-    private List<String> and;
-
-    @PostConstruct
-    private void initializeDB() {
-        allSuggestionSteps = getStepsSuggestions();
-        loadDefaultStepSuggestions(given, StepType.GIVEN);
-        loadDefaultStepSuggestions(when, StepType.WHEN);
-        loadDefaultStepSuggestions(then, StepType.THEN);
-        loadDefaultStepSuggestions(and, StepType.AND);
-    }
-
-
-    /**
-     * Sets step types to stepSuggestions in database. Input List of steps filters by type and type sets
-     * to chosen StepType only. Method uses to initialize database.
-     * @param steps List of steps
-     * @param type type of steps to filter and appoint
-     */
-    private void loadDefaultStepSuggestions(List<String> steps, StepType type) {
-        List<StepSuggestionDTO> givenSuggestions = allSuggestionSteps.stream()
-            .filter(c -> new Integer(type.ordinal()).equals(c.getType()))
-            .collect(Collectors.toList());
-        for (String s : steps) {
-            if (givenSuggestions.stream().map(StepSuggestionDTO::getContent).noneMatch(s::equals)) {
-                stepSuggestionDAO.save(new StepSuggestion(s, type));
-            }
-        }
-    }
 
     public List<StepSuggestionDTO> getStepsSuggestions() {
 

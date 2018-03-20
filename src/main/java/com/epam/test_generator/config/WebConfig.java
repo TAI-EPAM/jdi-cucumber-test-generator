@@ -24,7 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.epam.test_generator")
-@PropertySource(value = "classpath:config.properties")
 @PropertySource(value = "classpath:email.properties")
 @PropertySource(value = "classpath:jira.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
