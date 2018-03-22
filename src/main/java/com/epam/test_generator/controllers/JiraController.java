@@ -48,7 +48,7 @@ public class JiraController {
             jiraService.getJiraStoriesFromJiraProjectByProjectId(jiraProjectKey), HttpStatus.OK);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
+    @Secured({"ROLE_ADMIN"})
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     @RequestMapping(value = "/project", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<String> createProjectWithAttFromJira(

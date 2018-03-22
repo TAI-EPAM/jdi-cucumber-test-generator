@@ -25,8 +25,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * Controls performing of administration actions such as change user role or remove project.
- * All included actions require user to have role ADMIN.
+ * Controls performing of administration actions such as change user role or remove project. All
+ * included actions require user to have role ADMIN.
  */
 @RestController
 public class AdminController {
