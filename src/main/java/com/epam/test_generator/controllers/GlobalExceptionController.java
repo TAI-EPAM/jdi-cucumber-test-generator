@@ -3,11 +3,16 @@ package com.epam.test_generator.controllers;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.epam.test_generator.dto.ErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
-import com.epam.test_generator.services.exceptions.*;
+import com.epam.test_generator.services.exceptions.BadRequestException;
+import com.epam.test_generator.services.exceptions.BadRoleException;
+import com.epam.test_generator.services.exceptions.IncorrectURI;
+import com.epam.test_generator.services.exceptions.NotFoundException;
+import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import net.rcarz.jiraclient.JiraException;
 import net.rcarz.jiraclient.RestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
@@ -17,7 +22,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
 
 
 /**
@@ -70,6 +74,13 @@ public class GlobalExceptionController {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorDTO> handleBadRequestException(BadRequestException ex) {
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorDTO> handleOptimisticLockingFailureException(
+        OptimisticLockingFailureException ex) {
+        logger.warn("Error: failed to save entity: already modified", ex);
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(ProjectClosedException.class)

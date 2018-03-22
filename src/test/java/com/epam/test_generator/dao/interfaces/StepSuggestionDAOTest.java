@@ -111,7 +111,7 @@ public class StepSuggestionDAOTest {
 
         final int expectedSize = stepSuggestionDAO.findAll().size();
 
-        stepSuggestionDAO.save(stepSuggestions);
+        stepSuggestions =  stepSuggestionDAO.save(stepSuggestions);
 
         stepSuggestionDAO.delete(stepSuggestions);
 
@@ -120,24 +120,32 @@ public class StepSuggestionDAOTest {
 
     private StepSuggestion retrieveStepSuggestion() {
         StepSuggestion stepSuggestion = new StepSuggestion();
+        stepSuggestion.setId(1L);
         stepSuggestion.setContent("content");
         stepSuggestion.setType(StepType.THEN);
+        stepSuggestion.setVersion(0L);
 
         return stepSuggestion;
     }
 
     private List<StepSuggestion> retrieveStepSuggestionList() {
         StepSuggestion stepSuggestion1 = new StepSuggestion();
+        stepSuggestion1.setId(0L);
         stepSuggestion1.setContent("content1");
         stepSuggestion1.setType(StepType.THEN);
+        stepSuggestion1.setVersion(0L);
 
         StepSuggestion stepSuggestion2 = new StepSuggestion();
+        stepSuggestion2.setId(0L);
         stepSuggestion2.setContent("content2");
         stepSuggestion2.setType(StepType.WHEN);
+        stepSuggestion2.setVersion(0L);
 
         StepSuggestion stepSuggestion3 = new StepSuggestion();
+        stepSuggestion3.setId(0L);
         stepSuggestion3.setContent("content3");
         stepSuggestion3.setType(StepType.THEN);
+        stepSuggestion3.setVersion(0L);
 
         ArrayList<StepSuggestion> stepSuggestions = new ArrayList<>();
         stepSuggestions.add(stepSuggestion1);

@@ -227,4 +227,11 @@
         </insert>
     </changeSet>
 
+    <!--Adds default version (0) to step suggestions-->
+    <changeSet author="" id="default_stepsuggestions_version">
+        <update tableName="STEPSUGGESTION">
+            <column name="VERSION" type="BIGINT(19)" value="0"/>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

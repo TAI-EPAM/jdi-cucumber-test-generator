@@ -205,4 +205,11 @@
             </column>
         </createTable>
     </changeSet>
+
+    <!--Adds version column to step suggestion table-->
+    <changeSet author="" id="add_version_stepsuggestion">
+        <addColumn tableName="STEPSUGGESTION">
+            <column name="VERSION" type="BIGINT(19)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

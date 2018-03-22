@@ -88,11 +88,13 @@ public class DozerMapperTest {
         stepSuggestion.setId(1L);
         stepSuggestion.setType(StepType.GIVEN);
         stepSuggestion.setContent("Step suggestion description");
+        stepSuggestion.setVersion(0L);
 
         dozerMapper.map(stepSuggestion, stepSuggestionDTO);
 
         assertThat(stepSuggestion.getId(), is(equalTo(stepSuggestionDTO.getId())));
         assertThat(StepType.GIVEN, is(equalTo(stepSuggestionDTO.getType())));
         assertThat(stepSuggestion.getContent(), is(equalTo(stepSuggestionDTO.getContent())));
+        assertThat(stepSuggestion.getVersion(), is(equalTo(stepSuggestionDTO.getVersion())));
     }
 }

@@ -3,6 +3,7 @@ package com.epam.test_generator.services.utils;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.entities.User;
@@ -12,6 +13,7 @@ import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  * Class which provides different check methods for
@@ -19,15 +21,16 @@ import java.util.Set;
  */
 public class UtilsService {
 
-    public static<T> void checkNotNull(T obj) {
-        if (obj == null)
+    public static <T> void checkNotNull(T obj) {
+        if (obj == null) {
             throw new NotFoundException();
+        }
     }
 
     /**
      * Checks if the project is active. Returns nothing if so.
+     *
      * @throws ProjectClosedException if the project is not active (closed).
-     * @param project
      */
     public static void checkProjectIsActive(Project project) {
         if (!project.isActive()) {
@@ -39,39 +42,38 @@ public class UtilsService {
 
     /**
      * Check if the user belongs to the project. Returns nothing is so.
+     *
      * @throws BadRequestException if user doesn't belong to the project.
-     * @param project
-     * @param user
      */
     public static void userBelongsToProject(Project project, User user) {
         Set<User> userSet = project.getUsers();
 
         if (userSet == null || userSet.stream()
             .noneMatch(u -> Objects.equals(user.getId(), u.getId()))) {
-            throw new BadRequestException("Error: user does not access to project " + project.getName());
+            throw new BadRequestException(
+                "Error: user does not access to project " + project.getName());
         }
     }
 
     /**
      * Check if the suit belongs to the project. Returns nothing is so.
+     *
      * @throws BadRequestException if suit doesn't belong to the project.
-     * @param project
-     * @param suit
      */
     public static void suitBelongsToProject(Project project, Suit suit) {
         List<Suit> suitList = project.getSuits();
 
         if (suitList == null || suitList.stream()
             .noneMatch(s -> Objects.equals(s.getId(), suit.getId()))) {
-            throw new BadRequestException("Error: project " + project.getName() + " does not have suit " + suit.getName());
+            throw new BadRequestException(
+                "Error: project " + project.getName() + " does not have suit " + suit.getName());
         }
     }
 
     /**
      * Check if the case belongs to the suit. Returns nothing is so.
+     *
      * @throws BadRequestException if case doesn't belong to the suit.
-     * @param caze
-     * @param suit
      */
     public static void caseBelongsToSuit(Case caze, Suit suit) {
         List<Case> caseList = suit.getCases();
@@ -84,9 +86,8 @@ public class UtilsService {
 
     /**
      * Check if the step belongs to the case. Returns nothing is so.
+     *
      * @throws BadRequestException if step doesn't belong to the case.
-     * @param step
-     * @param caze
      */
     public static void stepBelongsToCase(Step step, Case caze) {
         List<Step> stepList = caze.getSteps();
@@ -99,9 +100,8 @@ public class UtilsService {
 
     /**
      * Check if the tag belongs to the case. Returns nothing is so.
+     *
      * @throws BadRequestException if tag doesn't belong to the case.
-     * @param tag
-     * @param caze
      */
     public static void tagBelongsToCase(Tag tag, Case caze) {
         Set<Tag> tagSet = caze.getTags();
@@ -111,5 +111,18 @@ public class UtilsService {
             throw new BadRequestException();
         }
 
+    }
+
+    /**
+     * Verifies that entity wasn't modified by checking it's version
+     *
+     * @param version expected version
+     * @param stepSuggestion entity ti verify unmodified
+     */
+    public static void verifyVersion(long version, StepSuggestion stepSuggestion) {
+        if (stepSuggestion.getVersion() != version) {
+            throw new OptimisticLockingFailureException(
+                "Access denied! Entity was already modified");
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.epam.test_generator.controllers;
 
+import com.epam.test_generator.dto.StepSuggestionCreateDTO;
 import com.epam.test_generator.dto.StepSuggestionDTO;
+import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -72,8 +75,8 @@ public class StepSuggestionController {
         @ApiResponse(code = 400, message = "Invalid input")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "stepSuggestionDTO", value = "Added step suggestion object",
-            required = true, dataType = "StepSuggestionDTO", paramType = "body"),
+        @ApiImplicitParam(name = "stepSuggestionCreateDTO", value = "Added step suggestion object",
+            required = true, dataType = "StepSuggestionCreateDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -81,9 +84,9 @@ public class StepSuggestionController {
     @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> addStepSuggestion(
-        @RequestBody @Valid StepSuggestionDTO stepSuggestionDTO) {
+        @RequestBody @Valid StepSuggestionCreateDTO stepSuggestionCreateDTO) {
 
-        return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionDTO),
+        return new ResponseEntity<>(stepSuggestionService.addStepSuggestion(stepSuggestionCreateDTO),
             HttpStatus.OK);
     }
 
@@ -91,21 +94,23 @@ public class StepSuggestionController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
         @ApiResponse(code = 400, message = "Invalid input"),
-        @ApiResponse(code = 404, message = "StepSuggestion not found")
+        @ApiResponse(code = 404, message = "StepSuggestion not found"),
+        @ApiResponse(code = 409, message = "StepSuggestion already modified")
     })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to update",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "stepSuggestionDTO", value = "Updated step suggestion object",
-            required = true, dataType = "StepSuggestionDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "stepSuggestionUpdateDTO", value = "Updated step suggestion object",
+            required = true, dataType = "StepSuggestionUpdateDTO", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<Void> updateStepSuggestion(
         @PathVariable("stepSuggestionId") long stepSuggestionId,
-        @RequestBody @Valid StepSuggestionDTO stepSuggestionDTO) {
-        stepSuggestionService.updateStepSuggestion(stepSuggestionId, stepSuggestionDTO);
+        @RequestBody @Valid StepSuggestionUpdateDTO stepSuggestionUpdateDTO) {
+        stepSuggestionService.updateStepSuggestion(stepSuggestionId, stepSuggestionUpdateDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
