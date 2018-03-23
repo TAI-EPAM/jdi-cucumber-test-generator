@@ -10,6 +10,7 @@ import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.CaseVersionTransformer;
+import com.epam.test_generator.transformers.TagTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,9 @@ public class CaseService {
 
     @Autowired
     private StateMachineAdapter stateMachineAdapter;
+
+    @Autowired
+    private TagTransformer tagTransformer;
 
     @Autowired
     private RemovedIssueDAO removedIssueDAO;
@@ -150,9 +154,10 @@ public class CaseService {
 
         final List<Long> failedStepIds = cascadeUpdateService
             .cascadeCaseStepsUpdate(projectId, suitId, caseId, editCaseDTO);
-
         caze.setUpdateDate(Calendar.getInstance().getTime());
-
+        if (editCaseDTO.getTags() != null) {
+            caze.setTags(new HashSet<>(tagTransformer.fromDtoList(editCaseDTO.getTags())));
+        }
         caze.setDescription(editCaseDTO.getDescription());
         caze.setPriority(editCaseDTO.getPriority());
         caze.setStatus(editCaseDTO.getStatus());
