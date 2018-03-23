@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.csrf().disable().cors().disable()
+        http.csrf().disable().cors().and()
             .authorizeRequests()
             .antMatchers("/registration", "/login", "/passwordForgot",
                 "/passwordReset", "/confirmAccount")
