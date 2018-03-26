@@ -91,13 +91,12 @@ public class ProjectControllerTest {
     @Test
     public void createProject_CorrectDTO_StatusCreated() throws Exception {
         projectDTO.setId(null);
-        when(projectService.createProject(any(ProjectDTO.class), any(Authentication.class))).thenReturn(SIMPLE_PROJECT_ID);
+        when(projectService.createProject(any(ProjectDTO.class), any(Authentication.class))).thenReturn(projectDTO);
 
         mockMvc.perform(post("/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
-            .andExpect(status().isCreated())
-            .andExpect(content().string(String.valueOf(SIMPLE_PROJECT_ID)));
+            .andExpect(status().isCreated());
 
         verify(projectService).createProject(any(ProjectDTO.class), any(Authentication.class));
     }
