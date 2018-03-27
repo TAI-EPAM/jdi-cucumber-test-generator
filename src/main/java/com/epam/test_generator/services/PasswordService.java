@@ -10,10 +10,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@PropertySource("classpath:email.messages.properties")
 public class PasswordService {
 
     @Autowired
@@ -25,8 +28,11 @@ public class PasswordService {
     @Autowired
     private TokenDAO tokenDAO;
 
-    private final static String PASSWORD_RESET_PATH = "/cucumber/passwordReset";
-    private final static String CONFIRM_ACCOUNT_PATH = "/cucumber/confirmAccount";
+    @Value("${override.domain:#{null}}")
+    private String OVERRIDE_DOMAIN;
+
+    private final static String PASSWORD_RESET_PATH = "/passwordReset";
+    private final static String CONFIRM_ACCOUNT_PATH = "/confirmAccount";
     private final static String TOKEN = "token=";
 
     /**
@@ -36,20 +42,7 @@ public class PasswordService {
      * @return URI path
      */
     public String createResetUrl(HttpServletRequest request, Token token) {
-        URI uri;
-        try {
-            uri = new URI(request.getScheme(),
-                null,
-                request.getServerName(),
-                request.getServerPort(),
-                PASSWORD_RESET_PATH,
-                TOKEN + token.getToken(),
-                null);
-
-        } catch (URISyntaxException e) {
-            throw new IncorrectURI(e.getMessage());
-        }
-        return uri.toString();
+        return getSecurityUrl(request, PASSWORD_RESET_PATH, token).toString();
     }
 
     /**
@@ -59,19 +52,7 @@ public class PasswordService {
      * @return URI path
      */
     public String createConfirmUrl(HttpServletRequest request, Token token) {
-        URI uri;
-        try {
-            uri = new URI(request.getScheme(),
-                null,
-                request.getServerName(),
-                request.getServerPort(),
-                CONFIRM_ACCOUNT_PATH,
-                TOKEN + token.getToken(),
-                null);
-        } catch (URISyntaxException e) {
-            throw new IncorrectURI(e.getMessage());
-        }
-        return uri.toString();
+        return getSecurityUrl(request, CONFIRM_ACCOUNT_PATH, token).toString();
     }
 
 
@@ -93,5 +74,22 @@ public class PasswordService {
 
     public Token getTokenByName(String token) {
         return tokenDAO.findByToken(token);
+    }
+
+    private URI getSecurityUrl(HttpServletRequest request, String path, Token token) {
+        try {
+            if (OVERRIDE_DOMAIN == null) {
+                return new URI(request.getScheme(),
+                               null,
+                               request.getServerName(),
+                               request.getServerPort(),
+                               request.getContextPath() + path,
+                               TOKEN + token.getToken(),
+                               null);
+            }
+            return new URI(OVERRIDE_DOMAIN + path + "?" + TOKEN + token.getToken());
+        } catch (URISyntaxException e) {
+            throw new IncorrectURI(e.getMessage());
+        }
     }
 }
