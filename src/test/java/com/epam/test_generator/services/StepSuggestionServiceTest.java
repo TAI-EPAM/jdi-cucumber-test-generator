@@ -26,12 +26,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StepSuggestionServiceTest {
 
     private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
     private static final long SIMPLE_STEP_SUGGESTION_ID = 1L;
+    private static final int PAGE_SIZE = 1;
+
     @Mock
     private StepSuggestionTransformer stepSuggestionTransformer;
     @Mock
@@ -58,11 +63,56 @@ public class StepSuggestionServiceTest {
         when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
 
         List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
-            .getStepsSuggestions();
+            .getStepsSuggestions(null, null, null);
         assertEquals(true,
             Arrays.deepEquals(expectedListSteps.toArray(), getListStepsSuggestion.toArray()));
 
         verify(stepSuggestionDAO).findAll();
+    }
+
+    @Test
+    public void get_StepsSuggestionsPage_Success() {
+        Page<StepSuggestion> testPage = new PageImpl<>(listSteps.subList(0, 1));
+
+        when(stepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
+        when(stepSuggestionTransformer.toDtoList(testPage.getContent())).thenReturn(expectedListSteps.subList(0, 1));
+
+        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
+                .getStepsSuggestions(null, 1, PAGE_SIZE);
+        assertEquals(expectedListSteps.subList(0, 1), getListStepsSuggestion);
+
+        verify(stepSuggestionDAO).findAll(any(Pageable.class));
+        verify(stepSuggestionTransformer).toDtoList(testPage.getContent());
+    }
+
+    @Test
+    public void get_StepsSuggestionsByTypePage1_Success() {
+        Page<StepSuggestion> testPage = new PageImpl<>(listSteps.subList(0, 1));
+
+        when(stepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
+        when(stepSuggestionTransformer.toDtoList(testPage.getContent())).thenReturn(expectedListSteps.subList(0, 1));
+
+        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
+                .getStepsSuggestions(StepType.GIVEN, 1, PAGE_SIZE);
+        assertEquals(expectedListSteps.subList(0, 1), getListStepsSuggestion);
+
+        verify(stepSuggestionDAO).findAll(any(Pageable.class));
+        verify(stepSuggestionTransformer).toDtoList(testPage.getContent());
+    }
+
+    @Test
+    public void get_StepsSuggestionsByTypePage2_Success() {
+        Page<StepSuggestion> testPage = new PageImpl<>(listSteps.subList(1, 2));
+
+        when(stepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
+        when(stepSuggestionTransformer.toDtoList(testPage.getContent())).thenReturn(expectedListSteps.subList(1, 2));
+
+        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
+                .getStepsSuggestions(StepType.THEN, 2, PAGE_SIZE);
+        assertEquals(expectedListSteps.subList(1, 2), getListStepsSuggestion);
+
+        verify(stepSuggestionDAO).findAll(any(Pageable.class));
+        verify(stepSuggestionTransformer).toDtoList(testPage.getContent());
     }
 
     @Test

@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.dto.StepSuggestionCreateDTO;
@@ -38,6 +37,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class StepSuggestionControllerTest {
 
     private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
+    private static final int PAGE_NUMBER = 1;
+    private static final int PAGE_SIZE = 2;
     private static final StepType STEP_TYPE = StepType.GIVEN;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
@@ -67,23 +68,71 @@ public class StepSuggestionControllerTest {
 
     @Test
     public void getSuggestionsList_StepsSuggestion_StatusOk() throws Exception {
-        when(stepSuggestionService.getStepsSuggestions()).thenReturn(stepSuggestionDTOS);
+        when(stepSuggestionService.getStepsSuggestions(null, null, null))
+                .thenReturn(stepSuggestionDTOS);
 
         mockMvc.perform(get("/stepSuggestions"))
             .andExpect(status().isOk());
 
-        verify(stepSuggestionService).getStepsSuggestions();
+        verify(stepSuggestionService).getStepsSuggestions(null, null, null);
     }
 
     @Test
     public void getSuggestionsList_ThrowRuntimeException_StatusInternalServerError()
         throws Exception {
-        when(stepSuggestionService.getStepsSuggestions()).thenThrow(new RuntimeException());
+        when(stepSuggestionService.getStepsSuggestions(null, null, null))
+                .thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/stepSuggestions"))
             .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService).getStepsSuggestions();
+        verify(stepSuggestionService).getStepsSuggestions(null, null, null);
+    }
+
+    @Test
+    public void getSuggestionsPage_StepsSuggestion_StatusOk() throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE))
+                .thenReturn(stepSuggestionDTOS);
+
+        mockMvc.perform(get("/stepSuggestions?page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isOk());
+
+        verify(stepSuggestionService).getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE);
+    }
+
+    @Test
+    public void getSuggestionsPage_ThrowRuntimeException_StatusInternalServerError()
+            throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/stepSuggestions?page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isInternalServerError());
+
+        verify(stepSuggestionService).getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE);
+    }
+
+    @Test
+    public void getStepsSuggestionsPageByType_StepsSuggestion_StatusOk() throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(STEP_TYPE, PAGE_NUMBER, PAGE_SIZE)).thenReturn
+                (stepSuggestionDTOS);
+
+        mockMvc.perform(get("/stepSuggestions?stepType=" + STEP_TYPE  + "&page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isOk());
+
+        verify(stepSuggestionService).getStepsSuggestions(eq(STEP_TYPE), eq(PAGE_NUMBER), eq(PAGE_SIZE));
+    }
+
+    @Test
+    public void getStepsSuggestionsPageByType_ThrowRuntimeException_StatusInternalServerError()
+            throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(STEP_TYPE, PAGE_NUMBER, PAGE_SIZE))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/stepSuggestions?stepType=" + STEP_TYPE + "&page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isInternalServerError());
+
+        verify(stepSuggestionService).getStepsSuggestions(eq(STEP_TYPE), eq(PAGE_NUMBER), eq(PAGE_SIZE));
     }
 
     @Test
