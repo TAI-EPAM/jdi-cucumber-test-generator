@@ -1,5 +1,7 @@
 package com.epam.test_generator.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +13,7 @@ public class TestResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date date;
 
     private Long duration;

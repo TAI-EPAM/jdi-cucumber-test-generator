@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers;
 
+import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraStory;
 import com.epam.test_generator.services.JiraService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,6 +32,7 @@ public class JiraControllerTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     private final String SIMPLE_JIRA_PROJECT_KEY = "key";
+    private final Long JIRA_SETTINGS_ID = 1L;
 
     @Mock
     private Authentication authentication;
@@ -51,71 +54,62 @@ public class JiraControllerTest {
     public void createStoriesForProject() throws Exception {
         List<JiraStory> jiraStories = new ArrayList<>();
 
-        mockMvc.perform(post("/jira//project/" + SIMPLE_JIRA_PROJECT_KEY + "/suits")
+        mockMvc.perform(post("/jira/ " +  JIRA_SETTINGS_ID +"/project/" + SIMPLE_JIRA_PROJECT_KEY + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(jiraStories)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(jiraService).addStoriesToExistedProject(jiraStories, SIMPLE_JIRA_PROJECT_KEY);
+        verify(jiraService).addStoriesToExistedProject(JIRA_SETTINGS_ID, jiraStories, SIMPLE_JIRA_PROJECT_KEY);
     }
 
     @Test
     public void createProjectWithAttFromJira() throws Exception {
         List<JiraStory> jiraStories = new ArrayList<>();
 
-        mockMvc.perform(post("/jira/project")
+        mockMvc.perform(post("/jira/" +  JIRA_SETTINGS_ID + "/project")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(jiraStories)))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(jiraService).createProjectWithAttachments(any(List.class),any(Authentication.class));
+        verify(jiraService).createProjectWithAttachments(eq(JIRA_SETTINGS_ID), any(List.class),any(Authentication.class));
     }
 
     @Test
     public void getAllStories() throws Exception {
-        mockMvc.perform(get("/jira/project/" + SIMPLE_JIRA_PROJECT_KEY + "/stories"))
+        mockMvc.perform(get("/jira/" +  JIRA_SETTINGS_ID +"/project/" + SIMPLE_JIRA_PROJECT_KEY + "/stories"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(jiraService).getJiraStoriesFromJiraProjectByProjectId(SIMPLE_JIRA_PROJECT_KEY);
+        verify(jiraService).getJiraStoriesFromJiraProjectByProjectId(JIRA_SETTINGS_ID, SIMPLE_JIRA_PROJECT_KEY);
     }
 
-//    @Test
-//    public void getUnexistedStories() throws Exception {
-//        final long SIMPLE_PROJECT_ID = 1;
-//        mockMvc.perform(post("/jira/getNonexistentJiraStories/" + SIMPLE_PROJECT_ID))
-//            .andDo(print())
-//            .andExpect(status().isOk());
-//
-//        verify(jiraService).getJiraStoriesFromJiraProjectByProjectId(SIMPLE_JIRA_PROJECT_KEY);
-//    }
 
     @Test
     public void getProjects() throws Exception {
-        mockMvc.perform(get("/jira/projects"))
+        mockMvc.perform(get("/jira/" +  JIRA_SETTINGS_ID +"/projects"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(jiraService).getNonexistentJiraProjects();
+        verify(jiraService).getNonexistentJiraProjects(JIRA_SETTINGS_ID);
     }
 
     @Test
     public void syncToBddFromJira() throws Exception {
-        mockMvc.perform(get("/jira/syncFromJira"))
+        mockMvc.perform(get("/jira/" +  JIRA_SETTINGS_ID +"/syncFromJira"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(jiraService).syncFromJira();
+        verify(jiraService).syncFromJira(JIRA_SETTINGS_ID);
     }
 
     @Test
     public void syncToJiraFromBdd() throws Exception {
-        mockMvc.perform(get("/jira/syncToJira"))
+        mockMvc.perform(get("/jira/" +  JIRA_SETTINGS_ID + "/syncToJira"))
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(jiraService).syncToJira();
+        verify(jiraService).syncToJira(JIRA_SETTINGS_ID);
     }
 }

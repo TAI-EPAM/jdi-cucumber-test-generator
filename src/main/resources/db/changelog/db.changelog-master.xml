@@ -10,5 +10,6 @@
     <include file="db/changelog/db.changelog-entities.xml"/>
     <include file="db/changelog/db.changelog-references.xml"/>
     <include file="db/changelog/db.changelog-indexes.xml"/>
+    <include file="db/changelog/db.changelog-entities_1.0.xml"/>
     <include file="db/changelog/db.changelog-stepSuggestionSeed.xml"/>
 </databaseChangeLog>

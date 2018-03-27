@@ -117,6 +117,7 @@ public class JiraServiceTest {
     private static final String JIRA_KEY = "key";
     private static final String PRIORITY = "no priority";
     private static final String CLOSE_JIRA_KEY = "key2";
+    private static final Long JIRA_SETTINGS_ID = 1L;
 
     @Before
     public void setUp() throws Exception {
@@ -146,16 +147,16 @@ public class JiraServiceTest {
 
     @Test
     public void createProjectWithAttachments_Project_Success() throws JiraException {
-        when(jiraProjectDAO.getProjectByJiraKey(anyString())).thenReturn(jiraProject);
+        when(jiraProjectDAO.getProjectByJiraKey(anyLong(), anyString())).thenReturn(jiraProject);
         when(userDAO.findByEmail(anyString())).thenReturn(user);
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyString())).thenReturn(Collections.singletonList(jiraSubTask));
+        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraSubTask));
         when(suitDAO.findByJiraKey(anyString())).thenReturn(suit);
         when(caseDAO.findByJiraKey(anyString())).thenReturn(null);
         when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
 
 
-        jiraService.createProjectWithAttachments(Collections.singletonList(jiraStory),authentication);
+        jiraService.createProjectWithAttachments(JIRA_SETTINGS_ID, Collections.singletonList(jiraStory),authentication);
 
         verify(projectDAO).save(any(Project.class));
         verify(suitDAO).save(any(Suit.class));
@@ -165,13 +166,13 @@ public class JiraServiceTest {
     @Test
     public void addStoriesToExistedProject_SuitAndCase_Success() throws Exception {
 
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyString())).thenReturn(Collections.singletonList(jiraSubTask));
+        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraSubTask));
         when(suitDAO.findByJiraKey(anyString())).thenReturn(suit);
         when(caseDAO.findByJiraKey(anyString())).thenReturn(null);
         when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
 
-        jiraService.addStoriesToExistedProject(Collections.singletonList(jiraStory), JIRA_PROJECT_KEY);
+        jiraService.addStoriesToExistedProject(JIRA_SETTINGS_ID, Collections.singletonList(jiraStory), JIRA_PROJECT_KEY);
 
         verify(suitDAO).save(any(Suit.class));
         verify(caseDAO).save(any(Case.class));
@@ -179,42 +180,42 @@ public class JiraServiceTest {
 
     @Test
     public void getStories_JiraStories_Success() throws JiraException {
-        when(jiraStoryDAO.getStories(anyString())).thenReturn(Collections.singletonList(jiraStory));
+        when(jiraStoryDAO.getStories(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
 
-        List<JiraStory> stories = jiraService.getStories(JIRA_KEY);
+        List<JiraStory> stories = jiraService.getStories(JIRA_SETTINGS_ID, JIRA_KEY);
         Assert.assertTrue(!stories.isEmpty());
     }
 
     @Test
     public void getJiraStoriesFromJiraProjectByProjectId_JiraStories_Success() throws JiraException {
         when(projectDAO.getOne(anyLong())).thenReturn(project);
-        when(jiraStoryDAO.getNonexistentStoriesByProject(anyString())).thenReturn(Collections.singletonList(jiraStory));
+        when(jiraStoryDAO.getNonexistentStoriesByProject(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
 
-        List<JiraStory> stories = jiraService.getJiraStoriesFromJiraProjectByProjectId(JIRA_PROJECT_KEY);
+        List<JiraStory> stories = jiraService.getJiraStoriesFromJiraProjectByProjectId(JIRA_SETTINGS_ID, JIRA_PROJECT_KEY);
         Assert.assertTrue(!stories.isEmpty());
     }
 
     @Test
     public void getNonexistedJiraProjects_JiraProjects_Success() throws JiraException {
-        when(jiraProjectDAO.getAllProjects()).thenReturn(Collections.singletonList(jiraProject));
+        when(jiraProjectDAO.getAllProjects(anyLong())).thenReturn(Collections.singletonList(jiraProject));
         when(projectDAO.findByJiraKey(anyString())).thenReturn(null);
 
-        List<JiraProject> projects = jiraService.getNonexistentJiraProjects();
+        List<JiraProject> projects = jiraService.getNonexistentJiraProjects(JIRA_SETTINGS_ID);
         Assert.assertTrue(!projects.isEmpty());
     }
 
     @Test
     public void syncFromJiraUpdateSuitAndCase_SuitAndCase_Success() throws JiraException {
         when(projectDAO.findAll()).thenReturn(Collections.singletonList(project));
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyString())).thenReturn(Arrays.asList(jiraSubTask));
+        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(Arrays.asList(jiraSubTask));
         when(suitDAO.findAll()).thenReturn(Arrays.asList(suit));
         when(caseDAO.findAll()).thenReturn(Collections.singletonList(caze));
-        when(jiraStoryDAO.getJiraStoriesByFilter(anyString())).thenReturn(Collections.singletonList(jiraStory));
+        when(jiraStoryDAO.getJiraStoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
         when(suitDAO.findByJiraKey(anyString())).thenReturn(suit);
         when(caseDAO.findByJiraKey(anyString())).thenReturn(caze);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
 
-        jiraService.syncFromJira();
+        jiraService.syncFromJira(JIRA_SETTINGS_ID);
 
         verify(suitDAO).save(any(Suit.class));
         verify(caseDAO).save(any(Case.class));
@@ -223,15 +224,15 @@ public class JiraServiceTest {
     @Test
     public void syncFromJiraDeleteClosedSuitAndCase_SuitAndCase_Success() throws JiraException {
         when(projectDAO.findAll()).thenReturn(Collections.singletonList(project));
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyString())).thenReturn(Arrays.asList(jiraSubTask));
+        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(Arrays.asList(jiraSubTask));
         when(suitDAO.findAll()).thenReturn(Arrays.asList(suit, closedSuit));
         when(caseDAO.findAll()).thenReturn(Arrays.asList(caze, closedCase));
-        when(jiraStoryDAO.getJiraStoriesByFilter(anyString())).thenReturn(Collections.singletonList(jiraStory));
+        when(jiraStoryDAO.getJiraStoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
         when(suitDAO.findByJiraKey(not(eq(CLOSE_JIRA_KEY)))).thenReturn(suit);
         when(suitDAO.findByJiraKey(CLOSE_JIRA_KEY)).thenReturn(closedSuit);
         when(caseDAO.findByJiraKey(not(eq(CLOSE_JIRA_KEY)))).thenReturn(caze);
 
-        jiraService.syncFromJira();
+        jiraService.syncFromJira(JIRA_SETTINGS_ID);
 
         verify(suitDAO, times(2)).delete(any(Suit.class));
         verify(caseDAO, times(2)).delete(any(Case.class));
@@ -252,12 +253,12 @@ public class JiraServiceTest {
             caze.setLastJiraSyncDate(LocalDateTime.now().minusMinutes(1));
             caze.setLastModifiedDate(LocalDateTime.now());
             return null;
-        }).when(jiraSubStoryDAO).createSubStory(caze);
+        }).when(jiraSubStoryDAO).createSubStory(JIRA_SETTINGS_ID, caze);
 
-        jiraService.syncToJira();
+        jiraService.syncToJira(JIRA_SETTINGS_ID);
 
-        verify(jiraStoryDAO).createStory(eq(testSuit));
-        verify(jiraSubStoryDAO).createSubStory(caze);
+        verify(jiraStoryDAO).createStory(anyLong(), eq(testSuit));
+        verify(jiraSubStoryDAO).createSubStory(anyLong(), eq(caze));
         verify(removedIssueDAO).delete(removedIssue);
     }
 
@@ -270,9 +271,9 @@ public class JiraServiceTest {
 
         when(suitDAO.findAll()).thenReturn(Collections.singletonList(testSuit));
 
-        jiraService.syncToJira();
+        jiraService.syncToJira(JIRA_SETTINGS_ID);
 
-        verify(jiraStoryDAO).updateStoryByJiraKey(testSuit);
-        verify(jiraSubStoryDAO).createSubStory(any(Case.class));
+        verify(jiraStoryDAO).updateStoryByJiraKey(anyLong(),  eq(testSuit));
+        verify(jiraSubStoryDAO).createSubStory(anyLong(), any(Case.class));
     }
 }

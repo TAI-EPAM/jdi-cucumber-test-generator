@@ -2,8 +2,6 @@ package com.epam.test_generator.config;
 
 import java.util.Properties;
 import javax.annotation.Resource;
-import net.rcarz.jiraclient.BasicCredentials;
-import net.rcarz.jiraclient.JiraClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +23,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebMvc
 @ComponentScan("com.epam.test_generator")
 @PropertySource(value = "classpath:email.properties")
-@PropertySource(value = "classpath:jira.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Resource
@@ -40,15 +37,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
         return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    public JiraClient jiraClient() {
-        String uri = environment.getProperty("jira.uri");
-        String name = environment.getProperty("jira.login");
-        String pass = environment.getProperty("jira.password");
-        BasicCredentials creds = new BasicCredentials(name,pass);
-        return new JiraClient(uri, creds);
     }
 
     /**

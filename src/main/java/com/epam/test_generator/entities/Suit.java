@@ -1,5 +1,6 @@
 package com.epam.test_generator.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
@@ -27,14 +28,17 @@ public class Suit implements Serializable, Persistable<Long> {
 
     private Integer priority;
 
+    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date creationDate;
 
     private String jiraKey;
 
     private String jiraProjectKey;
 
+    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime lastModifiedDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime lastJiraSyncDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

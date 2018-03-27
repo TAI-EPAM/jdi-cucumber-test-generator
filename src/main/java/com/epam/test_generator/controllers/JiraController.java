@@ -28,10 +28,11 @@ public class JiraController {
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
-    @RequestMapping(value = "/projects", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<JiraProject>> getProjects() throws JiraException {
+    @RequestMapping(value = "/{jiraSettingsId}/projects", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<JiraProject>> getProjects(@PathVariable("jiraSettingsId") Long id)
+        throws JiraException {
 
-        return new ResponseEntity<>(jiraService.getNonexistentJiraProjects(), HttpStatus.OK);
+        return new ResponseEntity<>(jiraService.getNonexistentJiraProjects(id), HttpStatus.OK);
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
@@ -39,23 +40,26 @@ public class JiraController {
         @ApiImplicitParam(name = "jiraKey", value = "Key of project", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
-    @RequestMapping(value = "/project/{jiraKey}/stories", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{jiraSettingsId}/project/{jiraKey}/stories", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<JiraStory>> getAllStories(
-        @PathVariable("jiraKey") String jiraProjectKey)
+        @PathVariable("jiraKey") String jiraProjectKey,
+        @PathVariable("jiraSettingsId") Long id)
         throws JiraException {
 
         return new ResponseEntity<>(
-            jiraService.getJiraStoriesFromJiraProjectByProjectId(jiraProjectKey), HttpStatus.OK);
+            jiraService.getJiraStoriesFromJiraProjectByProjectId(id, jiraProjectKey),
+            HttpStatus.OK);
     }
 
     @Secured({"ROLE_ADMIN"})
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
-    @RequestMapping(value = "/project", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/{jiraSettingsId}/project", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<String> createProjectWithAttFromJira(
         @RequestBody(required = false) List<JiraStory> jiraStories,
+        @PathVariable("jiraSettingsId") Long id,
         Authentication auth) throws JiraException {
 
-        jiraService.createProjectWithAttachments(jiraStories, auth);
+        jiraService.createProjectWithAttachments(id, jiraStories, auth);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -64,32 +68,34 @@ public class JiraController {
         @ApiImplicitParam(name = "jiraKey", value = "Key of project", required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
-    @RequestMapping(value = "/project/{jiraKey}/suits", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/{jiraSettingsId}/project/{jiraKey}/suits", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<String> createStoriesForProject(
         @RequestBody List<JiraStory> jiraStories,
-        @PathVariable("jiraKey") String jiraProjectKey)
+        @PathVariable("jiraKey") String jiraProjectKey,
+        @PathVariable("jiraSettingsId") Long id
+    ) throws JiraException {
 
+        jiraService.addStoriesToExistedProject(id, jiraStories, jiraProjectKey);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
+    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @RequestMapping(value = "/{jiraSettingsId}/syncFromJira", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<String> syncFromJira(@PathVariable("jiraSettingsId") Long id)
+        throws JiraException {
+        jiraService.syncFromJira(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
+    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @RequestMapping(value = "/{jiraSettingsId}/syncToJira", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<String> syncToJira(@PathVariable("jiraSettingsId") Long id)
         throws JiraException {
 
-        jiraService.addStoriesToExistedProject(jiraStories, jiraProjectKey);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
-    @RequestMapping(value = "/syncFromJira", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<String> syncFromJira() throws JiraException {
-        jiraService.syncFromJira();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
-    @RequestMapping(value = "/syncToJira", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<String> syncToJira() throws JiraException {
-
-        jiraService.syncToJira();
+        jiraService.syncToJira(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
