@@ -6,6 +6,7 @@ import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.IncorrectURI;
+import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import net.rcarz.jiraclient.JiraException;
@@ -34,7 +35,7 @@ public class GlobalExceptionController {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionController.class);
 
 
-    @ExceptionHandler(JiraException.class)
+    @ExceptionHandler(JiraRuntimeException.class)
     public ResponseEntity<String> jiraException(JiraException ex) {
         logger.error("Catch Jira Exception", ex);
         if (ex.getCause() instanceof RestException) {

@@ -4,6 +4,7 @@ import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraStory;
+import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,57 +50,76 @@ public class JiraStoryDAO {
     /**
      * Returns list of stories from Jira by specificproject which are not yet in the system.
      */
-    public List<JiraStory> getNonexistentStoriesByProject(Long clientId, String projectKey)
-        throws JiraException {
+    public List<JiraStory> getNonexistentStoriesByProject(Long clientId, String projectKey) {
 
         String query = String.format(
             "project =%s AND status in (Open, \"In Progress\", Reopened, Verified) AND type=story",
             projectKey);
-        SearchResult issues = jiraClientFactory.getJiraClient(clientId)
-            .searchIssues(query, MAX_NUMBER_OF_ISSUES);
-        return issues.issues.stream()
-            .filter(story -> suitDAO.findByJiraKey(story.getKey()) == null)
-            .map(JiraStory::new)
-            .collect(Collectors.toList());
+        try {
+            SearchResult issues = jiraClientFactory.getJiraClient(clientId)
+                .searchIssues(query, MAX_NUMBER_OF_ISSUES);
+            return issues.issues.stream()
+                .filter(story -> suitDAO.findByJiraKey(story.getKey()) == null)
+                .map(JiraStory::new)
+                .collect(Collectors.toList());
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(),e);
+        }
     }
 
-    public List<JiraStory> getJiraStoriesByFilter(Long clientId, String search)
-        throws JiraException {
+    public List<JiraStory> getJiraStoriesByFilter(Long clientId, String search) {
 
-        List<Issue> issues = jiraClientFactory.getJiraClient(clientId)
-            .searchIssues(search, MAX_NUMBER_OF_ISSUES).issues;
+        List<Issue> issues;
+        try {
+            issues = jiraClientFactory.getJiraClient(clientId)
+                .searchIssues(search, MAX_NUMBER_OF_ISSUES).issues;
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(), e);
+        }
         return issues.stream().map(JiraStory::new).collect(Collectors.toList());
     }
 
-    public void updateStoryByJiraKey(Long clientId, Suit suit) throws JiraException {
-        jiraClientFactory.getJiraClient(clientId)
-            .getIssue(suit.getJiraKey())
-            .update()
-            .field(Field.SUMMARY, suit.getName())
-            .field(Field.DESCRIPTION, suit.getDescription())
-            .execute();
+    public void updateStoryByJiraKey(Long clientId, Suit suit) {
+        try {
+            jiraClientFactory.getJiraClient(clientId)
+                .getIssue(suit.getJiraKey())
+                .update()
+                .field(Field.SUMMARY, suit.getName())
+                .field(Field.DESCRIPTION, suit.getDescription())
+                .execute();
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(),e);
+        }
         suit.setLastJiraSyncDate(LocalDateTime.now());
         suitDAO.save(suit);
     }
 
-    public void closeStoryByJiraKey(Long clientId, String jiraKey) throws JiraException {
+    public void closeStoryByJiraKey(Long clientId, String jiraKey) {
 
-        jiraClientFactory.getJiraClient(clientId)
-            .getIssue(jiraKey)
-            .transition()
-            .execute(CLOSE_ACTION_ID);
+        try {
+            jiraClientFactory.getJiraClient(clientId)
+                .getIssue(jiraKey)
+                .transition()
+                .execute(CLOSE_ACTION_ID);
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(), e);
+        }
     }
 
-    public void createStory(Long clientId, Suit suit) throws JiraException {
+    public void createStory(Long clientId, Suit suit) {
 
-        Issue issue = jiraClientFactory.getJiraClient(clientId)
-            .createIssue(suit.getJiraProjectKey(), TYPE)
-            .field(Field.SUMMARY, suit.getName())
-            .field(Field.DESCRIPTION, suit.getDescription())
-            .execute();
-        suit.setJiraKey(issue.getKey());
-        suit.setJiraProjectKey(issue.getProject().getKey());
-        suit.setLastJiraSyncDate(LocalDateTime.now());
-        suitDAO.save(suit);
+        try {
+            Issue issue = jiraClientFactory.getJiraClient(clientId)
+                .createIssue(suit.getJiraProjectKey(), TYPE)
+                .field(Field.SUMMARY, suit.getName())
+                .field(Field.DESCRIPTION, suit.getDescription())
+                .execute();
+            suit.setJiraKey(issue.getKey());
+            suit.setJiraProjectKey(issue.getProject().getKey());
+            suit.setLastJiraSyncDate(LocalDateTime.now());
+            suitDAO.save(suit);
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(), e);
+        }
     }
 }

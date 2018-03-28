@@ -21,9 +21,11 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class UtilsService {
 
-    public static <T> void checkNotNull(T obj) {
+    public static <T> T checkNotNull(T obj) {
         if (obj == null) {
             throw new NotFoundException();
+        } else {
+            return obj;
         }
     }
 

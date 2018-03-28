@@ -5,6 +5,7 @@ import static com.epam.test_generator.api.JdiHttpApiClientGenerator.API_CLASS_NA
 import java.io.File;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import java.io.IOException;
 
