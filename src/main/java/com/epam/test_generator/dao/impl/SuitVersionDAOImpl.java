@@ -1,10 +1,10 @@
 package com.epam.test_generator.dao.impl;
 
 import com.epam.test_generator.dao.JaversChangedDataExtractor;
-import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
-import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.pojo.CaseVersion;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
+import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.PropertyDifference;
+import com.epam.test_generator.pojo.SuitVersion;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CaseVersionDAOImpl implements CaseVersionDAO {
+public class SuitVersionDAOImpl implements SuitVersionDAO {
 
     @Autowired
-    @Qualifier(value = "javersConfigForCase")
+    @Qualifier(value = "javersConfigForSuit")
     private Javers javers;
 
     @Autowired
@@ -36,67 +36,65 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
     private JaversChangedDataExtractor javersChangedDataExtractor;
 
     @Override
-    public List<CaseVersion> findAll(Long caseId) {
-
+    public List<SuitVersion> findAll(Long suitId) {
         List<Change> changes = javers.findChanges(
-            QueryBuilder.byInstanceId(caseId, Case.class).withNewObjectChanges().build());
+            QueryBuilder.byInstanceId(suitId, Suit.class).withNewObjectChanges().build());
 
-        return getCaseVersions(changes);
+        return getSuitVersions(changes);
     }
 
     @Override
-    public Case findByCommitId(Long caseId, String commitId) {
-
-        Optional<Shadow<Object>> caseShadows = javers
-            .findShadows(QueryBuilder.byInstanceId(caseId, Case.class)
+    public Suit findByCommitId(Long suitId, String commitId) {
+        Optional<Shadow<Object>> suitShadows = javers
+            .findShadows(QueryBuilder.byInstanceId(suitId, Suit.class)
                 .withCommitId(CommitId.valueOf(commitId)).build()).stream().findAny();
 
-        return caseShadows.map(objectShadow -> (Case) objectShadow.get()).orElse(null);
+        return suitShadows.map(objectShadow -> (Suit) objectShadow.get()).orElse(null);
     }
 
     @Override
-    public void save(Case caze) {
-        javers.commit(authorProvider.provide(), caze);
+    public void save(Suit suit) {
+        javers.commit(authorProvider.provide(), suit);
     }
 
     @Override
-    public void save(Iterable<Case> cases) {
-        if (cases == null) {
+    public void save(Iterable<Suit> suits) {
+        if (suits == null) {
             return;
         }
 
-        for (Case caze : cases) {
-            save(caze);
+        for (Suit suit : suits) {
+            save(suit);
         }
     }
 
     @Override
-    public void delete(Case caze) {
-        javers.commitShallowDelete(authorProvider.provide(), caze);
+    public void delete(Suit suit) {
+        javers.commitShallowDelete(authorProvider.provide(), suit);
     }
 
     @Override
-    public void delete(Iterable<Case> cases) {
-        if (cases == null) {
+    public void delete(Iterable<Suit> suits) {
+        if (suits == null) {
             return;
         }
 
-        for (Case caze : cases) {
-            delete(caze);
+        for (Suit suit : suits) {
+            delete(suit);
         }
     }
 
     /**
-     * Group list of {@link Change} by commitIds and map each group to {@link CaseVersion}
+     * Group list of {@link Change} by commitIds and map each group to {@link SuitVersion}
      *
      * @param changes list of {@link Change} objects that represents property changes.
-     * @return list {@link CaseVersion} that represent changes made by each commit
+     * @return list {@link SuitVersion} that represent changes made by each commit
      */
-    private List<CaseVersion> getCaseVersions(List<Change> changes) {
+    private List<SuitVersion> getSuitVersions(List<Change> changes) {
         TreeMap<CommitMetadata, List<Change>> changesWithSameCommitId = javersChangedDataExtractor
             .groupByCommitId(changes);
 
-        List<CaseVersion> caseVersions = new ArrayList<>(changesWithSameCommitId.size());
+        List<SuitVersion> suitVersions = new ArrayList<>(changesWithSameCommitId.size());
         changesWithSameCommitId.forEach(
             (commitMetadata, commitChanges) -> {
 
@@ -107,7 +105,7 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
                 List<PropertyDifference> propertyDifferences = javersChangedDataExtractor
                     .getPropertyDifferences(commitChanges);
 
-                caseVersions.add(new CaseVersion(
+                suitVersions.add(new SuitVersion(
                     commitId,
                     updatedDate,
                     author,
@@ -115,6 +113,6 @@ public class CaseVersionDAOImpl implements CaseVersionDAO {
                 ));
             }
         );
-        return caseVersions;
+        return suitVersions;
     }
 }

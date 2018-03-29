@@ -23,9 +23,11 @@ import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.pojo.JiraProject;
+import com.epam.test_generator.pojo.JiraStatus;
 import com.epam.test_generator.pojo.JiraStory;
 import com.epam.test_generator.pojo.JiraSubTask;
 import java.time.LocalDateTime;
@@ -164,6 +166,7 @@ public class JiraServiceTest {
         when(caseDAO.findByJiraKey(anyString())).thenReturn(null);
         when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
+        when(jiraStory.getStatus()).thenReturn(JiraStatus.RESOLVED);
 
         jiraService
             .createProjectWithJiraStories(JIRA_SETTINGS_ID,JIRA_PROJECT_KEY, Collections
@@ -181,6 +184,7 @@ public class JiraServiceTest {
         when(caseDAO.findByJiraKey(anyString())).thenReturn(null);
         when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
+        when(jiraStory.getStatus()).thenReturn(JiraStatus.RESOLVED);
 
         jiraService.addStoriesToExistedProject(Collections.singletonList(jiraStory), JIRA_PROJECT_KEY);
 
@@ -279,12 +283,12 @@ public class JiraServiceTest {
 
         testSuit.setLastJiraSyncDate(LocalDateTime.now().minusMinutes(1));
         testSuit.setLastModifiedDate(LocalDateTime.now());
+        testSuit.setStatus(Status.PASSED);
 
         when(suitDAO.findAll()).thenReturn(Collections.singletonList(testSuit));
 
         jiraService.syncToJira(JIRA_SETTINGS_ID);
 
-        verify(jiraStoryDAO).updateStoryByJiraKey(anyLong(),  eq(testSuit));
         verify(jiraSubStoryDAO).createSubStory(anyLong(), any(Case.class));
     }
 }

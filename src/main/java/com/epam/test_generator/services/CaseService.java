@@ -1,16 +1,36 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
-import com.epam.test_generator.dto.*;
-import com.epam.test_generator.entities.*;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
+import com.epam.test_generator.dto.CaseDTO;
+import com.epam.test_generator.dto.CaseUpdateDTO;
+import com.epam.test_generator.dto.CaseVersionDTO;
+import com.epam.test_generator.dto.EditCaseDTO;
+import com.epam.test_generator.dto.StepDTO;
+import com.epam.test_generator.dto.SuitUpdateDTO;
+import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Event;
+import com.epam.test_generator.entities.RemovedIssue;
+import com.epam.test_generator.entities.Status;
+import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.CaseVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.CaseVersionTransformer;
 import com.epam.test_generator.transformers.TagTransformer;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
@@ -18,13 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 @Transactional
 @Service
@@ -52,6 +65,9 @@ public class CaseService {
     private CaseVersionDAO caseVersionDAO;
 
     @Autowired
+    private SuitVersionDAO suitVersionDAO;
+
+    @Autowired
     private StateMachineAdapter stateMachineAdapter;
 
     @Autowired
@@ -59,6 +75,8 @@ public class CaseService {
 
     @Autowired
     private RemovedIssueDAO removedIssueDAO;
+
+
 
     public List<Case> getCases() {
         return caseDAO.findAll();
@@ -105,6 +123,7 @@ public class CaseService {
         suit.getCases().add(caze);
 
         caseVersionDAO.save(caze);
+        suitVersionDAO.save(suit);
 
         CaseDTO addedCaseDTO = caseTransformer.toDto(caze);
 
@@ -172,6 +191,7 @@ public class CaseService {
             new CaseUpdateDTO(updatedCaseDTO, failedStepIds);
 
         caseVersionDAO.save(caze);
+        suitVersionDAO.save(suit);
         return updatedCaseDTOwithFailedStepIds;
     }
 
@@ -196,6 +216,7 @@ public class CaseService {
         caseDAO.delete(caseId);
 
         caseVersionDAO.delete(caze);
+        suitVersionDAO.save(suit);
 
         CaseDTO removedCaseDTO = caseTransformer.toDto(caze);
 
@@ -219,13 +240,16 @@ public class CaseService {
                 .anyMatch(id -> id.equals(caze.getId())))
             .forEach(caze -> {
                 caseDAO.delete(caze.getId());
+
                 caseVersionDAO.delete(caze);
+
                 removedCases.add(caze);
                 saveIssueToDeleteInJira(caze);
 
             });
 
         removedCases.forEach(caze -> suit.getCases().remove(caze));
+        suitVersionDAO.save(suit);
 
         List<CaseDTO> removedCasesDTO = caseTransformer.toDtoList(removedCases);
         return removedCasesDTO;
@@ -271,6 +295,7 @@ public class CaseService {
 
         Case restoredCase = caseDAO.save(caseToRestore);
         caseVersionDAO.save(caseToRestore);
+        suitVersionDAO.save(suit);
 
         CaseDTO restoredCaseDTO = caseTransformer.toDto(restoredCase);
 
@@ -322,7 +347,10 @@ public class CaseService {
         if (stateMachine.sendEvent(event)) {
             stateMachineAdapter.persist(stateMachine, cs);
             caseDAO.save(cs);
+
             caseVersionDAO.save(cs);
+            suitVersionDAO.save(suitService.getSuit(projectId, suitId));
+
             return cs.getStatus();
         } else {
             throw new BadRequestException();

@@ -11,21 +11,27 @@ import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.ProjectDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.pojo.JiraFilter;
 import com.epam.test_generator.pojo.JiraProject;
+import com.epam.test_generator.pojo.JiraStatus;
 import com.epam.test_generator.pojo.JiraStory;
 import com.epam.test_generator.pojo.JiraSubTask;
+import com.epam.test_generator.pojo.PropertyDifference;
+import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import com.epam.test_generator.transformers.ProjectTransformer;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import net.rcarz.jiraclient.JiraException;
@@ -72,6 +78,11 @@ public class JiraService {
     public List<JiraFilter> getAllFilters(Long clientId) {
         return jiraFilterDAO.getFilters(clientId);
     }
+    @Autowired
+    private SuitVersionDAO suitVersionDAO;
+
+
+    private static final Integer FIRST = 0;
 
 
     /**
@@ -194,6 +205,7 @@ public class JiraService {
         suit.setPriority(getPriority(jiraStory.getPriority()));
         suit.setLastModifiedDate(LocalDateTime.now());
         suit.setLastJiraSyncDate(suit.getLastModifiedDate());
+        suit.setStatus(getBDDStatus(jiraStory));
         return suit;
     }
 
@@ -231,12 +243,17 @@ public class JiraService {
         if (suit == null) {
             return;
         }
-        suit.setName(jiraStory.getName());
-        suit.setDescription(jiraStory.getDescription());
-        suit.setPriority(getPriority(jiraStory.getPriority()));
-        suit.setLastJiraSyncDate(LocalDateTime.now());
-
         suitDAO.save(suit);
+    }
+
+    private Status getBDDStatus(JiraStory jiraStory) {
+        Status status;
+        if (jiraStory.getStatus().equals(JiraStatus.RESOLVED)) {
+            status = Status.PASSED;
+        } else {
+            status = Status.NOT_RUN;
+        }
+        return status;
     }
 
 
@@ -368,7 +385,8 @@ public class JiraService {
 
     private void closeRemovedSuitsInJira(Long clientId) {
         for (RemovedIssue issueToDeleteInJira : removedIssueDAO.findAll()) {
-            jiraStoryDAO.closeStoryByJiraKey(clientId, issueToDeleteInJira.getJiraKey());
+            jiraStoryDAO.changeStatusByJiraKey(clientId, issueToDeleteInJira.getJiraKey(),
+                JiraStatus.CLOSED.getActionId());
             removedIssueDAO.delete(issueToDeleteInJira);
         }
     }
@@ -378,6 +396,47 @@ public class JiraService {
         jiraStoryDAO.createStory(clientId, suit);
         for (Case cases : suit.getCases()) {
             jiraSubStoryDAO.createSubStory(clientId, cases);
+        }
+    }
+
+    private Status getStatusFromPropertyDiff(List<PropertyDifference> propertyDifferences) {
+        for (PropertyDifference propertyDifference : propertyDifferences) {
+            if (propertyDifference.getPropertyName().equals("status")) {
+                return (Status) propertyDifference.getNewValue();
+            }
+        }
+        return null;
+    }
+
+    private void updateStoryInJira(Long clientId, Suit suit){
+        Integer actionId;
+        switch (suit.getStatus()) {
+            case PASSED:
+                actionId = JiraStatus.RESOLVED.getActionId();
+                break;
+            case FAILED:
+                actionId = null;
+                List<SuitVersion> suitVersions = suitVersionDAO.findAll(suit.getId());
+                ListIterator<SuitVersion> iterator = suitVersions.listIterator(suitVersions.size());
+
+                while (iterator.hasPrevious()) {
+                    SuitVersion suitVersion = iterator.previous();
+                    List<PropertyDifference> propertyDifferences = suitVersion
+                        .getPropertyDifferences();
+                    Status previousStatus = getStatusFromPropertyDiff(propertyDifferences);
+                    if (!suit.getStatus().equals(previousStatus) && previousStatus != null
+                        && previousStatus.equals(Status.PASSED)) {
+                            actionId = JiraStatus.REOPENED.getActionId();
+                            break;
+                    }
+                }
+                break;
+            default:
+                actionId = null;
+        }
+
+        if (actionId != null) {
+            jiraStoryDAO.changeStatusByJiraKey(clientId, suit.getJiraKey(), actionId);
         }
     }
 
@@ -407,7 +466,7 @@ public class JiraService {
             if (isSuitJustCreated(suit)) {
                 createStoryWithSubTasksInJira(clientId, suit);
             } else if (isSuitChangedAfterLastSync(suit)) {
-                jiraStoryDAO.updateStoryByJiraKey(clientId, suit);
+                updateStoryInJira(clientId, suit);
             }
 
             for (Case caze : suit.getCases()) {

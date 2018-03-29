@@ -6,6 +6,7 @@ import static com.epam.test_generator.services.utils.UtilsService.stepBelongsToC
 
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Case;
@@ -32,6 +33,9 @@ public class StepService {
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
+
+    @Autowired
+    private SuitVersionDAO suitVersionDAO;
 
     @Autowired
     private StepTransformer stepTransformer;
@@ -97,6 +101,7 @@ public class StepService {
         caze.getSteps().add(step);
 
         caseVersionDAO.save(caze);
+        suitVersionDAO.save(suit);
 
         return step.getId();
     }
@@ -126,6 +131,7 @@ public class StepService {
         stepDAO.save(step);
 
         caseVersionDAO.save(caze);
+        suitVersionDAO.save(suit);
     }
 
     /**
@@ -151,6 +157,7 @@ public class StepService {
         stepDAO.delete(stepId);
 
         caseVersionDAO.save(caze);
+        suitVersionDAO.save(suit);
     }
 
     /**

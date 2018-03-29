@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.CaseUpdateDTO;
 import com.epam.test_generator.dto.CaseVersionDTO;
@@ -90,6 +91,9 @@ public class CaseServiceTest {
 
     @Mock
     private CaseVersionDAO caseVersionDAO;
+
+    @Mock
+    private SuitVersionDAO suitVersionDAO;
 
     @Mock
     private SuitService suitService;

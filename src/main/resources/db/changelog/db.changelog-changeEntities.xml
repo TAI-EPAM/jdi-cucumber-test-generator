@@ -7,10 +7,10 @@
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="db/changelog/db.changelog-entities.xml"/>
-    <include file="db/changelog/db.changelog-references.xml"/>
-    <include file="db/changelog/db.changelog-indexes.xml"/>
-    <include file="db/changelog/db.changelog-entities_1.0.xml"/>
-    <include file="db/changelog/db.changelog-stepSuggestionSeed.xml"/>
-    <include file="db/changelog/db.changelog-changeEntities.xml"/>
+    <changeSet author="" id="new_suit.status_field">
+        <addColumn tableName="SUIT">
+            <column name="STATUS" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

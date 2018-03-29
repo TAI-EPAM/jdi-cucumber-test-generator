@@ -13,13 +13,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.epam.test_generator.dto.SuitUpdateDTO;
 import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.dto.SuitUpdateDTO;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,6 +60,7 @@ public class SuitControllerTest {
         suitDTO.setRowNumber(1);
         suitDTO.setPriority(1);
         suitDTO.setDescription("Suit description");
+        suitDTO.setStatus(Status.NOT_RUN);
     }
 
     @Test
@@ -123,8 +124,7 @@ public class SuitControllerTest {
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(suitDTO))
-        )
+                .content(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(suitDTO)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.updatedSuitDto.id", is((int)TEST_SUIT_ID)))

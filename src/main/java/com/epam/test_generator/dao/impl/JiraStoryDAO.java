@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import net.rcarz.jiraclient.Field;
 import net.rcarz.jiraclient.Issue;
-import net.rcarz.jiraclient.Issue.SearchResult;
 import net.rcarz.jiraclient.JiraException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,6 @@ public class JiraStoryDAO {
 
     private final static String TYPE = "Story";
     private final static Integer MAX_NUMBER_OF_ISSUES = Integer.MAX_VALUE;
-    private final static Integer CLOSE_ACTION_ID = 31;
 
     public JiraStory getStoryByJiraKey(Long clientId, String jiraKey) throws JiraException {
 
@@ -50,20 +48,13 @@ public class JiraStoryDAO {
     /**
      * Returns list of stories from Jira by specificproject which are not yet in the system.
      */
-    public List<JiraStory> getNonexistentStoriesByProject(Long clientId, String projectKey) {
-
-        String query = String.format(
-            "project =%s AND status in (Open, \"In Progress\", Reopened, Verified) AND type=story",
-            projectKey);
+    public List<JiraStory> getNonexistentStoriesByProject(Long clientId, String jiraProjectKey) {
         try {
-            SearchResult issues = jiraClientFactory.getJiraClient(clientId)
-                .searchIssues(query, MAX_NUMBER_OF_ISSUES);
-            return issues.issues.stream()
-                .filter(story -> suitDAO.findByJiraKey(story.getKey()) == null)
-                .map(JiraStory::new)
+            return getStories(clientId, jiraProjectKey).stream()
+                .filter(story -> suitDAO.findByJiraKey(story.getJiraKey()) == null)
                 .collect(Collectors.toList());
         } catch (JiraException e) {
-            throw new JiraRuntimeException(e.getMessage(),e);
+            throw new JiraRuntimeException(e.getMessage(), e);
         }
     }
 
@@ -94,13 +85,16 @@ public class JiraStoryDAO {
         suitDAO.save(suit);
     }
 
-    public void closeStoryByJiraKey(Long clientId, String jiraKey) {
 
+    public void changeStatusByJiraKey(Long clientId, String jiraKey, Integer actionId) {
+        if (actionId == null) {
+            return;
+        }
         try {
             jiraClientFactory.getJiraClient(clientId)
                 .getIssue(jiraKey)
                 .transition()
-                .execute(CLOSE_ACTION_ID);
+                .execute(actionId);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
         }

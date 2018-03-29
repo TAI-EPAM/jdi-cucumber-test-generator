@@ -5,8 +5,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.JaversChangedDataExtractor;
-import com.epam.test_generator.dao.impl.CaseVersionDAOImpl;
-import com.epam.test_generator.pojo.CaseVersion;
+import com.epam.test_generator.dao.impl.SuitVersionDAOImpl;
+import com.epam.test_generator.pojo.SuitVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.time.LocalDateTime;
@@ -29,9 +29,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseVersionDAOImplTest {
+public class SuitVersionDAOImplTest {
 
-    private static final long SIMPLE_CASE_ID = 1L;
+    private static final long SIMPLE_SUIT_ID = 1L;
 
     @Mock
     private Javers javers;
@@ -39,29 +39,30 @@ public class CaseVersionDAOImplTest {
     @Mock
     private GlobalId globalId;
 
+
     @Mock
     private JaversChangedDataExtractor javersChangedDataExtractor;
 
     @InjectMocks
-    private CaseVersionDAOImpl caseVersionDAO;
+    private SuitVersionDAOImpl suitVersionDAO;
 
     private List<Change> changes;
 
-    private List<String> expectedCaseVersionIds;
+    private List<String> expectedSuitVersionIds;
 
     private TreeMap<CommitMetadata, List<Change>> treeOfChanges;
 
     @Before
     public void setUp() {
         final LocalDateTime now = LocalDateTime.now();
-        final CommitMetadata commitId1_5 = new CommitMetadata("author", Maps.newHashMap(), now,
-            CommitId.valueOf("1.5"));
-        final CommitMetadata commitId1_3 = new CommitMetadata("author", Maps.newHashMap(), now,
-            CommitId.valueOf("1.3"));
-        final CommitMetadata commitId6_2 = new CommitMetadata("author", Maps.newHashMap(), now,
-            CommitId.valueOf("6.2"));
-        final CommitMetadata commitId0_1 = new CommitMetadata("author", Maps.newHashMap(), now,
-            CommitId.valueOf("0.1"));
+        final CommitMetadata commitId1_5 = new CommitMetadata("auth", Maps.newHashMap(), now,
+            CommitId.valueOf("1.6"));
+        final CommitMetadata commitId1_3 = new CommitMetadata("auth", Maps.newHashMap(), now,
+            CommitId.valueOf("1.2"));
+        final CommitMetadata commitId6_2 = new CommitMetadata("auth", Maps.newHashMap(), now,
+            CommitId.valueOf("6.1"));
+        final CommitMetadata commitId0_1 = new CommitMetadata("auth", Maps.newHashMap(), now,
+            CommitId.valueOf("0.2"));
 
         changes = Lists.newArrayList(
             new ValueChange(globalId, "prop1", null, null, Optional.of(commitId1_5)),
@@ -74,19 +75,19 @@ public class CaseVersionDAOImplTest {
         treeOfChanges.putAll(changes.stream()
             .collect(Collectors.groupingBy(change -> change.getCommitMetadata().get())));
 
-        expectedCaseVersionIds = Lists.newArrayList("0.1", "1.3", "1.5", "6.2");
+        expectedSuitVersionIds = Lists.newArrayList("0.2", "1.2", "1.6", "6.1");
     }
 
     @Test
-    public void find_SimpleChangeList_ReturnSortedCaseVersionsByCommitId() {
+    public void find_SimpleChangeList_ReturnSortedSuitVersionsByCommitId() {
         when(javers.findChanges(any())).thenReturn(changes);
         when(javersChangedDataExtractor.groupByCommitId(changes)).thenReturn(treeOfChanges);
 
-        final List<CaseVersion> caseVersions = caseVersionDAO.findAll(SIMPLE_CASE_ID);
+        final List<SuitVersion> suitVersions = suitVersionDAO.findAll(SIMPLE_SUIT_ID);
 
-        assertEquals(expectedCaseVersionIds,
-            caseVersions.stream()
-                .map(CaseVersion::getCommitId)
+        assertEquals(expectedSuitVersionIds,
+            suitVersions.stream()
+                .map(SuitVersion::getCommitId)
                 .collect(Collectors.toList()));
     }
 }

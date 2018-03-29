@@ -1,19 +1,32 @@
 package com.epam.test_generator.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.data.domain.Persistable;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import org.springframework.data.domain.Persistable;
 
 
 /**
- * This class represents test suit essence. Test suit is a collection of test cases that are intended to be used
- * for testing software's behaviour. Besides some simple fields like id, name, description, history it consists of
- * tags and cases. List of {@Link Case} represents sequence of test cases that are linked to current {@Link Suit}.
- * List of {@Link Tag} represents types of {@Link Suit} object.
+ * This class represents test suit essence. Test suit is a collection of test cases that are
+ * intended to be used for testing software's behaviour. Besides some simple fields like id, name,
+ * description, history it consists of tags and cases. List of {@Link Case} represents sequence of
+ * test cases that are linked to current {@Link Suit}. List of {@Link Tag} represents types of
+ * {@Link Suit} object.
  */
 @Entity
 public class Suit implements Serializable, Persistable<Long> {
@@ -28,17 +41,17 @@ public class Suit implements Serializable, Persistable<Long> {
 
     private Integer priority;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date creationDate;
 
     private String jiraKey;
 
     private String jiraProjectKey;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private LocalDateTime lastModifiedDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime lastJiraSyncDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -119,6 +132,14 @@ public class Suit implements Serializable, Persistable<Long> {
         return id == null && isAllTagsWithNullId && isAllCasesNew;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public String getJiraKey() {
         return jiraKey;
     }
@@ -177,6 +198,20 @@ public class Suit implements Serializable, Persistable<Long> {
 
     public void setCases(List<Case> cases) {
         this.cases = cases;
+    }
+
+    public void addCase(Case caze) {
+        if (cases == null) {
+            cases = new ArrayList<>();
+        }
+        cases.add(caze);
+    }
+
+    public void addTag(Tag tag) {
+        if (tags == null) {
+            tags = new HashSet<>();
+        }
+        tags.add(tag);
     }
 
     public Integer getRowNumber() {
@@ -253,6 +288,7 @@ public class Suit implements Serializable, Persistable<Long> {
             Objects.equals(name, suit.name) &&
             Objects.equals(description, suit.description) &&
             Objects.equals(priority, suit.priority) &&
+            Objects.equals(status, suit.status) &&
             Objects.equals(jiraKey, suit.jiraKey) &&
             Objects.equals(jiraProjectKey, suit.jiraProjectKey) &&
             Objects.equals(tags, suit.tags) &&
@@ -264,7 +300,7 @@ public class Suit implements Serializable, Persistable<Long> {
     public int hashCode() {
 
         return Objects
-            .hash(id, name, description, priority, jiraKey, jiraProjectKey, tags,
+            .hash(id, name, description, priority, status, jiraKey, jiraProjectKey, tags,
                 cases,
                 rowNumber);
     }

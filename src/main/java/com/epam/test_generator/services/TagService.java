@@ -1,22 +1,24 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+import static com.epam.test_generator.services.utils.UtilsService.tagBelongsToCase;
+
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.transformers.TagTransformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.epam.test_generator.services.utils.UtilsService.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
@@ -39,6 +41,9 @@ public class TagService {
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
+
+    @Autowired
+    private SuitVersionDAO sutiVersionDAO;
 
 
     /**
@@ -93,6 +98,7 @@ public class TagService {
         caze.getTags().add(tag);
 
         caseVersionDAO.save(caze);
+        sutiVersionDAO.save(suit);
 
         return tag.getId();
     }
@@ -123,6 +129,7 @@ public class TagService {
         tagDAO.save(tag);
 
         caseVersionDAO.save(caze);
+        sutiVersionDAO.save(suit);
     }
 
     /**
@@ -150,5 +157,6 @@ public class TagService {
         tagDAO.delete(tagId);
 
         caseVersionDAO.save(caze);
+        sutiVersionDAO.save(suit);
     }
 }
