@@ -1,8 +1,6 @@
 package com.epam.test_generator.pojo;
 
 import com.epam.test_generator.entities.Case;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +15,6 @@ public class CaseVersion {
 
     private String commitId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date updatedDate;
 
     private String author;

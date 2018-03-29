@@ -1,13 +1,24 @@
 package com.epam.test_generator.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.data.domain.Persistable;
-import org.springframework.statemachine.annotation.WithStateMachine;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import org.springframework.data.domain.Persistable;
+import org.springframework.statemachine.annotation.WithStateMachine;
 
 
 /**
@@ -35,20 +46,16 @@ public class Case implements Serializable, Persistable<Long> {
 
     private String jiraParentKey;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime lastModifiedDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime lastJiraSyncDate;
 
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Step> steps;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date creationDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date updateDate;
 
     private Integer priority;

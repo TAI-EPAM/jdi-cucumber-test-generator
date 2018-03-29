@@ -1,10 +1,16 @@
 package com.epam.test_generator.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class TestResult {
@@ -13,7 +19,6 @@ public class TestResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date date;
 
     private Long duration;

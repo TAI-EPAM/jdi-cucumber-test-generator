@@ -1,16 +1,14 @@
 package com.epam.test_generator.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
+import java.util.Calendar;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
-import java.util.Calendar;
-import java.util.Date;
 
 
 /**
@@ -27,7 +25,6 @@ public class Token {
     private String token;
 
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private Date expiryDate;
 
     @OneToOne
