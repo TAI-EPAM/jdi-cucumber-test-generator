@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.JaversConfig;
+import com.epam.test_generator.dao.JaversChangedDataExtractor;
 import com.epam.test_generator.dao.impl.CaseVersionDAOImpl;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class, JaversConfig.class,
-    CaseVersionDAOImpl.class})
+    CaseVersionDAOImpl.class, JaversChangedDataExtractor.class})
 @Transactional
 public class CaseVersionDAOTest {
 
@@ -40,13 +41,15 @@ public class CaseVersionDAOTest {
     private Case caze;
     private List<Case> caseList;
 
+   // private TreeMap<CommitMetadata, List<Change>> treeOfChanges;
+
     @Before
     public void setUp() {
 
         caze = new Case(CASE_ID, "name", "description", Lists.newArrayList(), 1,
-            Sets.newHashSet(),  "comment");
+            Sets.newHashSet(), "comment");
         Case caze2 = new Case(CASE_ID2, "name", "description2", Lists.newArrayList(), 1,
-            Sets.newHashSet(),  "comment");
+            Sets.newHashSet(), "comment");
         caseList = Arrays.asList(caze, caze2);
 
     }
@@ -103,7 +106,8 @@ public class CaseVersionDAOTest {
         CaseVersion caseVersionAddedStep = caseVersionDAO.findAll(CASE_ID).get(1);
         CaseVersion caseVersionEditedStep = caseVersionDAO.findAll(CASE_ID).get(2);
 
-        Step originalStep = new Step(1L, 1, "description", StepType.GIVEN, "Comment", Status.NOT_RUN);
+        Step originalStep = new Step(1L, 1, "description", StepType.GIVEN, "Comment",
+            Status.NOT_RUN);
         assertEquals(1, caseVersionAddedStep.getPropertyDifferences().size());
         assertEquals(1, caseVersionEditedStep.getPropertyDifferences().size());
 

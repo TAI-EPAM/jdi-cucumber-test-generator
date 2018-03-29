@@ -2,7 +2,11 @@ package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -12,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Case;
@@ -67,6 +72,9 @@ public class StepServiceTest {
 
     @Mock
     private CaseVersionDAO caseVersionDAO;
+
+    @Mock
+    private SuitVersionDAO suitVersionDAO;
 
     @Before
     public void setUp() {

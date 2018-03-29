@@ -1,18 +1,24 @@
 package com.epam.test_generator.services;
 
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+import static com.epam.test_generator.services.utils.UtilsService.verifyVersion;
 
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
+import com.epam.test_generator.dto.StepSuggestionCreateDTO;
 import com.epam.test_generator.dto.StepSuggestionDTO;
+import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.transformers.StepSuggestionTransformer;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,50 +27,48 @@ import org.springframework.transaction.annotation.Transactional;
 @DependsOn("liquibase")
 public class StepSuggestionService {
 
-    List<StepSuggestionDTO> allSuggestionSteps;
     @Autowired
     private StepSuggestionTransformer stepSuggestionTransformer;
     @Autowired
     private StepSuggestionDAO stepSuggestionDAO;
-    @Value("#{'${suggestions.given}'.split(',')}")
-    private List<String> given;
-    @Value("#{'${suggestions.when}'.split(',')}")
-    private List<String> when;
-    @Value("#{'${suggestions.then}'.split(',')}")
-    private List<String> then;
-    @Value("#{'${suggestions.and}'.split(',')}")
-    private List<String> and;
-
-    @PostConstruct
-    private void initializeDB() {
-        allSuggestionSteps = getStepsSuggestions();
-        loadDefaultStepSuggestions(given, StepType.GIVEN);
-        loadDefaultStepSuggestions(when, StepType.WHEN);
-        loadDefaultStepSuggestions(then, StepType.THEN);
-        loadDefaultStepSuggestions(and, StepType.AND);
-    }
-
 
     /**
-     * Sets step types to stepSuggestions in database. Input List of steps filters by type and type sets
-     * to chosen StepType only. Method uses to initialize database.
-     * @param steps List of steps
-     * @param type type of steps to filter and appoint
+     * Method to get step suggestions by pages with set parameters
+     * @param stepType get only this type step suggestions
+     * @param pageNumber number of page (from 1)
+     * @param pageSize number of step suggestions on one page
+     * @return realisation of getStepsSuggestions method depending on which parameters available
      */
-    private void loadDefaultStepSuggestions(List<String> steps, StepType type) {
-        List<StepSuggestionDTO> givenSuggestions = allSuggestionSteps.stream()
-            .filter(c -> new Integer(type.ordinal()).equals(c.getType()))
-            .collect(Collectors.toList());
-        for (String s : steps) {
-            if (givenSuggestions.stream().map(StepSuggestionDTO::getContent).noneMatch(s::equals)) {
-                stepSuggestionDAO.save(new StepSuggestion(s, type));
-            }
+    public List<StepSuggestionDTO> getStepsSuggestions(StepType stepType, Integer pageNumber,
+                                                       Integer pageSize) {
+        if (isPageNumberAndPageSizeAndStepTypeNotNull(stepType, pageNumber, pageSize)) {
+            return getStepsSuggestionsByType(stepType, pageNumber, pageSize);
         }
+        if (isPageNumberAndPageSizeNotNull(pageNumber, pageSize)) {
+            return getStepsSuggestions(pageNumber, pageSize);
+        }
+        if (stepType != null) {
+            return getStepsSuggestionsByType(stepType);
+        }
+        return getStepsSuggestions();
     }
 
-    public List<StepSuggestionDTO> getStepsSuggestions() {
-
+    private List<StepSuggestionDTO> getStepsSuggestions() {
         return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll());
+    }
+
+    private List<StepSuggestionDTO> getStepsSuggestions(int pageNumber, int pageSize) {
+        Pageable request = new PageRequest(pageNumber - 1, pageSize, Sort.Direction.ASC, "id");
+        return stepSuggestionTransformer.toDtoList(stepSuggestionDAO.findAll(request).getContent());
+    }
+
+    private boolean isPageNumberAndPageSizeNotNull(Integer pageNumber, Integer pageSize) {
+        return pageNumber != null && pageSize != null;
+    }
+
+    private boolean isPageNumberAndPageSizeAndStepTypeNotNull(StepType stepType, Integer pageNumber,
+                                                              Integer pageSize) {
+        return isPageNumberAndPageSizeNotNull(pageNumber, pageSize) && stepType != null;
     }
 
     public StepSuggestionDTO getStepsSuggestion(long stepSuggestionId) {
@@ -74,40 +78,64 @@ public class StepSuggestionService {
         return stepSuggestionTransformer.toDto(stepSuggestion);
     }
 
+    private List<StepSuggestionDTO> getStepsSuggestionsByType(StepType stepType, int pageNumber, int pageSize) {
+        Pageable request = new PageRequest(pageNumber - 1, pageSize, Sort.Direction.ASC, "id");
+
+        return stepSuggestionTransformer.toDtoList(
+                stepSuggestionDAO.findAll(request).getContent().stream()
+                        .filter(s -> s.getType() == stepType)
+                        .collect(Collectors.toList()));
+    }
+
     public List<StepSuggestionDTO> getStepsSuggestionsByType(StepType stepType) {
         return stepSuggestionTransformer.toDtoList(
-            stepSuggestionDAO.findAll().stream()
-                .filter(s -> s.getType() == stepType)
-                .collect(Collectors.toList()));
+                stepSuggestionDAO.findAll().stream()
+                        .filter(s -> s.getType() == stepType)
+                        .collect(Collectors.toList()));
     }
 
     /**
      * Adds step suggestion specified in stepSuggestionDTO
-     * @param stepSuggestionDTO
+     *
+     * @param stepSuggestionCreateDTO
      * @return id of step suggestion
      */
-    public Long addStepSuggestion(StepSuggestionDTO stepSuggestionDTO) {
-        StepSuggestion stepSuggestion = stepSuggestionDAO
-            .save(stepSuggestionTransformer.fromDto(stepSuggestionDTO));
+    public Long addStepSuggestion(StepSuggestionCreateDTO stepSuggestionCreateDTO) {
+
+        StepSuggestion stepSuggestion = new StepSuggestion(stepSuggestionCreateDTO.getContent(),
+                stepSuggestionCreateDTO.getType(), 0L);
+        stepSuggestion.setId(0L);
+        stepSuggestion = stepSuggestionDAO
+                .save(stepSuggestion);
 
         return stepSuggestion.getId();
     }
 
     /**
      * Updates step suggestion specified in stepSuggestionDTO by id
-     * @param stepSuggestionId id of step suggestion to update
-     * @param stepSuggestionDTO info to update
+     *
+     * @param stepSuggestionId        id of step suggestion to update
+     * @param stepSuggestionUpdateDTO info to update
      */
-    public void updateStepSuggestion(Long stepSuggestionId, StepSuggestionDTO stepSuggestionDTO) {
+    public void updateStepSuggestion(Long stepSuggestionId,
+                                     StepSuggestionUpdateDTO stepSuggestionUpdateDTO) {
         StepSuggestion stepSuggestion = stepSuggestionDAO.findOne(stepSuggestionId);
         checkNotNull(stepSuggestion);
-        stepSuggestionTransformer.mapDTOToEntity(stepSuggestionDTO, stepSuggestion);
+        verifyVersion(stepSuggestionUpdateDTO.getVersion(), stepSuggestion);
+        if (stepSuggestionUpdateDTO.getContent() != null) {
+            stepSuggestion.setContent(stepSuggestionUpdateDTO.getContent());
+        }
+
+        if (stepSuggestionUpdateDTO.getType() != null) {
+            stepSuggestion.setType(stepSuggestionUpdateDTO.getType());
+        }
 
         stepSuggestionDAO.save(stepSuggestion);
     }
 
     /**
      * Deletes step suggestion from database by id
+     *
      * @param stepSuggestionId id of step suggestion to delete
      */
     public void removeStepSuggestion(Long stepSuggestionId) {

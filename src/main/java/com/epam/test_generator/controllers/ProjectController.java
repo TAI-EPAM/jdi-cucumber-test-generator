@@ -79,10 +79,10 @@ public class ProjectController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(value = "/projects", method = RequestMethod.POST,
         consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Long> createProject(@RequestBody @Valid ProjectDTO projectDTO,
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectDTO projectDTO,
                                               Authentication authentication) {
 
         return new ResponseEntity<>(projectService.createProject(projectDTO, authentication),

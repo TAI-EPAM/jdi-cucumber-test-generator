@@ -46,7 +46,8 @@ public class EmailService {
         String confirmUrl = passwordService.createConfirmUrl(request, userConformationToken);
         String subject = environment.getProperty("subject.registration.message");
         String text = environment.getProperty("registration.message");
-        text = String.format(text, user.getName(), user.getSurname(), "https://www.bddgenerator.com/",
+        String site = environment.getProperty("site.name");
+        text = String.format(text, user.getName(), user.getSurname(), site,
             confirmUrl);
         sendSimpleMessage(user.getEmail(), subject, text);
     }

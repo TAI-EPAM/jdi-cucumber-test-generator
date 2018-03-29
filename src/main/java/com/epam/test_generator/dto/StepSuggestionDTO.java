@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 public class StepSuggestionDTO {
 
+    @NotNull
     private Long id;
 
     @NotNull
@@ -15,15 +16,20 @@ public class StepSuggestionDTO {
     @NotNull
     private StepType type;
 
-    public StepSuggestionDTO(Long id, String content, StepType type) {
+    @NotNull
+    private Long version;
+
+    public StepSuggestionDTO(Long id, String content, StepType type, Long version) {
         this.id = id;
         this.content = content;
         this.type = type;
+        this.version = version;
     }
 
-    public StepSuggestionDTO(String content, StepType type) {
+    public StepSuggestionDTO(String content, StepType type, Long version) {
         this.content = content;
         this.type = type;
+        this.version = version;
     }
 
     public StepSuggestionDTO() {
@@ -53,6 +59,14 @@ public class StepSuggestionDTO {
         this.type = type;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -66,7 +80,8 @@ public class StepSuggestionDTO {
 
         return (id != null ? id.equals(that.id) : that.id == null)
             && (content != null ? content.equals(that.content) : that.content == null)
-            && (type != null ? type.equals(that.type) : that.type == null);
+            && (type != null ? type.equals(that.type) : that.type == null)
+            && (version != null ? version.equals(that.version) : that.version == null);
     }
 
     @Override
@@ -74,6 +89,7 @@ public class StepSuggestionDTO {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (content != null ? content.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
         return result;
     }
 }

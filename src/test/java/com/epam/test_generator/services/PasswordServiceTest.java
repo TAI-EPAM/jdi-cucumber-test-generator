@@ -50,13 +50,14 @@ public class PasswordServiceTest {
         when(request.getScheme()).thenReturn("scheme");
         when(request.getServerName()).thenReturn("serverName");
         when(request.getServerPort()).thenReturn(1);
+        when(request.getContextPath()).thenReturn("");
         when(token.getToken()).thenReturn("token");
     }
 
     @Test
     public void createResetUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createResetUrl(request, token);
-        String resetUrlActual = "scheme://serverName:1/cucumber/passwordReset?token=token";
+        String resetUrlActual = "scheme://serverName:1/passwordReset?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
     }
@@ -64,7 +65,7 @@ public class PasswordServiceTest {
     @Test
     public void createConfirmUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createConfirmUrl(request, token);
-        String resetUrlActual = "scheme://serverName:1/cucumber/confirmAccount?token=token";
+        String resetUrlActual = "scheme://serverName:1/confirmAccount?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
     }

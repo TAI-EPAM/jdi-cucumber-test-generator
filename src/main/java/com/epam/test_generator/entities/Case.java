@@ -1,6 +1,7 @@
 package com.epam.test_generator.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,11 +19,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import org.springframework.data.domain.Persistable;
 import org.springframework.statemachine.annotation.WithStateMachine;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.*;
 
 
 /**

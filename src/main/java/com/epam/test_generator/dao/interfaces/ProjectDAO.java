@@ -1,6 +1,5 @@
 package com.epam.test_generator.dao.interfaces;
 
-import com.epam.test_generator.dto.ProjectDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.User;
 import java.util.List;

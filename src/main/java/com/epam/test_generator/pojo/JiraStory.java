@@ -2,6 +2,7 @@ package com.epam.test_generator.pojo;
 
 import com.epam.test_generator.entities.Suit;
 import net.rcarz.jiraclient.Issue;
+import net.rcarz.jiraclient.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -21,7 +22,7 @@ public class JiraStory {
 
     private String assigner;
 
-    private String status;
+    private JiraStatus status;
 
     private String priority;
 
@@ -34,12 +35,25 @@ public class JiraStory {
         description = StringUtils.substring(StringUtils.defaultIfEmpty(issue.getDescription(), "No description"), 0, 250);
         jiraProjectKey = issue.getProject() == null ? "No project" :issue.getProject().getKey();
         assigner = issue.getAssignee() == null ? "no assigner" : issue.getAssignee().getDisplayName();
-        status = issue.getStatus() == null ? "no status" : issue.getStatus().getName();
+        status = getJiraStatus(issue.getStatus());
         priority = issue.getPriority() == null ? "no priority" : issue.getPriority().getName();
         repotrer = issue.getReporter() == null? "no reporter" : issue.getReporter().getDisplayName();
     }
 
     public JiraStory() {
+    }
+
+
+    private JiraStatus getJiraStatus(Status status) {
+        JiraStatus jiraStatus;
+        if (status == null) {
+            jiraStatus = JiraStatus.OPEN;
+        } else if (status.getName().equals(JiraStatus.RESOLVED.getJiraStatusName())) {
+            jiraStatus = JiraStatus.RESOLVED;
+        } else {
+            jiraStatus = JiraStatus.OPEN;
+        }
+        return jiraStatus;
     }
 
     public String getName() {
@@ -82,11 +96,11 @@ public class JiraStory {
         this.assigner = assigner;
     }
 
-    public String getStatus() {
+    public JiraStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(JiraStatus status) {
         this.status = status;
     }
 

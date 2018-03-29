@@ -1,27 +1,37 @@
 package com.epam.test_generator.dao.impl;
 
+import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraProject;
-import net.rcarz.jiraclient.JiraClient;
+import com.epam.test_generator.services.exceptions.JiraRuntimeException;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.rcarz.jiraclient.JiraException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JiraProjectDAO {
 
     @Autowired
-    private JiraClient client;
+    private JiraClientFactory jiraClientFactory;
 
-    public JiraProject getProjectByJiraKey(String jiraKey) throws JiraException {
+    public JiraProject getProjectByJiraKey(Long clientId, String jiraKey) {
 
-        return new JiraProject(client.getProject(jiraKey));
+        try {
+            return new JiraProject(jiraClientFactory.getJiraClient(clientId).getProject(jiraKey));
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(), e);
+        }
     }
 
-    public List<JiraProject> getAllProjects() throws JiraException {
-
-        return client.getProjects().stream().map(JiraProject::new).collect(Collectors.toList());
+    public List<JiraProject> getAllProjects(Long clientId) {
+        try {
+            return jiraClientFactory.getJiraClient(clientId).getProjects()
+                .stream()
+                .map(JiraProject::new)
+                .collect(Collectors.toList());
+        } catch (JiraException e) {
+            throw new JiraRuntimeException(e.getMessage(), e);
+        }
     }
 }

@@ -35,6 +35,9 @@ public class EditCaseDTO {
     @Valid
     private List<StepDTO> steps;
 
+    @Valid
+    private List<TagDTO> tags;
+
 
     @NotNull
     private Action action;
@@ -104,6 +107,14 @@ public class EditCaseDTO {
         this.comment = comment;
     }
 
+    public List<TagDTO> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagDTO> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -123,7 +134,8 @@ public class EditCaseDTO {
             : editCaseDTO.priority == null)
             && (status != null ? status.equals(editCaseDTO.status) : editCaseDTO.status == null)
             && (comment != null ? comment.equals(editCaseDTO.comment) : editCaseDTO.comment == null)
-            && (action != null ? action.equals(editCaseDTO.action) : editCaseDTO.action == null);
+            && (action != null ? action.equals(editCaseDTO.action) : editCaseDTO.action == null)
+            && (tags != null ? tags.equals(editCaseDTO.tags) : editCaseDTO.tags == null);
     }
 
     @Override
@@ -135,6 +147,7 @@ public class EditCaseDTO {
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (action != null ? action.hashCode() : 0);
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
     }
 

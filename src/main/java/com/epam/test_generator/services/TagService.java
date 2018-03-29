@@ -1,31 +1,24 @@
 package com.epam.test_generator.services;
 
-import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
-import com.epam.test_generator.transformers.CaseTransformer;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToSuit;
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 import static com.epam.test_generator.services.utils.UtilsService.tagBelongsToCase;
 
-import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
-import com.epam.test_generator.dao.interfaces.StepDAO;
-import com.epam.test_generator.dao.interfaces.SuitDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
-import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.transformers.TagTransformer;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.epam.test_generator.services.utils.UtilsService.*;
 
 @Transactional
 @Service
@@ -40,12 +33,40 @@ public class TagService {
     @Autowired
     private TagDAO tagDAO;
 
+    @Autowired
+    private ProjectService projectService;
 
     @Autowired
     private TagTransformer tagTransformer;
 
     @Autowired
     private CaseVersionDAO caseVersionDAO;
+
+    @Autowired
+    private SuitVersionDAO sutiVersionDAO;
+
+
+    /**
+     *  Return all tags from Project's Suits and Cases.
+     */
+    public Set<TagDTO> getAllProjectTags(long projectId) {
+        Set<TagDTO> tagCases = projectService.getProjectByProjectId(projectId).getSuits()
+                .stream()
+                .flatMap(suit -> suit.getCases().stream())
+                .flatMap(c -> c.getTags().stream())
+                .map(tag -> tagTransformer.toDto(tag))
+                .collect(Collectors.toSet());
+
+        Set<TagDTO> tagSuits = projectService.getProjectByProjectId(projectId).getSuits()
+                .stream()
+                .flatMap(suit -> suit.getTags().stream())
+                .map(tag -> tagTransformer.toDto(tag))
+                .collect(Collectors.toSet());
+
+        return Stream.of(tagCases, tagSuits)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
 
     public Set<TagDTO> getAllTagsFromAllCasesInSuit(Long projectId, Long suitId) {
         Suit suit = suitService.getSuit(projectId, suitId);
@@ -58,10 +79,11 @@ public class TagService {
 
     /**
      * Adds tag with info specified in tagDTO
+     *
      * @param projectId id of project
-     * @param suitId id of suit
-     * @param caseId id of case
-     * @param tagDTO info to add
+     * @param suitId    id of suit
+     * @param caseId    id of case
+     * @param tagDTO    info to add
      * @return id of tag
      */
     public Long addTagToCase(Long projectId, Long suitId, Long caseId, TagDTO tagDTO) {
@@ -76,17 +98,19 @@ public class TagService {
         caze.getTags().add(tag);
 
         caseVersionDAO.save(caze);
+        sutiVersionDAO.save(suit);
 
         return tag.getId();
     }
 
     /**
      * Updates tag by id to info specified in tagDTO
+     *
      * @param projectId id of project
-     * @param suitId id of suit
-     * @param caseId id of case
-     * @param tagId id of tag to update
-     * @param tagDTO info to update
+     * @param suitId    id of suit
+     * @param caseId    id of case
+     * @param tagId     id of tag to update
+     * @param tagDTO    info to update
      */
     public void updateTag(Long projectId, Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
@@ -105,14 +129,16 @@ public class TagService {
         tagDAO.save(tag);
 
         caseVersionDAO.save(caze);
+        sutiVersionDAO.save(suit);
     }
 
     /**
      * Removes tag from case by id and saves case version to database
+     *
      * @param projectId id of project
-     * @param suitId id of suit
-     * @param caseId id of case
-     * @param tagId id of tag to delete
+     * @param suitId    id of suit
+     * @param caseId    id of case
+     * @param tagId     id of tag to delete
      */
     public void removeTag(Long projectId, Long suitId, Long caseId, Long tagId) {
         Suit suit = suitService.getSuit(projectId, suitId);
@@ -131,5 +157,6 @@ public class TagService {
         tagDAO.delete(tagId);
 
         caseVersionDAO.save(caze);
+        sutiVersionDAO.save(suit);
     }
 }

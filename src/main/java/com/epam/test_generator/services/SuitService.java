@@ -1,31 +1,34 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+import static com.epam.test_generator.services.utils.UtilsService.suitBelongsToProject;
+
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.StepDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.dto.SuitUpdateDTO;
+import com.epam.test_generator.dto.SuitVersionDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.transformers.SuitTransformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
+import com.epam.test_generator.transformers.SuitVersionTransformer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-import static com.epam.test_generator.services.utils.UtilsService.suitBelongsToProject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 
 @Transactional
@@ -49,6 +52,12 @@ public class SuitService {
 
     @Autowired
     private RemovedIssueDAO removedIssueDAO;
+
+    @Autowired
+    private SuitVersionDAO suitVersionDAO;
+
+    @Autowired
+    private SuitVersionTransformer suitVersionTransformer;
 
     public List<SuitDTO> getSuitsDTO() {
         return suitTransformer.toDtoList(suitDAO.findAll());
@@ -89,6 +98,8 @@ public class SuitService {
         Suit suit = suitDAO.save(suitTransformer.fromDto(suitDTO));
         suit.setLastModifiedDate(LocalDateTime.now());
 
+        suitVersionDAO.save(suit);
+
         project.getSuits().add(suit);
 
         caseVersionDAO.save(suit.getCases());
@@ -126,6 +137,10 @@ public class SuitService {
         suit.setLastModifiedDate(LocalDateTime.now());
         suitDAO.save(suit);
 
+
+        suitVersionDAO.save(suit);
+        caseVersionDAO.save(suit.getCases());
+
         SuitDTO updatedSuitDTO = suitTransformer.toDto(suit);
         SuitUpdateDTO updatedSuitDTOwithFailedStepIds = new SuitUpdateDTO(updatedSuitDTO,
             failedStepIds);
@@ -150,6 +165,7 @@ public class SuitService {
 
         suitDAO.delete(suitId);
 
+        suitVersionDAO.delete(suit);
         caseVersionDAO.delete(suit.getCases());
 
         Project project = projectService.getProjectByProjectId(projectId);
@@ -205,6 +221,7 @@ public class SuitService {
         }
 
         suitDAO.save(suits);
+        suitVersionDAO.save(suits);
 
         return rowNumberUpdates;
     }
@@ -216,8 +233,49 @@ public class SuitService {
         snapShot.setDescription(suitDTO.getDescription());
         snapShot.setPriority(suitDTO.getPriority());
         snapShot.setTags(suitDTO.getTags());
+        snapShot.setStatus(suitDTO.getStatus());
         snapShot.setCreationDate(suitDTO.getCreationDate());
         snapShot.setRowNumber(suitDTO.getRowNumber());
         return snapShot;
+    }
+
+    public List<SuitVersionDTO> getSuitVersions(Long projectId, Long suitId) {
+        Project project = projectService.getProjectByProjectId(projectId);
+        checkNotNull(project);
+
+        Suit suit =suitDAO.findOne(suitId);
+        checkNotNull(suit);
+
+        suitBelongsToProject(project, suit);
+
+        List<SuitVersion> suitVersions = suitVersionDAO.findAll(suitId);
+        return suitVersionTransformer.toDtoList(suitVersions);
+    }
+
+    /**
+     * Restores suit to previous version by suitId and commitId
+     * @param projectId id of project where to restore suit
+     * @param suitId id of suit to restore
+     * @param commitId id of commit to restore version
+     * @return {@link SuitDTO} of restored by the commitId case
+     */
+    public SuitDTO restoreSuit(Long projectId, Long suitId, String commitId) {
+        Project  project= projectService.getProjectByProjectId(projectId);
+
+        Suit suit = suitDAO.findOne(suitId);
+        checkNotNull(suit);
+
+        suitBelongsToProject(project, suit);
+
+        Suit suitToRestore = suitVersionDAO.findByCommitId(suitId, commitId);
+        checkNotNull(suitToRestore);
+
+        Suit restoredSuit = suitDAO.save(suitToRestore);
+        suitVersionDAO.save(suitToRestore);
+        caseVersionDAO.save(suitToRestore.getCases());
+
+        SuitDTO restoredSuitDTO = suitTransformer.toDto(restoredSuit);
+
+        return restoredSuitDTO;
     }
 }

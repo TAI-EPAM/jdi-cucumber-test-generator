@@ -304,14 +304,14 @@ public class ProjectServiceTest {
         when(userService.getUserByEmail(simpleUser1.getEmail())).thenReturn(simpleUser1);
         when(projectDAO.save(any(Project.class))).thenReturn(simpleProject1);
 
-        Long actualId = projectService.createProject(simpleProject1DTO, authentication);
+        ProjectDTO project = projectService.createProject(simpleProject1DTO, authentication);
 
         verify(projectTransformer).fromDto(simpleProject1DTO);
         verify(projectDAO).save(actualProject);
         assertTrue(actualProject.isActive());
         assertTrue(actualProject.getUsers().contains(simpleUser1));
         assertTrue(actualProject.getUsers().contains(simpleUser2));
-        assertEquals(simpleProject1.getId(), actualId);
+        assertEquals(actualProject, projectTransformer.fromDto(project));
     }
 
     @Test

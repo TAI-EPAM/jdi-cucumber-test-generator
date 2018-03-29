@@ -1,9 +1,8 @@
 package com.epam.test_generator.pojo;
 
+import java.util.Objects;
 import net.rcarz.jiraclient.Project;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Objects;
 
 
 /**
@@ -18,9 +17,11 @@ public class JiraProject {
     private String description;
 
     public JiraProject(Project project) {
-        name = project.getName();
-        jiraKey = project.getKey();
-        description = StringUtils.substring(StringUtils.defaultIfEmpty(project.getDescription(), "No description"), 0, 250);
+        this.name = project.getName();
+        this.jiraKey = project.getKey();
+        this.description = StringUtils
+            .substring(StringUtils.defaultIfEmpty(project.getDescription(),
+                "No description"), 0, 250);
     }
 
 
@@ -52,7 +53,7 @@ public class JiraProject {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JiraProject that = (JiraProject) o;
+        final JiraProject that = (JiraProject) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(jiraKey, that.jiraKey) &&
                 Objects.equals(description, that.description);

@@ -5,21 +5,29 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
+import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
 import com.epam.test_generator.dto.CaseDTO;
 import com.epam.test_generator.dto.SuitDTO;
 import com.epam.test_generator.dto.TagDTO;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Project;
+import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
+import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.CaseTransformer;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.transformers.TagTransformer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,11 +52,16 @@ public class TagServiceTest {
 
     @Mock
     private TagTransformer tagTransformer;
+
     @Mock
     private CaseTransformer caseTransformer;
 
     @Mock
+    private SuitVersionDAO suitVersionDAO;
+
+    @Mock
     private CaseVersionDAO caseVersionDAO;
+
 
     @InjectMocks
     private TagService tagService;
@@ -59,12 +72,20 @@ public class TagServiceTest {
     @Mock
     private CaseService caseService;
 
+    @Mock
+    private ProjectService projectService;
+
 	private Set<TagDTO> expectedTagsDTOSet;
 
 	private Tag expectedTag;
     private TagDTO expectedTagDTO;
+    private TagDTO  expectedTagDTO2 ;
     private Suit suit;
     private Case caze;
+    private Project project;
+    private User user;
+    private Tag tag1;
+    private Tag tag2;
 
     @Before
     public void setUp() {
@@ -74,6 +95,7 @@ public class TagServiceTest {
         expectedTagsSet.add(expectedTag);
 
         expectedTagDTO = new TagDTO("tag1");
+        expectedTagDTO2 = new TagDTO("tag2");
         expectedTagsDTOSet = new HashSet<>();
         expectedTagsDTOSet.add(expectedTagDTO);
 
@@ -82,8 +104,33 @@ public class TagServiceTest {
         expectedCaseList.add(new Case(1L, "name1", "case1", new ArrayList<>(), 1, expectedTagsSet, "comment1"));
         expectedCaseList.add(new Case(2L, "name2", "case2", new ArrayList<>(), 1, expectedTagsSet, "comment2"));
 
+
+        user = new User("ima","familia","posta@milo.com","parol",new Role("ADMIN"));
+//        HashSet<User> userSet = new HashSet<>();
+//        userSet.add(user);
         suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, expectedTagsSet, 1);
         caze = new Case(2L, "name1", "desc2", new ArrayList<>(), 1, expectedTagsSet, "comment");
+    }
+
+    @Test
+    public void get_AllTagsFromProject_Success(){
+        tag1=new Tag("tag1");
+        tag2=new Tag("tag2");
+        suit.setTags(Collections.singleton(tag1));
+        caze.setTags(Collections.singleton(tag2));
+        suit.setCases(Collections.singletonList(caze));
+        project = new Project("project1","desc3", Collections.singletonList(suit), null,true);
+
+
+
+
+        when(tagTransformer.toDto(tag1)).thenReturn(expectedTagDTO);
+        when(tagTransformer.toDto(tag2)).thenReturn(expectedTagDTO2);
+
+        when(projectService.getProjectByProjectId(anyLong())).thenReturn(project);
+        Set<TagDTO> allProjectTags = tagService.getAllProjectTags(1L);
+        assertTrue(allProjectTags.contains(expectedTagDTO));
+        assertTrue(allProjectTags.contains(expectedTagDTO2));
     }
 
     @Test

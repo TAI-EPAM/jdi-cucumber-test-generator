@@ -1,0 +1,237 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="" id="default_stepsuggestions_given">
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I open &quot;&lt;pageName&gt;&quot;"/>
+            <column name="TYPE" value="GIVEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT"
+                value="&quot;I click on &quot;&lt;linkName&gt;&quot; linkI fill &quot;&lt;fieldName&gt;&quot; textfield with &quot;&lt;data&gt;&quot;&quot;"/>
+            <column name="TYPE" value="GIVEN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="" id="default_stepsuggestions_when">
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I click on &quot;&lt;buttonName&gt;&quot; button&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I click on &quot;&lt;linkName&gt;&quot; link&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I click on &quot;&lt;buttonName&gt;&quot; button from &quot;&lt;containerName&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I click on &quot;&lt;linkName&gt;&quot; link from &quot;&lt;containerName&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I check &quot;&lt;fieldName&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I uncheck &quot;&lt;fieldName&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;for element &quot;&lt;fieldName&gt;&quot; I set attribute &quot;&lt;attributeName&gt;&quot; on &quot;&lt;attributeValue&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I submit form &quot;&lt;formName&gt;&quot; data &quot;&lt;json&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I fill form &quot;&lt;formName&gt;&quot; data &quot;&lt;json&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I refresh page&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I go back&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I go forward&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;On pagination &quot;&lt;paginationName&gt;&quot; I press next&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;On pagination &quot;&lt;paginationName&gt;&quot; I press previous&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;On pagination &quot;&lt;paginationName&gt;&quot; I select page number &quot;&lt;index&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;On pagination &quot;&lt;paginationName&gt;&quot; I go to last&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;On pagination &quot;&lt;paginationName&gt;&quot; I go to first&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I find &quot;&lt;findString&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I input to &quot;&lt;filedName&gt;&quot; lines &quot;&lt;lines&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I input to &quot;&lt;filedName&gt;&quot; new line &quot;&lt;newLine&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I input to &quot;&lt;filedName&gt;&quot; new input &quot;&lt;newInput&gt;&quot;&quot;"/>
+            <column name="TYPE" value="WHEN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="" id="default_stepsuggestions_then">
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;checkbox &quot;&lt;fieldName&gt;&quot; is checked&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;checkbox &quot;&lt;fieldName&gt;&quot; is unchecked&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;element &quot;&lt;fieldName&gt;&quot; has attribute &quot;&lt;attributeName&gt;&quot; with value &quot;&lt;attributeValue&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;form &quot;&lt;formName&gt;&quot; contains data &quot;&lt;json&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;image &quot;&lt;fieldName&gt;&quot; has source &quot;&lt;source&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;image &quot;&lt;fieldName&gt;&quot; has alt &quot;&lt;alt&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;link &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; contains reference &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;link &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; match reference &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I am on &quot;&lt;pageName&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I check that page url match&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;I check that page url contains&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;field &quot;&lt;filedName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;text &quot;&lt;fieldName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;label &quot;&lt;fieldName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;link &quot;&lt;fieldName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;button &quot;&lt;fieldName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;text &quot;&lt;fieldName&gt;&quot; match &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;label &quot;&lt;fieldName&gt;&quot; match&quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;link &quot;&lt;fieldName&gt;&quot; match &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;button &quot;&lt;fieldName&gt;&quot; match &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;text &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;label &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;link &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;button &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; contains &quot;&lt;contains&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;text &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; match  &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;label &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; match  &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;link &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; match  &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="&quot;button &quot;&lt;linkName&gt;&quot; from &quot;&lt;containerName&gt;&quot; match  &quot;&lt;regex&gt;&quot;&quot;"/>
+            <column name="TYPE" value="THEN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="" id="default_stepsuggestions_and">
+        <insert tableName="STEPSUGGESTION">
+            <column name="CONTENT" value="I fill field &quot;&lt;fieldName&gt;&quot; by text &quot;&lt;text&gt;&quot;"/>
+            <column name="TYPE" value="AND"/>
+        </insert>
+    </changeSet>
+
+    <!--Adds default version (0) to step suggestions-->
+    <changeSet author="" id="default_stepsuggestions_version">
+        <update tableName="STEPSUGGESTION">
+            <column name="VERSION" type="BIGINT(19)" value="0"/>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

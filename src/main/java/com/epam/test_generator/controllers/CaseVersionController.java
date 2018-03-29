@@ -48,7 +48,6 @@ public class CaseVersionController {
     public ResponseEntity<List<CaseVersionDTO>> getCaseVersions(@PathVariable("projectId") long projectId,
                                                                 @PathVariable("suitId") long suitId,
                                                                 @PathVariable("caseId") long caseId) {
-
         return new ResponseEntity<>(caseService.getCaseVersions(projectId, suitId, caseId), HttpStatus.OK);
     }
 

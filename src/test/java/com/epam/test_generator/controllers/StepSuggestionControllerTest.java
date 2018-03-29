@@ -11,10 +11,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epam.test_generator.dto.StepSuggestionCreateDTO;
 import com.epam.test_generator.dto.StepSuggestionDTO;
+import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,10 +37,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class StepSuggestionControllerTest {
 
     private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
+    private static final int PAGE_NUMBER = 1;
+    private static final int PAGE_SIZE = 2;
     private static final StepType STEP_TYPE = StepType.GIVEN;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private StepSuggestionDTO stepSuggestionDTO;
+    private StepSuggestionUpdateDTO stepSuggestionUpdateDTO;
     private List<StepSuggestionDTO> stepSuggestionDTOS;
 
     @Mock
@@ -57,27 +62,77 @@ public class StepSuggestionControllerTest {
         stepSuggestionDTO.setContent("Some step description");
         stepSuggestionDTO.setType(StepType.GIVEN);
         stepSuggestionDTOS = new ArrayList<>();
+
+        stepSuggestionUpdateDTO = new StepSuggestionUpdateDTO("step content", StepType.GIVEN, 0L);
     }
 
     @Test
     public void getSuggestionsList_StepsSuggestion_StatusOk() throws Exception {
-        when(stepSuggestionService.getStepsSuggestions()).thenReturn(stepSuggestionDTOS);
+        when(stepSuggestionService.getStepsSuggestions(null, null, null))
+                .thenReturn(stepSuggestionDTOS);
 
         mockMvc.perform(get("/stepSuggestions"))
             .andExpect(status().isOk());
 
-        verify(stepSuggestionService).getStepsSuggestions();
+        verify(stepSuggestionService).getStepsSuggestions(null, null, null);
     }
 
     @Test
     public void getSuggestionsList_ThrowRuntimeException_StatusInternalServerError()
         throws Exception {
-        when(stepSuggestionService.getStepsSuggestions()).thenThrow(new RuntimeException());
+        when(stepSuggestionService.getStepsSuggestions(null, null, null))
+                .thenThrow(new RuntimeException());
 
         mockMvc.perform(get("/stepSuggestions"))
             .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService).getStepsSuggestions();
+        verify(stepSuggestionService).getStepsSuggestions(null, null, null);
+    }
+
+    @Test
+    public void getSuggestionsPage_StepsSuggestion_StatusOk() throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE))
+                .thenReturn(stepSuggestionDTOS);
+
+        mockMvc.perform(get("/stepSuggestions?page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isOk());
+
+        verify(stepSuggestionService).getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE);
+    }
+
+    @Test
+    public void getSuggestionsPage_ThrowRuntimeException_StatusInternalServerError()
+            throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/stepSuggestions?page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isInternalServerError());
+
+        verify(stepSuggestionService).getStepsSuggestions(null, PAGE_NUMBER, PAGE_SIZE);
+    }
+
+    @Test
+    public void getStepsSuggestionsPageByType_StepsSuggestion_StatusOk() throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(STEP_TYPE, PAGE_NUMBER, PAGE_SIZE)).thenReturn
+                (stepSuggestionDTOS);
+
+        mockMvc.perform(get("/stepSuggestions?stepType=" + STEP_TYPE  + "&page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isOk());
+
+        verify(stepSuggestionService).getStepsSuggestions(eq(STEP_TYPE), eq(PAGE_NUMBER), eq(PAGE_SIZE));
+    }
+
+    @Test
+    public void getStepsSuggestionsPageByType_ThrowRuntimeException_StatusInternalServerError()
+            throws Exception {
+        when(stepSuggestionService.getStepsSuggestions(STEP_TYPE, PAGE_NUMBER, PAGE_SIZE))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/stepSuggestions?stepType=" + STEP_TYPE + "&page=" + PAGE_NUMBER + "&size=" + PAGE_SIZE))
+                .andExpect(status().isInternalServerError());
+
+        verify(stepSuggestionService).getStepsSuggestions(eq(STEP_TYPE), eq(PAGE_NUMBER), eq(PAGE_SIZE));
     }
 
     @Test
@@ -108,7 +163,7 @@ public class StepSuggestionControllerTest {
     @Test
     public void add_NewStepSuggestion_StatusOk() throws Exception {
         stepSuggestionDTO.setId(null);
-        when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class)))
+        when(stepSuggestionService.addStepSuggestion(any(StepSuggestionCreateDTO.class)))
             .thenReturn(stepSuggestionDTO.getId());
 
         mockMvc.perform(post("/stepSuggestions")
@@ -116,7 +171,7 @@ public class StepSuggestionControllerTest {
             .content(mapper.writeValueAsString(stepSuggestionDTO)))
             .andExpect(status().isOk());
 
-        verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionDTO.class));
+        verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionCreateDTO.class));
     }
 
     @Test
@@ -130,13 +185,13 @@ public class StepSuggestionControllerTest {
             .content(mapper.writeValueAsString(stepSuggestionDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(stepSuggestionService, times(0)).addStepSuggestion(any(StepSuggestionDTO.class));
+        verify(stepSuggestionService, times(0)).addStepSuggestion(any(StepSuggestionCreateDTO.class));
     }
 
     @Test
     public void addStepSuggestion_ThrowRuntimeException_StatusInternalServerError()
         throws Exception {
-        when(stepSuggestionService.addStepSuggestion(any(StepSuggestionDTO.class)))
+        when(stepSuggestionService.addStepSuggestion(any(StepSuggestionCreateDTO.class)))
             .thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/stepSuggestions")
@@ -144,7 +199,7 @@ public class StepSuggestionControllerTest {
             .content(mapper.writeValueAsString(stepSuggestionDTO)))
             .andExpect(status().isInternalServerError());
 
-        verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionDTO.class));
+        verify(stepSuggestionService).addStepSuggestion(any(StepSuggestionCreateDTO.class));
     }
 
     @Test
@@ -153,39 +208,55 @@ public class StepSuggestionControllerTest {
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(stepSuggestionDTO)))
+            .content(mapper.writeValueAsString(stepSuggestionUpdateDTO)))
             .andExpect(status().isOk());
 
         verify(stepSuggestionService)
-            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionDTO.class));
+            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionUpdateDTO.class));
+    }
+
+    @Test
+    public void update_StepSuggestion_StatusConflict() throws Exception {
+        doThrow(
+            OptimisticLockingFailureException.class).when(stepSuggestionService)
+            .updateStepSuggestion(anyLong(),
+            any(StepSuggestionUpdateDTO.class));
+
+        mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(stepSuggestionUpdateDTO)))
+            .andExpect(status().isConflict());
+
+        verify(stepSuggestionService)
+            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionUpdateDTO.class));
     }
 
     @Test
     public void update_StepSuggestionNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(stepSuggestionService)
-            .updateStepSuggestion(anyLong(), any(StepSuggestionDTO.class));
+            .updateStepSuggestion(anyLong(), any(StepSuggestionUpdateDTO.class));
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(stepSuggestionDTO)))
+            .content(mapper.writeValueAsString(stepSuggestionUpdateDTO)))
             .andExpect(status().isNotFound());
 
         verify(stepSuggestionService)
-            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionDTO.class));
+            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionUpdateDTO.class));
     }
 
     @Test
     public void updateStepSuggestion_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(stepSuggestionService)
-            .updateStepSuggestion(anyLong(), any(StepSuggestionDTO.class));
+            .updateStepSuggestion(anyLong(), any(StepSuggestionUpdateDTO.class));
 
         mockMvc.perform(put("/stepSuggestions/" + SIMPLE_AUTOCOMPLETE_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(stepSuggestionDTO)))
+            .content(mapper.writeValueAsString(stepSuggestionUpdateDTO)))
             .andExpect(status().isInternalServerError());
 
         verify(stepSuggestionService)
-            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionDTO.class));
+            .updateStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID), any(StepSuggestionUpdateDTO.class));
     }
 
     @Test

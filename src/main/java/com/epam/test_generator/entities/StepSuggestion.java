@@ -6,6 +6,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -18,20 +20,26 @@ public class StepSuggestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @NotNull
+    private Long version;
+
     private String content;
 
     @Enumerated(EnumType.STRING)
     private StepType type;
 
-    public StepSuggestion(Long id, String content, StepType type) {
+    public StepSuggestion(Long id, String content, StepType type, Long version) {
         this.id = id;
         this.content = content;
         this.type = type;
+        this.version = version;
     }
 
-    public StepSuggestion(String content, StepType type) {
+    public StepSuggestion(String content, StepType type, Long version) {
         this.content = content;
         this.type = type;
+        this.version = version;
     }
 
     public StepSuggestion() {
@@ -59,6 +67,14 @@ public class StepSuggestion {
 
     public void setType(StepType type) {
         this.type = type;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     @Override
