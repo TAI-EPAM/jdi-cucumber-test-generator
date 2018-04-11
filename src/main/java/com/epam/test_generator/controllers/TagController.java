@@ -18,7 +18,9 @@ import java.util.Set;
 /**
  * Handle tags for cases and suits.
  */
+@Deprecated
 @RestController
+@RequestMapping("/projects/{projectId}")
 public class TagController {
 
     @Autowired
@@ -42,8 +44,7 @@ public class TagController {
                               required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}/tags",
-            method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/tags")
     public ResponseEntity<Set<TagDTO>> getAllProjectTags(@PathVariable("projectId")
                                                                      long projectId) {
 
@@ -67,8 +68,7 @@ public class TagController {
                               required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/tags",
-            method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/suits/{suitId}/cases/tags")
     public ResponseEntity<Set<TagDTO>> getAllTagsFromAllCasesInSuit(@PathVariable("projectId") long projectId,
                                                                     @PathVariable("suitId") long suitId) {
 
@@ -94,8 +94,7 @@ public class TagController {
                               required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags",
-            method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/suits/{suitId}/cases/{caseId}/tags")
     public ResponseEntity<Set<TagDTO>> getTags(@PathVariable("projectId") long projectId,
                                                @PathVariable("suitId") long suitId,
                                                @PathVariable("caseId") long caseId) {
@@ -125,10 +124,7 @@ public class TagController {
                               dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags",
-                    method = RequestMethod.POST,
-                    produces = "application/json")
+    @PostMapping("/suits/{suitId}/cases/{caseId}/tags")
     public ResponseEntity<Long> addTagToCase(@PathVariable("projectId") long projectId,
                                              @PathVariable("suitId") long suitId,
                                              @PathVariable("caseId") long caseId,
@@ -161,9 +157,7 @@ public class TagController {
                               dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags/{tagId}",
-                    method = RequestMethod.PUT,
-                    consumes = "application/json")
+    @PutMapping("/suits/{suitId}/cases/{caseId}/tags/{tagId}")
     public ResponseEntity<Void> updateTag(@PathVariable("projectId") long projectId,
                                           @PathVariable("suitId") long suitId,
                                           @PathVariable("caseId") long caseId,
@@ -195,8 +189,7 @@ public class TagController {
                               required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/tags/{tagId}",
-            method = RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping("/suits/{suitId}/cases/{caseId}/tags/{tagId}")
     public ResponseEntity<Void> removeTagFromCase(@PathVariable("projectId") long projectId,
                                                   @PathVariable("suitId") long suitId,
                                                   @PathVariable("caseId") long caseId,

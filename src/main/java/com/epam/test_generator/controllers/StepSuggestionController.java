@@ -10,26 +10,27 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 import java.util.List;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Handle step suggestions.
  */
 @RestController
+@RequestMapping("/step-suggestions")
 public class StepSuggestionController {
 
     @Autowired
@@ -69,7 +70,7 @@ public class StepSuggestionController {
                     dataType = "string")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestions(
             @RequestParam(value = "stepType", required = false) StepType stepType,
             @RequestParam(value = "page", required = false) Integer pageNumber,
@@ -79,7 +80,6 @@ public class StepSuggestionController {
                 HttpStatus.OK);
     }
 
-    @Deprecated
     @ApiOperation(value = "Get all step suggestions by type",
             nickname = "getStepsSuggestionsByType")
     @ApiResponses(value = {
@@ -93,8 +93,7 @@ public class StepSuggestionController {
             @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/stepSuggestions/{stepType}",
-            method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/{stepType}")
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestionsByType(
             @PathVariable("stepType") StepType stepType) {
 
@@ -113,9 +112,7 @@ public class StepSuggestionController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/stepSuggestions", method = RequestMethod.POST,
-        consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<Long> addStepSuggestion(
         @RequestBody @Valid StepSuggestionCreateDTO stepSuggestionCreateDTO) {
 
@@ -139,7 +136,7 @@ public class StepSuggestionController {
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}", method = RequestMethod.PUT, produces = "application/json")
+    @PutMapping("/{stepSuggestionId}")
     public ResponseEntity<Void> updateStepSuggestion(
         @PathVariable("stepSuggestionId") long stepSuggestionId,
         @RequestBody @Valid StepSuggestionUpdateDTO stepSuggestionUpdateDTO) {
@@ -160,8 +157,7 @@ public class StepSuggestionController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/stepSuggestions/{stepSuggestionId}",
-        method = RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping("/{stepSuggestionId}")
     public ResponseEntity<Void> removeStepSuggestion(
         @PathVariable("stepSuggestionId") long stepSuggestionId) {
         stepSuggestionService.removeStepSuggestion(stepSuggestionId);

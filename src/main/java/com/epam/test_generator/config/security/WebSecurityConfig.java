@@ -106,10 +106,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/login", "/registration", "/v2/api-docs",
+        web.ignoring().antMatchers("/login", "/user/**", "/v2/api-docs",
             "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html",
-            "/webjars/**", "/passwordForgot", "/passwordReset", "/confirmAccount", "/static/**",
-            "/index.html");
+            "/webjars/**", "/static/**", "/index.html");
     }
 
 }

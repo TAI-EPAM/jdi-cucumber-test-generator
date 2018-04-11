@@ -12,8 +12,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.dto.ProjectDTO;
@@ -38,6 +36,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class ProjectControllerTest {
 
     private static final long SIMPLE_PROJECT_ID = 0L;
+    private static final long SIMPLE_USER_ID = 0L;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private ProjectDTO projectDTO;
@@ -193,7 +192,7 @@ public class ProjectControllerTest {
 
     @Test
     public void assignUserToProject_ValidInput_StatusOk() throws Exception {
-        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/user/" + SIMPLE_USER_ID)
             .param("userId", "0"))
             .andExpect(status().isOk());
 
@@ -204,7 +203,7 @@ public class ProjectControllerTest {
     public void assignUserToProject_InvalidInput_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class)
             .when(projectService).addUserToProject(anyLong(), anyLong());
-        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/user/"+ SIMPLE_USER_ID)
             .param("userId", "0"))
             .andExpect(status().isNotFound());
 
@@ -215,7 +214,7 @@ public class ProjectControllerTest {
     public void assignUserToProject_ValidInput_StatusForbidden() throws Exception {
         doThrow(ProjectClosedException.class)
             .when(projectService).addUserToProject(anyLong(), anyLong());
-        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/users")
+        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID +"/user/" + SIMPLE_USER_ID)
             .param("userId", "0"))
             .andExpect(status().isForbidden());
 
@@ -224,7 +223,7 @@ public class ProjectControllerTest {
 
     @Test
     public void removeUserFromProject_ValidInput_StatusOk() throws Exception {
-        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/user/" + SIMPLE_USER_ID)
             .param("userId", "0"))
             .andExpect(status().isOk());
 
@@ -235,7 +234,7 @@ public class ProjectControllerTest {
     public void removeUserFromProject_InvalidInput_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class)
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
-        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/user/" + SIMPLE_USER_ID)
             .param("userId", "0"))
             .andExpect(status().isNotFound());
 
@@ -246,7 +245,7 @@ public class ProjectControllerTest {
     public void removeUserFromProject_ValidInput_StatusForbidden() throws Exception {
         doThrow(ProjectClosedException.class)
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
-        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/users")
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID +"/user/" + SIMPLE_USER_ID)
             .param("userId", "0"))
             .andExpect(status().isForbidden());
 

@@ -163,7 +163,7 @@ public class AdminControllerSecurityTest {
 
         final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
+        mvc.perform(put("/admin/role").header("Authorization", token).content(json)
             .contentType("application/json"))
             .andExpect(status().isOk());
     }
@@ -182,7 +182,7 @@ public class AdminControllerSecurityTest {
 
         final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
+        mvc.perform(put("/admin/role").header("Authorization", token).content(json)
             .contentType("application/json"))
             .andExpect(status().isBadRequest());
     }
@@ -198,7 +198,7 @@ public class AdminControllerSecurityTest {
 
         final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
-        mvc.perform(put("/admin/changeroles").header("Authorization", token).content(json)
+        mvc.perform(put("/admin/role").header("Authorization", token).content(json)
             .contentType("application/json"))
             .andExpect(status().isForbidden());
     }

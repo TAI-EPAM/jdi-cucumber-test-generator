@@ -1,33 +1,30 @@
 package com.epam.test_generator.controllers;
 
-import com.epam.test_generator.dto.ExecuteJenkinsJobDTO;
-import com.epam.test_generator.services.jenkins.JenkinsJobService;
-import com.epam.test_generator.services.jenkins.JenkinsJobService.ExecuteJenkinsJobResponse;
-import com.epam.test_generator.services.jenkins.JenkinsJobServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.epam.test_generator.dto.ExecuteJenkinsJobDTO;
+import com.epam.test_generator.services.jenkins.JenkinsJobService;
+import com.epam.test_generator.services.jenkins.JenkinsJobService.ExecuteJenkinsJobResponse;
+import com.epam.test_generator.services.jenkins.JenkinsJobServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JenkinsControllerTest {
@@ -63,7 +60,7 @@ public class JenkinsControllerTest {
     @Test
     public void getJobs_Jobs_StatusOK() throws Exception {
         when(jenkinsJobService.getJobs()).thenReturn(jobsList);
-        mockMvc.perform(get("/jenkins/job/"))
+        mockMvc.perform(get("/jenkins/jobs"))
             .andExpect(status().isOk())
             .andExpect(content().string(jobsList.toString()));
     }
@@ -71,7 +68,7 @@ public class JenkinsControllerTest {
     @Test
     public void getJobs_Jobs_StatusInternalServerError() throws Exception {
         when(jenkinsJobService.getJobs()).thenThrow(Exception.class);
-        mockMvc.perform(get("/jenkins/job/"))
+        mockMvc.perform(get("/jenkins/jobs"))
             .andExpect(status().isInternalServerError());
     }
 

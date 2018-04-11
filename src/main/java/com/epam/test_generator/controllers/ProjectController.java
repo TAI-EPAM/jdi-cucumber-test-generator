@@ -16,11 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Handle all projects of an authorized user.
  */
 @RestController
+@RequestMapping("/projects")
 public class ProjectController {
 
     @Autowired
@@ -40,8 +43,8 @@ public class ProjectController {
             response = ProjectDTO.class, responseContainer = "List")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD", "ROLE_TEST_ENGINEER", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects", method = RequestMethod.GET, produces = "application/json")
     @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @GetMapping
     public ResponseEntity<List<ProjectDTO>> getUserProjects(Authentication authentication) {
         return new ResponseEntity<>(projectService.getAuthenticatedUserProjects(authentication),
             HttpStatus.OK);
@@ -59,7 +62,7 @@ public class ProjectController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD", "ROLE_TEST_ENGINEER", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/{projectId}")
     public ResponseEntity<ProjectFullDTO> getProject(@PathVariable("projectId") long projectId,
                                                      Authentication authentication) {
 
@@ -80,8 +83,7 @@ public class ProjectController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN"})
-    @RequestMapping(value = "/projects", method = RequestMethod.POST,
-        consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectDTO projectDTO,
                                               Authentication authentication) {
 
@@ -104,8 +106,7 @@ public class ProjectController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}", method = RequestMethod.PUT,
-        consumes = "application/json")
+    @PutMapping("/{projectId}")
     public ResponseEntity<Void> updateProject(@PathVariable("projectId") long projectId,
                                               @RequestBody @Valid ProjectDTO projectDTO) {
         projectService.updateProject(projectId, projectDTO);
@@ -124,7 +125,7 @@ public class ProjectController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{projectId}")
     public ResponseEntity<Void> closeProject(@PathVariable("projectId") long projectId) {
         projectService.closeProject(projectId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -144,12 +145,10 @@ public class ProjectController {
             required = true, dataType = "Long", paramType = "query"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
-    @ResponseStatus(HttpStatus.OK)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/users", method = RequestMethod.PUT,
-        produces = "application/json")
+    @PutMapping("/{projectId}/user/{userId}")
     public ResponseEntity<Void> assignUserToProject(@PathVariable("projectId") long projectId,
-                                                    @RequestParam long userId) {
+                                                    @PathVariable("userId") long userId) {
         projectService.addUserToProject(projectId, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -167,12 +166,10 @@ public class ProjectController {
             required = true, dataType = "Long", paramType = "query"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
-    @ResponseStatus(HttpStatus.OK)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/users", method = RequestMethod.DELETE,
-        produces = "application/json")
+    @DeleteMapping("/{projectId}/user/{userId}")
     public ResponseEntity<Void> removeUserFromProject(@PathVariable("projectId") long projectId,
-                                                    @RequestParam long userId) {
+                                                    @PathVariable("userId") long userId) {
         projectService.removeUserFromProject(projectId, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

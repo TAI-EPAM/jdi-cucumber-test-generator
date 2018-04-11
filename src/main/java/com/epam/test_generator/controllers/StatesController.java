@@ -14,15 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller handle case events.
  */
 @RestController
+@RequestMapping("/events")
 public class StatesController {
 
     @Autowired
@@ -39,7 +40,7 @@ public class StatesController {
     @ApiImplicitParam(name = "status", value = "Case status",
         required = true, dataType = "String", paramType = "path")
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/events/{status}", method = RequestMethod.GET)
+    @GetMapping("/{status}")
     public ResponseEntity<List<Event>> getAvailableEvents(
         @PathVariable("status") Status status) {
 
@@ -54,7 +55,7 @@ public class StatesController {
         @ApiResponse(code = 200, message = "OK", response = Event.class, responseContainer = "List")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<List<Event>> getEvents() {
 
         return new ResponseEntity<>(
@@ -67,7 +68,7 @@ public class StatesController {
         @ApiResponse(code = 200, message = "OK", response = Status.class, responseContainer = "List")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/statuses", method = RequestMethod.GET)
+    @GetMapping("/statuses")
     public ResponseEntity<List<Status>> getStatuses() {
 
         return new ResponseEntity<>(

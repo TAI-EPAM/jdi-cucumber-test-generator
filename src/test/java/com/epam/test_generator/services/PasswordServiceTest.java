@@ -57,7 +57,7 @@ public class PasswordServiceTest {
     @Test
     public void createResetUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createResetUrl(request, token);
-        String resetUrlActual = "scheme://serverName:1/passwordReset?token=token";
+        String resetUrlActual = "scheme://serverName:1/user/validate-reset-token?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
     }
@@ -65,7 +65,7 @@ public class PasswordServiceTest {
     @Test
     public void createConfirmUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createConfirmUrl(request, token);
-        String resetUrlActual = "scheme://serverName:1/confirmAccount?token=token";
+        String resetUrlActual = "scheme://serverName:1/user/confirm-email?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
     }

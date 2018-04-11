@@ -12,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(path = "/jenkins")
 @RestController
+@RequestMapping("/jenkins")
 public class JenkinsController {
 
     private JenkinsJobService jenkinsJobService;
@@ -39,7 +39,7 @@ public class JenkinsController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(path = "/job", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/jobs")
     public ResponseEntity<List<CommonJenkinsJobResponse>> getJobs() throws Exception {
         return new ResponseEntity<>(jenkinsJobService.getJobs(), HttpStatus.OK);
     }
@@ -54,11 +54,10 @@ public class JenkinsController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(path = "/job/execute", method = RequestMethod.POST, produces = "application/json")
+    @PostMapping("/job/execute")
     public ResponseEntity<ExecuteJenkinsJobResponse> executeJob(
         @RequestBody @Valid ExecuteJenkinsJobDTO jobDTO) throws Exception {
         return new ResponseEntity<>(jenkinsJobService.runJob(jobDTO.getJobName()), HttpStatus.OK);
     }
-
-
 }
+

@@ -19,14 +19,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/projects/{projectId}/tests")
 public class TestResultController {
 
     @Autowired
@@ -43,8 +45,7 @@ public class TestResultController {
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/tests/run",
-        method = RequestMethod.POST, consumes = "application/json")
+    @PostMapping
     public ResponseEntity<Void> runTests(@PathVariable("projectId") long projectId,
                                          @RequestBody @Valid List<RawSuitResultDTO> rawSuitResultDTOS,
                                          Authentication authentication) {
@@ -70,8 +71,7 @@ public class TestResultController {
             paramType = "query", dataType = "int")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/tests/results/",
-        method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/results")
     public ResponseEntity<List<TestResultDTO>> getTestRunResultsFromTo(
         @PathVariable("projectId") long projectId,
         @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
@@ -111,8 +111,7 @@ public class TestResultController {
             paramType = "query", dataType = "date", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/tests/results/dates",
-        method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/results/dates")
     public ResponseEntity<List<TestResultDTO>> getTestRunResultsFromToByDate(
         @PathVariable("projectId") long projectId,
         @RequestParam(value = "from") @DateTimeFormat(iso = ISO.DATE) Date from,

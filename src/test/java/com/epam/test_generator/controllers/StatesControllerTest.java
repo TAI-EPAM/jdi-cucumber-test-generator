@@ -3,7 +3,6 @@ package com.epam.test_generator.controllers;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.entities.Status;
@@ -62,7 +61,7 @@ public class StatesControllerTest {
     @Test
     public void get_Statuses_StatusOk() throws Exception {
 
-        mockMvc.perform(get("/statuses/"))
+        mockMvc.perform(get("/events/statuses"))
             .andExpect(status().isOk());
     }
 }

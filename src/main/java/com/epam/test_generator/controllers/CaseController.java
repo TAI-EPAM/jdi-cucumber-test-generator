@@ -23,10 +23,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Handle cases in specified suit.
  */
 @RestController
+@RequestMapping("/projects/{projectId}/suits/{suitId}/cases")
 public class CaseController {
 
     @Autowired
@@ -56,8 +60,7 @@ public class CaseController {
 
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases",
-        method = RequestMethod.GET, produces = "application/json")
+    @GetMapping
     public ResponseEntity<List<CaseDTO>> getCases(@PathVariable("projectId") long projectId,
                                                   @PathVariable("suitId") long suitId) {
         SuitDTO suitDTO = suitService.getSuitDTO(projectId, suitId);
@@ -80,8 +83,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}",
-        method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("/{caseId}")
     public ResponseEntity<CaseDTO> getCase(@PathVariable("projectId") long projectId,
                                            @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId) {
@@ -108,8 +110,7 @@ public class CaseController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases", method = RequestMethod.POST,
-        consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<CaseDTO> addCaseToSuit(@PathVariable("projectId") long projectId,
                                               @PathVariable("suitId") long suitId,
                                               @RequestBody @Valid CaseDTO caseDTO) {
@@ -137,8 +138,7 @@ public class CaseController {
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}",
-        method = RequestMethod.PUT, consumes = "application/json")
+    @PutMapping("/{caseId}")
     public ResponseEntity<CaseUpdateDTO> updateCase(@PathVariable("projectId") long projectId,
                                                              @PathVariable("suitId") long suitId,
                                                              @PathVariable("caseId") long caseId,
@@ -149,6 +149,7 @@ public class CaseController {
         return new ResponseEntity<>(updatedCaseDTOwithFailedStepIds, HttpStatus.OK);
     }
 
+    @Deprecated
     @ApiOperation(value = "Update, create or delete list of cases", nickname = "updateCases")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Long.class, responseContainer = "List"),
@@ -163,8 +164,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases",
-        method = RequestMethod.PUT, consumes = "application/json")
+    @PutMapping
     public ResponseEntity<List<CaseDTO>> updateCases(@PathVariable("projectId") long projectId,
                                                   @PathVariable("suitId") long suitId,
                                                   @RequestBody @Valid List<EditCaseDTO> editDTOList)
@@ -175,6 +175,7 @@ public class CaseController {
         return new ResponseEntity<>(updatedCasesDTO, HttpStatus.OK);
     }
 
+    @Deprecated
     @ApiOperation(value = "Delete case by id", nickname = "removeCase")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
@@ -191,7 +192,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{caseId}")
     public ResponseEntity<CaseDTO> removeCase(@PathVariable("projectId") long projectId,
                                            @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId) {
@@ -216,8 +217,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases", method = RequestMethod.DELETE,
-        consumes = "application/json")
+    @DeleteMapping
     public ResponseEntity<List<CaseDTO>> removeCases(@PathVariable("projectId") long projectId,
                                             @PathVariable("suitId") long suitId,
                                             @RequestBody Long[] removeCaseIds) {
@@ -252,8 +252,7 @@ public class CaseController {
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @RequestMapping(value = "/projects/{projectId}/suits/{suitId}/cases/{caseId}/events/{event}", method = RequestMethod.PUT,
-        consumes = "application/json")
+    @PutMapping("/{caseId}/events/{event}")
     public ResponseEntity<Status> performEvent(@PathVariable("projectId") long projectId,
                                                @PathVariable("suitId") long suitId,
                                                @PathVariable("caseId") long caseId,
