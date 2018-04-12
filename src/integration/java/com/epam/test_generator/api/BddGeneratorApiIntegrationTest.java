@@ -12,7 +12,7 @@ import static java.lang.String.format;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 @Ignore
-public class BddGeneratorApiTest {
+public class BddGeneratorApiIntegrationTest {
 
     private final String projectName = "TestProject";
 

@@ -3,9 +3,8 @@ package com.epam.test_generator.api;
 import static com.epam.test_generator.api.JdiHttpApiClientGenerator.API_CLASS_NAME;
 
 import java.io.File;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import java.io.IOException;
 
@@ -17,8 +16,8 @@ public class ApiClientGeneratorTest {
         + API_CLASS_NAME
         +".java";
 
-    @Before
-    public void setUp() {
+    @AfterClass
+    public static void deleteApiFile() {
         File file = new File(API_FILE);
         file.delete();
     }

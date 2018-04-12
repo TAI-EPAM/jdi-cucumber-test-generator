@@ -65,6 +65,7 @@ public class JdiHttpApiClientGenerator {
         logger.trace("Create java api class file");
         PrintStream stream = new PrintStream(file, "UTF-8");
         javaFile.writeTo(stream);
+        stream.close();
     }
 
 
