@@ -94,11 +94,10 @@ public class UserServiceTest {
 
     }
 
-    @Test
-    public void getUserById_NoSuchUser_Success() throws Exception {
+    @Test(expected = UnauthorizedException.class)
+    public void getUserById_NoSuchUser_Success() {
         when(userDAO.findById(anyLong())).thenReturn(null);
-        User userById = sut.getUserById(1L);
-        assertNull(userById);
+        sut.getUserById(1L);
     }
 
     @Test
@@ -109,10 +108,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserByEmail_NoSuchUser_Success() throws Exception {
+    public void getUserByEmail_NoSuchUser_Success(){
         when(userDAO.findByEmail(anyString())).thenReturn(null);
-        User userById = sut.getUserByEmail("iteaky");
-        assertNull(userById);
+        sut.getUserByEmail("iteaky");
     }
 
     @Test
@@ -133,7 +131,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser_RegistrationUserDTO_Success() throws Exception {
+    public void createUser_RegistrationUserDTO_Success() {
         sut.createUser(registrationUserDTO);
         verify(userDAO).save(any(User.class));
     }
@@ -165,7 +163,7 @@ public class UserServiceTest {
 
         User user = new User();
         user.setLocked(false);
-        user.setAttempts(0);
+        user.setLoginAttempts(0);
 
         when(userDAO.findById(anyLong())).thenReturn(user);
 
@@ -176,7 +174,7 @@ public class UserServiceTest {
         verify(userDAO, times(3)).save(any(User.class));
 
         assertEquals(expectedAttempts, actualAttempts);
-        assertEquals(expectedAttempts, (long) user.getAttempts());
+        assertEquals(expectedAttempts, (long) user.getLoginAttempts());
         assertFalse(user.isLocked());
     }
 
@@ -187,7 +185,7 @@ public class UserServiceTest {
 
         User user = new User();
         user.setLocked(false);
-        user.setAttempts(4);
+        user.setLoginAttempts(4);
 
         when(userDAO.findById(anyLong())).thenReturn(user);
 
@@ -203,12 +201,12 @@ public class UserServiceTest {
 
         User user = new User();
         user.setLocked(true);
-        user.setAttempts(4);
+        user.setLoginAttempts(4);
 
         when(userDAO.findById(anyLong())).thenReturn(user);
 
         sut.invalidateAttempts(1L);
-        assertEquals(expectedAttempts, (long) user.getAttempts());
+        assertEquals(expectedAttempts, (long) user.getLoginAttempts());
         assertFalse(user.isLocked());
     }
 

@@ -1,5 +1,7 @@
 package com.epam.test_generator.entities;
 
+import com.epam.test_generator.entities.api.CaseTrait;
+import com.epam.test_generator.entities.api.JiraSuitAndCaseTrait;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import org.springframework.statemachine.annotation.WithStateMachine;
  */
 @Entity
 @WithStateMachine
-public class Case implements Serializable, Persistable<Long> {
+public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSuitAndCaseTrait {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -153,6 +155,7 @@ public class Case implements Serializable, Persistable<Long> {
         this.description = description;
     }
 
+    @Override
     public List<Step> getSteps() {
         if (steps == null) {
             steps = new ArrayList<>();
@@ -228,6 +231,7 @@ public class Case implements Serializable, Persistable<Long> {
         this.comment = comment;
     }
 
+    @Override
     public String getJiraKey() {
         return jiraKey;
     }
@@ -272,7 +276,7 @@ public class Case implements Serializable, Persistable<Long> {
     public String toString() {
         return String.format(
                 "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s, comment= %s};",
-                id, name, description, steps, creationDate, priority, tags, steps, comment);
+                id, name, description, steps, creationDate, priority, tags, status, comment);
     }
 
     @Override

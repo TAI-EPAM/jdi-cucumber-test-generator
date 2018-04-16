@@ -1,30 +1,17 @@
-package com.epam.test_generator.entities;
+package com.epam.test_generator.entities.results;
 
-import java.util.Date;
+import com.epam.test_generator.entities.Project;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class TestResult {
+public class TestResult extends AbstractResult implements ResultTrait {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-    private Date date;
-
-    private Long duration;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private LocalDate date;
 
     private String executedBy;
 
@@ -35,6 +22,7 @@ public class TestResult {
     private int amountOfSkipped;
 
     public TestResult() {
+        date = LocalDate.now();
     }
 
     @ManyToOne
@@ -43,28 +31,12 @@ public class TestResult {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<SuitResult> suits;
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public String getExecutedBy() {
@@ -109,9 +81,42 @@ public class TestResult {
 
     public void setSuits(List<SuitResult> suits) {
         this.suits = suits;
+        countTestResultStatistics(suits);
+        setStatus(calculateStatus(suits));
+        setDuration(calculateDuration(suits));
     }
 
     public Project getProject() {
         return project;
     }
+
+    /**
+     * Summarize amount of Passed, Skipped and Failed tests of Tests executions.
+     *
+     * @param results list of {@link AbstractResult}
+     */
+    private void countTestResultStatistics(List<? extends AbstractResult> results) {
+        int amountOfPassed = 0;
+        int amountOfSkipped = 0;
+        int amountOfFailed = 0;
+
+        for (AbstractResult suitResult : results) {
+            switch (suitResult.getStatus()) {
+                case PASSED:
+                    amountOfPassed++;
+                    break;
+                case SKIPPED:
+                    amountOfSkipped++;
+                    break;
+                case FAILED:
+                    amountOfFailed++;
+                    break;
+            }
+        }
+
+        setAmountOfPassed(amountOfPassed);
+        setAmountOfFailed(amountOfFailed);
+        setAmountOfSkipped(amountOfSkipped);
+    }
+
 }

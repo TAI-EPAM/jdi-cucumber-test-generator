@@ -89,7 +89,6 @@ public class AdminControllerSecurityTest {
 
     private MockMvc mvc;
 
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -111,6 +110,7 @@ public class AdminControllerSecurityTest {
         when(user.getPassword()).thenReturn("test");
         when(user.getId()).thenReturn(new Long(1));
         when(user.isLocked()).thenReturn(false);
+        when(user.getRole()).thenReturn(new Role("GUEST"));
 
         when(projectService.getProjectByProjectId(anyLong())).thenReturn(null);
 

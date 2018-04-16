@@ -19,17 +19,15 @@ import static org.hamcrest.CoreMatchers.is;
 @Transactional
 public class TokenDAOTest {
 
-
     @Autowired
     private TokenDAO sut;
 
     @Test
     public void findByToken_SimpleToke_Ok() {
-        Token token = new Token();
-        token.setToken("token");
-        token.setExpiryDate(15);
+        Token token = Token.withExpiryDuration(15);
+        token.setTokenUiid("token");
         sut.save(token);
-        Token byToken = sut.findByToken("token");
+        Token byToken = sut.findByTokenUuid("token");
         Assert.assertThat(byToken, is(equalTo(token)));
     }
 }

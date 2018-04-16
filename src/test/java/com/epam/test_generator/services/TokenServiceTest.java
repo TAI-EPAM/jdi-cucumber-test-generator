@@ -47,7 +47,7 @@ public class TokenServiceTest {
 
     @Test
     public void checkToken_SimpleToken_Ok() {
-        when(tokenDAO.findByToken(anyString())).thenReturn(token);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(token);
         when(token.isExpired()).thenReturn(false);
         sut.checkToken(anyString());
 
@@ -55,14 +55,14 @@ public class TokenServiceTest {
 
     @Test(expected = TokenMissingException.class)
     public void checkToken_IncorrectToken_Exception() {
-        when(tokenDAO.findByToken(anyString())).thenReturn(null);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(null);
         sut.checkToken(anyString());
 
     }
 
     @Test(expected = TokenMalformedException.class)
     public void checkToken_ExpiredToken_Exception() {
-        when(tokenDAO.findByToken(anyString())).thenReturn(token);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(token);
         when(token.isExpired()).thenReturn(true);
         sut.checkToken(anyString());
 

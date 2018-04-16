@@ -29,7 +29,7 @@ public class CustomCaseVersionConverter implements CustomConverter {
         if (sourceFieldValue instanceof Step) {
             Step source = (Step) sourceFieldValue;
             return new StepDTO(source.getId(), source.getRowNumber(), source.getDescription(),
-                source.getType(), "", Status.NOT_RUN);
+                source.getType(), source.getComment(), source.getStatus());
         } else if (sourceFieldValue instanceof Tag) {
             Tag source = (Tag) sourceFieldValue;
             TagDTO tag = new TagDTO();

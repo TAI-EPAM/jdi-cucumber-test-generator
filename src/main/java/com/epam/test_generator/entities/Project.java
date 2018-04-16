@@ -1,7 +1,21 @@
 package com.epam.test_generator.entities;
 
-import javax.persistence.*;
-import java.util.*;
+import com.epam.test_generator.entities.api.ProjectTrait;
+import com.epam.test_generator.entities.api.SuitProjectTrait;
+import com.epam.test_generator.entities.api.UsersProjectTrait;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 /**
  * This class represents Project essence. Besides simple fields like id, name and description,
@@ -11,7 +25,7 @@ import java.util.*;
  * of current project. More rights are granted with more significant {@link Role} of a user.
  */
 @Entity
-public class Project {
+public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrait {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +66,7 @@ public class Project {
         this.description = description;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -60,6 +75,7 @@ public class Project {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -76,6 +92,7 @@ public class Project {
         this.description = description;
     }
 
+    @Override
     public List<Suit> getSuits() {
         return suits;
     }
@@ -84,6 +101,7 @@ public class Project {
         this.suits = suits;
     }
 
+    @Override
     public Set<User> getUsers() {
         return users;
     }
@@ -100,10 +118,12 @@ public class Project {
         this.users = users;
     }
 
+    @Override
     public boolean isActive() {
         return active;
     }
 
+    @Override
     public void setActive(boolean active) {
         this.active = active;
     }
@@ -153,5 +173,4 @@ public class Project {
 
         return Objects.hash(id, name, description, suits, users, active, jiraKey);
     }
-
 }

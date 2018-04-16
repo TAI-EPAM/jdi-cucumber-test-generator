@@ -222,11 +222,10 @@ public class ProjectServiceTest {
     @Test(expected = NotFoundException.class)
     public void getProjectsByUserId_InvalidUserId_NotFoundException() {
         when(userService.getUserById(simpleUser1.getId())).thenReturn(null);
-        when(projectDAO.findByUsers(simpleUser1)).thenReturn(expectedProjects);
+        when(projectDAO.findByUsers(simpleUser1)).thenReturn(null);
 
         projectService.getProjectsByUserId(simpleUser1.getId());
 
-        verify(userService).getUserById(eq(simpleUser1.getId()));
     }
 
     @Test
@@ -332,7 +331,7 @@ public class ProjectServiceTest {
     public void remove_Project_Success() {
         when(projectDAO.findOne(SIMPLE_PROJECT_ID)).thenReturn(simpleProject1);
         projectService.removeProject(SIMPLE_PROJECT_ID);
-        verify(projectDAO).delete(SIMPLE_PROJECT_ID);
+        verify(projectDAO).delete(simpleProject1);
     }
 
     @Test(expected = NotFoundException.class)
@@ -364,7 +363,7 @@ public class ProjectServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void addUserToProject_InvalidUserId_NotFound() {
-        when(projectDAO.findOne(SIMPLE_PROJECT_ID)).thenReturn(simpleProject1);
+        when(projectDAO.findOne(SIMPLE_PROJECT_ID)).thenReturn(null);
         when(userService.getUserById(SIMPLE_USER_ID)).thenReturn(simpleUser1);
 
         projectService.addUserToProject(SIMPLE_PROJECT_ID, 666L);
@@ -391,7 +390,7 @@ public class ProjectServiceTest {
         projectService.removeUserFromProject(777L, SIMPLE_USER_ID);
     }
 
-    @Test (expected = NotFoundException.class)
+    @Test (expected = BadRequestException.class)
     public void removeUserFromProject_InvalidUserId_NotFound() {
         simpleProject1.setUsers(Sets.newHashSet(simpleUser1));
         when(projectDAO.findOne(SIMPLE_PROJECT_ID)).thenReturn(simpleProject1);

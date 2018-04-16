@@ -1,7 +1,7 @@
 package com.epam.test_generator.transformers;
 
 import com.epam.test_generator.dto.CaseResultDTO;
-import com.epam.test_generator.entities.CaseResult;
+import com.epam.test_generator.entities.results.CaseResult;
 import org.springframework.stereotype.Component;
 
 @Component

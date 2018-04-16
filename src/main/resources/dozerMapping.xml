@@ -20,19 +20,24 @@
         <class-b>com.epam.test_generator.dto.TagDTO</class-b>
     </mapping>
     <mapping map-null="false">
-        <class-a>com.epam.test_generator.entities.TestResult</class-a>
+        <class-a>com.epam.test_generator.entities.results.TestResult</class-a>
         <class-b>com.epam.test_generator.dto.TestResultDTO</class-b>
+        <!-- temper mapping until dozer will be deleted -->
+        <field copy-by-reference="true">
+            <a>date</a>
+            <b>date</b>
+        </field>
     </mapping>
     <mapping map-null="false">
-        <class-a>com.epam.test_generator.entities.SuitResult</class-a>
+        <class-a>com.epam.test_generator.entities.results.SuitResult</class-a>
         <class-b>com.epam.test_generator.dto.SuitResultDTO</class-b>
     </mapping>
     <mapping map-null="false">
-        <class-a>com.epam.test_generator.entities.CaseResult</class-a>
+        <class-a>com.epam.test_generator.entities.results.CaseResult</class-a>
         <class-b>com.epam.test_generator.dto.CaseResultDTO</class-b>
     </mapping>
     <mapping map-null="false">
-        <class-a>com.epam.test_generator.entities.StepResult</class-a>
+        <class-a>com.epam.test_generator.entities.results.StepResult</class-a>
         <class-b>com.epam.test_generator.dto.StepResultDTO</class-b>
     </mapping>
     <mapping map-null="false">
@@ -67,4 +72,6 @@
             <b>newValue</b>
         </field>
     </mapping>
+
+
 </mappings>

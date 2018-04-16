@@ -51,7 +51,7 @@ public class PasswordServiceTest {
         when(request.getServerName()).thenReturn("serverName");
         when(request.getServerPort()).thenReturn(1);
         when(request.getContextPath()).thenReturn("");
-        when(token.getToken()).thenReturn("token");
+        when(token.getTokenUuid()).thenReturn("token");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class PasswordServiceTest {
     @Test
     public void passwordReset_SimplePasswordResetDTO_Ok() {
         when(passwordResetDTO.getToken()).thenReturn("token");
-        when(tokenDAO.findByToken(anyString())).thenReturn(token);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn("password");
 
@@ -84,7 +84,7 @@ public class PasswordServiceTest {
     @Test(expected = TokenMissingException.class)
     public void passwordReset_IncorrectToken_Exception() {
         when(passwordResetDTO.getToken()).thenReturn("token");
-        when(tokenDAO.findByToken(anyString())).thenReturn(null);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(null);
 
         sut.passwordReset(passwordResetDTO);
         verify(tokenDAO).delete(token);
@@ -93,6 +93,6 @@ public class PasswordServiceTest {
     @Test
     public void getTokenByName_SimpleToken_Ok() {
         sut.getTokenByName(anyString());
-        verify(tokenDAO).findByToken(anyString());
+        verify(tokenDAO).findByTokenUuid(anyString());
     }
 }

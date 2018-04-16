@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
@@ -114,10 +115,10 @@ public class TestResultController {
     @GetMapping("/results/dates")
     public ResponseEntity<List<TestResultDTO>> getTestRunResultsFromToByDate(
         @PathVariable("projectId") long projectId,
-        @RequestParam(value = "from") @DateTimeFormat(iso = ISO.DATE) Date from,
-        @RequestParam(value = "to") @DateTimeFormat(iso = ISO.DATE) Date to) {
+        @RequestParam(value = "from") @DateTimeFormat(iso = ISO.DATE) LocalDate from,
+        @RequestParam(value = "to") @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
 
-        if (from.after(to)) {
+        if (from.isAfter(to)) {
             throw new BadRequestException("Incorrect date range");
         }
         return new ResponseEntity<>(testResultService.getTestResults(projectId, from, to),

@@ -1,12 +1,13 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 public class TestResultDTO {
 
-    private Date date;
+    private LocalDate date;
 
     private long duration;
 
@@ -25,11 +26,11 @@ public class TestResultDTO {
     public TestResultDTO() {
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

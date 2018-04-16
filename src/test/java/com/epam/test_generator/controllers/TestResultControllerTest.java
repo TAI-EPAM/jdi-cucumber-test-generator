@@ -16,6 +16,7 @@ import com.epam.test_generator.services.TestResultService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -40,9 +41,8 @@ public class TestResultControllerTest {
     private static final Integer FROM = 2;
     private static final Integer TO = 3;
     private static final Integer NEGATIVE = -5;
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy");
-    private Date FROM_DATE;
-    private Date TO_DATE;
+    private LocalDate FROM_DATE;
+    private LocalDate TO_DATE;
 
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
@@ -62,8 +62,8 @@ public class TestResultControllerTest {
             .setControllerAdvice(new GlobalExceptionController()).build();
 
         testResultDTOS = new ArrayList<>();
-        FROM_DATE = format.parse("26/02/2018");
-        TO_DATE = format.parse("27/02/2018");
+        FROM_DATE = LocalDate.of(2018,2,26);
+        TO_DATE = LocalDate.of(2018,2,27);
 
         testResultDTOS = Stream.generate(this::generateSimpleTestResultDTO).limit(4)
             .collect(Collectors.toList());
@@ -172,7 +172,7 @@ public class TestResultControllerTest {
             .andExpect(status().isOk());
 
         verify(testResultService)
-            .getTestResults(eq(SIMPLE_PROJECT_ID), any(Date.class), any(Date.class));
+            .getTestResults(eq(SIMPLE_PROJECT_ID), any(LocalDate.class), any(LocalDate.class));
     }
 
     @Test
@@ -189,10 +189,10 @@ public class TestResultControllerTest {
     }
 
     private TestResultDTO generateSimpleTestResultDTO() {
-        return crateTestResultDTOWithDate(new Date(1519618194914L));
+        return crateTestResultDTOWithDate(LocalDate.of(2018,2,20));
     }
 
-    private TestResultDTO crateTestResultDTOWithDate(Date date) {
+    private TestResultDTO crateTestResultDTOWithDate(LocalDate date) {
         final TestResultDTO testResultDTO = new TestResultDTO();
         testResultDTO.setAmountOfFailed(0);
         testResultDTO.setAmountOfPassed(1);

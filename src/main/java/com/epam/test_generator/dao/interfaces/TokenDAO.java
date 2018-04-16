@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TokenDAO extends JpaRepository<Token, Long> {
 
-    Token findByToken(String token);
+    Token findByTokenUuid(String tokenUuid);
 
 }

@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Component
 @Transactional
 @Service
@@ -27,11 +25,8 @@ public class TokenService {
      * @return user's token
      */
     public Token createToken(User user, Integer minutes) {
-        Token token = new Token();
-        token.setToken(UUID.randomUUID().toString());
+        Token token = Token.withExpiryDuration(minutes);
         token.setUser(user);
-        token.setExpiryDate(minutes);
-
         return tokenDAO.save(token);
     }
 
@@ -40,7 +35,7 @@ public class TokenService {
      * @param token
      */
     public void checkToken(String token) {
-        Token resetToken = tokenDAO.findByToken(token);
+        Token resetToken = tokenDAO.findByTokenUuid(token);
         if (resetToken == null) {
             throw new TokenMissingException("Could not find password reset token.");
         } else if (resetToken.isExpired()) {

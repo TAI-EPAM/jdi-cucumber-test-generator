@@ -64,7 +64,7 @@ public class PasswordService {
      */
     public void passwordReset(PasswordResetDTO passwordResetDTO) {
         String token = passwordResetDTO.getToken();
-        Token resetToken = tokenDAO.findByToken(token);
+        Token resetToken = tokenDAO.findByTokenUuid(token);
         if (resetToken == null) {
             throw new TokenMissingException("Token is invalid");
         }
@@ -75,7 +75,7 @@ public class PasswordService {
     }
 
     public Token getTokenByName(String token) {
-        return tokenDAO.findByToken(token);
+        return tokenDAO.findByTokenUuid(token);
     }
 
     private URI getSecurityUrl(HttpServletRequest request, String path, Token token) {
@@ -86,10 +86,10 @@ public class PasswordService {
                     request.getServerName(),
                     request.getServerPort(),
                     request.getContextPath() + path,
-                    TOKEN + token.getToken(),
+                    TOKEN + token.getTokenUuid(),
                     null);
             }
-            return new URI(OVERRIDE_DOMAIN + path + "?" + TOKEN + token.getToken());
+            return new URI(OVERRIDE_DOMAIN + path + "?" + TOKEN + token.getTokenUuid());
         } catch (URISyntaxException e) {
             throw new IncorrectURI(e.getMessage());
         }

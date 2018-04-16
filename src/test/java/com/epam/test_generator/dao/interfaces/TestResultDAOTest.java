@@ -3,7 +3,7 @@ package com.epam.test_generator.dao.interfaces;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
-import com.epam.test_generator.entities.TestResult;
+import com.epam.test_generator.entities.results.TestResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,8 +100,8 @@ public class TestResultDAOTest {
 
         assertThat(all.size(), is(equalTo(12)));
 
-        final Date beforeDate = testWithDateBefore.getDate();
-        final Date afterDate = testWithDateAfter.getDate();
+        final LocalDate beforeDate = testWithDateBefore.getDate();
+        final LocalDate afterDate = testWithDateAfter.getDate();
 
         final List<TestResult> allByProjectIdAndDateIsBetween = testResultDAO
             .findAllByProjectIdAndDateAfterAndDateBefore(projectId, afterDate, beforeDate);
@@ -111,10 +111,10 @@ public class TestResultDAOTest {
     }
 
     private TestResult createTestResultOf(LocalDate date, Project project) {
-        final Date runDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         final TestResult result = newTestResult();
         result.setProject(project);
-        result.setDate(runDate);
+        result.setDate(date);
         return result;
     }
 
@@ -123,8 +123,7 @@ public class TestResultDAOTest {
 
         final TestResult testResult = new TestResult();
         testResult.setDate(
-            Date.from(LocalDate.of(2018, Month.FEBRUARY, 24)
-                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            LocalDate.of(2018, Month.FEBRUARY, 24));
         testResult.setDuration(0);
         testResult.setAmountOfPassed(1);
         testResult.setAmountOfSkipped(0);

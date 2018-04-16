@@ -5,10 +5,11 @@ import com.epam.test_generator.dao.interfaces.TestResultDAO;
 import com.epam.test_generator.dto.RawSuitResultDTO;
 import com.epam.test_generator.dto.TestResultDTO;
 import com.epam.test_generator.entities.Project;
-import com.epam.test_generator.entities.TestResult;
+import com.epam.test_generator.entities.results.TestResult;
 import com.epam.test_generator.entities.factory.TestResultFactory;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.transformers.TestResultTransformer;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class TestResultService {
      * @param to every date of every element has to be before than this.
      * @return list of {@link TestResult}
      */
-    public List<TestResultDTO> getTestResults(long projectId, Date from, Date to) {
+    public List<TestResultDTO> getTestResults(long projectId, LocalDate from, LocalDate to) {
         if (from == null || to == null) {
             throw new BadRequestException("Illegal argument");
         }

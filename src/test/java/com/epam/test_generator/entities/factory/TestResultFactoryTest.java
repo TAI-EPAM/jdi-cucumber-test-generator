@@ -14,7 +14,7 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.entities.TestResult;
+import com.epam.test_generator.entities.results.TestResult;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.StepService;
