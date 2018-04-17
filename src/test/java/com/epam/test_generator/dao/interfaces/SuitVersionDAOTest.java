@@ -65,7 +65,7 @@ public class SuitVersionDAOTest {
         suit.setPriority(2);
         suitVersionDAO.save(suit);
 
-        final List<SuitVersion> suitVersionList = suitVersionDAO.findAll(SUIT_ID);
+        List<SuitVersion> suitVersionList = suitVersionDAO.findAll(SUIT_ID);
 
         assertEquals(4, suitVersionList.size());
     }

@@ -49,7 +49,6 @@ public class TagControllerTest {
     private TagDTO tagDTO;
     private Set<TagDTO> tagDTOSet;
     private CaseDTO caseDTO;
-    private List<CaseDTO> caseDTOList;
     private SuitDTO suitDTO;
     @Mock
     private SuitService suitService;
@@ -81,7 +80,7 @@ public class TagControllerTest {
         caseDTO.setPriority(1);
         caseDTO.setSteps(new ArrayList<>());
 
-        caseDTOList = new ArrayList<>();
+        List<CaseDTO> caseDTOList = new ArrayList<>();
         caseDTOList.add(caseDTO);
 
         suitDTO.setCases(caseDTOList);

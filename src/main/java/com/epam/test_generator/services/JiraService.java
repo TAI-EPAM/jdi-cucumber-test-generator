@@ -81,9 +81,7 @@ public class JiraService {
     @Autowired
     private SuitVersionDAO suitVersionDAO;
 
-
-    private static final Integer FIRST = 0;
-
+    
 
     /**
      * Creates project from Jira in the system with specified jira stories (suits in BDD) and all
@@ -96,7 +94,7 @@ public class JiraService {
                                                 Authentication auth) {
         if (!stories.isEmpty()) {
             if (areAllStoriesBelongsToProjectWithThisProjectKey(jiraProjectKey, stories)) {
-                final JiraProject projectByJiraKey = jiraProjectDAO
+                JiraProject projectByJiraKey = jiraProjectDAO
                     .getProjectByJiraKey(clientId, jiraProjectKey);
                 return createProjectFromJiraProject(projectByJiraKey, auth, stories);
             }
@@ -142,7 +140,7 @@ public class JiraService {
      * @param stories collection of Jira stories
      */
     public Project addStoriesToExistedProject(List<JiraStory> stories, String projectKey) {
-        final Project project = checkNotNull(projectDAO.findByJiraKey(projectKey));
+        Project project = checkNotNull(projectDAO.findByJiraKey(projectKey));
         project.getSuits().addAll(mapJiraStoriesToSuits(stories));
         return projectDAO.save(project);
     }
@@ -176,9 +174,9 @@ public class JiraService {
      * @param jiraProject - new project from Jira
      */
     private Project createProjectFromJiraProject(JiraProject jiraProject, Authentication auth, List<JiraStory> stories) {
-        final User user = userService.getUserByEmail(((AuthenticatedUser) auth.getPrincipal()).getEmail());
+        User user = userService.getUserByEmail(((AuthenticatedUser) auth.getPrincipal()).getEmail());
 
-        final Project project = new Project();
+        Project project = new Project();
 
         project.setName(jiraProject.getName());
         project.setDescription(jiraProject.getDescription());
@@ -197,7 +195,7 @@ public class JiraService {
      * @param jiraStory - new story from Jira
      */
     private Suit createSuitFromJiraStory(JiraStory jiraStory) {
-        final Suit suit = new Suit();
+        Suit suit = new Suit();
         suit.setName(jiraStory.getName());
         suit.setDescription(jiraStory.getDescription());
         suit.setJiraKey(jiraStory.getJiraKey());

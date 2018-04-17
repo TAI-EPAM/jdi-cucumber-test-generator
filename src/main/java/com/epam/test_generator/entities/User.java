@@ -129,7 +129,7 @@ public class User implements UserTrait {
             return false;
         }
 
-        final User aUser = (User) o;
+        User aUser = (User) o;
 
         return (id != null ? id.equals(aUser.id) : aUser.id == null)
                 && (name != null ? name.equals(aUser.name) : aUser.name == null)

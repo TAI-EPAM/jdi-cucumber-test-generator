@@ -31,17 +31,17 @@ public class CascadeUpdateService {
         if (suitDTO.getCases() == null) {
             return Collections.emptyList();
         }
-        final List<EditCaseDTO> casesForUpdate = getCasesForUpdate(suitDTO);
+        List<EditCaseDTO> casesForUpdate = getCasesForUpdate(suitDTO);
 
-        final List<Long> distinctedListOfCasesIds = casesForUpdate.stream().map(EditCaseDTO::getId)
+        List<Long> distinctedListOfCasesIds = casesForUpdate.stream().map(EditCaseDTO::getId)
             .distinct().collect(Collectors.toList());
 
         if (distinctedListOfCasesIds.size() != casesForUpdate.size()) {
             throw new BadRequestException("There are duplicate ids in list of cases");
         }
 
-        final List<CaseDTO> casesForCreate = getCasesForCreate(suitDTO);
-        final Map<Long, List<StepDTO>> stepsOfCaseForUpdate = getMapOfCaseIdAndItsListOfSteps(
+        List<CaseDTO> casesForCreate = getCasesForCreate(suitDTO);
+        Map<Long, List<StepDTO>> stepsOfCaseForUpdate = getMapOfCaseIdAndItsListOfSteps(
             casesForUpdate);
 
         stepsOfCaseForUpdate.forEach((caseId, listOfSteps) -> stepService
@@ -74,7 +74,7 @@ public class CascadeUpdateService {
     private void addCasesToSuit(long projectId, long suitId, List<CaseDTO> casesForCreate) {
             for (CaseDTO caseDTO : casesForCreate) {
                 if (caseDTO.getSteps() != null){
-                    final Optional<StepDTO> existedCase = caseDTO.getSteps().stream()
+                    Optional<StepDTO> existedCase = caseDTO.getSteps().stream()
                         .filter(s -> s.getId() != 0)
                         .findAny();
                     if (existedCase.isPresent()) {
@@ -106,7 +106,7 @@ public class CascadeUpdateService {
 
     private Map<Long, List<StepDTO>> getMapOfCaseIdAndItsListOfSteps(List<EditCaseDTO> cases) {
 
-        final Map<Long, List<StepDTO>> stepsOfCase = new HashMap<>();
+        Map<Long, List<StepDTO>> stepsOfCase = new HashMap<>();
 
         for (EditCaseDTO aCase : cases) {
             if (aCase.getSteps() == null) {

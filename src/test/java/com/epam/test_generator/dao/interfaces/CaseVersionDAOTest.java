@@ -67,7 +67,7 @@ public class CaseVersionDAOTest {
         caze.setPriority(2);
         caseVersionDAO.save(caze);
 
-        final List<CaseVersion> caseVersionList = caseVersionDAO.findAll(CASE_ID);
+        List<CaseVersion> caseVersionList = caseVersionDAO.findAll(CASE_ID);
 
         assertEquals(4, caseVersionList.size());
     }

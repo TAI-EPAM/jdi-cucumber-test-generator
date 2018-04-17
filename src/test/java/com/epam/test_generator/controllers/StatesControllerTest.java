@@ -19,9 +19,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @RunWith(MockitoJUnitRunner.class)
 public class StatesControllerTest {
 
-    Status status = Status.NOT_RUN;
+    private Status status = Status.NOT_RUN;
     @Mock
-    StatesService statesService;
+    private StatesService statesService;
     private MockMvc mockMvc;
     @InjectMocks
     private StatesController statesController;

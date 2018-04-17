@@ -71,7 +71,7 @@ public class UserControllerTest {
         userDTO.setSurname("test_sure_name");
         userDTO.setPassword("test");
         userDTO.setEmail("test@test.ru");
-        final String json = mapper.writeValueAsString(userDTO);
+        String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(
             post("/user/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isOk());
@@ -82,7 +82,7 @@ public class UserControllerTest {
     public void registration_IncorrectEmail_StatusBadRequest() throws Exception {
         userDTO.setPassword("test");
         userDTO.setEmail("test");
-        final String json = mapper.writeValueAsString(userDTO);
+        String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(
             post("/user/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isBadRequest());
@@ -91,7 +91,7 @@ public class UserControllerTest {
     @Test
     public void registration_NullPassword_StatusBadRequest() throws Exception {
         userDTO.setEmail("test");
-        final String json = mapper.writeValueAsString(userDTO);
+        String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(
             post("/user/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isBadRequest());
@@ -100,7 +100,7 @@ public class UserControllerTest {
     @Test
     public void registration_NullEmail_StatusBadRequest() throws Exception {
         userDTO.setEmail("test");
-        final String json = mapper.writeValueAsString(userDTO);
+        String json = mapper.writeValueAsString(userDTO);
         mockMvc.perform(
             post("/user/registration").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isBadRequest());

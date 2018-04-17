@@ -119,7 +119,7 @@ public class SuitController {
     public ResponseEntity<SuitUpdateDTO> updateSuit(@PathVariable("projectId") long projectId,
                                                              @PathVariable("suitId") long suitId,
                                                              @RequestBody @Valid SuitDTO suitDTO) throws MethodArgumentNotValidException {
-        final SuitUpdateDTO updatedSuitDTOwithFailedStepIds = suitService.updateSuit(projectId, suitId, suitDTO);
+        SuitUpdateDTO updatedSuitDTOwithFailedStepIds = suitService.updateSuit(projectId, suitId, suitDTO);
 
         return new ResponseEntity<>(updatedSuitDTOwithFailedStepIds, HttpStatus.OK);
     }

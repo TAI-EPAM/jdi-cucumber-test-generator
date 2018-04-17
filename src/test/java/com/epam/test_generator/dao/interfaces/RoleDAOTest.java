@@ -29,9 +29,9 @@ public class RoleDAOTest {
 
     @Test
     public void save_SimpleRole_SaveAnInstance() {
-        final int expectedSize = roleDAO.findAll().size() + 1;
+        int expectedSize = roleDAO.findAll().size() + 1;
 
-        final Role someRole = new Role();
+        Role someRole = new Role();
         roleDAO.save(someRole);
 
         Assert.assertEquals(expectedSize, roleDAO.findAll().size());
@@ -41,11 +41,11 @@ public class RoleDAOTest {
     @Test
     public void findByName_SimpleRole_ReturnExpectedRole() {
 
-        final Role aValidRole = new Role(ROLE_NAME);
+        Role aValidRole = new Role(ROLE_NAME);
 
         roleDAO.save(aValidRole);
 
-        final Role retrievedRoleByName = roleDAO.findByName(ROLE_NAME);
+        Role retrievedRoleByName = roleDAO.findByName(ROLE_NAME);
         Assert.assertThat(retrievedRoleByName, is(equalTo(aValidRole)));
 
     }
@@ -53,7 +53,7 @@ public class RoleDAOTest {
     @Test
     public void findByName_NullRole_ReturnsNullDueToAbsenceOfItemWithThisName() {
 
-        final Role byName = roleDAO.findByName(ROLE_NAME);
+        Role byName = roleDAO.findByName(ROLE_NAME);
         Assert.assertThat(byName, is(nullValue()));
     }
 }

@@ -34,8 +34,6 @@ public class AdminControllerTest {
     @Mock
     private JiraSettingsService jiraSettingsService;
 
-    private JiraSettingsDTO jiraSettingsDTO;
-
     @InjectMocks
     private AdminController adminController;
 
@@ -53,7 +51,7 @@ public class AdminControllerTest {
     public void changeUserRole_SimpleRole_StatusOk() throws Exception {
         userChangeRole.setEmail("email@mail.com");
         userChangeRole.setRole("Role");
-        final String json = mapper.writeValueAsString(userChangeRole);
+        String json = mapper.writeValueAsString(userChangeRole);
 
         mockMvc.perform(
             put("/admin/role").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -62,7 +60,7 @@ public class AdminControllerTest {
 
     @Test
     public void createJiraSettings_JiraSetting_StatusOk() throws Exception {
-        jiraSettingsDTO = new JiraSettingsDTO();
+        JiraSettingsDTO jiraSettingsDTO = new JiraSettingsDTO();
         jiraSettingsDTO.setLogin("login");
         jiraSettingsDTO.setPassword("password");
         jiraSettingsDTO.setUri("uri");

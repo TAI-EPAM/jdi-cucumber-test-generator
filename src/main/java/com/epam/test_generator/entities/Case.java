@@ -288,7 +288,7 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
             return false;
         }
 
-        final Case aCase = (Case) o;
+        Case aCase = (Case) o;
 
         return (id != null ? id.equals(aCase.id) : aCase.id == null)
                 && (name != null ? name.equals(aCase.name) : aCase.name == null)

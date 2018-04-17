@@ -59,10 +59,10 @@ public class TestResultFactory {
     private List<SuitResult> getListOfSuitResultsFrom(Long projectId,
                                                       List<RawSuitResultDTO> suitResultDTOS) {
 
-        final List<SuitResult> suitResults = new ArrayList<>();
+        List<SuitResult> suitResults = new ArrayList<>();
 
         for (RawSuitResultDTO rawSuitResultDTO : suitResultDTOS) {
-            final SuitResult suitResult = createSuitResultFrom(projectId, rawSuitResultDTO);
+            SuitResult suitResult = createSuitResultFrom(projectId, rawSuitResultDTO);
             suitResults.add(suitResult);
         }
         return suitResults;
@@ -71,9 +71,9 @@ public class TestResultFactory {
 
     private SuitResult createSuitResultFrom(Long projectId, RawSuitResultDTO rawSuitResultDTO) {
 
-        final Long suitId = rawSuitResultDTO.getId();
-        final Suit suit = suitService.getSuit(projectId, suitId);
-        final SuitResult suitResult = new SuitResult();
+        Long suitId = rawSuitResultDTO.getId();
+        Suit suit = suitService.getSuit(projectId, suitId);
+        SuitResult suitResult = new SuitResult();
 
         suitResult.setName(suit.getName());
         suitResult.setCaseResults(getListOfCaseResultsFrom(projectId, rawSuitResultDTO));
@@ -85,11 +85,11 @@ public class TestResultFactory {
     private List<CaseResult> getListOfCaseResultsFrom(Long projectId,
                                                       RawSuitResultDTO rawSuitResultDTO) {
 
-        final List<CaseResult> caseResults = new ArrayList<>();
+        List<CaseResult> caseResults = new ArrayList<>();
 
         for (RawCaseResultDTO caseResultDTO : rawSuitResultDTO.getCaseResultDTOList()) {
 
-            final CaseResult caseResult = createCaseResultFrom(projectId, rawSuitResultDTO.getId(),
+            CaseResult caseResult = createCaseResultFrom(projectId, rawSuitResultDTO.getId(),
                 caseResultDTO);
             caseResults.add(caseResult);
         }
@@ -98,8 +98,8 @@ public class TestResultFactory {
 
     private CaseResult createCaseResultFrom(Long projectId, long suitId,
                                             RawCaseResultDTO caseResultDTO) {
-        final Case aCase = caseService.getCase(projectId, suitId, caseResultDTO.getId());
-        final CaseResult caseResult = new CaseResult();
+        Case aCase = caseService.getCase(projectId, suitId, caseResultDTO.getId());
+        CaseResult caseResult = new CaseResult();
         caseResult.setName(aCase.getName());
         caseResult.setComment(aCase.getComment());
         caseResult.setSteps(getListStepResults(projectId, suitId, caseResultDTO));
@@ -112,7 +112,7 @@ public class TestResultFactory {
     private StepResult createStepResult(Long projectId, Long suitId,
                                         Long caseId,
                                         RawStepResultDTO stepResultDTO) {
-        final StepResult stepResult = new StepResult();
+        StepResult stepResult = new StepResult();
         stepResult.setStatus(stepResultDTO.getStatus());
         stepResult.setDescription
             (stepService.getStep(projectId, suitId, caseId, stepResultDTO.getId())

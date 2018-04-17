@@ -24,10 +24,10 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody @Valid LoginUserDTO userDTO, HttpServletRequest request)
-        throws Exception {
+    public ResponseEntity<TokenDTO> login
+        (@RequestBody @Valid LoginUserDTO userDTO, HttpServletRequest request) {
         loginService.checkPassword(userDTO, request);
-        final String token = loginService.getLoginJWTToken(userDTO);
+        String token = loginService.getLoginJWTToken(userDTO);
 
         return new ResponseEntity<>(new TokenDTO(token), HttpStatus.OK);
     }

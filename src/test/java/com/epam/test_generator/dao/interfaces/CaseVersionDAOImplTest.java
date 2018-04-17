@@ -53,14 +53,14 @@ public class CaseVersionDAOImplTest {
 
     @Before
     public void setUp() {
-        final LocalDateTime now = LocalDateTime.now();
-        final CommitMetadata commitId1_5 = new CommitMetadata("author", Maps.newHashMap(), now,
+        LocalDateTime now = LocalDateTime.now();
+        CommitMetadata commitId1_5 = new CommitMetadata("author", Maps.newHashMap(), now,
             CommitId.valueOf("1.5"));
-        final CommitMetadata commitId1_3 = new CommitMetadata("author", Maps.newHashMap(), now,
+        CommitMetadata commitId1_3 = new CommitMetadata("author", Maps.newHashMap(), now,
             CommitId.valueOf("1.3"));
-        final CommitMetadata commitId6_2 = new CommitMetadata("author", Maps.newHashMap(), now,
+        CommitMetadata commitId6_2 = new CommitMetadata("author", Maps.newHashMap(), now,
             CommitId.valueOf("6.2"));
-        final CommitMetadata commitId0_1 = new CommitMetadata("author", Maps.newHashMap(), now,
+        CommitMetadata commitId0_1 = new CommitMetadata("author", Maps.newHashMap(), now,
             CommitId.valueOf("0.1"));
 
         changes = Lists.newArrayList(
@@ -82,7 +82,7 @@ public class CaseVersionDAOImplTest {
         when(javers.findChanges(any())).thenReturn(changes);
         when(javersChangedDataExtractor.groupByCommitId(changes)).thenReturn(treeOfChanges);
 
-        final List<CaseVersion> caseVersions = caseVersionDAO.findAll(SIMPLE_CASE_ID);
+        List<CaseVersion> caseVersions = caseVersionDAO.findAll(SIMPLE_CASE_ID);
 
         assertEquals(expectedCaseVersionIds,
             caseVersions.stream()

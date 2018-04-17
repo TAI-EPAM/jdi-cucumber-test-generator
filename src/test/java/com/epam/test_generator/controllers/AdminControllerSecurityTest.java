@@ -126,7 +126,7 @@ public class AdminControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(
             get("/admin/users").header("Authorization", token).contentType("application/json"))
@@ -141,7 +141,7 @@ public class AdminControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(
             get("/admin/users").header("Authorization", token).contentType("application/json"))
@@ -155,13 +155,13 @@ public class AdminControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         when(userService.getUserByEmail(eq("admin@email.com"))).thenReturn(passiveUser);
         when(roleService.getRoleByName(changeUserRoleDTO.getRole()))
             .thenReturn(new Role("TEST_LEAD"));
 
-        final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
+        String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
         mvc.perform(put("/admin/role").header("Authorization", token).content(json)
             .contentType("application/json"))
@@ -175,12 +175,12 @@ public class AdminControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         when(userService.getUserByEmail(eq("admin@email.com"))).thenReturn(passiveUser);
         when(roleService.getRoleByName(changeUserRoleDTO.getRole())).thenReturn(null);
 
-        final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
+        String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
         mvc.perform(put("/admin/role").header("Authorization", token).content(json)
             .contentType("application/json"))
@@ -194,9 +194,9 @@ public class AdminControllerSecurityTest {
         when(userService.getUserByEmail(anyString())).thenReturn(user).thenReturn(passiveUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
-        final String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
+        String json = new ObjectMapper().writeValueAsString(changeUserRoleDTO);
 
         mvc.perform(put("/admin/role").header("Authorization", token).content(json)
             .contentType("application/json"))

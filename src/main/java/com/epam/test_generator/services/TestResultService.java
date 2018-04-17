@@ -90,9 +90,9 @@ public class TestResultService {
     public TestResult saveResult(Long projectId, List<RawSuitResultDTO> suitResultDTOS,
                                  Authentication authentication) {
 
-        final String executedBy = getEmailFrom(authentication);
+        String executedBy = getEmailFrom(authentication);
 
-        final TestResult testResult = testResultFactory.createTestResultFrom(projectId, executedBy,
+        TestResult testResult = testResultFactory.createTestResultFrom(projectId, executedBy,
             suitResultDTOS);
 
         return testResultDAO.save(testResult);

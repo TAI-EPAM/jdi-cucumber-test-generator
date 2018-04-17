@@ -1,6 +1,5 @@
 package com.epam.test_generator.services;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -12,7 +11,6 @@ import com.epam.test_generator.dto.JiraSettingsDTO;
 import com.epam.test_generator.entities.JiraSettings;
 import com.epam.test_generator.services.exceptions.JiraAuthenticationException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Assert;
@@ -20,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 

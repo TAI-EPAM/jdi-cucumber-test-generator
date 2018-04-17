@@ -82,14 +82,10 @@ public class TagServiceTest {
     private TagDTO  expectedTagDTO2 ;
     private Suit suit;
     private Case caze;
-    private Project project;
-    private User user;
-    private Tag tag1;
-    private Tag tag2;
 
     @Before
     public void setUp() {
-        final Set<Tag> expectedTagsSet = new HashSet<>();
+        Set<Tag> expectedTagsSet = new HashSet<>();
 
         expectedTag = new Tag("tag1");
         expectedTagsSet.add(expectedTag);
@@ -99,27 +95,26 @@ public class TagServiceTest {
         expectedTagsDTOSet = new HashSet<>();
         expectedTagsDTOSet.add(expectedTagDTO);
 
-        final List<Case> expectedCaseList = new ArrayList<>();
+        List<Case> expectedCaseList = new ArrayList<>();
 
         expectedCaseList.add(new Case(1L, "name1", "case1", new ArrayList<>(), 1, expectedTagsSet, "comment1"));
         expectedCaseList.add(new Case(2L, "name2", "case2", new ArrayList<>(), 1, expectedTagsSet, "comment2"));
 
+        User user = new User("ima", "familia", "posta@milo.com", "parol", new Role("ADMIN"));
 
-        user = new User("ima","familia","posta@milo.com","parol",new Role("ADMIN"));
-//        HashSet<User> userSet = new HashSet<>();
-//        userSet.add(user);
         suit = new Suit(1L, "suit1", "desc1", expectedCaseList, 1, expectedTagsSet, 1);
         caze = new Case(2L, "name1", "desc2", new ArrayList<>(), 1, expectedTagsSet, "comment");
     }
 
     @Test
     public void get_AllTagsFromProject_Success(){
-        tag1=new Tag("tag1");
-        tag2=new Tag("tag2");
+        Tag tag1 = new Tag("tag1");
+        Tag tag2 = new Tag("tag2");
         suit.setTags(Collections.singleton(tag1));
         caze.setTags(Collections.singleton(tag2));
         suit.setCases(Collections.singletonList(caze));
-        project = new Project("project1","desc3", Collections.singletonList(suit), null,true);
+        Project project = new Project("project1", "desc3", Collections.singletonList(suit), null,
+            true);
 
 
 

@@ -55,20 +55,17 @@ public class StepControllerTest {
     private static final long SIMPLE_CASE_ID = 2L;
     private static final long SIMPLE_STEP_ID = 3L;
     @InjectMocks
-    StepController stepController;
+    private StepController stepController;
     @Mock
-    StepService stepService;
+    private StepService stepService;
     @Mock
-    CaseService caseService;
+    private CaseService caseService;
     @Mock
-    SuitService suitService;
+    private SuitService suitService;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
-    private CaseDTO caseDTO;
-    private SuitDTO suitDTO;
     private StepDTO stepDTO;
     private List<StepDTO> stepDTOS;
-    private List<CaseDTO> caseDTOS;
 
     @Before
     public void setUp() throws ParseException {
@@ -86,7 +83,7 @@ public class StepControllerTest {
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 
-        caseDTO = new CaseDTO();
+        CaseDTO caseDTO = new CaseDTO();
         caseDTO.setId(SIMPLE_CASE_ID);
         caseDTO.setCreationDate(formatter.parse("12.05.2017"));
         caseDTO.setDescription("description of case");
@@ -95,12 +92,12 @@ public class StepControllerTest {
         caseDTO.setTags(null);
         caseDTO.setUpdateDate(formatter.parse("13.06.2017"));
 
-        caseDTOS = new ArrayList<>();
-        final Set<TagDTO> tagDTOS = new HashSet<>();
+        List<CaseDTO> caseDTOS = new ArrayList<>();
+        Set<TagDTO> tagDTOS = new HashSet<>();
         tagDTOS.add(new TagDTO("tags of suit"));
         caseDTOS.add(caseDTO);
 
-        suitDTO = new SuitDTO();
+        SuitDTO suitDTO = new SuitDTO();
 
         suitDTO.setId(SIMPLE_SUIT_ID);
         suitDTO.setCases(caseDTOS);

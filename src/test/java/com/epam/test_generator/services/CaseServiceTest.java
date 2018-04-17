@@ -121,7 +121,7 @@ public class CaseServiceTest {
 
     @Before
     public void setUp() {
-        final List<Case> listCases = new ArrayList<>();
+        List<Case> listCases = new ArrayList<>();
 
         listCases.add(new Case(1L, "name 1", "Case 1",
                 listSteps, 1, setOfTags, "comment 1"));
@@ -183,7 +183,7 @@ public class CaseServiceTest {
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
 
-        final Case actualCase = caseService.getCase(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+        Case actualCase = caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
         assertEquals(caze, actualCase);
 
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID) , eq(SIMPLE_SUIT_ID));
@@ -197,7 +197,8 @@ public class CaseServiceTest {
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
 
-        final CaseDTO actualCaseDTO = caseService.getCaseDTO(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
+        CaseDTO actualCaseDTO = caseService
+            .getCaseDTO(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
         assertEquals(expectedCaseDTO, actualCaseDTO);
 
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID) , eq(SIMPLE_SUIT_ID));
@@ -226,7 +227,8 @@ public class CaseServiceTest {
         when(caseDAO.save(any(Case.class))).thenReturn(caze);
         when(caseTransformer.toDto(any(Case.class))).thenReturn(expectedCaseDTO);
 
-        final CaseDTO actualCaseDTO = caseService.addCaseToSuit(SIMPLE_PROJECT_ID , SIMPLE_SUIT_ID, expectedCaseDTO);
+        CaseDTO actualCaseDTO = caseService
+            .addCaseToSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, expectedCaseDTO);
         assertEquals(expectedCaseDTO, actualCaseDTO);
 
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID) , eq(SIMPLE_SUIT_ID));
@@ -316,7 +318,7 @@ public class CaseServiceTest {
 
     @Test
     public void remove_Cases_Success(){
-        final List<CaseDTO> expectedRemovedCasesDTO = new ArrayList<>();
+        List<CaseDTO> expectedRemovedCasesDTO = new ArrayList<>();
         expectedRemovedCasesDTO.add(new CaseDTO(1L, "name 1", "Case 1",
                 expectedListSteps, 1, expectedSetTags,
                 Status.NOT_RUN,"comment 1"));

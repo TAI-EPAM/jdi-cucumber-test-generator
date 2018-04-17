@@ -64,9 +64,9 @@ public class JiraControllerTest {
 
     @Test
     public void createProjectbyFilters() throws Exception {
-        final List<JiraFilter> jiraFilters = new ArrayList<>();
+        List<JiraFilter> jiraFilters = new ArrayList<>();
 
-        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         mockMvc.perform(post(
             "/jira/jira-settings/" + JIRA_SETTINGS_ID + "/project-by-filters/"
@@ -84,9 +84,9 @@ public class JiraControllerTest {
 
     @Test
     public void createProjectWithAttFromJira() throws Exception {
-        final List<JiraStory> jiraStories = new ArrayList<>();
+        List<JiraStory> jiraStories = new ArrayList<>();
 
-        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         mockMvc.perform(
             post("/jira/jira-settings/" + JIRA_SETTINGS_ID + "/project/" + SIMPLE_JIRA_PROJECT_KEY)

@@ -51,8 +51,8 @@ public class RoleService {
      * @return list of all roles from properties
      */
     public List<Role> getRolesFromProperties() {
-        final String[] split = environment.getProperty("roles").split(", ");
-        final List<String> roleNames = Arrays.asList(split);
+        String[] split = environment.getProperty("roles").split(", ");
+        List<String> roleNames = Arrays.asList(split);
         return roleNames.stream().
                 map(Role::new).
                 collect(Collectors.toList());

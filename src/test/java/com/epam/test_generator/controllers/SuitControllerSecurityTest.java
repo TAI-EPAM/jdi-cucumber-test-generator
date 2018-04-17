@@ -203,7 +203,7 @@ public class SuitControllerSecurityTest {
         when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList(
             project1, project2));
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/projects/" + 3L + "/suits").header("Authorization", token)
             .contentType("application/json"))
@@ -219,7 +219,7 @@ public class SuitControllerSecurityTest {
         when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList(
             project1, project2));
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/projects/" + 2L + "/suits").header("Authorization", token)
             .contentType("application/json"))

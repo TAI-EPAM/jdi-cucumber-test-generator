@@ -14,7 +14,7 @@ public interface ResultTrait {
      */
     default Status calculateStatus(List<? extends AbstractResult> results) {
 
-        final List<Status> collect = results
+        List<Status> collect = results
             .stream()
             .map(AbstractResult::getStatus)
             .collect(Collectors.toList());

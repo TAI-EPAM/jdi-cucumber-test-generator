@@ -179,7 +179,7 @@ public class CaseDTO {
             return false;
         }
 
-        final CaseDTO caseDTO = (CaseDTO) o;
+        CaseDTO caseDTO = (CaseDTO) o;
 
         return (id != null ? id.equals(caseDTO.id) : caseDTO.id == null)
             && (name != null ? name.equals(caseDTO.name) : caseDTO.name == null)

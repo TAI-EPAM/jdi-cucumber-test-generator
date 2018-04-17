@@ -23,7 +23,7 @@ public class JiraFilter {
 
 
     public JiraFilter(RestClient restClient, JSONObject json) {
-        final JSONObject jsonObject = Objects.requireNonNull(json);
+        JSONObject jsonObject = Objects.requireNonNull(json);
         deserialize(jsonObject, restClient);
     }
 

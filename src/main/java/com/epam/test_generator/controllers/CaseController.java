@@ -143,7 +143,7 @@ public class CaseController {
                                                              @PathVariable("suitId") long suitId,
                                                              @PathVariable("caseId") long caseId,
                                                              @RequestBody @Valid EditCaseDTO editCaseDTO) {
-        final CaseUpdateDTO updatedCaseDTOwithFailedStepIds = caseService
+        CaseUpdateDTO updatedCaseDTOwithFailedStepIds = caseService
             .updateCase(projectId, suitId, caseId, editCaseDTO);
 
         return new ResponseEntity<>(updatedCaseDTOwithFailedStepIds, HttpStatus.OK);

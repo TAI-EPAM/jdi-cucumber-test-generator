@@ -39,17 +39,17 @@ public class SuitDAOTest {
 
     @Test
     public void createAndRetrieve_Suit_Success() {
-        final Suit originalSuit = retrieveSuit();
-        final long id = suitDAO.save(originalSuit).getId();
+        Suit originalSuit = retrieveSuit();
+        long id = suitDAO.save(originalSuit).getId();
 
-        final Suit newSuit = retrieveSuit();
+        Suit newSuit = retrieveSuit();
 
-        final Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
-        final Set<Tag> tagsWithoutIds = newSuit.getTags();
+        Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
+        Set<Tag> tagsWithoutIds = newSuit.getTags();
 
         assertEquals(tagsWithIds.size(), tagsWithoutIds.size());
 
-        final Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
+        Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
 
         newSuit.setId(id);
         newSuit.setTags(unsavedTagsWithIds);
@@ -112,20 +112,20 @@ public class SuitDAOTest {
 
     @Test
     public void updatePriority_Suit_Success() {
-        final Suit originalSuit = retrieveSuit();
+        Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setPriority(4);
         id = suitDAO.save(originalSuit).getId();
 
-        final Suit newSuit = retrieveSuit();
+        Suit newSuit = retrieveSuit();
 
-        final Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
-        final Set<Tag> tagsWithoutIds = newSuit.getTags();
+        Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
+        Set<Tag> tagsWithoutIds = newSuit.getTags();
 
         assertEquals(tagsWithIds.size(), tagsWithoutIds.size());
 
-        final Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
+        Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
 
         newSuit.setId(id);
         newSuit.setPriority(4);
@@ -136,20 +136,20 @@ public class SuitDAOTest {
 
     @Test
     public void updateDescription_Suit_Success() {
-        final Suit originalSuit = retrieveSuit();
+        Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setDescription("modified description");
         id = suitDAO.save(originalSuit).getId();
 
-        final Suit newSuit = retrieveSuit();
+        Suit newSuit = retrieveSuit();
 
-        final Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
-        final Set<Tag> tagsWithoutIds = newSuit.getTags();
+        Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
+        Set<Tag> tagsWithoutIds = newSuit.getTags();
 
         assertEquals(tagsWithIds.size(), tagsWithoutIds.size());
 
-        final Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
+        Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
 
         newSuit.setId(id);
         newSuit.setDescription("modified description");
@@ -160,12 +160,12 @@ public class SuitDAOTest {
 
     @Test
     public void updateTags_Suit_Success() {
-        final Suit originalSuit = retrieveSuit();
+        Suit originalSuit = retrieveSuit();
         Suit savedSuit = suitDAO.save(originalSuit);
-        final Set<Tag> tags = retrieveTagList("tag1", "tag2", "tag3");
+        Set<Tag> tags = retrieveTagList("tag1", "tag2", "tag3");
         savedSuit.setTags(tags);
 
-        final Suit newSuit = retrieveSuit();
+        Suit newSuit = retrieveSuit();
         newSuit.setId(savedSuit.getId());
         newSuit.setTags(tags);
 
@@ -174,20 +174,20 @@ public class SuitDAOTest {
 
     @Test
     public void updateName_Suit_Success() {
-        final Suit originalSuit = retrieveSuit();
+        Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
         originalSuit.setId(id);
         originalSuit.setName("Suit4a");
         id = suitDAO.save(originalSuit).getId();
 
-        final Suit newSuit = retrieveSuit();
+        Suit newSuit = retrieveSuit();
 
-        final Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
-        final Set<Tag> tagsWithoutIds = newSuit.getTags();
+        Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
+        Set<Tag> tagsWithoutIds = newSuit.getTags();
 
         assertEquals(tagsWithIds.size(), tagsWithoutIds.size());
 
-        final Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
+        Set<Tag> unsavedTagsWithIds = setIdsForTags(tagsWithIds, tagsWithoutIds);
 
         newSuit.setId(id);
         newSuit.setName("Suit4a");
@@ -207,11 +207,11 @@ public class SuitDAOTest {
         ));
         suitDAO.save(suits);
 
-        final Suit suit1 = suitDAO.findOne(suits.get(0).getId());
+        Suit suit1 = suitDAO.findOne(suits.get(0).getId());
         suit1.setRowNumber(3);
-        final Suit suit2 = suitDAO.findOne(suits.get(1).getId());
+        Suit suit2 = suitDAO.findOne(suits.get(1).getId());
         suit2.setRowNumber(1);
-        final Suit suit3 = suitDAO.findOne(suits.get(2).getId());
+        Suit suit3 = suitDAO.findOne(suits.get(2).getId());
         suit3.setRowNumber(2);
 
         suitDAO.save(Arrays.asList(suit1, suit2, suit3));
@@ -241,9 +241,9 @@ public class SuitDAOTest {
 
     @Test
     public void addList_Suits_Success() {
-        final List<Suit> savedSuits = suitDAO.save(retrieveSuiteList());
+        List<Suit> savedSuits = suitDAO.save(retrieveSuiteList());
 
-        final List<Suit> newSuits = retrieveSuiteList();
+        List<Suit> newSuits = retrieveSuiteList();
 
         assertEquals(newSuits.size(), savedSuits.size());
 
@@ -280,7 +280,7 @@ public class SuitDAOTest {
     }
 
     private List<Suit> retrieveSuiteList() {
-        final Suit suit1 = new Suit(
+        Suit suit1 = new Suit(
             "Suit1",
             "Suit1 description",
             5,
@@ -289,14 +289,14 @@ public class SuitDAOTest {
             new ArrayList<>(),
             1);
 
-        final Suit suit2 = new Suit("Suit2", "Suit2 description", 5,
+        Suit suit2 = new Suit("Suit2", "Suit2 description", 5,
             Calendar.getInstance().getTime(), retrieveTagList("tag1"), new ArrayList<>(), 1);
 
-        final Suit suit3 = new Suit("Suit3", "Suit3 description", 5,
+        Suit suit3 = new Suit("Suit3", "Suit3 description", 5,
             Calendar.getInstance().getTime(),
             retrieveTagList("tag1", "tag3"), new ArrayList<>(), 1);
 
-        final List<Suit> suits = new ArrayList<>();
+        List<Suit> suits = new ArrayList<>();
         suits.add(suit1);
         suits.add(suit2);
         suits.add(suit3);
@@ -308,10 +308,10 @@ public class SuitDAOTest {
     }
 
     private Set<Tag> setIdsForTags(Set<Tag> tagsWithIds, Set<Tag> tagsWithoutIds) {
-        final List<Tag> listOfTagsWithIds = new ArrayList<>(tagsWithIds);
-        final List<Tag> listOfTagsWithoutIds = new ArrayList<>(tagsWithoutIds);
+        List<Tag> listOfTagsWithIds = new ArrayList<>(tagsWithIds);
+        List<Tag> listOfTagsWithoutIds = new ArrayList<>(tagsWithoutIds);
         for (int i = 0; i < listOfTagsWithIds.size(); i++) {
-            final Tag tagWithId = listOfTagsWithIds.get(i);
+            Tag tagWithId = listOfTagsWithIds.get(i);
             listOfTagsWithoutIds.get(i).setId(tagWithId.getId());
         }
         return new HashSet<>(listOfTagsWithoutIds);
@@ -319,9 +319,9 @@ public class SuitDAOTest {
 
     private void fillIdsForListOfSuits(List<Suit> savedSuits, List<Suit> newSuits) {
         for (int i = 0; i < savedSuits.size(); i++) {
-            final Set<Tag> savedTags = savedSuits.get(i).getTags();
-            final Set<Tag> tagsWithoutIds = newSuits.get(i).getTags();
-            final Set<Tag> unsavedTagsWithIds = setIdsForTags(savedTags, tagsWithoutIds);
+            Set<Tag> savedTags = savedSuits.get(i).getTags();
+            Set<Tag> tagsWithoutIds = newSuits.get(i).getTags();
+            Set<Tag> unsavedTagsWithIds = setIdsForTags(savedTags, tagsWithoutIds);
             newSuits.get(i).setId(savedSuits.get(i).getId());
             newSuits.get(i).setTags(unsavedTagsWithIds);
         }

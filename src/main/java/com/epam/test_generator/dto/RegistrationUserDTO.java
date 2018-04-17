@@ -82,7 +82,7 @@ public class RegistrationUserDTO {
             return false;
         }
 
-        final RegistrationUserDTO registrationUserDTO = (RegistrationUserDTO) o;
+        RegistrationUserDTO registrationUserDTO = (RegistrationUserDTO) o;
 
         return (name != null ? name.equals(registrationUserDTO.name) : registrationUserDTO.name == null)
                 && (surname != null ? surname.equals(registrationUserDTO.surname) : registrationUserDTO.surname == null)

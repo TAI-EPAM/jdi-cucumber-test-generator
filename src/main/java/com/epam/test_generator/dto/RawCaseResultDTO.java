@@ -58,7 +58,7 @@ public class RawCaseResultDTO {
             return false;
         }
 
-        final RawCaseResultDTO rawCaseResultDTO = (RawCaseResultDTO) o;
+        RawCaseResultDTO rawCaseResultDTO = (RawCaseResultDTO) o;
 
         return (id != null ? id.equals(rawCaseResultDTO.id) : rawCaseResultDTO.id == null)
             && (duration != null ? duration.equals(rawCaseResultDTO.duration)

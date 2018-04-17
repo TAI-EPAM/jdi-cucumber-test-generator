@@ -15,11 +15,9 @@ import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.TestResultService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -193,7 +191,7 @@ public class TestResultControllerTest {
     }
 
     private TestResultDTO crateTestResultDTOWithDate(LocalDate date) {
-        final TestResultDTO testResultDTO = new TestResultDTO();
+        TestResultDTO testResultDTO = new TestResultDTO();
         testResultDTO.setAmountOfFailed(0);
         testResultDTO.setAmountOfPassed(1);
         testResultDTO.setAmountOfSkipped(0);

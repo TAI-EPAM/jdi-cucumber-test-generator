@@ -27,20 +27,20 @@ public class AdminService {
      */
     public void changeUserRole(ChangeUserRoleDTO changeUserRoleDTO) {
 
-        final User userByEmail = userService.getUserByEmail(changeUserRoleDTO.getEmail());
+        User userByEmail = userService.getUserByEmail(changeUserRoleDTO.getEmail());
 
         if (userByEmail == null) {
             throw new UnauthorizedException(
                     "User with email: " + changeUserRoleDTO.getEmail() + " not found.");
         }
-        final Role aNewRole = getRole(changeUserRoleDTO);
+        Role aNewRole = getRole(changeUserRoleDTO);
 
         userByEmail.setRole(aNewRole);
     }
 
     private Role getRole(ChangeUserRoleDTO changeUserRoleDTO) {
 
-        final Role aRole = roleService.getRoleByName(changeUserRoleDTO.getRole());
+        Role aRole = roleService.getRoleByName(changeUserRoleDTO.getRole());
 
         if (aRole == null) {
             throw new BadRoleException("Invalid name for Role");

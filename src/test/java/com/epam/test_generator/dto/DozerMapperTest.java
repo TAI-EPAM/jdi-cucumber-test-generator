@@ -46,8 +46,8 @@ public class DozerMapperTest {
 
     @Test
     public void map_CaseToCaseDTO_Valid() {
-        final Case caze = new Case();
-        final CaseDTO caseDTO = new CaseDTO();
+        Case caze = new Case();
+        CaseDTO caseDTO = new CaseDTO();
 
         caze.setId(1L);
         caze.setName("Case name");

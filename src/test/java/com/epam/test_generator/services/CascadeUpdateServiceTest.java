@@ -144,27 +144,27 @@ public class CascadeUpdateServiceTest {
     @Test
     public void cascadeSuitCasesUpdate_SuitIsAbleToUpdateItsStatementsByEveryPossibleOperationSimultaneously()
         throws MethodArgumentNotValidException {
-        final CaseDTO caseDTOForCreate = new CaseDTO();
+        CaseDTO caseDTOForCreate = new CaseDTO();
         caseDTOForCreate.setId(CASE_ID_FOR_CREATE);
 
-        final StepDTO stepDTOForCreate = new StepDTO();
+        StepDTO stepDTOForCreate = new StepDTO();
         stepDTOForCreate.setId(STEP_ID_FOR_CREATE);
         stepDTOForCreate.setStatus(Status.NOT_RUN);
         stepDTOForCreate.setAction(Action.CREATE);
 
         caseDTOForCreate.setSteps(Lists.newArrayList(stepDTOForCreate));
 
-        final CaseDTO caseDTOForUpdate = new CaseDTO();
+        CaseDTO caseDTOForUpdate = new CaseDTO();
         caseDTOForUpdate.setId(CASE_ID_FOR_UPDATE);
 
-        final StepDTO stepDTOForUpdate = new StepDTO();
+        StepDTO stepDTOForUpdate = new StepDTO();
         stepDTOForUpdate.setId(STEP_ID_FOR_UPDATE);
         stepDTOForUpdate.setStatus(Status.PASSED);
         stepDTOForUpdate.setAction(Action.UPDATE);
 
         caseDTOForUpdate.setSteps(Lists.newArrayList(stepDTOForUpdate, stepDTOForCreate));
 
-        final EditCaseDTO editCaseDTOForUpdate = new EditCaseDTO();
+        EditCaseDTO editCaseDTOForUpdate = new EditCaseDTO();
         editCaseDTOForUpdate.setId(CASE_ID_FOR_UPDATE);
         editCaseDTOForUpdate.setAction(Action.UPDATE);
 
@@ -239,11 +239,11 @@ public class CascadeUpdateServiceTest {
         editCaseDTO.setId(CASE_ID_FOR_UPDATE);
         editCaseDTO.setAction(Action.UPDATE);
 
-        final StepDTO stepDTOForCreate = new StepDTO();
+        StepDTO stepDTOForCreate = new StepDTO();
         stepDTOForCreate.setId(STEP_ID_FOR_CREATE);
         stepDTOForCreate.setAction(Action.CREATE);
 
-        final StepDTO stepDTOForUpdate = new StepDTO();
+        StepDTO stepDTOForUpdate = new StepDTO();
         stepDTOForUpdate.setId(STEP_ID_FOR_UPDATE);
         stepDTOForUpdate.setStatus(Status.NOT_RUN);
         stepDTOForUpdate.setAction(Action.UPDATE);

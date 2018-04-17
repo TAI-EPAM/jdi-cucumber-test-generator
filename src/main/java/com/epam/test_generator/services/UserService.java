@@ -24,7 +24,7 @@ public class UserService {
 
     public static final int MAX_ATTEMPTS = 5;
 
-    private final static String DEFAULT_ROLE = "GUEST";
+    private static final String DEFAULT_ROLE = "GUEST";
 
     @Autowired
     private RoleService roleService;
@@ -71,11 +71,11 @@ public class UserService {
      */
     public void createAdminIfDoesNotExist() {
 
-        final List<User> admin = checkNotNull(userDAO.findByRole(roleService.getRoleByName("ADMIN")));
+        List<User> admin = checkNotNull(userDAO.findByRole(roleService.getRoleByName("ADMIN")));
 
         if (admin.isEmpty()) {
 
-            final User user = new User(
+            User user = new User(
                     "adminName",
                     "adminSurname",
                     "admin@mail.com",
@@ -101,7 +101,7 @@ public class UserService {
                     "user with email:" + registrationUserDTO.getEmail() + " already exist!");
         } else {
 
-            final User user = new User(
+            User user = new User(
                     registrationUserDTO.getName(),
                     registrationUserDTO.getSurname(),
                     registrationUserDTO.getEmail(),

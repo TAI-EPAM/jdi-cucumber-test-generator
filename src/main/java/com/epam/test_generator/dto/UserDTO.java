@@ -125,7 +125,7 @@ public class UserDTO {
             return false;
         }
 
-        final UserDTO userDTO = (UserDTO) o;
+        UserDTO userDTO = (UserDTO) o;
 
         return (id != null ? id.equals(userDTO.id) : userDTO.id == null)
                 && (name != null ? name.equals(userDTO.name) : userDTO.name == null)

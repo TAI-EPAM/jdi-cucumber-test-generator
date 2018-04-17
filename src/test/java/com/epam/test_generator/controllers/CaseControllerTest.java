@@ -83,19 +83,19 @@ public class CaseControllerTest {
         caseDTO.setSteps(new ArrayList<>());
         caseDTO.setStatus(Status.NOT_DONE);
 
-        final CaseDTO caseDTO1 = new CaseDTO();
+        CaseDTO caseDTO1 = new CaseDTO();
         caseDTO1.setId(CASE_IDS[0]);
         caseDTO1.setDescription("case2");
         caseDTO1.setPriority(2);
         caseDTO1.setSteps(new ArrayList<>());
 
-        final CaseDTO caseDTO2 = new CaseDTO();
+        CaseDTO caseDTO2 = new CaseDTO();
         caseDTO2.setId(CASE_IDS[1]);
         caseDTO2.setDescription("case3");
         caseDTO2.setPriority(2);
         caseDTO2.setSteps(new ArrayList<>());
 
-        final CaseDTO caseDTO3 = new CaseDTO();
+        CaseDTO caseDTO3 = new CaseDTO();
         caseDTO3.setId(CASE_IDS[2]);
         caseDTO3.setDescription("case3");
         caseDTO3.setPriority(2);

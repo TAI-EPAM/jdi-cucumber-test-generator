@@ -24,7 +24,7 @@ public class JiraSettingsService {
             throw new JiraAuthenticationException(
                 "Jira setting with such login:" + jiraSettingsDTO.getLogin() + " already exist!");
         } else {
-            final JiraSettings jiraSettings = new JiraSettings(
+            JiraSettings jiraSettings = new JiraSettings(
                 jiraSettingsDTO.getUri(),
                 jiraSettingsDTO.getLogin(),
                 jiraSettingsDTO.getPassword());

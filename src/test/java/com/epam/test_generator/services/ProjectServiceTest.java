@@ -164,7 +164,7 @@ public class ProjectServiceTest {
     public void get_AllProjects_Success() {
         when(projectDAO.findAll()).thenReturn(expectedProjects);
         when(projectTransformer.toDtoList(expectedProjects)).thenReturn(expectedProjectDTOs);
-        final List<ProjectDTO> projects = projectService.getProjects();
+        List<ProjectDTO> projects = projectService.getProjects();
         assertEquals(expectedProjectDTOs, projects);
 
         verify(projectDAO).findAll();
@@ -184,7 +184,7 @@ public class ProjectServiceTest {
         when(userService.getUserById(simpleUser1.getId())).thenReturn(simpleUser1);
         when(projectService.getProjectsByUserId(simpleUser1.getId())).thenReturn(expectedProjects);
         when(projectTransformer.toDtoList(expectedProjects)).thenReturn(expectedProjectDTOs);
-        final List<ProjectDTO> actualProjectDTOs = projectService
+        List<ProjectDTO> actualProjectDTOs = projectService
             .getAuthenticatedUserProjects(authentication);
         assertEquals(expectedProjectDTOs, actualProjectDTOs);
 
@@ -211,7 +211,7 @@ public class ProjectServiceTest {
         when(userService.getUserById(simpleUser1.getId())).thenReturn(simpleUser1);
         when(projectDAO.findByUsers(simpleUser1)).thenReturn(expectedProjects);
 
-        final List<Project> actualProjectsList = projectService
+        List<Project> actualProjectsList = projectService
             .getProjectsByUserId(simpleUser1.getId());
         assertEquals(expectedProjects, actualProjectsList);
 

@@ -24,16 +24,16 @@ import static org.mockito.Mockito.when;
 public class JenkinsJobServiceImplTest {
 
     @Mock
-    JenkinsServerFactory jenkinsServerFactory;
+    private JenkinsServerFactory jenkinsServerFactory;
 
     @Mock
-    JenkinsServer jenkinsServer;
+    private JenkinsServer jenkinsServer;
 
     @InjectMocks
-    JenkinsJobServiceImpl jenkinsJobService;
+    private JenkinsJobServiceImpl jenkinsJobService;
 
-    Map<String, Job> jobs;
-    List<CommonJenkinsJobResponse> expectedJobs;
+    private Map<String, Job> jobs;
+    private List<CommonJenkinsJobResponse> expectedJobs;
 
     @Before
     public void setUp() {

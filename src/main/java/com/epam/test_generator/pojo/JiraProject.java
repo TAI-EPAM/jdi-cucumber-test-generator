@@ -53,7 +53,7 @@ public class JiraProject {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final JiraProject that = (JiraProject) o;
+        JiraProject that = (JiraProject) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(jiraKey, that.jiraKey) &&
                 Objects.equals(description, that.description);

@@ -50,7 +50,7 @@ public class Role {
             return false;
         }
 
-        final Role aRole = (Role) o;
+        Role aRole = (Role) o;
 
         return (id != null ? id.equals(aRole.id) : aRole.id == null)
             && (name != null ? name.equals(aRole.name) : aRole.name == null);

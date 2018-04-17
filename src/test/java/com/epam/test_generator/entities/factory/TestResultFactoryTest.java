@@ -68,8 +68,8 @@ public class TestResultFactoryTest {
     public void setUp() {
 
         rawSuitResults = new ArrayList<>();
-        final List<RawStepResultDTO> rawStepResultDTOS = new ArrayList<>();
-        final List<RawCaseResultDTO> rawCaseResultDTOS = new ArrayList<>();
+        List<RawStepResultDTO> rawStepResultDTOS = new ArrayList<>();
+        List<RawCaseResultDTO> rawCaseResultDTOS = new ArrayList<>();
 
         IntStream.range(0, 11)
             .forEach(i -> rawStepResultDTOS
@@ -107,7 +107,7 @@ public class TestResultFactoryTest {
         when(caseService.getCase(anyLong(), anyLong(), anyLong())).thenReturn(aCase);
         when(stepService.getStep(anyLong(), anyLong(), anyLong(), anyLong())).thenReturn(step);
 
-        final TestResult testResult = testResultFactory
+        TestResult testResult = testResultFactory
             .createTestResultFrom(anyLong(), EXECUTED_BY, rawSuitResults);
 
         assertThat(testResult.getStatus(), is(equalTo(Status.PASSED)));

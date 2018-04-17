@@ -70,35 +70,31 @@ public class TestResultServiceTest {
     private List<RawSuitResultDTO> rawSuitResults;
     private List<TestResult> testResults;
     private Project project;
-    private Suit suit;
-    private Case caze;
-    private StepDTO step;
     private TestResult testResult;
-    private TestResultDTO testResultDTO;
 
 
     @Before
     public void setUp() {
-        final RawStepResultDTO rawStepResult = new RawStepResultDTO(STEP_ID, Status.PASSED);
-        final RawCaseResultDTO rawCaseResult = new RawCaseResultDTO(CASE_ID, 10L, Status.PASSED,
+        RawStepResultDTO rawStepResult = new RawStepResultDTO(STEP_ID, Status.PASSED);
+        RawCaseResultDTO rawCaseResult = new RawCaseResultDTO(CASE_ID, 10L, Status.PASSED,
             Collections.singletonList(rawStepResult));
-        final RawSuitResultDTO rawSuitResult = new RawSuitResultDTO(SUIT_ID,
+        RawSuitResultDTO rawSuitResult = new RawSuitResultDTO(SUIT_ID,
             Collections.singletonList(rawCaseResult));
         rawSuitResults = Collections.singletonList(rawSuitResult);
 
         project = new Project();
         project.setId(PROJECT_ID);
 
-        suit = new Suit();
+        Suit suit = new Suit();
         suit.setId(SUIT_ID);
         suit.setName("SUIT_NAME");
 
-        caze = new Case();
+        Case caze = new Case();
         caze.setId(CASE_ID);
         caze.setName("CASE_NAME");
         caze.setComment("CASE_COMMENT");
 
-        step = new StepDTO();
+        StepDTO step = new StepDTO();
         step.setId(SUIT_ID);
         step.setDescription("STEP_DESCRIPTION");
 
@@ -109,7 +105,7 @@ public class TestResultServiceTest {
         for (int i = 0; i < 10; i++) {
             testResults.add(generateTestResult(LocalDate.now(), i));
         }
-        testResultDTO = new TestResultDTO();
+        TestResultDTO testResultDTO = new TestResultDTO();
         testResultDTO.setAmountOfSkipped(0);
         testResultDTO.setAmountOfFailed(0);
         testResultDTO.setAmountOfPassed(1);
@@ -144,7 +140,7 @@ public class TestResultServiceTest {
     public void getTestResults_SimpleTestResult_StatusOk() {
 
         when(testResultDAO.findAllByProjectIdOrderByDateDesc(PROJECT_ID)).thenReturn(testResults);
-        final List<TestResultDTO> testResults = testResultService
+        List<TestResultDTO> testResults = testResultService
             .getTestResults(PROJECT_ID, OFFSET, LIMIT);
         assertThat(testResults, is(notNullValue()));
         assertThat(testResults.size(), is(2));
@@ -157,14 +153,14 @@ public class TestResultServiceTest {
 
     @Test
     public void getTestResults() {
-        final LocalDate from = LocalDate.now();
-        final LocalDate to = LocalDate.now().plusDays(3);
+        LocalDate from = LocalDate.now();
+        LocalDate to = LocalDate.now().plusDays(3);
         testResultService.getTestResults(PROJECT_ID, from, to);
         verify(testResultDAO).findAllByProjectIdAndDateAfterAndDateBefore(eq(PROJECT_ID), eq(from), eq(to));
     }
 
     private TestResult generateTestResult(LocalDate localDate, Integer day) {
-        final TestResult testResult = new TestResult();
+        TestResult testResult = new TestResult();
         testResult.setAmountOfPassed(1);
         testResult.setAmountOfFailed(0);
         testResult.setAmountOfSkipped(3);

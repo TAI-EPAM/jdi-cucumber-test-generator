@@ -54,14 +54,14 @@ public class SuitVersionDAOImplTest {
 
     @Before
     public void setUp() {
-        final LocalDateTime now = LocalDateTime.now();
-        final CommitMetadata commitId1_5 = new CommitMetadata("auth", Maps.newHashMap(), now,
+        LocalDateTime now = LocalDateTime.now();
+        CommitMetadata commitId1_5 = new CommitMetadata("auth", Maps.newHashMap(), now,
             CommitId.valueOf("1.6"));
-        final CommitMetadata commitId1_3 = new CommitMetadata("auth", Maps.newHashMap(), now,
+        CommitMetadata commitId1_3 = new CommitMetadata("auth", Maps.newHashMap(), now,
             CommitId.valueOf("1.2"));
-        final CommitMetadata commitId6_2 = new CommitMetadata("auth", Maps.newHashMap(), now,
+        CommitMetadata commitId6_2 = new CommitMetadata("auth", Maps.newHashMap(), now,
             CommitId.valueOf("6.1"));
-        final CommitMetadata commitId0_1 = new CommitMetadata("auth", Maps.newHashMap(), now,
+        CommitMetadata commitId0_1 = new CommitMetadata("auth", Maps.newHashMap(), now,
             CommitId.valueOf("0.2"));
 
         changes = Lists.newArrayList(
@@ -83,7 +83,7 @@ public class SuitVersionDAOImplTest {
         when(javers.findChanges(any())).thenReturn(changes);
         when(javersChangedDataExtractor.groupByCommitId(changes)).thenReturn(treeOfChanges);
 
-        final List<SuitVersion> suitVersions = suitVersionDAO.findAll(SIMPLE_SUIT_ID);
+        List<SuitVersion> suitVersions = suitVersionDAO.findAll(SIMPLE_SUIT_ID);
 
         assertEquals(expectedSuitVersionIds,
             suitVersions.stream()

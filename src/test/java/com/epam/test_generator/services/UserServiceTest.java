@@ -3,7 +3,6 @@ package com.epam.test_generator.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -119,14 +118,14 @@ public class UserServiceTest {
         userDTOS.add(userDTO);
         when(userDAO.findAll()).thenReturn(users);
         when(transformer.toDtoList(users)).thenReturn(userDTOS);
-        final List<UserDTO> usersDTO = sut.getUsers();
+        List<UserDTO> usersDTO = sut.getUsers();
         assertFalse(usersDTO.isEmpty());
     }
 
     @Test
     public void getAll_EmptyDataBase_Success() throws Exception {
         when(userDAO.findAll()).thenReturn(users);
-        final List<UserDTO> users = sut.getUsers();
+        List<UserDTO> users = sut.getUsers();
         assertTrue(users.isEmpty());
     }
 

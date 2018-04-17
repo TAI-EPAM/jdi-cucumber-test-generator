@@ -1,15 +1,15 @@
 package com.epam.test_generator.entity;
 
-import com.epam.test_generator.entities.Token;
-import com.epam.test_generator.entities.User;
-import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.epam.test_generator.entities.Token;
+import org.junit.Test;
+
 public class TokenTest {
 
-    private final int LONG_EXPIRATION_DURATION = 60;
-    private final int NEGATIVE_EXPIRATION_DURATION = -1;
+    private final static int LONG_EXPIRATION_DURATION = 60;
+    private final static int NEGATIVE_EXPIRATION_DURATION = -1;
 
     @Test
     public void isExpired_NotExpiredToken_False() {
