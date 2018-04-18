@@ -6,20 +6,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.epam.test_generator.controllers.user.UserDTOsTransformer;
+import com.epam.test_generator.controllers.user.request.LoginUserDTO;
+import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
+import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
-import com.epam.test_generator.dto.LoginUserDTO;
-import com.epam.test_generator.dto.RegistrationUserDTO;
-import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import com.epam.test_generator.transformers.UserTransformer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,9 +42,6 @@ public class UserServiceTest {
     private RoleService roleService;
 
     @Mock
-    private UserTransformer transformer;
-
-    @Mock
     private PasswordEncoder encoder;
 
     @Mock
@@ -51,6 +49,9 @@ public class UserServiceTest {
 
     @Mock
     private User user;
+
+    @Mock
+    private UserDTOsTransformer userDTOsTransformer;
 
     @Mock
     private UserDTO userDTO;
@@ -107,7 +108,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserByEmail_NoSuchUser_Success(){
+    public void getUserByEmail_NoSuchUser_Success() {
         when(userDAO.findByEmail(anyString())).thenReturn(null);
         sut.getUserByEmail("iteaky");
     }
@@ -117,7 +118,8 @@ public class UserServiceTest {
         users.add(user);
         userDTOS.add(userDTO);
         when(userDAO.findAll()).thenReturn(users);
-        when(transformer.toDtoList(users)).thenReturn(userDTOS);
+        when(userDTOsTransformer.toListUserDto(users)).thenReturn(userDTOS);
+        when(userDTOsTransformer.toUserDTO(user)).thenReturn(userDTO);
         List<UserDTO> usersDTO = sut.getUsers();
         assertFalse(usersDTO.isEmpty());
     }
@@ -131,6 +133,7 @@ public class UserServiceTest {
 
     @Test
     public void createUser_RegistrationUserDTO_Success() {
+        when(userDTOsTransformer.fromDTO(anyObject())).thenReturn(user);
         sut.createUser(registrationUserDTO);
         verify(userDAO).save(any(User.class));
     }

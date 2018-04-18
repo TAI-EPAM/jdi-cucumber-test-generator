@@ -9,12 +9,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.config.security.AuthenticatedUser;
+import com.epam.test_generator.controllers.test.result.TestResultTransformer;
+import com.epam.test_generator.controllers.test.result.response.TestResultDTO;
 import com.epam.test_generator.dao.interfaces.TestResultDAO;
 import com.epam.test_generator.dto.RawCaseResultDTO;
 import com.epam.test_generator.dto.RawStepResultDTO;
 import com.epam.test_generator.dto.RawSuitResultDTO;
-import com.epam.test_generator.dto.StepDTO;
-import com.epam.test_generator.dto.TestResultDTO;
+import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
@@ -22,7 +23,6 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.results.TestResult;
 import com.epam.test_generator.entities.factory.TestResultFactory;
 import com.epam.test_generator.services.exceptions.BadRequestException;
-import com.epam.test_generator.transformers.TestResultTransformer;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -111,8 +111,8 @@ public class TestResultServiceTest {
         testResultDTO.setAmountOfPassed(1);
         testResultDTO.setStatus(Status.PASSED);
         testResultDTO.setExecutedBy(EXECUTED_BY);
-        testResultDTO.setDuration(0);
-        testResultDTO.setSuits(Collections.emptyList());
+        testResultDTO.setDuration(0L);
+        testResultDTO.setSuitResults(Collections.emptyList());
 
     }
 
@@ -156,7 +156,8 @@ public class TestResultServiceTest {
         LocalDate from = LocalDate.now();
         LocalDate to = LocalDate.now().plusDays(3);
         testResultService.getTestResults(PROJECT_ID, from, to);
-        verify(testResultDAO).findAllByProjectIdAndDateAfterAndDateBefore(eq(PROJECT_ID), eq(from), eq(to));
+        verify(testResultDAO)
+            .findAllByProjectIdAndDateAfterAndDateBefore(eq(PROJECT_ID), eq(from), eq(to));
     }
 
     private TestResult generateTestResult(LocalDate localDate, Integer day) {

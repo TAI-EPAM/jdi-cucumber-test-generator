@@ -7,8 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.epam.test_generator.dto.ChangeUserRoleDTO;
-import com.epam.test_generator.dto.JiraSettingsDTO;
+import com.epam.test_generator.controllers.admin.AdminController;
+import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
+import com.epam.test_generator.controllers.admin.request.JiraSettingsCreateDTO;
 import com.epam.test_generator.services.AdminService;
 import com.epam.test_generator.services.JiraSettingsService;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,12 +23,19 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdminControllerTest {
 
     private MockMvc mockMvc;
-    private ChangeUserRoleDTO userChangeRole;
+    private UserRoleUpdateDTO userChangeRole;
     private ObjectMapper mapper;
     @Mock
     private AdminService adminService;
@@ -41,7 +49,7 @@ public class AdminControllerTest {
 
     public void setUp() {
         mapper = new ObjectMapper();
-        userChangeRole = new ChangeUserRoleDTO();
+        userChangeRole = new UserRoleUpdateDTO();
         mockMvc = MockMvcBuilders.standaloneSetup(adminController)
             .setControllerAdvice(new GlobalExceptionController())
             .build();
@@ -60,17 +68,17 @@ public class AdminControllerTest {
 
     @Test
     public void createJiraSettings_JiraSetting_StatusOk() throws Exception {
-        JiraSettingsDTO jiraSettingsDTO = new JiraSettingsDTO();
-        jiraSettingsDTO.setLogin("login");
-        jiraSettingsDTO.setPassword("password");
-        jiraSettingsDTO.setUri("uri");
+        JiraSettingsCreateDTO jiraSettingsCreateDTO = new JiraSettingsCreateDTO();
+        jiraSettingsCreateDTO.setLogin("login");
+        jiraSettingsCreateDTO.setPassword("password");
+        jiraSettingsCreateDTO.setUri("uri");
 
         mockMvc.perform(post("/admin/jira-settings")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(jiraSettingsDTO)))
+            .content(mapper.writeValueAsString(jiraSettingsCreateDTO)))
             .andExpect(status().isOk());
 
-        verify(jiraSettingsService).createJiraSettings(eq(jiraSettingsDTO));
+        verify(jiraSettingsService).createJiraSettings(eq(jiraSettingsCreateDTO));
     }
 
     @Test

@@ -4,14 +4,16 @@ import static com.epam.test_generator.services.utils.UtilsService.caseBelongsToS
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 import static com.epam.test_generator.services.utils.UtilsService.tagBelongsToCase;
 
+import com.epam.test_generator.controllers.tag.request.TagCreateDTO;
+import com.epam.test_generator.controllers.tag.request.TagUpdateDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dao.interfaces.TagDAO;
-import com.epam.test_generator.dto.TagDTO;
+import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
-import com.epam.test_generator.transformers.TagTransformer;
+import com.epam.test_generator.controllers.tag.TagTransformer;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class TagService {
 
 
     /**
-     *  Return all tags from Project's Suits and Cases.
+     *  Return all tags from project's Suits and Cases.
      */
     public Set<TagDTO> getAllProjectTags(long projectId) {
         Set<TagDTO> tagCases = projectService.getProjectByProjectId(projectId).getSuits()
@@ -86,7 +88,7 @@ public class TagService {
      * @param tagDTO    info to add
      * @return id of tag
      */
-    public Long addTagToCase(Long projectId, Long suitId, Long caseId, TagDTO tagDTO) {
+    public Long addTagToCase(Long projectId, Long suitId, Long caseId, TagCreateDTO tagDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseService.getCase(projectId, suitId, caseId);
@@ -112,7 +114,7 @@ public class TagService {
      * @param tagId     id of tag to update
      * @param tagDTO    info to update
      */
-    public void updateTag(Long projectId, Long suitId, Long caseId, Long tagId, TagDTO tagDTO) {
+    public void updateTag(Long projectId, Long suitId, Long caseId, Long tagId, TagUpdateDTO tagDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = caseService.getCase(projectId, suitId, caseId);
@@ -124,7 +126,7 @@ public class TagService {
 
         tagBelongsToCase(tag, caze);
 
-        tagTransformer.mapDTOToEntity(tagDTO, tag);
+        tag = tagTransformer.updateFromDto(tagDTO, tag);
 
         tagDAO.save(tag);
 

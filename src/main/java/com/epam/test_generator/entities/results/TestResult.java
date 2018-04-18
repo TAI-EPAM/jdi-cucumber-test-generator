@@ -29,7 +29,7 @@ public class TestResult extends AbstractResult implements ResultTrait {
     private Project project;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<SuitResult> suits;
+    private List<SuitResult> suitResults;
 
     public LocalDate getDate() {
         return date;
@@ -75,15 +75,15 @@ public class TestResult extends AbstractResult implements ResultTrait {
         this.project = project;
     }
 
-    public List<SuitResult> getSuits() {
-        return suits;
+    public List<SuitResult> getSuitResults() {
+        return suitResults;
     }
 
-    public void setSuits(List<SuitResult> suits) {
-        this.suits = suits;
-        countTestResultStatistics(suits);
-        setStatus(calculateStatus(suits));
-        setDuration(calculateDuration(suits));
+    public void setSuitResults(List<SuitResult> suitResults) {
+        this.suitResults = suitResults;
+        countTestResultStatistics(suitResults);
+        setStatus(calculateStatus(suitResults));
+        setDuration(calculateDuration(suitResults));
     }
 
     public Project getProject() {

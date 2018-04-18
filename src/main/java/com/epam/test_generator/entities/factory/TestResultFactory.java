@@ -51,7 +51,7 @@ public class TestResultFactory {
 
         testResult.setExecutedBy(executedBy);
         testResult.setProject(projectService.getProjectByProjectId(projectId));
-        testResult.setSuits(getListOfSuitResultsFrom(projectId, suitResultDTOS));
+        testResult.setSuitResults(getListOfSuitResultsFrom(projectId, suitResultDTOS));
 
         return testResult;
     }
@@ -102,7 +102,7 @@ public class TestResultFactory {
         CaseResult caseResult = new CaseResult();
         caseResult.setName(aCase.getName());
         caseResult.setComment(aCase.getComment());
-        caseResult.setSteps(getListStepResults(projectId, suitId, caseResultDTO));
+        caseResult.setStepResults(getListStepResults(projectId, suitId, caseResultDTO));
         caseResult.setStatus(caseResultDTO.getStatus());
         caseResult.setDuration(caseResultDTO.getDuration());
 

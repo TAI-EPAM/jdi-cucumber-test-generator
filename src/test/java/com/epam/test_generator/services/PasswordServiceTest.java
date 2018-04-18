@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.TokenDAO;
-import com.epam.test_generator.dto.PasswordResetDTO;
+import com.epam.test_generator.controllers.user.request.PasswordResetDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMissingException;

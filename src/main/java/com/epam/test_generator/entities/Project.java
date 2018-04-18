@@ -18,7 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 /**
- * This class represents Project essence. Besides simple fields like id, name and description,
+ * This class represents project essence. Besides simple fields like id, name and description,
  * objects of {@link Project} contain suits and users fields. List of {@link Suit} objects
  * represents suits that are linked with current {@link Project}. Set of {@link User} objects that
  * are assigned to current project. "Assigned" means that user has rights at least to see contents
@@ -139,7 +139,7 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
 
     @Override
     public String toString() {
-        return "Project{" +
+        return "project{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

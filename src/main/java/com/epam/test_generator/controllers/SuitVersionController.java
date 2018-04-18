@@ -1,6 +1,6 @@
 package com.epam.test_generator.controllers;
 
-import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dto.SuitVersionDTO;
 import com.epam.test_generator.services.SuitService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,7 +29,7 @@ public class SuitVersionController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK",
             response = SuitVersionDTO.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Project doesn't contain the suit"),
+        @ApiResponse(code = 400, message = "project doesn't contain the suit"),
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({
@@ -51,7 +51,7 @@ public class SuitVersionController {
     @ApiOperation(value = "Restore suit by commit id", nickname = "restoreSuit")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
-        @ApiResponse(code = 400, message = "Project doesn't contain the suit"),
+        @ApiResponse(code = 400, message = "project doesn't contain the suit"),
         @ApiResponse(code = 404, message = "Suit not found")
     })
     @ApiImplicitParams({

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class CaseStatePersister implements StateMachinePersister<Status, Event, Case> {
 
     /**
-     * Saves current state of stateMachine to Case
+     * Saves current state of stateMachine to case
      *
      * @param stateMachine to get state from
      * @param contextObj to store given state
@@ -33,7 +33,7 @@ public class CaseStatePersister implements StateMachinePersister<Status, Event, 
      *
      * @param stateMachine to update state
      * @param contextObj that stores state
-     * @return state machine with state from Case
+     * @return state machine with state from case
      */
     @Override
     public StateMachine<Status, Event> restore(StateMachine<Status, Event> stateMachine,

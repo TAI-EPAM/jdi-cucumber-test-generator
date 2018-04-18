@@ -30,14 +30,14 @@ public class StatesController {
     private StatesService statesService;
 
 
-    @ApiOperation(value = "Get list of Case events available for given status",
+    @ApiOperation(value = "Get list of case events available for given status",
         nickname = "getAvailableEvents")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Event.class,
             responseContainer = "List"),
         @ApiResponse(code = 400, message = "Invalid status name")
     })
-    @ApiImplicitParam(name = "status", value = "Case status",
+    @ApiImplicitParam(name = "status", value = "case status",
         required = true, dataType = "String", paramType = "path")
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping("/{status}")
@@ -50,7 +50,7 @@ public class StatesController {
 
     }
 
-    @ApiOperation(value = "Get list of Case events", nickname = "getEvents")
+    @ApiOperation(value = "Get list of case events", nickname = "getEvents")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Event.class, responseContainer = "List")
     })
@@ -63,7 +63,7 @@ public class StatesController {
             HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get list of Case statuses", nickname = "getEvents")
+    @ApiOperation(value = "Get list of case statuses", nickname = "getEvents")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Status.class, responseContainer = "List")
     })

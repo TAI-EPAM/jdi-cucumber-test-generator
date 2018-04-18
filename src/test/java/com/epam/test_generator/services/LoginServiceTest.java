@@ -3,7 +3,7 @@ package com.epam.test_generator.services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;

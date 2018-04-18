@@ -12,7 +12,7 @@ public class CaseResult extends AbstractResult implements ResultTrait {
 
     private String comment;
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<StepResult> steps;
+    private List<StepResult> stepResults;
 
     public String getName() {
         return name;
@@ -31,10 +31,14 @@ public class CaseResult extends AbstractResult implements ResultTrait {
     }
 
     public List<StepResult> getSteps() {
-        return steps;
+        return stepResults;
     }
 
-    public void setSteps(List<StepResult> steps){
-        this.steps = steps;
+    public void setStepResults(List<StepResult> steps) {
+        this.stepResults = steps;
+    }
+
+    public List<StepResult> getStepResults() {
+        return stepResults;
     }
 }

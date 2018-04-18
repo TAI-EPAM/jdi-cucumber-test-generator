@@ -13,8 +13,8 @@ import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Component;
 
 /**
- * Class that defines behavior of State Machines bind to Case entity, such as persisting states to
- * Case and performing events
+ * Class that defines behavior of State Machines bind to case entity, such as persisting states to
+ * case and performing events
  */
 @Component
 @WithStateMachine

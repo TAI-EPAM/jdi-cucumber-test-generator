@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.epam.test_generator.dto.ChangeUserRoleDTO;
+import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRoleException;
@@ -35,7 +35,7 @@ public class AdminServiceTest {
     @InjectMocks
     private AdminService adminService;
 
-    private ChangeUserRoleDTO userRoleDTO;
+    private UserRoleUpdateDTO userRoleDTO;
 
     private User user;
 
@@ -88,8 +88,8 @@ public class AdminServiceTest {
         return user;
     }
 
-    private ChangeUserRoleDTO getUserDtoFor(String userEmail, String userRole) {
-        ChangeUserRoleDTO userRoleDTO = new ChangeUserRoleDTO();
+    private UserRoleUpdateDTO getUserDtoFor(String userEmail, String userRole) {
+        UserRoleUpdateDTO userRoleDTO = new UserRoleUpdateDTO();
         userRoleDTO.setEmail(userEmail);
         userRoleDTO.setRole(userRole);
         return userRoleDTO;
