@@ -14,32 +14,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller handle case events.
  */
 @RestController
+@RequestMapping("/events")
 public class StatesController {
 
     @Autowired
     private StatesService statesService;
 
 
-    @ApiOperation(value = "Get list of Case events available for given status",
+    @ApiOperation(value = "Get list of case events available for given status",
         nickname = "getAvailableEvents")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Event.class,
             responseContainer = "List"),
         @ApiResponse(code = 400, message = "Invalid status name")
     })
-    @ApiImplicitParam(name = "status", value = "Case status",
+    @ApiImplicitParam(name = "status", value = "case status",
         required = true, dataType = "String", paramType = "path")
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/events/{status}", method = RequestMethod.GET)
+    @GetMapping("/{status}")
     public ResponseEntity<List<Event>> getAvailableEvents(
         @PathVariable("status") Status status) {
 
@@ -49,12 +50,12 @@ public class StatesController {
 
     }
 
-    @ApiOperation(value = "Get list of Case events", nickname = "getEvents")
+    @ApiOperation(value = "Get list of case events", nickname = "getEvents")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Event.class, responseContainer = "List")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<List<Event>> getEvents() {
 
         return new ResponseEntity<>(
@@ -62,12 +63,12 @@ public class StatesController {
             HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get list of Case statuses", nickname = "getEvents")
+    @ApiOperation(value = "Get list of case statuses", nickname = "getEvents")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Status.class, responseContainer = "List")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
-    @RequestMapping(value = "/statuses", method = RequestMethod.GET)
+    @GetMapping("/statuses")
     public ResponseEntity<List<Status>> getStatuses() {
 
         return new ResponseEntity<>(

@@ -1,7 +1,9 @@
 package com.epam.test_generator.services;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.epam.test_generator.dto.LoginUserDTO;
+import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
@@ -24,6 +26,9 @@ public class LoginServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private JWTTokenService jwtTokenService;
 
     @Mock
     private Environment environment;
@@ -53,7 +58,7 @@ public class LoginServiceTest {
         when(user.getName()).thenReturn("name");
         when(user.getSurname()).thenReturn("surname");
         when(user.getEmail()).thenReturn("email");
-        when(user.getAttempts()).thenReturn(5);
+        when(user.getLoginAttempts()).thenReturn(5);
         when(user.getRole()).thenReturn(role);
         when(role.getName()).thenReturn("GUEST");
         badToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJciIsImlkIjoyfQ.dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
@@ -105,7 +110,7 @@ public class LoginServiceTest {
     @Test(expected = UnauthorizedException.class)
     public void getToken_LastFailureAttempt_UnauthorizedException() throws Exception {
 
-        when(user.getAttempts()).thenReturn(4);
+        when(user.getLoginAttempts()).thenReturn(4);
         when(user.isLocked()).thenReturn(false);
 
         when(loginUserDTO.getEmail()).thenReturn("email");

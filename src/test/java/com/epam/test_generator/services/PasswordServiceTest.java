@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.TokenDAO;
-import com.epam.test_generator.dto.PasswordResetDTO;
+import com.epam.test_generator.controllers.user.request.PasswordResetDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMissingException;
@@ -51,13 +51,13 @@ public class PasswordServiceTest {
         when(request.getServerName()).thenReturn("serverName");
         when(request.getServerPort()).thenReturn(1);
         when(request.getContextPath()).thenReturn("");
-        when(token.getToken()).thenReturn("token");
+        when(token.getTokenUuid()).thenReturn("token");
     }
 
     @Test
     public void createResetUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createResetUrl(request, token);
-        String resetUrlActual = "scheme://serverName:1/passwordReset?token=token";
+        String resetUrlActual = "scheme://serverName:1/user/validate-reset-token?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
     }
@@ -65,7 +65,7 @@ public class PasswordServiceTest {
     @Test
     public void createConfirmUrl_SimpleInputDate_Ok() {
         String resetUrlExpected = sut.createConfirmUrl(request, token);
-        String resetUrlActual = "scheme://serverName:1/confirmAccount?token=token";
+        String resetUrlActual = "scheme://serverName:1/user/confirm-email?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
     }
@@ -73,7 +73,7 @@ public class PasswordServiceTest {
     @Test
     public void passwordReset_SimplePasswordResetDTO_Ok() {
         when(passwordResetDTO.getToken()).thenReturn("token");
-        when(tokenDAO.findByToken(anyString())).thenReturn(token);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn("password");
 
@@ -84,7 +84,7 @@ public class PasswordServiceTest {
     @Test(expected = TokenMissingException.class)
     public void passwordReset_IncorrectToken_Exception() {
         when(passwordResetDTO.getToken()).thenReturn("token");
-        when(tokenDAO.findByToken(anyString())).thenReturn(null);
+        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(null);
 
         sut.passwordReset(passwordResetDTO);
         verify(tokenDAO).delete(token);
@@ -93,6 +93,6 @@ public class PasswordServiceTest {
     @Test
     public void getTokenByName_SimpleToken_Ok() {
         sut.getTokenByName(anyString());
-        verify(tokenDAO).findByToken(anyString());
+        verify(tokenDAO).findByTokenUuid(anyString());
     }
 }

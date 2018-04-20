@@ -122,4 +122,17 @@
             </column>
         </createTable>
     </changeSet>
+
+    <!-- fix bug with incorrect constraint in SUITRESULT_CASERESULT -->
+    <changeSet author="" id="change_suitresult_constraint">
+        <dropForeignKeyConstraint baseTableName="SUITRESULT_CASERESULT"
+            constraintName="fk_suitresultCaseresult_case"/>
+
+        <addForeignKeyConstraint baseColumnNames="CASERESULTS_ID"
+            baseTableName="SUITRESULT_CASERESULT"
+            constraintName="fk_suitresultCaseresult_case"
+            referencedColumnNames="id"
+            referencedTableName="caseresult"/>
+    </changeSet>
+
 </databaseChangeLog>

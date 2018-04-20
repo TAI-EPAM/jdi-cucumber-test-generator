@@ -48,7 +48,7 @@ public class JiraStoryDAOTest {
 
     private static final String JIRA_KEY = "key";
     private static final String JIRA_FILTER = "filter";
-    private final static Integer CLOSE_ACTION_ID = 31;
+    private static final Integer CLOSE_ACTION_ID = 31;
     private static final Long JIRA_SETTINGS_ID = 1L;
 
     @Before

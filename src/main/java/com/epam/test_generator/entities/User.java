@@ -1,7 +1,7 @@
 package com.epam.test_generator.entities;
 
 
-import java.util.List;
+import com.epam.test_generator.entities.api.UserTrait;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import javax.persistence.*;
  * privileges for users of current role.
  */
 @Entity
-public class User {
+public class User implements UserTrait {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +42,10 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
-
     }
 
     public User() {
-        this.setAttempts(0);
+        this.setLoginAttempts(0);
         this.locked = false;
     }
 
@@ -99,11 +98,11 @@ public class User {
         this.role = role;
     }
 
-    public Integer getAttempts() {
+    public Integer getLoginAttempts() {
         return attempts;
     }
 
-    public void setAttempts(int attempts) {
+    public void setLoginAttempts(int attempts) {
         this.attempts = attempts;
     }
 
@@ -130,7 +129,7 @@ public class User {
             return false;
         }
 
-        final User aUser = (User) o;
+        User aUser = (User) o;
 
         return (id != null ? id.equals(aUser.id) : aUser.id == null)
                 && (name != null ? name.equals(aUser.name) : aUser.name == null)

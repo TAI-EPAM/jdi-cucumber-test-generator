@@ -56,13 +56,13 @@ public class CaseDAOTest {
 
     @Test
     public void updateName_Case_Success() {
-        final Case originalCase = retrieveCase();
+        Case originalCase = retrieveCase();
         caseDAO.save(originalCase);
 
         originalCase.setName("modified name");
-        final long id = caseDAO.save(originalCase).getId();
+        long id = caseDAO.save(originalCase).getId();
 
-        final Case newCase = retrieveCase();
+        Case newCase = retrieveCase();
         newCase.setId(id);
         newCase.setName("modified name");
 
@@ -167,13 +167,13 @@ public class CaseDAOTest {
 
     private List<Case> retrieveCaseList() {
 
-        final Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(),
+        Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(),
             Calendar.getInstance().getTime(),
             Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
-        final Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(),
+        Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(),
             Calendar.getInstance().getTime(),
             Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN, "comment");
-        final Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(),
+        Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(),
             Calendar.getInstance().getTime(),
             Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
 

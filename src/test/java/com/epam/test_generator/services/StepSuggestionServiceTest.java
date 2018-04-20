@@ -1,6 +1,7 @@
 package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
@@ -64,7 +65,7 @@ public class StepSuggestionServiceTest {
 
         List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
             .getStepsSuggestions(null, null, null);
-        assertEquals(true,
+        assertTrue(
             Arrays.deepEquals(expectedListSteps.toArray(), getListStepsSuggestion.toArray()));
 
         verify(stepSuggestionDAO).findAll();

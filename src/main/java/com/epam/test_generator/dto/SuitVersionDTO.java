@@ -1,5 +1,7 @@
 package com.epam.test_generator.dto;
 
+import com.epam.test_generator.controllers.version.caze.response.PropertyDifferenceDTO;
+
 import java.util.List;
 
 public class SuitVersionDTO {

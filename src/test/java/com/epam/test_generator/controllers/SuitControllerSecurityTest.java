@@ -3,15 +3,14 @@ package com.epam.test_generator.controllers;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationProvider;
+import com.epam.test_generator.controllers.suit.SuitController;
+import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
-import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
-import com.epam.test_generator.services.IOService;
 import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.SuitService;
-import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
 import com.google.common.collect.Lists;
@@ -114,7 +113,7 @@ public class SuitControllerSecurityTest {
         when(invalidUser.getRole()).thenReturn(role);
         when(role.getName()).thenReturn("GUEST");
         when(invalidUser.getId()).thenReturn(new Long(0));
-        when(invalidUser.getAttempts()).thenReturn(5);
+        when(invalidUser.getLoginAttempts()).thenReturn(5);
         when(validUser.getEmail()).thenReturn("test@email.com");
         when(validUser.getPassword()).thenReturn("test");
         when(validUser.getId()).thenReturn(new Long(1));
@@ -205,7 +204,7 @@ public class SuitControllerSecurityTest {
         when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList(
             project1, project2));
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/projects/" + 3L + "/suits").header("Authorization", token)
             .contentType("application/json"))
@@ -221,7 +220,7 @@ public class SuitControllerSecurityTest {
         when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList(
             project1, project2));
 
-        final String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
+        String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(get("/projects/" + 2L + "/suits").header("Authorization", token)
             .contentType("application/json"))

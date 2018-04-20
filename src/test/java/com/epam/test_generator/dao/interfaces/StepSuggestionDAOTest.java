@@ -109,7 +109,7 @@ public class StepSuggestionDAOTest {
     public void removeList_StepSuggestions_Success() {
         List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
 
-        final int expectedSize = stepSuggestionDAO.findAll().size();
+        int expectedSize = stepSuggestionDAO.findAll().size();
 
         stepSuggestions =  stepSuggestionDAO.save(stepSuggestions);
 

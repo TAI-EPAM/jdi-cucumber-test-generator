@@ -15,4 +15,18 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="" id="add_column_duration">
+        <addColumn tableName="STEPRESULT">
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+   </changeSet>
+  
+   <changeSet author="liquibase-docs" id="rename_column_in_token_table">
+        <renameColumn newColumnName="TOKENUUID"
+                      oldColumnName="TOKEN"
+                      tableName="TOKEN"/>
+   </changeSet>
+
 </databaseChangeLog>

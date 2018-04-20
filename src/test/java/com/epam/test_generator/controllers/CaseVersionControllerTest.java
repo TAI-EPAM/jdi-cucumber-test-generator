@@ -10,7 +10,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.epam.test_generator.dto.CaseVersionDTO;
+import com.epam.test_generator.controllers.version.caze.CaseVersionController;
+import com.epam.test_generator.controllers.version.caze.response.CaseVersionDTO;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
@@ -41,7 +42,7 @@ public class CaseVersionControllerTest {
 
     private MockMvc mockMvc;
 
-    private List<CaseVersionDTO> caseVersionDTOs;
+    private List<CaseVersionDTO> caseVersionDTOS;
 
     @Before
     public void setUp() {
@@ -49,13 +50,13 @@ public class CaseVersionControllerTest {
             .setControllerAdvice(new GlobalExceptionController())
             .build();
 
-        caseVersionDTOs = Lists.newArrayList(new CaseVersionDTO(), new CaseVersionDTO());
+        caseVersionDTOS = Lists.newArrayList(new CaseVersionDTO(), new CaseVersionDTO());
     }
 
     @Test
     public void getCaseVersions_CorrectIds_StatusOk() throws Exception {
         when(caseService.getCaseVersions(anyLong(), anyLong(), anyLong()))
-            .thenReturn(caseVersionDTOs);
+            .thenReturn(caseVersionDTOS);
 
         mockMvc
             .perform(get("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"

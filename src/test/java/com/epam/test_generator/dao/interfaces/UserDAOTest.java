@@ -46,22 +46,22 @@ public class UserDAOTest {
         userDAO.save(aUser);
 
 
-        final User savedAUser = userDAO.findByEmail(aUser.getEmail());
+        User savedAUser = userDAO.findByEmail(aUser.getEmail());
 
         assertNotNull(savedAUser);
 
-        final String currentName = savedAUser.getName();
+        String currentName = savedAUser.getName();
         assertEquals(currentName, aUser.getName());
 
         aUser.setName("new Name");
         userDAO.save(aUser);
 
-        final User aUserWithUpdatedName = userDAO.findById(savedAUser.getId());
+        User aUserWithUpdatedName = userDAO.findById(savedAUser.getId());
 
         assertNotNull(aUserWithUpdatedName);
 
-        final String newName = aUserWithUpdatedName.getName();
-        final String oldName = aUser.getName();
+        String newName = aUserWithUpdatedName.getName();
+        String oldName = aUser.getName();
         assertEquals(newName, oldName);
 
     }
@@ -72,22 +72,22 @@ public class UserDAOTest {
         userDAO.save(aUser);
 
 
-        final User savedAUser = userDAO.findByEmail(aUser.getEmail());
+        User savedAUser = userDAO.findByEmail(aUser.getEmail());
 
         assertNotNull(savedAUser);
 
-        final String currentSurname = savedAUser.getSurname();
+        String currentSurname = savedAUser.getSurname();
         assertEquals(currentSurname, aUser.getSurname());
 
         aUser.setSurname("new Surname");
         userDAO.save(aUser);
 
-        final User aUserWithUpdatedSurname = userDAO.findById(savedAUser.getId());
+        User aUserWithUpdatedSurname = userDAO.findById(savedAUser.getId());
 
         assertNotNull(aUserWithUpdatedSurname);
 
-        final String newSurname = aUserWithUpdatedSurname.getSurname();
-        final String oldSurname = aUser.getSurname();
+        String newSurname = aUserWithUpdatedSurname.getSurname();
+        String oldSurname = aUser.getSurname();
         assertEquals(newSurname, oldSurname);
     }
 

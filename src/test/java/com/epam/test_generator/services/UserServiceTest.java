@@ -3,24 +3,24 @@ package com.epam.test_generator.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.epam.test_generator.controllers.user.UserDTOsTransformer;
+import com.epam.test_generator.controllers.user.request.LoginUserDTO;
+import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
+import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
-import com.epam.test_generator.dto.LoginUserDTO;
-import com.epam.test_generator.dto.RegistrationUserDTO;
-import com.epam.test_generator.dto.UserDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import com.epam.test_generator.transformers.UserTransformer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,9 +42,6 @@ public class UserServiceTest {
     private RoleService roleService;
 
     @Mock
-    private UserTransformer transformer;
-
-    @Mock
     private PasswordEncoder encoder;
 
     @Mock
@@ -52,6 +49,9 @@ public class UserServiceTest {
 
     @Mock
     private User user;
+
+    @Mock
+    private UserDTOsTransformer userDTOsTransformer;
 
     @Mock
     private UserDTO userDTO;
@@ -94,11 +94,10 @@ public class UserServiceTest {
 
     }
 
-    @Test
-    public void getUserById_NoSuchUser_Success() throws Exception {
+    @Test(expected = UnauthorizedException.class)
+    public void getUserById_NoSuchUser_Success() {
         when(userDAO.findById(anyLong())).thenReturn(null);
-        User userById = sut.getUserById(1L);
-        assertNull(userById);
+        sut.getUserById(1L);
     }
 
     @Test
@@ -109,10 +108,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserByEmail_NoSuchUser_Success() throws Exception {
+    public void getUserByEmail_NoSuchUser_Success() {
         when(userDAO.findByEmail(anyString())).thenReturn(null);
-        User userById = sut.getUserByEmail("iteaky");
-        assertNull(userById);
+        sut.getUserByEmail("iteaky");
     }
 
     @Test
@@ -120,20 +118,22 @@ public class UserServiceTest {
         users.add(user);
         userDTOS.add(userDTO);
         when(userDAO.findAll()).thenReturn(users);
-        when(transformer.toDtoList(users)).thenReturn(userDTOS);
-        final List<UserDTO> usersDTO = sut.getUsers();
+        when(userDTOsTransformer.toListUserDto(users)).thenReturn(userDTOS);
+        when(userDTOsTransformer.toUserDTO(user)).thenReturn(userDTO);
+        List<UserDTO> usersDTO = sut.getUsers();
         assertFalse(usersDTO.isEmpty());
     }
 
     @Test
     public void getAll_EmptyDataBase_Success() throws Exception {
         when(userDAO.findAll()).thenReturn(users);
-        final List<UserDTO> users = sut.getUsers();
+        List<UserDTO> users = sut.getUsers();
         assertTrue(users.isEmpty());
     }
 
     @Test
-    public void createUser_RegistrationUserDTO_Success() throws Exception {
+    public void createUser_RegistrationUserDTO_Success() {
+        when(userDTOsTransformer.fromDTO(anyObject())).thenReturn(user);
         sut.createUser(registrationUserDTO);
         verify(userDAO).save(any(User.class));
     }
@@ -165,7 +165,7 @@ public class UserServiceTest {
 
         User user = new User();
         user.setLocked(false);
-        user.setAttempts(0);
+        user.setLoginAttempts(0);
 
         when(userDAO.findById(anyLong())).thenReturn(user);
 
@@ -176,7 +176,7 @@ public class UserServiceTest {
         verify(userDAO, times(3)).save(any(User.class));
 
         assertEquals(expectedAttempts, actualAttempts);
-        assertEquals(expectedAttempts, (long) user.getAttempts());
+        assertEquals(expectedAttempts, (long) user.getLoginAttempts());
         assertFalse(user.isLocked());
     }
 
@@ -187,7 +187,7 @@ public class UserServiceTest {
 
         User user = new User();
         user.setLocked(false);
-        user.setAttempts(4);
+        user.setLoginAttempts(4);
 
         when(userDAO.findById(anyLong())).thenReturn(user);
 
@@ -203,12 +203,12 @@ public class UserServiceTest {
 
         User user = new User();
         user.setLocked(true);
-        user.setAttempts(4);
+        user.setLoginAttempts(4);
 
         when(userDAO.findById(anyLong())).thenReturn(user);
 
         sut.invalidateAttempts(1L);
-        assertEquals(expectedAttempts, (long) user.getAttempts());
+        assertEquals(expectedAttempts, (long) user.getLoginAttempts());
         assertFalse(user.isLocked());
     }
 

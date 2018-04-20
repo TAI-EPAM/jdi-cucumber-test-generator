@@ -22,6 +22,7 @@
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec
         </jacoco.ut.execution.data.file>
         <skip.unit.tests>false</skip.unit.tests>
+        <skip.integration.tests>true</skip.integration.tests>
         <spring-security.version>4.2.3.RELEASE</spring-security.version>
         <jira.version>6.3.11</jira.version>
         <jira.data.version>6.3</jira.data.version>
@@ -102,14 +103,48 @@
                     <argLine>${surefireArgLine}</argLine>
                     <skipTests>${skip.unit.tests}</skipTests>
                     <excludes>
-                        <exclude>src/main/webapp</exclude>
-                        <exclude>src/test/java/com/epam/test_generator/dao</exclude>
-                        <exclude>src/test/java/com/epam/test_generator/dto</exclude>
-                        <exclude>src/test/java/com/epam/test_generator/file_generator</exclude>
-                        <exclude>src/test/java/com/epam/test_generator/services</exclude>
-                        <exclude>src/test/java/com/epam/test_generator</exclude>
+                        <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.20.1</version>
+                <executions>
+                    <execution>
+                        <id>failsafe-integration-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skipTests>${skip.integration.tests}</skipTests>
+                    <includes>
+                        <include>**/*IntegrationTest.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/integration/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -366,13 +401,16 @@
             <artifactId>jenkins-client</artifactId>
             <version>0.3.7</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5</version>
+        </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-http</artifactId>
             <version>1.1.0</version>
         </dependency>
-
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-parser</artifactId>
@@ -386,4 +424,5 @@
         </dependency>
 
     </dependencies>
+
 </project>

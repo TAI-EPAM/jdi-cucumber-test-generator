@@ -1,6 +1,12 @@
 package com.epam.test_generator.services;
 
-import com.epam.test_generator.dto.ChangeUserRoleDTO;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRoleException;
@@ -10,12 +16,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdminServiceTest {
@@ -35,7 +35,7 @@ public class AdminServiceTest {
     @InjectMocks
     private AdminService adminService;
 
-    private ChangeUserRoleDTO userRoleDTO;
+    private UserRoleUpdateDTO userRoleDTO;
 
     private User user;
 
@@ -76,20 +76,20 @@ public class AdminServiceTest {
 
 
     private Role getRoleFor(String userRole) {
-        final Role role = new Role();
+        Role role = new Role();
         role.setName(userRole);
         return role;
     }
 
     private User getUserFor(String userEmail, Role userRole) {
-        final User user = new User();
+        User user = new User();
         user.setEmail(userEmail);
         user.setRole(userRole);
         return user;
     }
 
-    private ChangeUserRoleDTO getUserDtoFor(String userEmail, String userRole) {
-        final ChangeUserRoleDTO userRoleDTO = new ChangeUserRoleDTO();
+    private UserRoleUpdateDTO getUserDtoFor(String userEmail, String userRole) {
+        UserRoleUpdateDTO userRoleDTO = new UserRoleUpdateDTO();
         userRoleDTO.setEmail(userEmail);
         userRoleDTO.setRole(userRole);
         return userRoleDTO;

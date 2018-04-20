@@ -3,7 +3,7 @@ package com.epam.test_generator.dao.interfaces;
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
-import com.epam.test_generator.entities.TestResult;
+import com.epam.test_generator.entities.results.TestResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,27 +54,27 @@ public class TestResultDAOTest {
 
     @Test
     public void save() {
-        final List<TestResult> save = testResultDAO.save(testResults);
+        List<TestResult> save = testResultDAO.save(testResults);
         assertThat(save.size(), is(equalTo(10)));
     }
 
     @Test
     public void findAllByProjectIdOrderByDateDesc() {
-        final List<TestResult> save = testResultDAO.save(testResults);
+        List<TestResult> save = testResultDAO.save(testResults);
         assertThat(save.size(), is(equalTo(10)));
 
-        final Long projectId = save.get(0).getProject().getId();
+        Long projectId = save.get(0).getProject().getId();
         assertThat(projectId, is(notNullValue()));
 
 
         testResultDAO.save(extraTestResult);
 
 
-        final List<TestResult> all = testResultDAO.findAll();
+        List<TestResult> all = testResultDAO.findAll();
         assertThat(all.size(), is(equalTo(11)));
 
 
-        final List<TestResult> allByProjectIdOrderByDateDesc =
+        List<TestResult> allByProjectIdOrderByDateDesc =
             testResultDAO.findAllByProjectIdOrderByDateDesc(projectId);
         assertThat(allByProjectIdOrderByDateDesc.size(), is(equalTo(10)));
 
@@ -82,28 +82,28 @@ public class TestResultDAOTest {
 
     @Test
     public void findAllByProjectIdAndDateBetweenOrderByDateDesc() {
-        final List<TestResult> save = testResultDAO.save(testResults);
+        List<TestResult> save = testResultDAO.save(testResults);
         assertThat(save.size(), is(equalTo(10)));
 
-        final Long projectId = save.get(0).getProject().getId();
+        Long projectId = save.get(0).getProject().getId();
         assertThat(projectId, is(notNullValue()));
 
-        final TestResult testWithDateBefore =
+        TestResult testWithDateBefore =
             createTestResultOf(LocalDate.of(2018, Month.MARCH, 1), currentProject);
-        final TestResult testWithDateAfter =
+        TestResult testWithDateAfter =
             createTestResultOf(LocalDate.of(2018, Month.JANUARY, 1), currentProject);
 
         testResultDAO.save(testWithDateBefore);
         testResultDAO.save(testWithDateAfter);
 
-        final List<TestResult> all = testResultDAO.findAll();
+        List<TestResult> all = testResultDAO.findAll();
 
         assertThat(all.size(), is(equalTo(12)));
 
-        final Date beforeDate = testWithDateBefore.getDate();
-        final Date afterDate = testWithDateAfter.getDate();
+        LocalDate beforeDate = testWithDateBefore.getDate();
+        LocalDate afterDate = testWithDateAfter.getDate();
 
-        final List<TestResult> allByProjectIdAndDateIsBetween = testResultDAO
+        List<TestResult> allByProjectIdAndDateIsBetween = testResultDAO
             .findAllByProjectIdAndDateAfterAndDateBefore(projectId, afterDate, beforeDate);
 
         assertThat(allByProjectIdAndDateIsBetween.size(), is(equalTo(10)));
@@ -111,20 +111,19 @@ public class TestResultDAOTest {
     }
 
     private TestResult createTestResultOf(LocalDate date, Project project) {
-        final Date runDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        final TestResult result = newTestResult();
+
+        TestResult result = newTestResult();
         result.setProject(project);
-        result.setDate(runDate);
+        result.setDate(date);
         return result;
     }
 
 
     private TestResult newTestResult() {
 
-        final TestResult testResult = new TestResult();
+        TestResult testResult = new TestResult();
         testResult.setDate(
-            Date.from(LocalDate.of(2018, Month.FEBRUARY, 24)
-                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            LocalDate.of(2018, Month.FEBRUARY, 24));
         testResult.setDuration(0);
         testResult.setAmountOfPassed(1);
         testResult.setAmountOfSkipped(0);

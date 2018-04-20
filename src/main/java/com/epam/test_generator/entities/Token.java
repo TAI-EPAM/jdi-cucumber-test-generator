@@ -1,8 +1,12 @@
 package com.epam.test_generator.entities;
 
+import com.epam.test_generator.entities.api.TokenTrait;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,25 +14,45 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-
 /**
- * This class represents token essence. Token is a special key that is used for user identification.
+ * This class represents token entity.
+ * Token is a special key used to confirm user identity while performing password reset.
+ *
  */
 @Entity
-public class Token {
+public class Token implements TokenTrait {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String token;
+    private String tokenUuid;
+
+    @OneToOne
+    private User user;
 
     @NotNull
     private Date expiryDate;
 
-    @OneToOne
-    private User user;
+    public static Token withExpiryDuration(Integer minutes) {
+        Token token = new Token();
+        token.tokenUuid = UUID.randomUUID().toString();
+        token.expiryDate = Date.from(Instant.now().plus(minutes, ChronoUnit.MINUTES));
+        return token;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTokenUuid() {
+        return tokenUuid;
+    }
+
+    public void setTokenUiid(String tokenUiid) {
+        this.tokenUuid = tokenUiid;
+    }
 
     public User getUser() {
         return user;
@@ -38,21 +62,8 @@ public class Token {
         this.user = user;
     }
 
-    public Token() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getToken() {
-
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public Date getExpiryDate() {
+        return expiryDate;
     }
 
     public void setExpiryDate(int minutes) {
@@ -61,7 +72,4 @@ public class Token {
         this.expiryDate = now.getTime();
     }
 
-    public boolean isExpired() {
-        return new Date().after(this.expiryDate);
-    }
 }

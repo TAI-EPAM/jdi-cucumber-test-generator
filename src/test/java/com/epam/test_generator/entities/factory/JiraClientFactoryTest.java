@@ -34,7 +34,7 @@ public class JiraClientFactoryTest {
         when(jiraSettingsDAO.findById(anyLong())).thenReturn(jiraSettings);
 
         JiraClient jiraClient = jiraClientFactory.getJiraClient(JIRA_SETTINGS_ID);
-        Assert.assertTrue(jiraClient != null);
+        Assert.assertNotNull(jiraClient);
     }
 
     @Test(expected = NotFoundException.class)

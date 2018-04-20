@@ -25,15 +25,15 @@ public class JiraFilterDAO {
 
 
     public List<JiraFilter> getFilters(Long clientId) {
-        final RestClient restclient = jiraClientFactory.getJiraClient(clientId).getRestClient();
+        RestClient restclient = jiraClientFactory.getJiraClient(clientId).getRestClient();
         try {
-            final URI uri = restclient.buildURI("/rest/api/2/filter/favourite");
-            final JSON response = restclient.get(uri);
-            final JSONArray filters = JSONArray.fromObject(response);
+            URI uri = restclient.buildURI("/rest/api/2/filter/favourite");
+            JSON response = restclient.get(uri);
+            JSONArray filters = JSONArray.fromObject(response);
 
-            final List<JiraFilter> jiraFilters = new ArrayList<>();
+            List<JiraFilter> jiraFilters = new ArrayList<>();
             for (Object filter : filters) {
-                final JSONObject jsonFilter = (JSONObject) filter;
+                JSONObject jsonFilter = (JSONObject) filter;
                 jiraFilters.add(new JiraFilter(restclient, jsonFilter));
             }
             return jiraFilters;
@@ -44,10 +44,10 @@ public class JiraFilterDAO {
 
 
     public String getFilterByFilterId(Long clientId, String filterId) {
-        final RestClient restclient = jiraClientFactory.getJiraClient(clientId).getRestClient();
+        RestClient restclient = jiraClientFactory.getJiraClient(clientId).getRestClient();
         try {
-            final URI uri = restclient.buildURI("/rest/api/2/filter/"+ filterId);
-            final JSON response = restclient.get(uri);
+            URI uri = restclient.buildURI("/rest/api/2/filter/"+ filterId);
+            JSON response = restclient.get(uri);
 
             return Field.getString(((Map<?,?>)response).get(JQL));
         } catch (Exception e) {

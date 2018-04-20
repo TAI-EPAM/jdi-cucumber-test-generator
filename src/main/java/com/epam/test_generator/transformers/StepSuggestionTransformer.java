@@ -2,19 +2,19 @@ package com.epam.test_generator.transformers;
 
 import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepSuggestion;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StepSuggestionTransformer extends
-    AbstractDozerTransformer<StepSuggestion, StepSuggestionDTO> {
+public class StepSuggestionTransformer {
 
-    @Override
-    protected Class<StepSuggestion> getEntityClass() {
-        return StepSuggestion.class;
+    public StepSuggestionDTO toDto(StepSuggestion stepSuggestion) {
+        return new StepSuggestionDTO(stepSuggestion.getId(),stepSuggestion.getContent(),
+            stepSuggestion.getType(),stepSuggestion.getVersion());
     }
 
-    @Override
-    protected Class<StepSuggestionDTO> getDTOClass() {
-        return StepSuggestionDTO.class;
+    public List<StepSuggestionDTO> toDtoList (List<StepSuggestion> stepSuggestions) {
+        return stepSuggestions.stream().map(this::toDto).collect(Collectors.toList());
     }
 }

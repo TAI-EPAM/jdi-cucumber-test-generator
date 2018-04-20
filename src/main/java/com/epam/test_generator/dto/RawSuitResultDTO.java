@@ -36,7 +36,7 @@ public class RawSuitResultDTO {
             return false;
         }
 
-        final RawSuitResultDTO rawSuitResultDTO = (RawSuitResultDTO) o;
+        RawSuitResultDTO rawSuitResultDTO = (RawSuitResultDTO) o;
 
         return (id != null ? id.equals(rawSuitResultDTO.id) : rawSuitResultDTO.id == null)
             && (caseResultDTOList != null ? caseResultDTOList

@@ -14,12 +14,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class StatesServiceTest {
 
     @Mock
-    StateMachineAdapter stateMachineAdapter;
+    private StateMachineAdapter stateMachineAdapter;
 
     @InjectMocks
-    StatesService statesService;
+    private StatesService statesService;
 
-    Status status = Status.NOT_RUN;
+    private Status status = Status.NOT_RUN;
 
     @Test
     public void availableTransitions_StatusNOTRUN_Valid() {

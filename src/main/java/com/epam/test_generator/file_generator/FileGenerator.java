@@ -1,7 +1,7 @@
 package com.epam.test_generator.file_generator;
 
-import com.epam.test_generator.dto.CaseDTO;
-import com.epam.test_generator.dto.SuitDTO;
+import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.services.SuitService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;

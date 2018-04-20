@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,17 +14,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.epam.test_generator.dto.SuitDTO;
-import com.epam.test_generator.dto.SuitUpdateDTO;
+import com.epam.test_generator.controllers.suit.SuitController;
+import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +46,9 @@ public class SuitControllerTest {
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private SuitDTO suitDTO;
+    private SuitCreateDTO suitCreateDTO;
+    private SuitUpdateDTO suitUpdateDTO;
+
     @Mock
     private SuitService suitService;
 
@@ -54,6 +60,7 @@ public class SuitControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(suitController)
             .setControllerAdvice(new GlobalExceptionController())
             .build();
+
         suitDTO = new SuitDTO();
         suitDTO.setId(TEST_SUIT_ID);
         suitDTO.setName("Suit name");
@@ -61,6 +68,13 @@ public class SuitControllerTest {
         suitDTO.setPriority(1);
         suitDTO.setDescription("Suit description");
         suitDTO.setStatus(Status.NOT_RUN);
+
+        suitCreateDTO = new SuitCreateDTO();
+        suitCreateDTO.setName("Suit name");
+        suitCreateDTO.setPriority(1);
+
+        suitUpdateDTO = new SuitUpdateDTO();
+        suitUpdateDTO.setPriority(5);
     }
 
     @Test
@@ -116,85 +130,70 @@ public class SuitControllerTest {
 
     @Test
     public void updateSuit_StatusOk() throws Exception {
-
-        SuitUpdateDTO expectedUpdatedSuitDTOwithFailedStepIds =
-             new SuitUpdateDTO(suitDTO,  Arrays.asList(1L, 3L, 5L));
-        when(suitService.updateSuit(0L, 1L, suitDTO))
-            .thenReturn(expectedUpdatedSuitDTOwithFailedStepIds);
+        doReturn(suitDTO).when(suitService)
+                .updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(suitDTO)))
+                .content(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(suitUpdateDTO)))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.updatedSuitDto.id", is((int)TEST_SUIT_ID)))
-                .andExpect(jsonPath("$.updatedSuitDto.name", is(suitDTO.getName())))
-                .andExpect(jsonPath("$.failedStepIds", is(Arrays.asList(1, 3, 5))));
+                .andExpect(jsonPath("$.name", is(suitDTO.getName())))
+                .andExpect(jsonPath("$.priority", is(suitDTO.getPriority())));
 
-        verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+        verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
         verifyNoMoreInteractions(suitService);
     }
 
     @Test
-    public void update_SuitWithNullName_StatusBadRequest() throws Exception {
-        suitDTO.setName(null);
-
-        mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
-            .andExpect(status().isBadRequest());
-
-        verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
-    }
-
-    @Test
     public void update_SuitWithMoreThanTheRequiredPriority_StatusBadRequest() throws Exception {
-        suitDTO.setPriority(6);
+        suitUpdateDTO.setPriority(6);
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
+            .content(mapper.writeValueAsString(suitUpdateDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+        verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
     }
 
     @Test
     public void update_SuitWithLessThanTheRequiredPriority_StatusBadRequest() throws Exception {
-        suitDTO.setPriority(-1);
+        suitUpdateDTO.setPriority(-1);
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
+            .content(mapper.writeValueAsString(suitUpdateDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+        verify(suitService, times(0)).updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
     }
 
     @Test
     public void update_SuitNotExist_StatusNotFound() throws Exception {
         doThrow(NotFoundException.class).when(suitService)
-            .updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+            .updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
+            .content(mapper.writeValueAsString(suitUpdateDTO)))
             .andExpect(status().isNotFound());
 
-        verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+        verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
     }
 
     @Test
     public void updateSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(suitService)
-            .updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+            .updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
 
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + TEST_SUIT_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
+            .content(mapper.writeValueAsString(suitUpdateDTO)))
             .andExpect(status().isInternalServerError());
 
-        verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitDTO.class));
+        verify(suitService).updateSuit(anyLong(), anyLong(), any(SuitUpdateDTO.class));
     }
 
     @Test
@@ -228,7 +227,7 @@ public class SuitControllerTest {
     @Test
     public void add_Suit_StatusCreated() throws Exception {
         suitDTO.setId(null);
-        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenReturn(suitDTO);
+        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenReturn(suitDTO);
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
@@ -236,61 +235,59 @@ public class SuitControllerTest {
             .andExpect(status().isCreated())
             .andExpect(content().string(mapper.writeValueAsString(suitDTO)));
 
-        verify(suitService).addSuit(anyLong(), any(SuitDTO.class));
+        verify(suitService).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
 
     @Test
     public void add_SuitWithNullName_StatusBadRequest() throws Exception {
         suitDTO.setId(null);
         suitDTO.setName(null);
-        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
+        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
             .andExpect(status().isBadRequest());
 
-        verify(suitService, times(0)).addSuit(anyLong(), any(SuitDTO.class));
+        verify(suitService, times(0)).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
 
     @Test
     public void add_SuitWithMoreThanTheRequiredPriority_StatusBadRequest() throws Exception {
         suitDTO.setId(null);
         suitDTO.setPriority(6);
-        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
+        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
-            .andExpect(status().isBadRequest());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new SuitCreateDTO())))
+                .andExpect(status().isBadRequest());
 
-        verify(suitService, times(0)).addSuit(anyLong(), any(SuitDTO.class));
+        verify(suitService, times(0)).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
 
     @Test
     public void add_SuitWithLessThanTheRequiredPriority_StatusbadRequest() throws Exception {
-        suitDTO.setId(null);
         suitDTO.setPriority(-1);
-        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
+        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
+            .content(mapper.writeValueAsString(new SuitCreateDTO())))
             .andExpect(status().isBadRequest());
 
-        verify(suitService, times(0)).addSuit(anyLong(), any(SuitDTO.class));
+        verify(suitService, times(0)).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
 
     @Test
     public void addSuit_ThrowRuntimeException_StatusInternalServerError() throws Exception {
-        suitDTO.setId(null);
-        when(suitService.addSuit(anyLong(), any(SuitDTO.class))).thenThrow(new RuntimeException());
+        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(suitDTO)))
+            .content(mapper.writeValueAsString(suitCreateDTO)))
             .andExpect(status().isInternalServerError());
 
-        verify(suitService).addSuit(anyLong(), any(SuitDTO.class));
+        verify(suitService).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
 }

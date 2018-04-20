@@ -1,5 +1,7 @@
 package com.epam.test_generator.services.jenkins;
 
+import com.epam.test_generator.controllers.jenkins.JenkinsTransformer;
+import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.*;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import static com.epam.test_generator.services.jenkins.JenkinsJobService.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,39 +26,59 @@ import static org.mockito.Mockito.when;
 public class JenkinsJobServiceImplTest {
 
     @Mock
-    JenkinsServerFactory jenkinsServerFactory;
+    private JenkinsServerFactory jenkinsServerFactory;
 
     @Mock
-    JenkinsServer jenkinsServer;
+    private JenkinsServer jenkinsServer;
+
+    @Mock
+    private JenkinsTransformer jenkinsTransformer;
 
     @InjectMocks
-    JenkinsJobServiceImpl jenkinsJobService;
+    private JenkinsJobServiceImpl jenkinsJobService;
 
-    Map<String, Job> jobs;
-    List<CommonJenkinsJobResponse> expectedJobs;
+    private Map<String, Job> jobs;
+    private List<CommonJenkinsJobDTO> expectedJobs;
+    private static final String NAME1 = "job1_name";
+    private static final String NAME2 = "job2_name";
+    private static final String URL1 = "job1_url";
+    private static final String URL2 = "job2_url";
+
+    private Job job1;
+    private Job job2;
+    private CommonJenkinsJobDTO commonJenkinsJobDTO1;
+    private CommonJenkinsJobDTO commonJenkinsJobDTO2;
 
     @Before
     public void setUp() {
         jobs = new HashMap<>();
-        jobs.put("job1", new Job("job1_name", "job1_url"));
-        jobs.put("job2", new Job("job2_name", "job2_url"));
+        job1 = new Job(NAME1, URL1);
+        job2 = new Job(NAME2, URL2);
+        jobs.put("job1", job1);
+        jobs.put("job2", job2);
 
         expectedJobs = new ArrayList<>();
 
-        for (Map.Entry<String, Job> entry : jobs.entrySet()) {
-            CommonJenkinsJobResponse commonJenkinsJobResponse = new CommonJenkinsJobResponse();
-            commonJenkinsJobResponse.setJobName(entry.getValue().getName());
-            commonJenkinsJobResponse.setJobUrl(entry.getValue().getUrl());
-            expectedJobs.add(commonJenkinsJobResponse);
-        }
+        commonJenkinsJobDTO1 = new CommonJenkinsJobDTO();
+        commonJenkinsJobDTO1.setJobName(NAME1);
+        commonJenkinsJobDTO1.setJobUrl(URL1);
+
+        commonJenkinsJobDTO2 = new CommonJenkinsJobDTO();
+        commonJenkinsJobDTO2.setJobName(NAME2);
+        commonJenkinsJobDTO2.setJobUrl(URL2);
+
+        expectedJobs.add(commonJenkinsJobDTO2);
+        expectedJobs.add(commonJenkinsJobDTO1);
     }
 
     @Test
     public void getJobs_Success() throws IOException {
         when(jenkinsServerFactory.getJenkinsServer()).thenReturn(jenkinsServer);
         when(jenkinsServer.getJobs()).thenReturn(jobs);
+        when(jenkinsTransformer.toCommonDto(job1)).thenReturn(commonJenkinsJobDTO1);
+        when(jenkinsTransformer.toCommonDto(job2)).thenReturn(commonJenkinsJobDTO2);
 
-        List<CommonJenkinsJobResponse> actualJobs = jenkinsJobService.getJobs();
+        List<CommonJenkinsJobDTO> actualJobs = jenkinsJobService.getJobs();
 
         verify(jenkinsServerFactory).getJenkinsServer();
         verify(jenkinsServer).getJobs();

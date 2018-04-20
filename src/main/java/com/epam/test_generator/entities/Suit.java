@@ -1,5 +1,7 @@
 package com.epam.test_generator.entities;
 
+import com.epam.test_generator.entities.api.JiraSuitAndCaseTrait;
+import com.epam.test_generator.entities.api.SuitTrait;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import org.springframework.data.domain.Persistable;
  * {@Link Suit} object.
  */
 @Entity
-public class Suit implements Serializable, Persistable<Long> {
+public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSuitAndCaseTrait {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -140,6 +142,7 @@ public class Suit implements Serializable, Persistable<Long> {
         this.status = status;
     }
 
+    @Override
     public String getJiraKey() {
         return jiraKey;
     }
@@ -192,6 +195,7 @@ public class Suit implements Serializable, Persistable<Long> {
         this.tags = tags;
     }
 
+    @Override
     public List<Case> getCases() {
         return cases;
     }
@@ -266,6 +270,7 @@ public class Suit implements Serializable, Persistable<Long> {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", priority=" + priority +
+            ", status=" + status +
             ", creationDate=" + creationDate +
             ", jiraKey='" + jiraKey + '\'' +
             ", jiraProjectKey='" + jiraProjectKey + '\'' +

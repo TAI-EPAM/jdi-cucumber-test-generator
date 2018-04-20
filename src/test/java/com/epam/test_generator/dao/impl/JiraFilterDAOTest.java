@@ -70,16 +70,16 @@ public class JiraFilterDAOTest {
     @Test
     public void getFilters_Success() throws URISyntaxException, IOException, RestException {
 
-        final URI str = new URI("str");
+        URI str = new URI("str");
 
 
         when(restClient.buildURI(anyString())).thenReturn(str);
         when(restClient.get(str)).thenReturn(response);
-        final List<JiraFilter> filters = jiraFilterDAO.getFilters(JIRA_SETTINGS_ID);
+        List<JiraFilter> filters = jiraFilterDAO.getFilters(JIRA_SETTINGS_ID);
 
         assertThat(filters.size(), is(equalTo(1)));
 
-        final JiraFilter jiraFilter = filters.get(0);
+        JiraFilter jiraFilter = filters.get(0);
 
         assertThat(jiraFilter.getId(), is(equalTo(FILTER_ID)));
         assertThat(jiraFilter.getName(), is(equalTo(FILTER_NAME)));
@@ -88,12 +88,12 @@ public class JiraFilterDAOTest {
 
     @Test
     public void getFilterById_Success() throws Exception {
-        final URI str = new URI("str");
+        URI str = new URI("str");
 
         when(restClient.buildURI(anyString())).thenReturn(str);
         when(restClient.get(str)).thenReturn((JSONObject) response.get(0));
 
-        final String jql = jiraFilterDAO.getFilterByFilterId(JIRA_SETTINGS_ID, "42");
+        String jql = jiraFilterDAO.getFilterByFilterId(JIRA_SETTINGS_ID, "42");
 
         assertThat(jql, is(equalTo(JQL)));
     }
@@ -105,15 +105,15 @@ public class JiraFilterDAOTest {
     }
 
     private ListOrderedMap createJSONFilter() {
-        final ListOrderedMap listOrderedMap = new ListOrderedMap();
+        ListOrderedMap listOrderedMap = new ListOrderedMap();
         listOrderedMap.put(SELF, SELF);
         listOrderedMap.put("id", FILTER_ID);
         listOrderedMap.put(NAME, "MyOwnTestFilter");
-        final JSONObject owner = new JSONObject();
+        JSONObject owner = new JSONObject();
         owner.put(SELF, SELF);
         owner.put("key", "user_userov");
         owner.put(NAME, USER_NAME);
-        final JSONObject avatarUrls = new JSONObject();
+        JSONObject avatarUrls = new JSONObject();
         avatarUrls.put("16x16",
                 "photo");
         avatarUrls.put("24x24", PHOTO);

@@ -1,5 +1,8 @@
 package com.epam.test_generator.services.jenkins;
 
+import com.epam.test_generator.controllers.jenkins.JenkinsTransformer;
+import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
+import com.epam.test_generator.controllers.jenkins.response.ExecutedJenkinsJobDTO;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Executable;
 import com.offbytwo.jenkins.model.Job;
@@ -12,6 +15,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.Exchanger;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.TimerTask;
 
@@ -21,27 +25,30 @@ import java.util.TimerTask;
 @Service
 public class JenkinsJobServiceImpl implements JenkinsJobService {
 
+    private JenkinsTransformer jenkinsTransformer;
     private JenkinsServerFactory jenkinsServerFactory;
     private static final long QUEUE_WAITING_PERIOD = 1000L;
     private static final long QUEUE_WAITING_DELAY = 2000L;
 
 
     public JenkinsJobServiceImpl(
-        JenkinsServerFactory jenkinsServerFactory) {
+        JenkinsServerFactory jenkinsServerFactory, JenkinsTransformer jenkinsTransformer) {
         this.jenkinsServerFactory = jenkinsServerFactory;
+        this.jenkinsTransformer = jenkinsTransformer;
     }
 
     /**
      * Gets list of all jobs from jenkins server
+     *
      * @return list of found jobs
      */
     @Override
-    public List<CommonJenkinsJobResponse> getJobs() {
+    public List<CommonJenkinsJobDTO> getJobs() {
         try {
             Map<String, Job> jobs = jenkinsServerFactory.getJenkinsServer().getJobs();
 
-            List<CommonJenkinsJobResponse> response = jobs.values().stream()
-                .map(job -> transform(job)).collect(Collectors.toList());
+            List<CommonJenkinsJobDTO> response = jobs.values().stream()
+                .map(jenkinsTransformer::toCommonDto).collect(Collectors.toList());
             return response;
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,11 +58,11 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
 
     /**
      * Runs job on jenkins server by job name
-     * @param jobName
+     *
      * @return json with job name, url and build url
      */
     @Override
-    public ExecuteJenkinsJobResponse runJob(String jobName) {
+    public ExecutedJenkinsJobDTO runJob(String jobName) {
         try {
             JenkinsServer jenkinsServer = jenkinsServerFactory.getJenkinsServer();
 
@@ -65,12 +72,8 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
             QueueItem queueItem = getExecutedQueueItem(jenkinsServer, queueReference);
             Executable executable = queueItem.getExecutable();
 
-            ExecuteJenkinsJobResponse response = new ExecuteJenkinsJobResponse();
-            response.setJobName(job.getName());
-            response.setJobUrl(job.getUrl());
-            response.setQueueUrl(queueReference.getQueueItemUrlPart());
-            response.setQueueExecutableId(executable.getNumber());
-            response.setQueueExecutableUrl(executable.getUrl());
+            ExecutedJenkinsJobDTO response = jenkinsTransformer
+                .toExecutedDTO(job, queueReference, executable);
 
             return response;
 
@@ -82,10 +85,8 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
 
     /**
      * Method for receiving response from jenkins server after job runs
-     * @param jenkinsServer
-     * @param queueReference
+     *
      * @return queue item with  executable id and url
-     * @throws Exception
      */
     private QueueItem getExecutedQueueItem(JenkinsServer jenkinsServer,
                                            QueueReference queueReference) throws Exception {
@@ -114,10 +115,4 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
         return exchanger.exchange(null);
     }
 
-    private CommonJenkinsJobResponse transform(Job job) {
-        CommonJenkinsJobResponse response = new CommonJenkinsJobResponse();
-        response.setJobUrl(job.getUrl());
-        response.setJobName(job.getName());
-        return response;
-    }
 }

@@ -5,8 +5,8 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
-import com.epam.test_generator.dto.LoginUserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -30,6 +29,9 @@ public class LoginService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JWTTokenService jwtTokenService;
 
     @Resource
     private Environment environment;
@@ -78,18 +80,7 @@ public class LoginService {
     public String getLoginJWTToken(LoginUserDTO loginUserDTO) {
 
         User user = userService.getUserByEmail(loginUserDTO.getEmail());
-        JWTCreator.Builder builder = JWT.create()
-                .withIssuer(ELEMENT_FOR_UNIQUE_TOKEN)
-                .withClaim("id", user.getId())
-                .withClaim("email", user.getEmail())
-                .withClaim("given_name", user.getName())
-                .withClaim("family_name", user.getSurname())
-                .withClaim("role", user.getRole().getName());
-        try {
-            return builder.sign(Algorithm.HMAC256(this.environment.getProperty("jwt_secret")));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return jwtTokenService.createJwtTokenFor(user, ELEMENT_FOR_UNIQUE_TOKEN, environment);
     }
 }
 

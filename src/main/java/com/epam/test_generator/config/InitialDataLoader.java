@@ -38,7 +38,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        final List<Role> rolesFromProperties = roleService.getRolesFromProperties();
+        List<Role> rolesFromProperties = roleService.getRolesFromProperties();
 
         for (Role role : rolesFromProperties) {
             if (roleService.getRoleByName(role.getName()) == null) {
