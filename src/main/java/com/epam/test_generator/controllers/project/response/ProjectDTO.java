@@ -91,12 +91,12 @@ public class ProjectDTO {
             return false;
         }
         ProjectDTO that = (ProjectDTO) o;
-        return active == that.active
-            && Objects.equals(id, that.id)
-            && Objects.equals(name, that.name)
-            && Objects.equals(description, that.description)
-            && Objects.equals(users, that.users)
-            && Objects.equals(jiraKey, that.jiraKey);
+        return active == that.active &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(users, that.users) &&
+            Objects.equals(jiraKey, that.jiraKey);
     }
 
     @Override

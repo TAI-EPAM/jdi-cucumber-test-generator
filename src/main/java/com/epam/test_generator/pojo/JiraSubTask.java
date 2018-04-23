@@ -1,6 +1,7 @@
 package com.epam.test_generator.pojo;
 
 import com.epam.test_generator.entities.Case;
+import java.util.Objects;
 import net.rcarz.jiraclient.Issue;
 
 /**
@@ -90,32 +91,26 @@ public class JiraSubTask {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        JiraSubTask that = (JiraSubTask) o;
-
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (jiraKey != null ? !jiraKey.equals(that.jiraKey) : that.jiraKey != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (priority != null ? !priority.equals(that.priority) : that.priority != null) return false;
-        if (jiraProjectKey != null ? !jiraProjectKey.equals(that.jiraProjectKey) : that.jiraProjectKey != null)
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        if (jiraParentKey != null ? !jiraParentKey.equals(that.jiraParentKey) : that.jiraParentKey != null)
-            return false;
-        return !(status != null ? !status.equals(that.status) : that.status != null);
-
+        }
+        JiraSubTask subTask = (JiraSubTask) o;
+        return Objects.equals(name, subTask.name) &&
+            Objects.equals(jiraKey, subTask.jiraKey) &&
+            Objects.equals(description, subTask.description) &&
+            Objects.equals(priority, subTask.priority) &&
+            Objects.equals(jiraProjectKey, subTask.jiraProjectKey) &&
+            Objects.equals(jiraParentKey, subTask.jiraParentKey) &&
+            Objects.equals(status, subTask.status);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (jiraKey != null ? jiraKey.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (jiraProjectKey != null ? jiraProjectKey.hashCode() : 0);
-        result = 31 * result + (jiraParentKey != null ? jiraParentKey.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+
+        return Objects
+            .hash(name, jiraKey, description, priority, jiraProjectKey, jiraParentKey, status);
     }
 }

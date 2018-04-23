@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -72,4 +73,24 @@ public class Token implements TokenTrait {
         this.expiryDate = now.getTime();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Token token = (Token) o;
+        return Objects.equals(id, token.id) &&
+            Objects.equals(tokenUuid, token.tokenUuid) &&
+            Objects.equals(user, token.user) &&
+            Objects.equals(expiryDate, token.expiryDate);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, tokenUuid, user, expiryDate);
+    }
 }

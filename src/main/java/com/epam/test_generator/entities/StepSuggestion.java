@@ -1,5 +1,6 @@
 package com.epam.test_generator.entities;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -85,17 +86,16 @@ public class StepSuggestion {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         StepSuggestion that = (StepSuggestion) o;
-
-        return id.equals(that.id) && content.equals(that.content) && type == that.type;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(version, that.version) &&
+            Objects.equals(content, that.content) &&
+            type == that.type;
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + content.hashCode();
-        result = 31 * result + type.hashCode();
-        return result;
+
+        return Objects.hash(id, version, content, type);
     }
 }

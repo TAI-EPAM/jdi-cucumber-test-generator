@@ -4,6 +4,7 @@ import com.epam.test_generator.entities.Status;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class TestResultDTO {
 
@@ -90,4 +91,31 @@ public class TestResultDTO {
         this.suitResults = suitResults;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TestResultDTO that = (TestResultDTO) o;
+        return amountOfPassed == that.amountOfPassed &&
+            amountOfFailed == that.amountOfFailed &&
+            amountOfSkipped == that.amountOfSkipped &&
+            Objects.equals(date, that.date) &&
+            Objects.equals(duration, that.duration) &&
+            status == that.status &&
+            Objects.equals(executedBy, that.executedBy) &&
+            Objects.equals(suitResults, that.suitResults);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects
+            .hash(date, duration, status, executedBy, amountOfPassed, amountOfFailed,
+                amountOfSkipped,
+                suitResults);
+    }
 }

@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers.tag.response;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -40,18 +41,18 @@ public class TagDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TagDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         TagDTO tagDTO = (TagDTO) o;
-
-        return name != null ? name.equals(tagDTO.name) : tagDTO.name == null;
+        return Objects.equals(id, tagDTO.id) &&
+            Objects.equals(name, tagDTO.name);
     }
 
     @Override
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+
+        return Objects.hash(id, name);
     }
 
     @Override

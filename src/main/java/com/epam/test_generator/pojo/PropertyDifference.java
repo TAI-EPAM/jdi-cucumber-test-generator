@@ -1,6 +1,7 @@
 package com.epam.test_generator.pojo;
 
 import com.epam.test_generator.entities.Case;
+import java.util.Objects;
 
 /**
  * Stores information about {@link Case} properties values: previous and current. Basically is used
@@ -56,20 +57,15 @@ public class PropertyDifference {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         PropertyDifference that = (PropertyDifference) o;
-
-        return (propertyName != null ? propertyName.equals(that.propertyName)
-            : that.propertyName == null)
-            && (oldValue != null ? oldValue.equals(that.oldValue) : that.oldValue == null)
-            && (newValue != null ? newValue.equals(that.newValue) : that.newValue == null);
+        return Objects.equals(propertyName, that.propertyName) &&
+            Objects.equals(oldValue, that.oldValue) &&
+            Objects.equals(newValue, that.newValue);
     }
 
     @Override
     public int hashCode() {
-        int result = propertyName != null ? propertyName.hashCode() : 0;
-        result = 31 * result + (oldValue != null ? oldValue.hashCode() : 0);
-        result = 31 * result + (newValue != null ? newValue.hashCode() : 0);
-        return result;
+
+        return Objects.hash(propertyName, oldValue, newValue);
     }
 }

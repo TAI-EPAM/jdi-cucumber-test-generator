@@ -113,13 +113,13 @@ public class ProjectFullDTO {
             return false;
         }
         ProjectFullDTO that = (ProjectFullDTO) o;
-        return active == that.active
-            && Objects.equals(id, that.id)
-            && Objects.equals(name, that.name)
-            && Objects.equals(description, that.description)
-            && Objects.equals(suits, that.suits)
-            && Objects.equals(users, that.users)
-            && Objects.equals(jiraKey, that.jiraKey);
+        return active == that.active &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(suits, that.suits) &&
+            Objects.equals(users, that.users) &&
+            Objects.equals(jiraKey, that.jiraKey);
     }
 
     @Override

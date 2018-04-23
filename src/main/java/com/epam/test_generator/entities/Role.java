@@ -1,5 +1,6 @@
 package com.epam.test_generator.entities;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -46,20 +47,17 @@ public class Role {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Role)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        Role aRole = (Role) o;
-
-        return (id != null ? id.equals(aRole.id) : aRole.id == null)
-            && (name != null ? name.equals(aRole.name) : aRole.name == null);
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) &&
+            Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, name);
     }
 }

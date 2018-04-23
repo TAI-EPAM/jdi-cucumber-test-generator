@@ -41,8 +41,8 @@ public class ProjectCreateDTO {
             return false;
         }
         ProjectCreateDTO that = (ProjectCreateDTO) o;
-        return Objects.equals(name, that.name)
-            && Objects.equals(description, that.description);
+        return Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description);
     }
 
     @Override

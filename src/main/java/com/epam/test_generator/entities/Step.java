@@ -1,6 +1,7 @@
 package com.epam.test_generator.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -110,29 +111,21 @@ public class Step implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Step)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         Step step = (Step) o;
-
-        return rowNumber == step.rowNumber
-            && (id != null ? id.equals(step.id) : step.id == null)
-            && (description != null ? description.equals(step.description)
-            : step.description == null)
-            && (comment != null ? comment.equals(step.comment) : step.comment == null)
-            && (status != null ? status.equals(step.status) : step.status == null)
-            && (type == step.type);
+        return rowNumber == step.rowNumber &&
+            Objects.equals(id, step.id) &&
+            Objects.equals(description, step.description) &&
+            type == step.type &&
+            status == step.status &&
+            Objects.equals(comment, step.comment);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + rowNumber;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, rowNumber, description, type, status, comment);
     }
 }

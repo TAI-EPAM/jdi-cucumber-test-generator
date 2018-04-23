@@ -6,6 +6,7 @@ import com.epam.test_generator.entities.Status;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -148,34 +149,27 @@ public class CaseDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CaseDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         CaseDTO caseDTO = (CaseDTO) o;
-
-        return (id != null ? id.equals(caseDTO.id) : caseDTO.id == null)
-            && (name != null ? name.equals(caseDTO.name) : caseDTO.name == null)
-            && (description != null ? description.equals(caseDTO.description)
-            : caseDTO.description == null)
-            && (steps != null ? steps.equals(caseDTO.steps) : caseDTO.steps == null)
-            && (priority != null ? priority.equals(caseDTO.priority) : caseDTO.priority == null)
-            && (tags != null ? tags.equals(caseDTO.tags) : caseDTO.tags == null)
-            && (comment != null ? comment.equals(caseDTO.comment) : caseDTO.comment == null)
-            && (status != null ? status.equals(caseDTO.status) : caseDTO.status == null);
+        return Objects.equals(id, caseDTO.id) &&
+            Objects.equals(name, caseDTO.name) &&
+            Objects.equals(description, caseDTO.description) &&
+            Objects.equals(steps, caseDTO.steps) &&
+            Objects.equals(creationDate, caseDTO.creationDate) &&
+            Objects.equals(updateDate, caseDTO.updateDate) &&
+            Objects.equals(priority, caseDTO.priority) &&
+            Objects.equals(tags, caseDTO.tags) &&
+            status == caseDTO.status &&
+            Objects.equals(comment, caseDTO.comment);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (steps != null ? steps.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+        return Objects
+            .hash(id, name, description, steps, creationDate, updateDate, priority, tags, status,
+                comment);
     }
 
     @Override

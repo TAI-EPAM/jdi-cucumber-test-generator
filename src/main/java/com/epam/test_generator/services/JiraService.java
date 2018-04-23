@@ -422,8 +422,8 @@ public class JiraService {
                     List<PropertyDifference> propertyDifferences = suitVersion
                         .getPropertyDifferences();
                     Status previousStatus = getStatusFromPropertyDiff(propertyDifferences);
-                    if (!suit.getStatus().equals(previousStatus) && previousStatus != null
-                        && previousStatus.equals(Status.PASSED)) {
+                    if (!suit.getStatus().equals(previousStatus) && previousStatus != null &&
+                        previousStatus.equals(Status.PASSED)) {
                             actionId = JiraStatus.REOPENED.getActionId();
                             break;
                     }

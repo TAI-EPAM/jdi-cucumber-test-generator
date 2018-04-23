@@ -2,6 +2,7 @@ package com.epam.test_generator.entities;
 
 
 import com.epam.test_generator.entities.api.UserTrait;
+import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
@@ -125,35 +126,24 @@ public class User implements UserTrait {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof User)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        User aUser = (User) o;
-
-        return (id != null ? id.equals(aUser.id) : aUser.id == null)
-                && (name != null ? name.equals(aUser.name) : aUser.name == null)
-                && (surname != null ? surname.equals(aUser.surname) : aUser.surname == null)
-                && (email != null ? email.equals(aUser.email) : aUser.email == null)
-                && (password != null ? password.equals(aUser.password) : aUser.password == null)
-                && (role != null ? role.equals(aUser.role) : aUser.role == null)
-                && (attempts != null ? attempts.equals(aUser.attempts) : aUser.attempts == null)
-                && (locked != null ? locked.equals(aUser.locked) : aUser.locked == null);
-
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+            Objects.equals(name, user.name) &&
+            Objects.equals(surname, user.surname) &&
+            Objects.equals(email, user.email) &&
+            Objects.equals(password, user.password) &&
+            Objects.equals(role, user.role) &&
+            Objects.equals(attempts, user.attempts) &&
+            Objects.equals(locked, user.locked);
     }
-
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
-        result = 31 * result + (locked != null ? locked.hashCode() : 0);
-        result = 31 * result + (attempts != null ? attempts.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, name, surname, email, password, role, attempts, locked);
     }
 }
 

@@ -28,16 +28,22 @@ public class PropertyDifferenceDTO {
 
     public PropertyDifferenceDTO(String propertyName, Object oldValue, Object newValue) {
         this.propertyName = propertyName;
-        if (oldValue == null || oldValue instanceof String || oldValue instanceof StepDTO
-            || oldValue instanceof TagDTO || oldValue instanceof CaseDTO) {
+        if (oldValue == null ||
+            oldValue instanceof String ||
+            oldValue instanceof StepDTO ||
+            oldValue instanceof TagDTO ||
+            oldValue instanceof CaseDTO) {
             this.oldValue = oldValue;
         } else {
             logger.warn("Unknown conversion type: " + oldValue.getClass());
             throw new ClassCastException("Unknown conversion type: " + oldValue.getClass());
         }
 
-        if (newValue == null || newValue instanceof String || newValue instanceof StepDTO
-            || newValue instanceof TagDTO || newValue instanceof CaseDTO) {
+        if (newValue == null ||
+            newValue instanceof String ||
+            newValue instanceof StepDTO ||
+            newValue instanceof TagDTO ||
+            newValue instanceof CaseDTO) {
             this.newValue = newValue;
         } else {
             logger.warn("Unknown conversion type: " + newValue.getClass());
@@ -58,8 +64,11 @@ public class PropertyDifferenceDTO {
     }
 
     public void setOldValue(Object oldValue) {
-        if (oldValue == null || oldValue instanceof String || oldValue instanceof StepDTO
-            || oldValue instanceof TagDTO || oldValue instanceof SuitDTO) {
+        if (oldValue == null ||
+            oldValue instanceof String ||
+            oldValue instanceof StepDTO ||
+            oldValue instanceof TagDTO ||
+            oldValue instanceof SuitDTO) {
             this.oldValue = oldValue;
         } else {
             logger.warn("Unknown conversion type: " + oldValue.getClass());
@@ -72,8 +81,11 @@ public class PropertyDifferenceDTO {
     }
 
     public void setNewValue(Object newValue) {
-        if (newValue == null || newValue instanceof String || newValue instanceof StepDTO
-            || newValue instanceof TagDTO || newValue instanceof CaseDTO) {
+        if (newValue == null ||
+            newValue instanceof String ||
+            newValue instanceof StepDTO ||
+            newValue instanceof TagDTO ||
+            newValue instanceof CaseDTO) {
             this.newValue = newValue;
         } else {
             logger.warn("Unknown conversion type: " + newValue.getClass());

@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.test.result.response;
 
 import com.epam.test_generator.entities.Status;
 import java.util.List;
+import java.util.Objects;
 
 public class SuitResultDTO {
 
@@ -40,5 +41,26 @@ public class SuitResultDTO {
 
     public void setCaseResults(List<CaseResultDTO> caseResults) {
         this.caseResults = caseResults;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SuitResultDTO that = (SuitResultDTO) o;
+        return duration == that.duration &&
+            Objects.equals(name, that.name) &&
+            status == that.status &&
+            Objects.equals(caseResults, that.caseResults);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, duration, status, caseResults);
     }
 }

@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers.caze.request;
 
 import com.epam.test_generator.controllers.tag.response.TagDTO;
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -85,28 +86,21 @@ public class CaseCreateDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CaseCreateDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        final CaseCreateDTO caseCreateDTO = (CaseCreateDTO) o;
-
-        return ( (name != null ? name.equals(caseCreateDTO.name) : caseCreateDTO.name == null)
-                && (description != null ? description.equals(caseCreateDTO.description)
-                : caseCreateDTO.description == null)
-                && (priority != null ? priority.equals(caseCreateDTO.priority) : caseCreateDTO.priority == null)
-                && (comment != null ? comment.equals(caseCreateDTO.comment) : caseCreateDTO.comment == null))
-                && (tags != null ? tags.equals(caseCreateDTO.tags) : caseCreateDTO.tags == null);
+        CaseCreateDTO that = (CaseCreateDTO) o;
+        return Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(priority, that.priority) &&
+            Objects.equals(comment, that.comment) &&
+            Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        return result;
+
+        return Objects.hash(name, description, priority, comment, tags);
     }
 
     @Override

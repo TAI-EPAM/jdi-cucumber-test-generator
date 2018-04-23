@@ -126,8 +126,8 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
      */
     @Override
     public boolean isNew() {
-        boolean isAllTagsWithNullId = tags == null
-            || tags.stream().allMatch(tag -> tag.getId() == null);
+        boolean isAllTagsWithNullId = tags == null ||
+            tags.stream().allMatch(tag -> tag.getId() == null);
 
         boolean isAllCasesNew = cases == null || cases.stream().allMatch(Case::isNew);
 

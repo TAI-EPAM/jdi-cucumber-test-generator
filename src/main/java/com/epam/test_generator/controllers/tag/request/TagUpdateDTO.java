@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers.tag.request;
 
+import java.util.Objects;
 import javax.validation.constraints.Size;
 
 public class TagUpdateDTO {
@@ -23,17 +24,16 @@ public class TagUpdateDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TagUpdateDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        TagUpdateDTO tagDTO = (TagUpdateDTO) o;
-
-        return name != null ? name.equals(tagDTO.name) : tagDTO.name == null;
+        TagUpdateDTO that = (TagUpdateDTO) o;
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+
+        return Objects.hash(name);
     }
 }

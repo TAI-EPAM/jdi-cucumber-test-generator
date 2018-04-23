@@ -1,5 +1,7 @@
 package com.epam.test_generator.controllers.jenkins.response;
 
+import java.util.Objects;
+
 public class ExecutedJenkinsJobDTO extends CommonJenkinsJobDTO {
 
     private String queueUrl;
@@ -32,26 +34,25 @@ public class ExecutedJenkinsJobDTO extends CommonJenkinsJobDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         ExecutedJenkinsJobDTO that = (ExecutedJenkinsJobDTO) o;
-
-        if (getQueueUrl() != null ? !getQueueUrl().equals(that.getQueueUrl()) : that.getQueueUrl() != null)
-            return false;
-        if (getQueueExecutableId() != null ? !getQueueExecutableId().equals(that.getQueueExecutableId()) : that.getQueueExecutableId() != null)
-            return false;
-        return getQueueExecutableUrl() != null ? getQueueExecutableUrl().equals(that.getQueueExecutableUrl()) : that.getQueueExecutableUrl() == null;
+        return Objects.equals(queueUrl, that.queueUrl) &&
+            Objects.equals(queueExecutableId, that.queueExecutableId) &&
+            Objects.equals(queueExecutableUrl, that.queueExecutableUrl);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (getQueueUrl() != null ? getQueueUrl().hashCode() : 0);
-        result = 31 * result + (getQueueExecutableId() != null ? getQueueExecutableId().hashCode() : 0);
-        result = 31 * result + (getQueueExecutableUrl() != null ? getQueueExecutableUrl().hashCode() : 0);
-        return result;
+
+        return Objects.hash(super.hashCode(), queueUrl, queueExecutableId, queueExecutableUrl);
     }
 
     @Override

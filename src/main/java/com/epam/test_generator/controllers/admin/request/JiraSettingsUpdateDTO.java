@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers.admin.request;
 
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -67,23 +68,15 @@ public class JiraSettingsUpdateDTO {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         JiraSettingsUpdateDTO that = (JiraSettingsUpdateDTO) o;
-
-        if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
-            return false;
-        }
-        if (login != null ? !login.equals(that.login) : that.login != null) {
-            return false;
-        }
-        return password != null ? password.equals(that.password) : that.password == null;
+        return Objects.equals(uri, that.uri) &&
+            Objects.equals(login, that.login) &&
+            Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        int result = uri != null ? uri.hashCode() : 0;
-        result = 31 * result + (login != null ? login.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        return result;
+
+        return Objects.hash(uri, login, password);
     }
 }

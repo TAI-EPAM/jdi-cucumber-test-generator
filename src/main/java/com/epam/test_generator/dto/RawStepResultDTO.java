@@ -1,6 +1,7 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
+import java.util.Objects;
 
 public class RawStepResultDTO {
 
@@ -29,21 +30,17 @@ public class RawStepResultDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RawStepResultDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        RawStepResultDTO rawStepResultDTO = (RawStepResultDTO) o;
-
-        return (id != null ? id.equals(rawStepResultDTO.id) : rawStepResultDTO.id == null)
-            && (status != null ? status.equals(rawStepResultDTO.status)
-            : rawStepResultDTO.status == null);
+        RawStepResultDTO that = (RawStepResultDTO) o;
+        return Objects.equals(id, that.id) &&
+            status == that.status;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, status);
     }
 }

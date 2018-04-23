@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers.user.request;
 
+import java.util.Objects;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
@@ -73,31 +74,25 @@ public class RegistrationUserDTO {
                 name, surname, email, password);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RegistrationUserDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        RegistrationUserDTO registrationUserDTO = (RegistrationUserDTO) o;
-
-        return (name != null ? name.equals(registrationUserDTO.name) : registrationUserDTO.name == null)
-                && (surname != null ? surname.equals(registrationUserDTO.surname) : registrationUserDTO.surname == null)
-                && (email != null ? email.equals(registrationUserDTO.email) : registrationUserDTO.email == null)
-                && (password != null ? password.equals(registrationUserDTO.password) : registrationUserDTO.password == null);
+        RegistrationUserDTO that = (RegistrationUserDTO) o;
+        return Objects.equals(name, that.name) &&
+            Objects.equals(surname, that.surname) &&
+            Objects.equals(email, that.email) &&
+            Objects.equals(password, that.password);
     }
-
 
     @Override
     public int hashCode() {
-        int result = (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        return result;
-    }
 
+        return Objects.hash(name, surname, email, password);
+    }
 }

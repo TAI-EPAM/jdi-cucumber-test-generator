@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,11 +25,11 @@ import org.springframework.statemachine.annotation.WithStateMachine;
 
 
 /**
- * This class represents Test case essence. Test case is a set of actions that are used for checking some
- * software's behavior. Case consists of some simple fields like id of the case, it's name, description,
- * history information, result of testing and etc, also it includes sequence of steps and tags. List of
- * {@link Step} objects represents steps that must be done for verification within current case. List of
- * {@Link Tag} objects represents types of current case.
+ * This class represents Test case essence. Test case is a set of actions that are used for checking
+ * some software's behavior. Case consists of some simple fields like id of the case, it's name,
+ * description, history information, result of testing and etc, also it includes sequence of steps
+ * and tags. List of {@link Step} objects represents steps that must be done for verification within
+ * current case. List of {@Link Tag} objects represents types of current case.
  */
 @Entity
 @WithStateMachine
@@ -121,16 +122,14 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
 
     /**
      * Override in order entity manager use merge instead of persist when call with case id = null
-     * and one of tag ids is not null.
-     * <br/>
-     * For example, with standard behaviour spring data jpa will call persist on this request
-     * {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10, "name":"soap"}]}
-     * and it will cause "detached entity passed to persist" error.
+     * and one of tag ids is not null. <br/> For example, with standard behaviour spring data jpa
+     * will call persist on this request {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10,
+     * "name":"soap"}]} and it will cause "detached entity passed to persist" error.
      */
     @Override
     public boolean isNew() {
         boolean isAllTagsWithNullId = tags == null
-                || tags.stream().allMatch(tag -> tag.getId() == null);
+            || tags.stream().allMatch(tag -> tag.getId() == null);
 
         return id == null && isAllTagsWithNullId;
     }
@@ -275,8 +274,9 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
     @Override
     public String toString() {
         return String.format(
-                "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s, comment= %s};",
-                id, name, description, steps, creationDate, priority, tags, status, comment);
+            "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, " +
+                "priority= %s, tags= %s, status= %s, comment= %s};",
+            id, name, description, steps, creationDate, priority, tags, status, comment);
     }
 
     @Override
@@ -284,33 +284,28 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Case)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         Case aCase = (Case) o;
-
-        return (id != null ? id.equals(aCase.id) : aCase.id == null)
-                && (name != null ? name.equals(aCase.name) : aCase.name == null)
-                && (description != null ? description.equals(aCase.description)
-                : aCase.description == null)
-                && (steps != null ? steps.equals(aCase.steps) : aCase.steps == null)
-                && (priority != null ? priority.equals(aCase.priority) : aCase.priority == null)
-                && (status != null ? status.equals(aCase.status) : aCase.status == null)
-                && (tags != null ? tags.equals(aCase.tags) : aCase.tags == null)
-                && (comment != null ? comment.equals(aCase.comment) : aCase.comment == null);
+        return Objects.equals(id, aCase.id) &&
+            Objects.equals(name, aCase.name) &&
+            Objects.equals(description, aCase.description) &&
+            Objects.equals(jiraKey, aCase.jiraKey) &&
+            Objects.equals(jiraProjectKey, aCase.jiraProjectKey) &&
+            Objects.equals(jiraParentKey, aCase.jiraParentKey) &&
+            Objects.equals(steps, aCase.steps) &&
+            Objects.equals(priority, aCase.priority) &&
+            status == aCase.status &&
+            Objects.equals(tags, aCase.tags) &&
+            Objects.equals(comment, aCase.comment);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (steps != null ? steps.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        return result;
+
+        return Objects
+            .hash(id, name, description, jiraKey, jiraProjectKey, jiraParentKey, steps, priority,
+                status, tags, comment);
     }
 }

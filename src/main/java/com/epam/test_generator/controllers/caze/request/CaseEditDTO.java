@@ -5,6 +5,7 @@ import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Status;
 
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -14,9 +15,9 @@ import java.util.List;
 
 
 /**
- * This DTO fully represent {@Link Case} entity. {@Link CaseEditDTO} is used only  for cascade work with cases
- * in situation when it's necessary to manipulate (create, delete or change) multiple cases for one request.
- * In other situations it's better to use {@Link CaseDTO}.
+ * This DTO fully represent {@Link Case} entity. {@Link CaseEditDTO} is used only  for cascade work
+ * with cases in situation when it's necessary to manipulate (create, delete or change) multiple
+ * cases for one request. In other situations it's better to use {@Link CaseDTO}.
  */
 public class CaseEditDTO {
 
@@ -137,42 +138,31 @@ public class CaseEditDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CaseEditDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        CaseEditDTO caseEditDTO = (CaseEditDTO) o;
-
-        return (id != null ? id.equals(caseEditDTO.id) : caseEditDTO.id == null)
-            && (name != null ? name.equals(caseEditDTO.name) : caseEditDTO.name == null)
-            && (description != null ? description.equals(caseEditDTO.description)
-            : caseEditDTO.description == null)
-            && (priority != null ? priority.equals(caseEditDTO.priority)
-            : caseEditDTO.priority == null)
-            && (status != null ? status.equals(caseEditDTO.status) : caseEditDTO.status == null)
-            && (comment != null ? comment.equals(caseEditDTO.comment) : caseEditDTO.comment == null)
-            && (action != null ? action.equals(caseEditDTO.action) : caseEditDTO.action == null)
-            && (tags != null ? tags.equals(caseEditDTO.tags) : caseEditDTO.tags == null);
+        CaseEditDTO that = (CaseEditDTO) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(priority, that.priority) &&
+            status == that.status &&
+            Objects.equals(steps, that.steps) &&
+            Objects.equals(tags, that.tags) &&
+            action == that.action &&
+            Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (action != null ? action.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, description, priority, status, steps, tags, action, comment);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "CaseEditDTO{ id= %s, name= %s, description= %s, priority= %s, tags= %s, status= %s, comment= %s, action =%s};",
-                id, name, description, priority, tags, status, comment, action);
+            "CaseEditDTO{ id= %s, name= %s, description= %s, priority= %s, tags= %s, status= %s, comment= %s, action =%s};",
+            id, name, description, priority, tags, status, comment, action);
     }
 
 }

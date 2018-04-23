@@ -4,6 +4,7 @@ import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
 
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -94,31 +95,21 @@ public class CaseUpdateDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CaseEditDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        CaseUpdateDTO caseUpdateDTO = (CaseUpdateDTO) o;
-
-        return (name != null ? name.equals(caseUpdateDTO.name) : caseUpdateDTO.name == null)
-                && (description != null ? description.equals(caseUpdateDTO.description)
-                : caseUpdateDTO.description == null)
-                && (priority != null ? priority.equals(caseUpdateDTO.priority)
-                : caseUpdateDTO.priority == null)
-                && (status != null ? status.equals(caseUpdateDTO.status) : caseUpdateDTO.status == null)
-                && (comment != null ? comment.equals(caseUpdateDTO.comment) : caseUpdateDTO.comment == null)
-                && (tags != null ? tags.equals(caseUpdateDTO.tags) : caseUpdateDTO.tags == null);
+        CaseUpdateDTO that = (CaseUpdateDTO) o;
+        return Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(priority, that.priority) &&
+            status == that.status &&
+            Objects.equals(tags, that.tags) &&
+            Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        return result;
+        return Objects.hash(name, description, priority, status, tags, comment);
     }
 
     @Override

@@ -30,7 +30,6 @@ public class ProjectUpdateDTO {
         this.description = description;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -40,8 +39,8 @@ public class ProjectUpdateDTO {
             return false;
         }
         ProjectUpdateDTO that = (ProjectUpdateDTO) o;
-        return Objects.equals(name, that.name)
-            && Objects.equals(description, that.description);
+        return Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.step.request;
 
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.StepType;
+import java.util.Objects;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -63,5 +64,27 @@ public class StepCreateDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StepCreateDTO that = (StepCreateDTO) o;
+        return rowNumber == that.rowNumber &&
+            Objects.equals(description, that.description) &&
+            type == that.type &&
+            Objects.equals(comment, that.comment) &&
+            status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(rowNumber, description, type, comment, status);
     }
 }

@@ -5,6 +5,7 @@ import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -127,35 +128,26 @@ public class SuitDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SuitDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         SuitDTO suitDTO = (SuitDTO) o;
-
-        return (id != null ? id.equals(suitDTO.id) : suitDTO.id == null)
-            && (name != null ? name.equals(suitDTO.name) : suitDTO.name == null)
-            && (status != null ? status.equals(suitDTO.status) : suitDTO.status == null)
-            && (description != null ? description.equals(suitDTO.description)
-            : suitDTO.description == null)
-            && (cases != null ? cases.equals(suitDTO.cases) : suitDTO.cases == null)
-            && (priority != null ? priority.equals(suitDTO.priority) : suitDTO.priority == null)
-            && (tags != null ? tags.equals(suitDTO.tags) : suitDTO.tags == null)
-            && (rowNumber != null ? rowNumber.equals(suitDTO.rowNumber)
-            : suitDTO.rowNumber == null);
+        return Objects.equals(id, suitDTO.id) &&
+            Objects.equals(name, suitDTO.name) &&
+            Objects.equals(description, suitDTO.description) &&
+            Objects.equals(cases, suitDTO.cases) &&
+            Objects.equals(priority, suitDTO.priority) &&
+            Objects.equals(creationDate, suitDTO.creationDate) &&
+            Objects.equals(tags, suitDTO.tags) &&
+            status == suitDTO.status &&
+            Objects.equals(rowNumber, suitDTO.rowNumber);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (cases != null ? cases.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        result = 31 * result + (rowNumber != null ? rowNumber.hashCode() : 0);
-        return result;
+
+        return Objects
+            .hash(id, name, description, cases, priority, creationDate, tags, status, rowNumber);
     }
 
     @Override

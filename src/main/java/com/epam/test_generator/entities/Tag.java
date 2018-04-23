@@ -1,6 +1,7 @@
 package com.epam.test_generator.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,17 +55,15 @@ public class Tag implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Tag)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         Tag tag = (Tag) o;
-
-        return (name != null ? name.equals(tag.name) : tag.name == null);
+        return Objects.equals(name, tag.name);
     }
 
     @Override
     public int hashCode() {
-        return (name != null ? name.hashCode() : 0);
+        return Objects.hash(name);
     }
 }

@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.suit.request;
 
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 
+import java.util.Objects;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -60,5 +61,26 @@ public class SuitUpdateDTO {
                 ", priority=" + priority +
                 ", tags=" + tags +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SuitUpdateDTO that = (SuitUpdateDTO) o;
+        return Objects.equals(name, that.name) &&
+            Objects.equals(priority, that.priority) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, priority, description, tags);
     }
 }

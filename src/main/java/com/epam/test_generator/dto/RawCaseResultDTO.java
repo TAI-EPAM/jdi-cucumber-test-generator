@@ -4,6 +4,7 @@ import com.epam.test_generator.entities.Status;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 public class RawCaseResultDTO {
@@ -54,27 +55,19 @@ public class RawCaseResultDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RawCaseResultDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        RawCaseResultDTO rawCaseResultDTO = (RawCaseResultDTO) o;
-
-        return (id != null ? id.equals(rawCaseResultDTO.id) : rawCaseResultDTO.id == null)
-            && (duration != null ? duration.equals(rawCaseResultDTO.duration)
-            : rawCaseResultDTO.duration == null)
-            && (status != null ? status.equals(rawCaseResultDTO.status)
-            : rawCaseResultDTO.status == null)
-            && (steps != null ? steps.equals(rawCaseResultDTO.steps)
-            : rawCaseResultDTO.steps == null);
+        RawCaseResultDTO that = (RawCaseResultDTO) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(duration, that.duration) &&
+            status == that.status &&
+            Objects.equals(steps, that.steps);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (duration != null ? duration.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (steps != null ? steps.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, duration, status, steps);
     }
 }

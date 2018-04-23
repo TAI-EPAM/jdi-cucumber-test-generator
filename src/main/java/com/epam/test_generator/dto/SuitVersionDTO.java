@@ -3,6 +3,7 @@ package com.epam.test_generator.dto;
 import com.epam.test_generator.controllers.version.caze.response.PropertyDifferenceDTO;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SuitVersionDTO {
 
@@ -58,7 +59,6 @@ public class SuitVersionDTO {
         this.propertyDifferences = propertyDifferences;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -67,22 +67,16 @@ public class SuitVersionDTO {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         SuitVersionDTO that = (SuitVersionDTO) o;
-
-        return (commitId != null ? commitId.equals(that.commitId) : that.commitId == null) && (
-            updatedDate != null ? updatedDate.equals(that.updatedDate) : that.updatedDate == null)
-            && (author != null ? author.equals(that.author) : that.author == null) && (
-            propertyDifferences != null ? propertyDifferences.equals(that.propertyDifferences)
-                : that.propertyDifferences == null);
+        return Objects.equals(commitId, that.commitId) &&
+            Objects.equals(updatedDate, that.updatedDate) &&
+            Objects.equals(author, that.author) &&
+            Objects.equals(propertyDifferences, that.propertyDifferences);
     }
 
     @Override
     public int hashCode() {
-        int result = commitId != null ? commitId.hashCode() : 0;
-        result = 31 * result + (updatedDate != null ? updatedDate.hashCode() : 0);
-        result = 31 * result + (author != null ? author.hashCode() : 0);
-        result = 31 * result + (propertyDifferences != null ? propertyDifferences.hashCode() : 0);
-        return result;
+
+        return Objects.hash(commitId, updatedDate, author, propertyDifferences);
     }
 }

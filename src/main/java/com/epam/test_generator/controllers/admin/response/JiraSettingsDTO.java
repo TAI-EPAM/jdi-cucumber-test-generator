@@ -75,9 +75,6 @@ public class JiraSettingsDTO {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (login != null ? login.hashCode() : 0);
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        return result;
+        return Objects.hash(id, uri, login);
     }
 }

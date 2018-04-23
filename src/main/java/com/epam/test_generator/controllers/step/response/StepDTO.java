@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.step.response;
 
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.StepType;
+import java.util.Objects;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -104,29 +105,21 @@ public class StepDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StepDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         StepDTO stepDTO = (StepDTO) o;
-
-        return (rowNumber == stepDTO.rowNumber) &&
-            (id != null ? id.equals(stepDTO.id) : stepDTO.id == null)
-            && (description != null ? description.equals(stepDTO.description)
-            : stepDTO.description == null)
-            && (comment != null ? comment.equals(stepDTO.comment) : stepDTO.comment == null)
-            && (status != null ? status.equals(stepDTO.status) : stepDTO.status == null)
-            && (type != null ? type.equals(stepDTO.type) : stepDTO.type == null);
+        return rowNumber == stepDTO.rowNumber &&
+            Objects.equals(id, stepDTO.id) &&
+            Objects.equals(description, stepDTO.description) &&
+            type == stepDTO.type &&
+            Objects.equals(comment, stepDTO.comment) &&
+            status == stepDTO.status;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + rowNumber;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (comment != null ? comment.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, rowNumber, description, type, comment, status);
     }
 }

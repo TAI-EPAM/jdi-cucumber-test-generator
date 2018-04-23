@@ -1,6 +1,7 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.StepType;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -42,13 +43,17 @@ public class StepSuggestionCreateDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StepSuggestionCreateDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         StepSuggestionCreateDTO that = (StepSuggestionCreateDTO) o;
+        return Objects.equals(content, that.content) &&
+            type == that.type;
+    }
 
-        return (content != null ? content.equals(that.content) : that.content == null)
-            && (type != null ? type.equals(that.type) : that.type == null);
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(content, type);
     }
 }

@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.test.result.response;
 
 import com.epam.test_generator.entities.Status;
 import java.util.List;
+import java.util.Objects;
 
 public class CaseResultDTO {
 
@@ -51,4 +52,25 @@ public class CaseResultDTO {
         this.stepResults = stepResults;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CaseResultDTO that = (CaseResultDTO) o;
+        return duration == that.duration &&
+            Objects.equals(name, that.name) &&
+            status == that.status &&
+            Objects.equals(comment, that.comment) &&
+            Objects.equals(stepResults, that.stepResults);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, duration, status, comment, stepResults);
+    }
 }
