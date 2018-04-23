@@ -86,9 +86,6 @@ public class SuitServiceTest {
     @Mock
     private SuitTransformer suitTransformer;
 
-    @Spy
-    private SuitTransformer transformer;
-
     private List<Suit> expectedSuitList;
     private List<SuitDTO> expectedSuitDTOList;
 
@@ -187,7 +184,7 @@ public class SuitServiceTest {
 
         assertEquals(
             suitService.getSuitDTO(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID),
-            transformer.toDto(expectedSuit));
+            expectedSuitDTO);
     }
 
     @Test(expected = NotFoundException.class)

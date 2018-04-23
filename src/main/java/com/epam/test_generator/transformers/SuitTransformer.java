@@ -1,5 +1,6 @@
 package com.epam.test_generator.transformers;
 
+import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
@@ -22,6 +23,9 @@ public class SuitTransformer {
     @Autowired
     private TagTransformer tagTransformer;
 
+    @Autowired
+    private CaseDTOsTransformer caseDTOsTransformer;
+
     public Suit fromDto(SuitCreateDTO suitCreateDTO) {
         Suit suit = new Suit();
         suit.setName(suitCreateDTO.getName());
@@ -42,9 +46,14 @@ public class SuitTransformer {
         suitDTO.setDescription(suit.getDescription());
         suitDTO.setPriority(suit.getPriority());
         suitDTO.setCreationDate(suit.getCreationDate());
+        suitDTO.setRowNumber(suit.getRowNumber());
+        suitDTO.setStatus(suit.getStatus());
         if (suit.getTags() != null) {
             List<Tag> tags = new ArrayList<>(suit.getTags());
             suitDTO.setTags(getSetOfTagDTOsFromListOfTags(tags));
+        }
+        if(suit.getCases() != null) {
+            suitDTO.setCases(caseDTOsTransformer.toDtoList(suit.getCases()));
         }
         return suitDTO;
     }

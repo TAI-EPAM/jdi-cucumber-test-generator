@@ -34,6 +34,7 @@ public class UserDTOsTransformerTest {
     private static final Integer ATTEMPTS = 0;
     private static final String ROLE = "ROLE";
     private static final Boolean LOCKED = false;
+    private static final Long ID = 42L;
 
     @InjectMocks
     private UserDTOsTransformer userDTOsTransformer;
@@ -69,19 +70,22 @@ public class UserDTOsTransformerTest {
         expectedUserDTO.setRole(ROLE);
         expectedUserDTO.setLocked(LOCKED);
         expectedUserDTO.setAttempts(ATTEMPTS);
+        expectedUserDTO.setId(ID);
 
         user.setRole(new Role(ROLE));
         user.setLoginAttempts(ATTEMPTS);
         user.setLocked(LOCKED);
+        user.setId(ID);
 
         UserDTO resultUserDTO = userDTOsTransformer.toUserDTO(user);
         Assert.assertEquals(expectedUserDTO, resultUserDTO);
     }
 
     @Test
-    public void  toListUserDto_Users_Success() {
+    public void toListUserDto_Users_Success() {
         user.setLocked(false);
         user.setLoginAttempts(ATTEMPTS);
+        user.setRole(new Role(ROLE));
 
         UserDTO userDTO = new UserDTO();
         userDTO.setName(NAME);
@@ -89,6 +93,7 @@ public class UserDTOsTransformerTest {
         userDTO.setEmail(EMAIL);
         userDTO.setLocked(false);
         userDTO.setAttempts(ATTEMPTS);
+        userDTO.setRole(ROLE);
 
         List<User> users = Collections.singletonList(user);
         List<UserDTO> expectedUserDTOS = Collections.singletonList(userDTO);

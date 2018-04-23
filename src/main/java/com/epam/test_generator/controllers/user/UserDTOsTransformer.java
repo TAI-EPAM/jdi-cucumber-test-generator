@@ -32,6 +32,7 @@ public class UserDTOsTransformer {
 
    public UserDTO toUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setSurname(user.getSurname());
         userDTO.setEmail(user.getEmail());

@@ -1,5 +1,6 @@
 package com.epam.test_generator.controllers.user.response;
 
+import java.util.Objects;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Size;
@@ -58,7 +59,7 @@ public class UserDTO {
     public Long getId() {
         return id;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -74,7 +75,7 @@ public class UserDTO {
     public void setSurname(String surname) {
         this.surname = surname;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -93,42 +94,38 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return String.format("User {id= %s, name= %s, surname= %s, email= %s, role= %s, attempts =%s, locked = %s}",
-                id, name, surname, email, role, attempts, locked);
+        return "UserDTO{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", surname='" + surname + '\'' +
+            ", email='" + email + '\'' +
+            ", role='" + role + '\'' +
+            ", attempts=" + attempts +
+            ", locked=" + locked +
+            '}';
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof UserDTO)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         UserDTO userDTO = (UserDTO) o;
-
-        return (id != null ? id.equals(userDTO.id) : userDTO.id == null)
-                && (name != null ? name.equals(userDTO.name) : userDTO.name == null)
-                && (surname != null ? surname.equals(userDTO.surname) : userDTO.surname == null)
-                && (email != null ? email.equals(userDTO.email) : userDTO.email == null)
-                && (role != null ? role.equals(userDTO.role) : userDTO.role == null)
-                && (attempts != null ? attempts.equals(userDTO.attempts) : userDTO.attempts == null)
-                && (locked != null ? locked.equals(userDTO.locked) : userDTO.locked == null);
-
+        return Objects.equals(id, userDTO.id) &&
+            Objects.equals(name, userDTO.name) &&
+            Objects.equals(surname, userDTO.surname) &&
+            Objects.equals(email, userDTO.email) &&
+            Objects.equals(role, userDTO.role) &&
+            Objects.equals(attempts, userDTO.attempts) &&
+            Objects.equals(locked, userDTO.locked);
     }
-
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
-        result = 31 * result + (locked != null ? locked.hashCode() : 0);
-        result = 31 * result + (attempts != null ? attempts.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, surname, email, role, attempts, locked);
     }
-
 }
 
