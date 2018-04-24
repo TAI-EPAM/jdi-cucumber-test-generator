@@ -78,7 +78,7 @@ public class StepControllerTest {
         stepDTO.setDescription("description of step");
         stepDTO.setRowNumber(1);
         stepDTO.setType(StepType.THEN);
-        stepDTO.setStatus(Status.NOT_RUN);
+        stepDTO.setDisplayedStatusName(Status.NOT_RUN.getStatusName());
         stepDTOS = new ArrayList<>();
         stepDTOS.add(stepDTO);
 

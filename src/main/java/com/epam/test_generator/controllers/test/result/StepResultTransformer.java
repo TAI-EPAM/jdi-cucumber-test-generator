@@ -12,7 +12,7 @@ public class StepResultTransformer {
     public StepResultDTO toDto(StepResult result) {
         StepResultDTO dto = new StepResultDTO();
         dto.setDescription(result.getDescription());
-        dto.setStatus(result.getStatus());
+        dto.setStatus(result.getStatus().getStatusName());
         return dto;
     }
 

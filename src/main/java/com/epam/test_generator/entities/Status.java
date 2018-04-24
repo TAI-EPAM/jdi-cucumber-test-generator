@@ -9,11 +9,11 @@ package com.epam.test_generator.entities;
  */
 public enum Status {
 
-    NOT_DONE("Not done"),
-    NOT_RUN("Not run"),
-    PASSED("Passed"),
-    FAILED("Failed"),
-    SKIPPED("Skipped");
+    NOT_DONE("NOT DONE"),
+    NOT_RUN("NOT RUN"),
+    PASSED("PASSED"),
+    FAILED("FAILED"),
+    SKIPPED("SKIPPED");
 
     private String statusName;
 

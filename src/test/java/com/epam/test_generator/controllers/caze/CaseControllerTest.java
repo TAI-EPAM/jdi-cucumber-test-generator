@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -84,25 +83,28 @@ public class CaseControllerTest {
         caseDTO.setDescription("case1");
         caseDTO.setPriority(1);
         caseDTO.setSteps(new ArrayList<>());
-        caseDTO.setStatus(Status.NOT_DONE);
+        caseDTO.setDisplayedStatusName(Status.NOT_DONE.getStatusName());
 
         CaseDTO caseDTO1 = new CaseDTO();
         caseDTO1.setId(CASE_IDS[0]);
         caseDTO1.setDescription("case2");
         caseDTO1.setPriority(2);
         caseDTO1.setSteps(new ArrayList<>());
+        caseDTO1.setDisplayedStatusName(Status.NOT_RUN.getStatusName());
 
         CaseDTO caseDTO2 = new CaseDTO();
         caseDTO2.setId(CASE_IDS[1]);
         caseDTO2.setDescription("case3");
         caseDTO2.setPriority(2);
         caseDTO2.setSteps(new ArrayList<>());
+        caseDTO2.setDisplayedStatusName(Status.SKIPPED.getStatusName());
 
         CaseDTO caseDTO3 = new CaseDTO();
         caseDTO3.setId(CASE_IDS[2]);
         caseDTO3.setDescription("case3");
         caseDTO3.setPriority(2);
         caseDTO3.setSteps(new ArrayList<>());
+        caseDTO3.setDisplayedStatusName(Status.PASSED.getStatusName());
 
         suitDTO = new SuitDTO();
         suitDTO.setId(SIMPLE_SUIT_ID);
@@ -151,7 +153,7 @@ public class CaseControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
             .andExpect(jsonPath("$.name", is(caseDTO.getName())))
-            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
+            .andExpect(jsonPath("$.displayedStatusName", is(caseDTO.getDisplayedStatusName())));
 
         verify(casesService,  times(1))
             .getCaseDTO(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
@@ -214,7 +216,7 @@ public class CaseControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
             .andExpect(jsonPath("$.name", is(caseDTO.getName())))
-            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
+            .andExpect(jsonPath("$.displayedStatusName", is(caseDTO.getDisplayedStatusName())));
 
         verify(casesService, times(1))
             .addCaseToSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), any(CaseCreateDTO.class));
@@ -354,7 +356,7 @@ public class CaseControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
             .andExpect(jsonPath("$.name", is(caseDTO.getName())))
-            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
+            .andExpect(jsonPath("$.displayedStatusName", is(caseDTO.getDisplayedStatusName())));
 
         verify(casesService, times(1))
             .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),
@@ -398,13 +400,13 @@ public class CaseControllerTest {
 
     @Test
     public void updateCase_CaseWithZeroPriority_StatusBadRequest() throws Exception {
-        caseDTO.setPriority(0);
+        caseUpdateDTO.setPriority(0);
 
         mockMvc.perform(
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(caseDTO)))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
@@ -415,13 +417,13 @@ public class CaseControllerTest {
     @Test
     public void updateCase_CaseWithMoreThanTheRequiredPriority_StatusBadRequest()
         throws Exception {
-        caseDTO.setPriority(6);
+        caseUpdateDTO.setPriority(6);
 
         mockMvc.perform(
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(caseDTO)))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
@@ -432,13 +434,13 @@ public class CaseControllerTest {
     @Test
     public void updateCase_CaseWithLessThanTheRequiredPriority_StatusBadRequest()
         throws Exception {
-        caseDTO.setPriority(-4);
+        caseUpdateDTO.setPriority(-4);
 
         mockMvc.perform(
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(caseDTO)))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
@@ -448,13 +450,13 @@ public class CaseControllerTest {
 
     @Test
     public void updateCase_CaseWithEmptyDescription_StatusBadRequest() throws Exception {
-        caseDTO.setDescription("");
+        caseUpdateDTO.setDescription("");
 
         mockMvc.perform(
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(caseDTO)))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService, times(0))
@@ -489,7 +491,7 @@ public class CaseControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
             .andExpect(jsonPath("$.name", is(caseDTO.getName())))
-            .andExpect(jsonPath("$.status", is(caseDTO.getStatus().toString())));
+            .andExpect(jsonPath("$.displayedStatusName", is(caseDTO.getDisplayedStatusName())));
 
         verify(casesService)
             .removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
@@ -551,7 +553,8 @@ public class CaseControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[0].id", is((int)SIMPLE_CASE_ID)))
             .andExpect(jsonPath("$.[0].name", is(caseDTO.getName())))
-            .andExpect(jsonPath("$.[0].status", is(caseDTO.getStatus().toString())))
+            .andExpect(jsonPath("$.[0].displayedStatusName", is(caseDTO.getDisplayedStatusName())))
+            .andExpect(jsonPath("$.[1].displayedStatusName", is(caseDTOList.get(1).getDisplayedStatusName())))
             .andExpect(jsonPath("$.[1].id", is(CASE_IDS[0].intValue())))
             .andExpect(jsonPath("$.[2].id", is(CASE_IDS[1].intValue())))
             .andExpect(jsonPath("$.[3].id", is(CASE_IDS[2].intValue())));

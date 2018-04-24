@@ -1,6 +1,5 @@
 package com.epam.test_generator.controllers.test.result.response;
 
-import com.epam.test_generator.entities.Status;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +7,7 @@ public class SuitResultDTO {
 
     private String name;
     private long duration;
-    private Status status;
+    private String status;
     private List<CaseResultDTO> caseResults;
 
     public String getName() {
@@ -27,11 +26,11 @@ public class SuitResultDTO {
         this.duration = duration;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

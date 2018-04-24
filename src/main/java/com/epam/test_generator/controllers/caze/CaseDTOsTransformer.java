@@ -33,7 +33,7 @@ public class CaseDTOsTransformer{
         caseDTO.setUpdateDate(caze.getUpdateDate().toInstant().toEpochMilli());
         caseDTO.setPriority(caze.getPriority());
         caseDTO.setTags(caze.getTags().stream().map(tagTransformer::toDto).collect(Collectors.toSet()));
-        caseDTO.setStatus(caze.getStatus());
+        caseDTO.setDisplayedStatusName(caze.getStatus().getStatusName());
         caseDTO.setComment(caze.getComment());
         caseDTO.setRowNumber(caze.getRowNumber());
         return caseDTO;

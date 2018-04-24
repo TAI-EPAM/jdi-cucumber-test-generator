@@ -47,7 +47,7 @@ public class SuitTransformer {
         suitDTO.setCreationDate(suit.getCreationDate().toInstant().toEpochMilli());
         suitDTO.setUpdateDate(suit.getUpdateDate().toInstant().toEpochMilli());
         suitDTO.setRowNumber(suit.getRowNumber());
-        suitDTO.setStatus(suit.getStatus());
+        suitDTO.setDisplayedStatusName(suit.getStatus().getStatusName());
         if (suit.getTags() != null) {
             List<Tag> tags = new ArrayList<>(suit.getTags());
             suitDTO.setTags(getSetOfTagDTOsFromListOfTags(tags));

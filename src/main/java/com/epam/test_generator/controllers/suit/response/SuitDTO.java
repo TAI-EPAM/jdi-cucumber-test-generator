@@ -36,7 +36,7 @@ public class SuitDTO {
     private Set<TagDTO> tags;
 
     @NotNull
-    private Status status;
+    private String status;
 
     @NotNull
     @Min(value = 1)
@@ -116,11 +116,11 @@ public class SuitDTO {
         this.rowNumber = rowNumber;
     }
 
-    public Status getStatus() {
+    public String getDisplayedStatusName() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setDisplayedStatusName(String status) {
         this.status = status;
     }
 

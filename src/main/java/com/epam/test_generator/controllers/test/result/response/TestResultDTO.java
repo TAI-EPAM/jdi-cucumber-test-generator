@@ -1,6 +1,5 @@
 package com.epam.test_generator.controllers.test.result.response;
 
-import com.epam.test_generator.entities.Status;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,7 +9,7 @@ public class TestResultDTO {
 
     private Long duration;
 
-    private Status status;
+    private String status;
 
     private String executedBy;
 
@@ -41,11 +40,11 @@ public class TestResultDTO {
         this.duration = duration;
     }
 
-    public Status getStatus() {
+    public String getDisplayedStatusName() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setDisplayedStatusName(String status) {
         this.status = status;
     }
 

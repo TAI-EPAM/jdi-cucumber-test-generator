@@ -89,6 +89,7 @@ public class SuitService {
     public SuitDTO addSuit(Long projectId, SuitCreateDTO suitCreateDTO) {
         Project project = projectService.getProjectByProjectId(projectId);
         Suit suit = suitDAO.save(suitTransformer.fromDto(suitCreateDTO));
+        suit.setStatus(Status.NOT_DONE);
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         suit.setCreationDate(currentDateTime);
         suit.setUpdateDate(currentDateTime);

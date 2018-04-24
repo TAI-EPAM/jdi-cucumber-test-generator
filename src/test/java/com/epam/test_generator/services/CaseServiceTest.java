@@ -140,7 +140,7 @@ public class CaseServiceTest {
 
         listCases.add(caze);
         expectedCaseDTO = new CaseDTO(SIMPLE_CASE_ID, "case name", "case desc",
-            expectedListSteps, 1, expectedSetTags, Status.NOT_DONE, "comment", 1);
+            expectedListSteps, 1, expectedSetTags, Status.NOT_DONE.getStatusName(), "comment", 1);
         expectedCaseDTO.setRowNumber(1);
         caseCreateDTO = new CaseCreateDTO("case name", "case desc",
                1, "comment", expectedSetTags);
@@ -334,10 +334,10 @@ public class CaseServiceTest {
         List<CaseDTO> expectedRemovedCasesDTO = new ArrayList<>();
         expectedRemovedCasesDTO.add(new CaseDTO(1L, "name 1", "case 1",
             expectedListSteps, 1, expectedSetTags,
-            Status.NOT_RUN, "comment 1", 1));
+            Status.NOT_RUN.getStatusName(), "comment 1", 1));
         expectedRemovedCasesDTO.add(new CaseDTO(2L, "name 2", "case 2",
             expectedListSteps, 2, expectedSetTags,
-            Status.NOT_RUN, "comment 2", 2));
+            Status.NOT_RUN.getStatusName(), "comment 2", 2));
 
         List<Long> deleteCaseIds = Arrays.asList(1L, 2L);
 
@@ -496,7 +496,7 @@ public class CaseServiceTest {
             Collections.emptyList(), Action.DELETE, "comment");
         caseEditDTO.setId(SIMPLE_CASE_ID);
         CaseDTO expectedCaseDTO = new CaseDTO(1l, "name", "desc", Collections.emptyList(),
-            1, Collections.emptySet(), Status.NOT_RUN, "comment", 1);
+            1, Collections.emptySet(), Status.NOT_RUN.getStatusName(), "comment", 1);
         List<CaseDTO> expectedCaseDTOs = Arrays.asList(expectedCaseDTO);
 
         CaseService mock = mock(CaseService.class);
@@ -519,7 +519,7 @@ public class CaseServiceTest {
             Status.NOT_RUN, Collections.emptyList(), Action.CREATE, "comment");
         caseEditDTO.setId(SIMPLE_CASE_ID);
         CaseDTO expectedCaseDTO = new CaseDTO(1l, "name", "desc", Collections.emptyList(),
-            1, Collections.emptySet(), Status.NOT_RUN, "comment", 1);
+            1, Collections.emptySet(), Status.NOT_RUN.getStatusName(), "comment", 1);
         List<CaseDTO> expectedCaseDTOs = Arrays.asList(expectedCaseDTO);
 
         CaseService mock = mock(CaseService.class);

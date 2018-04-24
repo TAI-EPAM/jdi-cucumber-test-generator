@@ -1,14 +1,12 @@
 package com.epam.test_generator.controllers.test.result.response;
 
-import com.epam.test_generator.entities.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 
 public class StepResultDTO {
 
     private String description;
 
-    private Status status;
+    private String status;
 
     public StepResultDTO() {
     }
@@ -21,11 +19,11 @@ public class StepResultDTO {
         this.description = description;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

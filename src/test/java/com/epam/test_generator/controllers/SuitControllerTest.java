@@ -67,7 +67,7 @@ public class SuitControllerTest {
         suitDTO.setRowNumber(1);
         suitDTO.setPriority(1);
         suitDTO.setDescription("Suit description");
-        suitDTO.setStatus(Status.NOT_RUN);
+        suitDTO.setDisplayedStatusName(Status.NOT_RUN.getStatusName());
 
         suitCreateDTO = new SuitCreateDTO();
         suitCreateDTO.setName("Suit name");

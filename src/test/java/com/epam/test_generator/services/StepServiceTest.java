@@ -7,16 +7,16 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.controllers.step.request.StepCreateDTO;
 import com.epam.test_generator.controllers.step.request.StepUpdateDTO;
+import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
-import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
@@ -24,8 +24,6 @@ import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-import com.epam.test_generator.controllers.step.StepTransformer;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -76,7 +74,7 @@ public class StepServiceTest {
     @Before
     public void setUp() {
         step = new Step(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN, "Comment", Status.NOT_RUN);
-        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN, "Comment", Status.NOT_RUN);
+        expectedStep = new StepDTO(SIMPLE_STEP_ID, 1, "Step desc", StepType.GIVEN, "Comment", Status.NOT_RUN.getStatusName());
 
         List<Step> listSteps = new ArrayList<>();
 
@@ -84,8 +82,8 @@ public class StepServiceTest {
         listSteps.add(new Step(2L, 2, "Step 2", StepType.WHEN, "Comment", Status.NOT_RUN));
         listSteps.add(step);
 
-        expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN, "Comment", Status.NOT_RUN));
-        expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN, "Comment", Status.NOT_RUN));
+        expectedListSteps.add(new StepDTO(1L, 1, "Step 1", StepType.GIVEN, "Comment", Status.NOT_RUN.getStatusName()));
+        expectedListSteps.add(new StepDTO(2L, 2, "Step 2", StepType.WHEN, "Comment", Status.NOT_RUN.getStatusName()));
         expectedListSteps.add(expectedStep);
 
         caze = new Case(SIMPLE_CASE_ID, "name", "Case desc", listSteps, 1, setOfTags, "comment");

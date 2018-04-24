@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -106,10 +104,11 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case",
             required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseCreateDTO", value = "Added case object",
+            required = true, dataType = "CaseCreateDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     })
-    @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping
     public ResponseEntity<CaseDTO> addCaseToSuit(@PathVariable("projectId") long projectId,
@@ -134,7 +133,7 @@ public class CaseController {
         @ApiImplicitParam(name = "caseId", value = "ID of case to update",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseUpdateDTO", value = "Updated case object",
-            required = true, dataType = "caseUpdateDTO", paramType = "body"),
+            required = true, dataType = "CaseUpdateDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })

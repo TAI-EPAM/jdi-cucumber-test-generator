@@ -16,7 +16,7 @@ public class TestResultTransformer {
         dto.setDate(testResult.getDate().toInstant().toEpochMilli());
         dto.setDuration(testResult.getDuration());
         dto.setExecutedBy(testResult.getExecutedBy());
-        dto.setStatus(testResult.getStatus());
+        dto.setDisplayedStatusName(testResult.getStatus().getStatusName());
         dto.setAmountOfPassed(testResult.getAmountOfPassed());
         dto.setAmountOfFailed(testResult.getAmountOfFailed());
         dto.setAmountOfSkipped(testResult.getAmountOfSkipped());

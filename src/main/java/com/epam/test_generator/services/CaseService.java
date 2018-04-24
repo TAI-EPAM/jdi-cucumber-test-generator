@@ -2,17 +2,19 @@ package com.epam.test_generator.services;
 
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
+import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
+import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
+import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.controllers.version.caze.CaseVersionTransformer;
 import com.epam.test_generator.controllers.version.caze.response.CaseVersionDTO;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
-import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -21,11 +23,10 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.CaseVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
-import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
-import com.epam.test_generator.controllers.tag.TagTransformer;
 import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
@@ -109,6 +110,7 @@ public class CaseService {
         caze.setCreationDate(currentTime);
         caze.setUpdateDate(currentTime);
         caze.setLastModifiedDate(currentTime);
+        caze.setStatus(Status.NOT_DONE);
 
         suit.addCase(caze);
 

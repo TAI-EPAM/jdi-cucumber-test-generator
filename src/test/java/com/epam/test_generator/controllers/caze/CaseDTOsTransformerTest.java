@@ -1,8 +1,18 @@
 package com.epam.test_generator.controllers.caze;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
@@ -10,24 +20,16 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Tag;
-import com.epam.test_generator.controllers.step.StepTransformer;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.naming.NameAlreadyBoundException;
-import java.util.*;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDTOsTransformerTest {
@@ -90,7 +92,7 @@ public class CaseDTOsTransformerTest {
         caseDto.setPriority(PRIORITY);
         caseDto.setComment(COMMENT);
         caseDto.setTags(TAG_DTOS);
-        caseDto.setStatus(STATUS);
+        caseDto.setDisplayedStatusName(STATUS.getStatusName());
         caseDto.setSteps(STEP_DTOS);
         caseDto.setRowNumber(ROW_NUMBER);
         List<CaseDTO> caseDtos = Collections.singletonList(caseDto);
@@ -125,7 +127,7 @@ public class CaseDTOsTransformerTest {
         caseDto.setPriority(PRIORITY);
         caseDto.setComment(COMMENT);
         caseDto.setTags(TAG_DTOS);
-        caseDto.setStatus(STATUS);
+        caseDto.setDisplayedStatusName(STATUS.getStatusName());
         caseDto.setSteps(STEP_DTOS);
         caseDto.setRowNumber(ROW_NUMBER);
 

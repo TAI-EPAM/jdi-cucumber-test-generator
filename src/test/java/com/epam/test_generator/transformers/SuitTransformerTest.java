@@ -117,7 +117,7 @@ public class SuitTransformerTest {
         assertEquals(suit.getRowNumber(), dto.getRowNumber());
         assertEquals(suit.getPriority(), dto.getPriority());
         assertEquals(suit.getCreationDate().toInstant().toEpochMilli(), dto.getCreationDate());
-        assertEquals(suit.getStatus(), dto.getStatus());
+        assertEquals(suit.getStatus().getStatusName(), dto.getDisplayedStatusName());
         assertEquals(tagDtos, dto.getTags());
         assertEquals(caseDtos, dto.getCases());
     }

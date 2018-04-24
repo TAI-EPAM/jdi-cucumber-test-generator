@@ -13,7 +13,7 @@ public class StepTransformer {
 
     public StepDTO toDto(Step step) {
         return new StepDTO(step.getId(), step.getRowNumber(), step.getDescription(), step.getType(),
-            step.getComment(), step.getStatus());
+            step.getComment(), step.getStatus().getStatusName());
     }
 
     public List<StepDTO> toDtoList(List<Step> steps) {

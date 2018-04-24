@@ -202,7 +202,7 @@ public class TestResultControllerTest {
         testResultDTO.setDate(date.toInstant().toEpochMilli());
         testResultDTO.setDuration(0L);
         testResultDTO.setExecutedBy("User Userovich");
-        testResultDTO.setStatus(Status.PASSED);
+        testResultDTO.setDisplayedStatusName(Status.PASSED.getStatusName());
         testResultDTO.setSuitResults(Collections.emptyList());
         testResultDTOS.add(this.testResultDTO);
         return testResultDTO;

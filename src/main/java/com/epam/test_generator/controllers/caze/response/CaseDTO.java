@@ -43,7 +43,7 @@ public class CaseDTO {
     private Set<TagDTO> tags;
 
     @NotNull
-    private Status status;
+    private String status;
 
     private String comment;
 
@@ -53,7 +53,7 @@ public class CaseDTO {
     }
 
     public CaseDTO(Long id, String name, String description, List<StepDTO> steps, Integer priority,
-                   Set<TagDTO> tags, Status status, String comment, Integer rowNumber) {
+                   Set<TagDTO> tags, String status, String comment, Integer rowNumber) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -129,11 +129,11 @@ public class CaseDTO {
         this.tags = tags;
     }
 
-    public Status getStatus() {
+    public String getDisplayedStatusName() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setDisplayedStatusName(String status) {
         this.status = status;
     }
 

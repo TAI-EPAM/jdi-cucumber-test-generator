@@ -18,7 +18,7 @@ public class CaseResultTransformer {
         dto.setComment(result.getComment());
         dto.setDuration(result.getDuration());
         dto.setName(result.getName());
-        dto.setStatus(result.getStatus());
+        dto.setDisplayedStatusName(result.getStatus().getStatusName());
         dto.setStepResults(stepResultTransformer.toListDto(result.getStepResults()));
         return dto;
     }

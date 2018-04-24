@@ -56,7 +56,7 @@ public class ProjectTransformerTest {
         suitDTO = new SuitDTO();
         suitDTO.setName(NAME);
         suitDTO.setPriority(1);
-        suitDTO.setStatus(Status.NOT_DONE);
+        suitDTO.setDisplayedStatusName(Status.NOT_DONE.getStatusName());
         suitDTO.setRowNumber(1);
         suitDTO.setDescription(DESCRIPTION);
 

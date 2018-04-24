@@ -18,7 +18,7 @@ public class SuitResultTransformer {
         dto.setCaseResults(caseResultTransformer.toListDto(result.getCaseResults()));
         dto.setDuration(result.getDuration());
         dto.setName(result.getName());
-        dto.setStatus(result.getStatus());
+        dto.setStatus(result.getStatus().getStatusName());
         return dto;
     }
 

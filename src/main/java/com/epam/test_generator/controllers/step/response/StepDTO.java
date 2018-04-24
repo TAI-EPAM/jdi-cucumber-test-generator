@@ -26,12 +26,12 @@ public class StepDTO {
     private String comment;
 
     @NotNull
-    private Status status;
+    private String status;
 
     public StepDTO() {
     }
 
-    public StepDTO(Long id, int rowNumber, String description, StepType type, String comment, Status status) {
+    public StepDTO(Long id, int rowNumber, String description, StepType type, String comment, String status) {
         this.id = id;
         this.rowNumber = rowNumber;
         this.description = description;
@@ -80,11 +80,11 @@ public class StepDTO {
         this.comment = comment;
     }
 
-    public Status getStatus() {
+    public String getDisplayedStatusName() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setDisplayedStatusName(String status) {
         this.status = status;
     }
 
