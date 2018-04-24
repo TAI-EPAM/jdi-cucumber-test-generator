@@ -9,6 +9,7 @@ import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.transformers.StepSuggestionTransformer;
 
 import java.util.List;
@@ -143,5 +144,29 @@ public class StepSuggestionService {
         checkNotNull(stepSuggestion);
 
         stepSuggestionDAO.delete(stepSuggestionId);
+    }
+
+    /**
+     * Find all steps suggestions by string ignoring case
+     *
+     * @param searchString - string for search
+     * @param limit - count of results
+     * @return list with found steps suggestions
+     */
+    public List<StepSuggestionDTO> findStepsSuggestions(String searchString, int limit) {
+        if(searchString.isEmpty()) {
+            throw new BadRequestException("Text must not be empty!");
+        }
+
+        if(limit < 1){
+            throw new BadRequestException("Limit must not be less than one!");
+        }
+        Pageable numberOfReturnedResults = new PageRequest(0, limit);
+        List<StepSuggestion> foundStepsSuggestions = stepSuggestionDAO
+            .findByContentIgnoreCaseContaining(searchString, numberOfReturnedResults);
+
+        List<StepSuggestionDTO> stepsSuggestionsDTO = stepSuggestionTransformer
+            .toDtoList(foundStepsSuggestions);
+        return stepsSuggestionsDTO;
     }
 }

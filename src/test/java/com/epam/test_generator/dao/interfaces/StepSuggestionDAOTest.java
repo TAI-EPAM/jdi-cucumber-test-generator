@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -116,6 +117,19 @@ public class StepSuggestionDAOTest {
         stepSuggestionDAO.delete(stepSuggestions);
 
         Assert.assertEquals(expectedSize, stepSuggestionDAO.findAll().size());
+    }
+
+    @Test
+    public void findByContentIgnoreCaseContaining_SearchString_Success() {
+        List<StepSuggestion> stepSuggestions = retrieveStepSuggestionList();
+        stepSuggestions =  stepSuggestionDAO.save(stepSuggestions);
+
+        PageRequest numberOfReturnedResults = new PageRequest(0, 10);
+        List<StepSuggestion> content = stepSuggestionDAO
+            .findByContentIgnoreCaseContaining("content", numberOfReturnedResults);
+
+        Assert.assertEquals(stepSuggestions.size(), content.size());
+        Assert.assertEquals(stepSuggestions, content);
     }
 
     private StepSuggestion retrieveStepSuggestion() {

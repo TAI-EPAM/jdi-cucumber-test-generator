@@ -1,7 +1,10 @@
 package com.epam.test_generator.controllers;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -18,6 +21,7 @@ import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -40,6 +44,8 @@ public class StepSuggestionControllerTest {
     private static final int PAGE_NUMBER = 1;
     private static final int PAGE_SIZE = 2;
     private static final StepType STEP_TYPE = StepType.GIVEN;
+    private static final String SEARCH_STRING = "I%20click";
+    private static final int NUMBER_OF_RETURN_RESULTS = 10;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private StepSuggestionDTO stepSuggestionDTO;
@@ -289,5 +295,29 @@ public class StepSuggestionControllerTest {
             .andExpect(status().isInternalServerError());
 
         verify(stepSuggestionService).removeStepSuggestion(eq(SIMPLE_AUTOCOMPLETE_ID));
+    }
+
+    @Test
+    public void searchStepsSuggestions_CorrectSearchString_StatusOk() throws Exception {
+        mockMvc.perform(get("/step-suggestions/search?text=" + SEARCH_STRING + "&limit=" + NUMBER_OF_RETURN_RESULTS))
+            .andExpect(status().isOk());
+
+        verify(stepSuggestionService).findStepsSuggestions(eq(SEARCH_STRING), eq(NUMBER_OF_RETURN_RESULTS));
+    }
+    @Test
+    public void searchStepsSuggestions_IncorrectSearchString_StatusBadRequest() throws Exception {
+        doThrow(BadRequestException.class).when(stepSuggestionService).findStepsSuggestions("", NUMBER_OF_RETURN_RESULTS);
+        mockMvc.perform(get("/step-suggestions/search?text=" + "" + "&limit=" + NUMBER_OF_RETURN_RESULTS))
+            .andExpect(status().isBadRequest());
+        verify(stepSuggestionService).findStepsSuggestions(eq(""), eq(NUMBER_OF_RETURN_RESULTS));
+    }
+
+    @Test
+    public void searchStepsSuggestions_IncorrectLimit_StatusBadRequest() throws Exception {
+        int limit = -1;
+        doThrow(BadRequestException.class).when(stepSuggestionService).findStepsSuggestions(SEARCH_STRING, limit);
+        mockMvc.perform(get("/step-suggestions/search?text=" + SEARCH_STRING + "&limit=" + limit))
+            .andExpect(status().isBadRequest());
+        verify(stepSuggestionService).findStepsSuggestions(eq(SEARCH_STRING), eq(limit));
     }
 }

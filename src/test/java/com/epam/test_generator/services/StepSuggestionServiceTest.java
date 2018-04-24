@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,7 @@ import com.epam.test_generator.dto.StepSuggestionDTO;
 import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.StepSuggestionTransformer;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,6 +40,8 @@ public class StepSuggestionServiceTest {
     private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
     private static final long SIMPLE_STEP_SUGGESTION_ID = 1L;
     private static final int PAGE_SIZE = 1;
+    private static final String SEARCH_STRING = "I%20click";
+    private static final int NUMBER_OF_RETURN_RESULTS = 10;
 
     @Mock
     private StepSuggestionTransformer stepSuggestionTransformer;
@@ -225,5 +230,29 @@ public class StepSuggestionServiceTest {
 
         stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
     }
+
+    @Test
+    public void findStepsSuggestions_CorrectSearchString_Success() {
+        when(stepSuggestionDAO.findByContentIgnoreCaseContaining(eq(SEARCH_STRING), any())).thenReturn(listSteps);
+        when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
+
+        stepSuggestionService.findStepsSuggestions(SEARCH_STRING, NUMBER_OF_RETURN_RESULTS);
+
+        verify(stepSuggestionDAO).findByContentIgnoreCaseContaining(eq(SEARCH_STRING), any());
+        verify(stepSuggestionTransformer).toDtoList(listSteps);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void findStepsSuggestions_IncorrectSearchString_BadRequestException() {
+        stepSuggestionService.findStepsSuggestions("", NUMBER_OF_RETURN_RESULTS);
+
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void findStepsSuggestions_IncorrectLimit_Success() {
+        stepSuggestionService.findStepsSuggestions(SEARCH_STRING, -5);
+    }
+
+
 
 }
