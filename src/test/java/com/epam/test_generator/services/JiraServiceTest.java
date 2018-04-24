@@ -30,7 +30,7 @@ import com.epam.test_generator.pojo.JiraProject;
 import com.epam.test_generator.pojo.JiraStatus;
 import com.epam.test_generator.pojo.JiraStory;
 import com.epam.test_generator.pojo.JiraSubTask;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -265,8 +265,8 @@ public class JiraServiceTest {
         when(removedIssueDAO.findAll()).thenReturn(Collections.singletonList(removedIssue));
 
         doAnswer( s -> {
-            caze.setLastJiraSyncDate(LocalDateTime.now().minusMinutes(1));
-            caze.setLastModifiedDate(LocalDateTime.now());
+            caze.setLastJiraSyncDate(ZonedDateTime.now().minusMinutes(1));
+            caze.setLastModifiedDate(ZonedDateTime.now());
             return null;
         }).when(jiraSubStoryDAO).createSubStory(JIRA_SETTINGS_ID, caze);
 
@@ -281,8 +281,8 @@ public class JiraServiceTest {
     public void syncToJiraFromBDD_SuitWithCaseWithIssueToDelete_JiraUpdated() {
         testSuit.getCases().add(new Case());
 
-        testSuit.setLastJiraSyncDate(LocalDateTime.now().minusMinutes(1));
-        testSuit.setLastModifiedDate(LocalDateTime.now());
+        testSuit.setLastJiraSyncDate(ZonedDateTime.now().minusMinutes(1));
+        testSuit.setLastModifiedDate(ZonedDateTime.now());
         testSuit.setStatus(Status.PASSED);
 
         when(suitDAO.findAll()).thenReturn(Collections.singletonList(testSuit));

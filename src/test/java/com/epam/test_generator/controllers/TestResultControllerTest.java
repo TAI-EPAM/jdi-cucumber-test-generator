@@ -16,7 +16,7 @@ import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.TestResultService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,8 +40,8 @@ public class TestResultControllerTest {
     private static final Integer FROM = 2;
     private static final Integer TO = 3;
     private static final Integer NEGATIVE = -5;
-    private LocalDate FROM_DATE;
-    private LocalDate TO_DATE;
+    private ZonedDateTime FROM_DATE;
+    private ZonedDateTime TO_DATE;
 
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
@@ -61,8 +61,8 @@ public class TestResultControllerTest {
             .setControllerAdvice(new GlobalExceptionController()).build();
 
         testResultDTOS = new ArrayList<>();
-        FROM_DATE = LocalDate.of(2018,2,26);
-        TO_DATE = LocalDate.of(2018,2,27);
+        FROM_DATE = ZonedDateTime.parse("2018-02-26T00:00Z");
+        TO_DATE = ZonedDateTime.parse("2018-02-27T00:00Z");
 
         testResultDTOS = Stream.generate(this::generateSimpleTestResultDTO).limit(4)
             .collect(Collectors.toList());
@@ -164,14 +164,17 @@ public class TestResultControllerTest {
         when(testResultService.getTestResults(SIMPLE_PROJECT_ID, FROM_DATE, TO_DATE))
             .thenReturn(testResultDTOS.subList(1, 2));
 
+        Long from = ZonedDateTime.parse("2018-02-26T00:00Z").toInstant().toEpochMilli();
+        Long to = ZonedDateTime.parse("2018-02-27T00:00Z").toInstant().toEpochMilli();
+
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/tests/results/dates")
-                .param("from", "2018-02-26")
-                .param("to", "2018-02-27"))
+                .param("from", from.toString())
+                .param("to", to.toString()))
             .andExpect(status().isOk());
 
         verify(testResultService)
-            .getTestResults(eq(SIMPLE_PROJECT_ID), any(LocalDate.class), any(LocalDate.class));
+            .getTestResults(eq(SIMPLE_PROJECT_ID), any(ZonedDateTime.class), any(ZonedDateTime.class));
     }
 
     @Test
@@ -188,15 +191,15 @@ public class TestResultControllerTest {
     }
 
     private TestResultDTO generateSimpleTestResultDTO() {
-        return crateTestResultDTOWithDate(LocalDate.of(2018,2,20));
+        return crateTestResultDTOWithDate(ZonedDateTime.parse("2018-02-20T00:00Z"));
     }
 
-    private TestResultDTO crateTestResultDTOWithDate(LocalDate date) {
+    private TestResultDTO crateTestResultDTOWithDate(ZonedDateTime date) {
         TestResultDTO testResultDTO = new TestResultDTO();
         testResultDTO.setAmountOfFailed(0);
         testResultDTO.setAmountOfPassed(1);
         testResultDTO.setAmountOfSkipped(0);
-        testResultDTO.setDate(date);
+        testResultDTO.setDate(date.toInstant().toEpochMilli());
         testResultDTO.setDuration(0L);
         testResultDTO.setExecutedBy("User Userovich");
         testResultDTO.setStatus(Status.PASSED);

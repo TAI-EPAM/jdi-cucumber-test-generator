@@ -2,10 +2,7 @@ package com.epam.test_generator.entities;
 
 import com.epam.test_generator.entities.api.TokenTrait;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -34,12 +31,12 @@ public class Token implements TokenTrait {
     private User user;
 
     @NotNull
-    private Date expiryDate;
+    private ZonedDateTime expiryDate;
 
     public static Token withExpiryDuration(Integer minutes) {
         Token token = new Token();
         token.tokenUuid = UUID.randomUUID().toString();
-        token.expiryDate = Date.from(Instant.now().plus(minutes, ChronoUnit.MINUTES));
+        token.expiryDate = ZonedDateTime.now().plusMinutes(minutes);
         return token;
     }
 
@@ -63,14 +60,12 @@ public class Token implements TokenTrait {
         this.user = user;
     }
 
-    public Date getExpiryDate() {
+    public ZonedDateTime getExpiryDate() {
         return expiryDate;
     }
 
     public void setExpiryDate(int minutes) {
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, minutes);
-        this.expiryDate = now.getTime();
+        this.expiryDate = ZonedDateTime.now().plusMinutes(minutes);
     }
 
     @Override

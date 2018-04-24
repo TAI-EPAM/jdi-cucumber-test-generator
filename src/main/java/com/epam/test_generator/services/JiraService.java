@@ -28,7 +28,7 @@ import com.epam.test_generator.pojo.JiraSubTask;
 import com.epam.test_generator.pojo.PropertyDifference;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -201,7 +201,7 @@ public class JiraService {
         suit.setJiraKey(jiraStory.getJiraKey());
         suit.setJiraProjectKey(jiraStory.getJiraProjectKey());
         suit.setPriority(getPriority(jiraStory.getPriority()));
-        suit.setLastModifiedDate(LocalDateTime.now());
+        suit.setLastModifiedDate(ZonedDateTime.now());
         suit.setLastJiraSyncDate(suit.getLastModifiedDate());
         suit.setStatus(getBDDStatus(jiraStory));
         return suit;
@@ -220,7 +220,7 @@ public class JiraService {
         caze.setJiraKey(jiraSubTask.getJiraKey());
         caze.setJiraParentKey(jiraSubTask.getJiraParentKey());
         caze.setJiraProjectKey(jiraSubTask.getJiraProjectKey());
-        caze.setLastModifiedDate(LocalDateTime.now());
+        caze.setLastModifiedDate(ZonedDateTime.now());
         caze.setLastJiraSyncDate(caze.getLastModifiedDate());
 
         caseDAO.save(caze);
@@ -268,7 +268,7 @@ public class JiraService {
         caze.setName(jiraSubTask.getName());
         caze.setDescription(jiraSubTask.getDescription());
         caze.setPriority(getPriority(jiraSubTask.getPriority()));
-        caze.setLastJiraSyncDate(LocalDateTime.now());
+        caze.setLastJiraSyncDate(ZonedDateTime.now());
         caseDAO.save(caze);
     }
 

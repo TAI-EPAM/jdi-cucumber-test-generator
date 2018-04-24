@@ -3,10 +3,8 @@ package com.epam.test_generator.entities;
 import com.epam.test_generator.entities.api.CaseTrait;
 import com.epam.test_generator.entities.api.JiraSuitAndCaseTrait;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -49,17 +47,17 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
 
     private String jiraParentKey;
 
-    private LocalDateTime lastModifiedDate;
+    private ZonedDateTime lastModifiedDate;
 
-    private LocalDateTime lastJiraSyncDate;
+    private ZonedDateTime lastJiraSyncDate;
 
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Step> steps;
 
-    private Date creationDate;
+    private ZonedDateTime creationDate;
 
-    private Date updateDate;
+    private ZonedDateTime updateDate;
 
     private Integer priority;
 
@@ -72,7 +70,7 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
     private String comment;
 
     public Case() {
-        creationDate = Calendar.getInstance().getTime();
+        creationDate = ZonedDateTime.now();
         updateDate = creationDate;
     }
 
@@ -89,8 +87,8 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         this.comment = comment;
     }
 
-    public Case(String name, String description, List<Step> steps, Date creationDate,
-                Date updateDate,
+    public Case(String name, String description, List<Step> steps, ZonedDateTime creationDate,
+                ZonedDateTime updateDate,
                 Integer priority, Set<Tag> tags, Status status, String comment) {
         this.name = name;
         this.description = description;
@@ -182,19 +180,19 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         tags.add(tag);
     }
 
-    public Date getCreationDate() {
+    public ZonedDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getUpdateDate() {
+    public ZonedDateTime getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(ZonedDateTime updateDate) {
         this.updateDate = updateDate;
     }
 
@@ -255,19 +253,19 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         this.jiraParentKey = jiraParentKey;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public ZonedDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public LocalDateTime getLastJiraSyncDate() {
+    public ZonedDateTime getLastJiraSyncDate() {
         return lastJiraSyncDate;
     }
 
-    public void setLastJiraSyncDate(LocalDateTime lastJiraSyncDate) {
+    public void setLastJiraSyncDate(ZonedDateTime lastJiraSyncDate) {
         this.lastJiraSyncDate = lastJiraSyncDate;
     }
 

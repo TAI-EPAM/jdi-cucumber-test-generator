@@ -5,8 +5,8 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Tag;
 import com.google.common.collect.Sets;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,17 +102,16 @@ public class CaseDAOTest {
     @Test
     public void updateDate_Case_Success() {
         Case originalCase = retrieveCase();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, Calendar.SEPTEMBER, 9);
+        ZonedDateTime date = ZonedDateTime.parse("2017-09-09T00:00Z");
 
-        originalCase.setUpdateDate(calendar.getTime());
-        originalCase.setCreationDate(calendar.getTime());
+        originalCase.setUpdateDate(date);
+        originalCase.setCreationDate(date);
         caseDAO.save(originalCase);
-        originalCase.setUpdateDate(Calendar.getInstance().getTime());
+        originalCase.setUpdateDate(ZonedDateTime.now());
         long id = caseDAO.save(originalCase).getId();
 
         Case newCase = retrieveCase();
-        newCase.setCreationDate(calendar.getTime());
+        newCase.setCreationDate(date);
         newCase.setId(id);
 
         Assert.assertEquals(newCase, caseDAO.findOne(id));
@@ -161,21 +160,21 @@ public class CaseDAOTest {
     private Case retrieveCase() {
 
         return new Case("Case name", "Case description", new ArrayList<>(),
-            Calendar.getInstance().getTime(), Calendar.getInstance().getTime(),
+            ZonedDateTime.now(), ZonedDateTime.now(),
             3, new HashSet<>(), Status.NOT_RUN, "comment");
     }
 
     private List<Case> retrieveCaseList() {
 
         Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(),
-            Calendar.getInstance().getTime(),
-            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
+            ZonedDateTime.now(),
+            ZonedDateTime.now(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
         Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(),
-            Calendar.getInstance().getTime(),
-            Calendar.getInstance().getTime(), 1, new HashSet<>(), Status.NOT_RUN, "comment");
+            ZonedDateTime.now(),
+            ZonedDateTime.now(), 1, new HashSet<>(), Status.NOT_RUN, "comment");
         Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(),
-            Calendar.getInstance().getTime(),
-            Calendar.getInstance().getTime(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
+            ZonedDateTime.now(),
+            ZonedDateTime.now(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
 
         ArrayList<Case> cases = new ArrayList<>();
         cases.add(case1);

@@ -9,14 +9,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.time.LocalDate;
-
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -116,13 +115,16 @@ public class TestResultController {
     @GetMapping("/results/dates")
     public ResponseEntity<List<TestResultDTO>> getTestRunResultsFromToByDate(
         @PathVariable("projectId") long projectId,
-        @RequestParam(value = "from") @DateTimeFormat(iso = ISO.DATE) LocalDate from,
-        @RequestParam(value = "to") @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
+        @RequestParam(value = "from") long from,
+        @RequestParam(value = "to") long to) {
 
-        if (from.isAfter(to)) {
+        ZonedDateTime fromDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(from), ZoneId.systemDefault());
+        ZonedDateTime toDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(to), ZoneId.systemDefault());
+
+        if (fromDateTime.isAfter(toDateTime)) {
             throw new BadRequestException("Incorrect date range");
         }
-        return new ResponseEntity<>(testResultService.getTestResults(projectId, from, to),
+        return new ResponseEntity<>(testResultService.getTestResults(projectId, fromDateTime, toDateTime),
             HttpStatus.OK);
     }
 

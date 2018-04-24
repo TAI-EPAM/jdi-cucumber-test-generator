@@ -12,8 +12,6 @@ import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.step.response.StepDTO;
-import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -24,7 +22,7 @@ import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
 import com.epam.test_generator.controllers.tag.TagTransformer;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,10 +103,10 @@ public class CaseService {
 
         caze.setJiraParentKey(suit.getJiraKey());
         caze.setJiraProjectKey(suit.getJiraProjectKey());
-        Date currentTime = Calendar.getInstance().getTime();
+        ZonedDateTime currentTime = ZonedDateTime.now();
         caze.setCreationDate(currentTime);
         caze.setUpdateDate(currentTime);
-        caze.setLastModifiedDate(LocalDateTime.now());
+        caze.setLastModifiedDate(currentTime);
         caze = caseDAO.save(caze);
 
         suit.addCase(caze);

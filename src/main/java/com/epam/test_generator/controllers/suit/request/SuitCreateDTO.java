@@ -7,8 +7,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Set;
 
 public class SuitCreateDTO {
@@ -27,10 +25,7 @@ public class SuitCreateDTO {
 
     private Set<TagDTO> tags;
 
-    private Date creationDate;
-
     public SuitCreateDTO() {
-        creationDate = Calendar.getInstance().getTime();
     }
 
     public SuitCreateDTO(String name, String description) {
@@ -70,14 +65,6 @@ public class SuitCreateDTO {
         this.description = description;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
     @Override
     public String toString() {
         return "Suit{name='" + name + '\'' +
@@ -99,13 +86,12 @@ public class SuitCreateDTO {
         return Objects.equals(name, that.name) &&
             Objects.equals(priority, that.priority) &&
             Objects.equals(description, that.description) &&
-            Objects.equals(tags, that.tags) &&
-            Objects.equals(creationDate, that.creationDate);
+            Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(name, priority, description, tags, creationDate);
+        return Objects.hash(name, priority, description, tags);
     }
 }

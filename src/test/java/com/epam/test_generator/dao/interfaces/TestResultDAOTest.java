@@ -4,6 +4,7 @@ import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.results.TestResult;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,9 +87,9 @@ public class TestResultDAOTest {
         assertThat(projectId, is(notNullValue()));
 
         TestResult testWithDateBefore =
-            createTestResultOf(LocalDate.of(2018, Month.MARCH, 1), currentProject);
+            createTestResultOf(ZonedDateTime.parse("2018-03-01T00:00Z"), currentProject);
         TestResult testWithDateAfter =
-            createTestResultOf(LocalDate.of(2018, Month.JANUARY, 1), currentProject);
+            createTestResultOf(ZonedDateTime.parse("2018-01-01T00:00Z"), currentProject);
 
         testResultDAO.save(testWithDateBefore);
         testResultDAO.save(testWithDateAfter);
@@ -100,8 +98,8 @@ public class TestResultDAOTest {
 
         assertThat(all.size(), is(equalTo(12)));
 
-        LocalDate beforeDate = testWithDateBefore.getDate();
-        LocalDate afterDate = testWithDateAfter.getDate();
+        ZonedDateTime beforeDate = testWithDateBefore.getDate();
+        ZonedDateTime afterDate = testWithDateAfter.getDate();
 
         List<TestResult> allByProjectIdAndDateIsBetween = testResultDAO
             .findAllByProjectIdAndDateAfterAndDateBefore(projectId, afterDate, beforeDate);
@@ -110,7 +108,7 @@ public class TestResultDAOTest {
 
     }
 
-    private TestResult createTestResultOf(LocalDate date, Project project) {
+    private TestResult createTestResultOf(ZonedDateTime date, Project project) {
 
         TestResult result = newTestResult();
         result.setProject(project);
@@ -122,8 +120,7 @@ public class TestResultDAOTest {
     private TestResult newTestResult() {
 
         TestResult testResult = new TestResult();
-        testResult.setDate(
-            LocalDate.of(2018, Month.FEBRUARY, 24));
+        testResult.setDate(ZonedDateTime.parse("2018-02-24T00:00Z"));
         testResult.setDuration(0);
         testResult.setAmountOfPassed(1);
         testResult.setAmountOfSkipped(0);

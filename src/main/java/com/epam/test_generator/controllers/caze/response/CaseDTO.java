@@ -3,8 +3,6 @@ package com.epam.test_generator.controllers.caze.response;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -29,9 +27,9 @@ public class CaseDTO {
     @Valid
     private List<StepDTO> steps;
 
-    private Date creationDate;
+    private long creationDate;
 
-    private Date updateDate;
+    private long updateDate;
 
     @NotNull
     @Min(value = 1)
@@ -48,7 +46,7 @@ public class CaseDTO {
     private String comment;
 
     public CaseDTO() {
-        creationDate = Calendar.getInstance().getTime();
+        creationDate = System.currentTimeMillis();
         updateDate = creationDate;
     }
 
@@ -96,19 +94,19 @@ public class CaseDTO {
         this.steps = steps;
     }
 
-    public Date getCreationDate() {
+    public long getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(long creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getUpdateDate() {
+    public long getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(long updateDate) {
         this.updateDate = updateDate;
     }
 

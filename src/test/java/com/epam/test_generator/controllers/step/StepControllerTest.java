@@ -31,6 +31,7 @@ import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -95,12 +96,12 @@ public class StepControllerTest {
 
         CaseDTO caseDTO = new CaseDTO();
         caseDTO.setId(SIMPLE_CASE_ID);
-        caseDTO.setCreationDate(formatter.parse("12.05.2017"));
+        caseDTO.setCreationDate(ZonedDateTime.parse("2017-05-12T00:00Z").toInstant().toEpochMilli());
         caseDTO.setDescription("description of case");
         caseDTO.setSteps(stepDTOS);
         caseDTO.setPriority(2);
         caseDTO.setTags(null);
-        caseDTO.setUpdateDate(formatter.parse("13.06.2017"));
+        caseDTO.setUpdateDate(ZonedDateTime.parse("2017-06-13T00:00Z").toInstant().toEpochMilli());
 
         List<CaseDTO> caseDTOS = new ArrayList<>();
         Set<TagDTO> tagDTOS = new HashSet<>();
@@ -111,7 +112,7 @@ public class StepControllerTest {
 
         suitDTO.setId(SIMPLE_SUIT_ID);
         suitDTO.setCases(caseDTOS);
-        suitDTO.setCreationDate(formatter.parse("11.11.2011"));
+        suitDTO.setCreationDate(ZonedDateTime.parse("2011-11-11T00:00Z").toInstant().toEpochMilli());
         suitDTO.setDescription("description of suit");
         suitDTO.setName("the name of suit");
         suitDTO.setPriority(1);

@@ -6,6 +6,7 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.time.ZonedDateTime;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class SuitDAOTest {
         Tag tagWithNullId = new Tag("tag with null id");
         Tag tagWithNotNullId = tagDAO.save(new Tag("tag with not null id"));
 
-        Suit suit = new Suit("name", "desc", 4, null,
+        Suit suit = new Suit("name", "desc", 4, null, null,
             Sets.newHashSet(tagWithNotNullId, tagWithNullId), null, 1);
         Suit savedSuit = suitDAO.save(suit);
 
@@ -79,7 +80,7 @@ public class SuitDAOTest {
         caze.setName("test");
         caze.addTag(tag);
 
-        Suit suit = new Suit("name", "desc", 4, null, null,
+        Suit suit = new Suit("name", "desc", 4, null, null, null,
             Lists.newArrayList(caze), 1);
 
         Suit savedSuit = suitDAO.save(suit);
@@ -273,7 +274,8 @@ public class SuitDAOTest {
             "Suit1",
             "Suit1 description",
             3,
-            Calendar.getInstance().getTime(),
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
             retrieveTagList("tag1", "tag2"),
             new ArrayList<>(),
             1);
@@ -284,16 +286,18 @@ public class SuitDAOTest {
             "Suit1",
             "Suit1 description",
             5,
-            Calendar.getInstance().getTime(),
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
             retrieveTagList("tag1", "tag2"),
             new ArrayList<>(),
             1);
 
         Suit suit2 = new Suit("Suit2", "Suit2 description", 5,
-            Calendar.getInstance().getTime(), retrieveTagList("tag1"), new ArrayList<>(), 1);
+            ZonedDateTime.now(), ZonedDateTime.now(),
+            retrieveTagList("tag1"), new ArrayList<>(), 1);
 
         Suit suit3 = new Suit("Suit3", "Suit3 description", 5,
-            Calendar.getInstance().getTime(),
+            ZonedDateTime.now(), ZonedDateTime.now(),
             retrieveTagList("tag1", "tag3"), new ArrayList<>(), 1);
 
         List<Suit> suits = new ArrayList<>();

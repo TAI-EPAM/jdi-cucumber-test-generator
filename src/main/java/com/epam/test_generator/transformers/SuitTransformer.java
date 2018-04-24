@@ -31,7 +31,6 @@ public class SuitTransformer {
         suit.setName(suitCreateDTO.getName());
         suit.setDescription(suitCreateDTO.getDescription());
         suit.setPriority(suitCreateDTO.getPriority());
-        suit.setCreationDate(suitCreateDTO.getCreationDate());
         if (suitCreateDTO.getTags() != null) {
             List<TagDTO> tagDTOs = new ArrayList<>(suitCreateDTO.getTags());
             suit.setTags(getSetOfTagsFromListOfTagDTOs(tagDTOs));
@@ -45,7 +44,8 @@ public class SuitTransformer {
         suitDTO.setName(suit.getName());
         suitDTO.setDescription(suit.getDescription());
         suitDTO.setPriority(suit.getPriority());
-        suitDTO.setCreationDate(suit.getCreationDate());
+        suitDTO.setCreationDate(suit.getCreationDate().toInstant().toEpochMilli());
+        suitDTO.setUpdateDate(suit.getUpdateDate().toInstant().toEpochMilli());
         suitDTO.setRowNumber(suit.getRowNumber());
         suitDTO.setStatus(suit.getStatus());
         if (suit.getTags() != null) {

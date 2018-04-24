@@ -1,7 +1,7 @@
 package com.epam.test_generator.entities.results;
 
 import com.epam.test_generator.entities.Project;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class TestResult extends AbstractResult implements ResultTrait {
 
-    private LocalDate date;
+    private ZonedDateTime date;
 
     private String executedBy;
 
@@ -22,7 +22,7 @@ public class TestResult extends AbstractResult implements ResultTrait {
     private int amountOfSkipped;
 
     public TestResult() {
-        date = LocalDate.now();
+        date = ZonedDateTime.now();
     }
 
     @ManyToOne
@@ -31,11 +31,11 @@ public class TestResult extends AbstractResult implements ResultTrait {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<SuitResult> suitResults;
 
-    public LocalDate getDate() {
+    public ZonedDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(ZonedDateTime date) {
         this.date = date;
     }
 

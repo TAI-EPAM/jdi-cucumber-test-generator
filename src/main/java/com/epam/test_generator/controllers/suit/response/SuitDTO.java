@@ -3,7 +3,6 @@ package com.epam.test_generator.controllers.suit.response;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -30,7 +29,9 @@ public class SuitDTO {
     @Max(value = 5)
     private Integer priority;
 
-    private Date creationDate;
+    private long creationDate;
+
+    private long updateDate;
 
     private Set<TagDTO> tags;
 
@@ -91,11 +92,11 @@ public class SuitDTO {
         this.priority = priority;
     }
 
-    public Date getCreationDate() {
+    public long getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(long creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -121,6 +122,14 @@ public class SuitDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public long getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(long updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override

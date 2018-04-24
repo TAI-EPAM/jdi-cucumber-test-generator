@@ -13,7 +13,7 @@ public class TestResultTransformer {
 
     public TestResultDTO toDto(TestResult testResult) {
         TestResultDTO dto = new TestResultDTO();
-        dto.setDate(testResult.getDate());
+        dto.setDate(testResult.getDate().toInstant().toEpochMilli());
         dto.setDuration(testResult.getDuration());
         dto.setExecutedBy(testResult.getExecutedBy());
         dto.setStatus(testResult.getStatus());

@@ -15,8 +15,8 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +33,7 @@ public class SuitTransformerTest {
     private static final String SUIT_DESCRIPTION = "suit description";
     private static final String SUIT_NAME = "suit name";
     private static final int SUIT_PRIORITY = 3;
-    private static final Date SUIT_CREATION_DATE = new Date(1995, 9, 1, 12, 45);
+    private static final ZonedDateTime SUIT_CREATION_DATE = ZonedDateTime.parse("1995-09-01T12:45Z");
     private static final String TAG_NAME_1 = "tag_1";
     private static final String TAG_NAME_2 = "tag_2";
     private static final Long SUIT_ID = 42L;
@@ -82,7 +82,6 @@ public class SuitTransformerTest {
     @Test
     public void createEntityFromDTO_SuitCreateDTO_Success() throws Exception {
         SuitCreateDTO dto = new SuitCreateDTO();
-        dto.setCreationDate(SUIT_CREATION_DATE);
         dto.setDescription(SUIT_DESCRIPTION);
         dto.setName(SUIT_NAME);
         dto.setPriority(SUIT_PRIORITY);
@@ -90,7 +89,6 @@ public class SuitTransformerTest {
 
         Suit suit = suitTransformer.fromDto(dto);
 
-        assertEquals(SUIT_CREATION_DATE, suit.getCreationDate());
         assertEquals(SUIT_DESCRIPTION, suit.getDescription());
         assertEquals(SUIT_NAME, suit.getName());
         assertEquals(SUIT_PRIORITY, suit.getPriority().longValue());
@@ -117,7 +115,7 @@ public class SuitTransformerTest {
         assertEquals(suit.getDescription(), dto.getDescription());
         assertEquals(suit.getRowNumber(), dto.getRowNumber());
         assertEquals(suit.getPriority(), dto.getPriority());
-        assertEquals(suit.getCreationDate(), dto.getCreationDate());
+        assertEquals(suit.getCreationDate().toInstant().toEpochMilli(), dto.getCreationDate());
         assertEquals(suit.getStatus(), dto.getStatus());
         assertEquals(tagDtos, dto.getTags());
         assertEquals(caseDtos, dto.getCases());

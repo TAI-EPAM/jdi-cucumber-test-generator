@@ -9,7 +9,7 @@ import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.results.TestResult;
 import com.epam.test_generator.entities.factory.TestResultFactory;
 import com.epam.test_generator.services.exceptions.BadRequestException;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -67,7 +67,7 @@ public class TestResultService {
      * @param to every date of every element has to be before than this.
      * @return list of {@link TestResult}
      */
-    public List<TestResultDTO> getTestResults(long projectId, LocalDate from, LocalDate to) {
+    public List<TestResultDTO> getTestResults(long projectId, ZonedDateTime from, ZonedDateTime to) {
         if (from == null || to == null) {
             throw new BadRequestException("Illegal argument");
         }

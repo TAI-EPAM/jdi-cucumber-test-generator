@@ -20,7 +20,7 @@ import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.transformers.SuitTransformer;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -89,7 +89,10 @@ public class SuitService {
     public SuitDTO addSuit(Long projectId, SuitCreateDTO suitCreateDTO) {
         Project project = projectService.getProjectByProjectId(projectId);
         Suit suit = suitDAO.save(suitTransformer.fromDto(suitCreateDTO));
-        suit.setLastModifiedDate(LocalDateTime.now());
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
+        suit.setCreationDate(currentDateTime);
+        suit.setUpdateDate(currentDateTime);
+        suit.setLastModifiedDate(currentDateTime);
 
         suitVersionDAO.save(suit);
 
@@ -119,7 +122,9 @@ public class SuitService {
         Suit suit = getSuit(projectId, suitId);
 
         suitTransformer.mapDTOToEntity(suitUpdateDTO, suit);
-        suit.setLastModifiedDate(LocalDateTime.now());
+        ZonedDateTime now = ZonedDateTime.now();
+        suit.setUpdateDate(now);
+        suit.setLastModifiedDate(now);
 
         suitDAO.save(suit);
         suitVersionDAO.save(suit);

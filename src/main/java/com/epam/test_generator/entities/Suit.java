@@ -3,10 +3,8 @@ package com.epam.test_generator.entities;
 import com.epam.test_generator.entities.api.JiraSuitAndCaseTrait;
 import com.epam.test_generator.entities.api.SuitTrait;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +41,9 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
 
     private Integer priority;
 
-    private Date creationDate;
+    private ZonedDateTime creationDate;
+
+    private ZonedDateTime updateDate;
 
     private String jiraKey;
 
@@ -52,9 +52,9 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private LocalDateTime lastModifiedDate;
+    private ZonedDateTime lastModifiedDate;
 
-    private LocalDateTime lastJiraSyncDate;
+    private ZonedDateTime lastJiraSyncDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Tag> tags;
@@ -65,11 +65,13 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
     private Integer rowNumber;
 
     public Suit() {
-        creationDate = Calendar.getInstance().getTime();
+        this.creationDate = ZonedDateTime.now();
+        this.updateDate = this.creationDate;
     }
 
     public Suit(Long id, String name, String description, List<Case> cases, Integer priority,
                 Set<Tag> tags, int rowNumber) {
+        this();
         this.id = id;
         this.name = name;
         this.description = description;
@@ -79,35 +81,40 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
         this.rowNumber = rowNumber;
     }
 
-    public Suit(String name, String description, Integer priority, Date creationDate, Set<Tag> tags,
+    public Suit(String name, String description, Integer priority, ZonedDateTime creationDate,
+                ZonedDateTime updateDate, Set<Tag> tags, List<Case> cases, int rowNumber) {
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
+        this.tags = tags;
+        this.cases = cases;
+        this.rowNumber = rowNumber;
+    }
+
+    public Suit(Long id, String name, String description, Integer priority,
+                ZonedDateTime creationDate, ZonedDateTime updateDate, Set<Tag> tags,
                 List<Case> cases, int rowNumber) {
-        this.name = name;
-        this.description = description;
-        this.priority = priority;
-        this.creationDate = creationDate;
-        this.tags = tags;
-        this.cases = cases;
-        this.rowNumber = rowNumber;
-    }
-
-    public Suit(Long id, String name, String description, Integer priority, Date creationDate,
-                Set<Tag> tags, List<Case> cases, int rowNumber) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.priority = priority;
         this.creationDate = creationDate;
+        this.updateDate = updateDate;
         this.tags = tags;
         this.cases = cases;
         this.rowNumber = rowNumber;
     }
 
     public Suit(String name, String description) {
+        this();
         this.name = name;
         this.description = description;
     }
 
     public Suit(long id, String name, String description) {
+        this();
         this.id = id;
         this.name = name;
         this.description = description;
@@ -179,11 +186,11 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
         this.priority = priority;
     }
 
-    public Date getCreationDate() {
+    public ZonedDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -234,19 +241,19 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
         this.jiraProjectKey = jiraProjectKey;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public ZonedDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public LocalDateTime getLastJiraSyncDate() {
+    public ZonedDateTime getLastJiraSyncDate() {
         return lastJiraSyncDate;
     }
 
-    public void setLastJiraSyncDate(LocalDateTime lastJiraSyncDate) {
+    public void setLastJiraSyncDate(ZonedDateTime lastJiraSyncDate) {
         this.lastJiraSyncDate = lastJiraSyncDate;
     }
 
@@ -263,21 +270,22 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
         return result;
     }
 
+    public ZonedDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(ZonedDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
     @Override
     public String toString() {
-        return "Suit{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", priority=" + priority +
-            ", status=" + status +
-            ", creationDate=" + creationDate +
-            ", jiraKey='" + jiraKey + '\'' +
-            ", jiraProjectKey='" + jiraProjectKey + '\'' +
-            ", tags=" + tags +
-            ", cases=" + cases +
-            ", rowNumber=" + rowNumber +
-            '}';
+        return String.format(
+            "Suit{ id= %s, name= %s, description= %s, priority = %s, status = %s,"
+                + " creationDate = %s, updateDate = %s, jiraKey = %s, jiraProjectKey = %s,"
+                + " tags= %s, cases = %s, rowNumber = %s};",
+            id, name, description, priority, status, creationDate, updateDate, jiraKey,
+            jiraProjectKey, tags, cases, rowNumber);
     }
 
     @Override
@@ -303,10 +311,7 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
 
     @Override
     public int hashCode() {
-
-        return Objects
-            .hash(id, name, description, priority, status, jiraKey, jiraProjectKey, tags,
-                cases,
-                rowNumber);
+        return Objects.hash(id, name, description, priority, status, jiraKey, jiraProjectKey, tags,
+            cases, rowNumber);
     }
 }

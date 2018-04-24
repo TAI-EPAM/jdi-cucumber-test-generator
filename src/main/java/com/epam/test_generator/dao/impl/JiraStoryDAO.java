@@ -5,7 +5,7 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraStory;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.rcarz.jiraclient.Field;
@@ -81,7 +81,7 @@ public class JiraStoryDAO {
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(),e);
         }
-        suit.setLastJiraSyncDate(LocalDateTime.now());
+        suit.setLastJiraSyncDate(ZonedDateTime.now());
         suitDAO.save(suit);
     }
 
@@ -110,7 +110,7 @@ public class JiraStoryDAO {
                 .execute();
             suit.setJiraKey(issue.getKey());
             suit.setJiraProjectKey(issue.getProject().getKey());
-            suit.setLastJiraSyncDate(LocalDateTime.now());
+            suit.setLastJiraSyncDate(ZonedDateTime.now());
             suitDAO.save(suit);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);

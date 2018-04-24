@@ -23,11 +23,9 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.results.TestResult;
 import com.epam.test_generator.entities.factory.TestResultFactory;
 import com.epam.test_generator.services.exceptions.BadRequestException;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,12 +96,12 @@ public class TestResultServiceTest {
         step.setId(SUIT_ID);
         step.setDescription("STEP_DESCRIPTION");
 
-        testResult = generateTestResult(LocalDate.now(), 12);
+        testResult = generateTestResult(ZonedDateTime.now(), 12);
 
         testResults = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            testResults.add(generateTestResult(LocalDate.now(), i));
+            testResults.add(generateTestResult(ZonedDateTime.now(), i));
         }
         TestResultDTO testResultDTO = new TestResultDTO();
         testResultDTO.setAmountOfSkipped(0);
@@ -153,14 +151,14 @@ public class TestResultServiceTest {
 
     @Test
     public void getTestResults() {
-        LocalDate from = LocalDate.now();
-        LocalDate to = LocalDate.now().plusDays(3);
+        ZonedDateTime from = ZonedDateTime.now();
+        ZonedDateTime to = from.plusDays(3);
         testResultService.getTestResults(PROJECT_ID, from, to);
         verify(testResultDAO)
             .findAllByProjectIdAndDateAfterAndDateBefore(eq(PROJECT_ID), eq(from), eq(to));
     }
 
-    private TestResult generateTestResult(LocalDate localDate, Integer day) {
+    private TestResult generateTestResult(ZonedDateTime localDate, Integer day) {
         TestResult testResult = new TestResult();
         testResult.setAmountOfPassed(1);
         testResult.setAmountOfFailed(0);

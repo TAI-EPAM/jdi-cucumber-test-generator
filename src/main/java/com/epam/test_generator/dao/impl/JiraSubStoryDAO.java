@@ -5,7 +5,7 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraSubTask;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +59,7 @@ public class JiraSubStoryDAO {
                 .field(Field.SUMMARY, caze.getName())
                 .field(Field.DESCRIPTION, caze.getDescription())
                 .execute();
-            caze.setLastJiraSyncDate(LocalDateTime.now());
+            caze.setLastJiraSyncDate(ZonedDateTime.now());
             caseDAO.save(caze);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
@@ -78,7 +78,7 @@ public class JiraSubStoryDAO {
             caze.setJiraKey(execute.getKey());
             caze.setJiraProjectKey(execute.getProject().getKey());
             caze.setJiraParentKey(execute.getParent().getKey());
-            caze.setLastJiraSyncDate(LocalDateTime.now());
+            caze.setLastJiraSyncDate(ZonedDateTime.now());
             caseDAO.save(caze);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);

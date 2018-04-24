@@ -3,18 +3,14 @@ package com.epam.test_generator.controllers.caze;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.controllers.step.StepTransformer;
-import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CaseDTOsTransformer{
@@ -33,8 +29,8 @@ public class CaseDTOsTransformer{
         caseDTO.setName(caze.getName());
         caseDTO.setDescription(caze.getDescription());
         caseDTO.setSteps(stepTransformer.toDtoList(caze.getSteps()));
-        caseDTO.setCreationDate(caze.getCreationDate());
-        caseDTO.setUpdateDate(caze.getUpdateDate());
+        caseDTO.setCreationDate(caze.getCreationDate().toInstant().toEpochMilli());
+        caseDTO.setUpdateDate(caze.getUpdateDate().toInstant().toEpochMilli());
         caseDTO.setPriority(caze.getPriority());
         caseDTO.setTags(caze.getTags().stream().map(tagTransformer::toDto).collect(Collectors.toSet()));
         caseDTO.setStatus(caze.getStatus());
@@ -72,8 +68,8 @@ public class CaseDTOsTransformer{
             caze.setComment(dto.getComment());
         }
 
-        caze.setUpdateDate(Date.from(Instant.now()));
-        caze.setLastModifiedDate(LocalDateTime.now());
+        caze.setUpdateDate(ZonedDateTime.now());
+        caze.setLastModifiedDate(ZonedDateTime.now());
 
         return caze;
     }
