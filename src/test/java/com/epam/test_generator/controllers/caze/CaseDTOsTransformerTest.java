@@ -62,6 +62,7 @@ public class CaseDTOsTransformerTest {
     private static final List<Step> STEPS = Collections.singletonList(STEP);
     private static final StepDTO STEP_DTO = new StepDTO();
     private static final List<StepDTO> STEP_DTOS = Collections.singletonList(STEP_DTO);
+    private static final Integer ROW_NUMBER = 1;
 
     @Before
     public void setUp() {
@@ -79,6 +80,7 @@ public class CaseDTOsTransformerTest {
         caze.setTags(TAGS);
         caze.setStatus(STATUS);
         caze.setSteps(STEPS);
+        caze.setRowNumber(ROW_NUMBER);
         List<Case> cases = Collections.singletonList(caze);
 
         CaseDTO caseDto = new CaseDTO();
@@ -90,6 +92,7 @@ public class CaseDTOsTransformerTest {
         caseDto.setTags(TAG_DTOS);
         caseDto.setStatus(STATUS);
         caseDto.setSteps(STEP_DTOS);
+        caseDto.setRowNumber(ROW_NUMBER);
         List<CaseDTO> caseDtos = Collections.singletonList(caseDto);
 
         when(tagTransformer.toDto(any(Tag.class))).thenReturn(TAG_DTO);
@@ -113,6 +116,7 @@ public class CaseDTOsTransformerTest {
         caze.setTags(TAGS);
         caze.setStatus(STATUS);
         caze.setSteps(STEPS);
+        caze.setRowNumber(ROW_NUMBER);
 
         CaseDTO caseDto = new CaseDTO();
         caseDto.setId(ID);
@@ -123,6 +127,7 @@ public class CaseDTOsTransformerTest {
         caseDto.setTags(TAG_DTOS);
         caseDto.setStatus(STATUS);
         caseDto.setSteps(STEP_DTOS);
+        caseDto.setRowNumber(ROW_NUMBER);
 
         when(tagTransformer.toDto(any(Tag.class))).thenReturn(TAG_DTO);
         when(stepTransformer.toDtoList(anyList())).thenReturn(STEP_DTOS);

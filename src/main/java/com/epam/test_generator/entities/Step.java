@@ -22,7 +22,7 @@ public class Step implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int rowNumber;
+    private Integer rowNumber;
 
     private String description;
 
@@ -37,7 +37,7 @@ public class Step implements Serializable {
     public Step() {
     }
 
-    public Step(Long id, int rowNumber, String description, StepType type, String comment, Status status) {
+    public Step(Long id, Integer rowNumber, String description, StepType type, String comment, Status status) {
         this.id = id;
         this.rowNumber = rowNumber;
         this.description = description;
@@ -54,11 +54,11 @@ public class Step implements Serializable {
         this.id = id;
     }
 
-    public int getRowNumber() {
+    public Integer getRowNumber() {
         return rowNumber;
     }
 
-    public void setRowNumber(int rowNumber) {
+    public void setRowNumber(Integer rowNumber) {
         this.rowNumber = rowNumber;
     }
 
@@ -115,8 +115,8 @@ public class Step implements Serializable {
             return false;
         }
         Step step = (Step) o;
-        return rowNumber == step.rowNumber &&
-            Objects.equals(id, step.id) &&
+        return Objects.equals(id, step.id) &&
+            Objects.equals(rowNumber, step.rowNumber) &&
             Objects.equals(description, step.description) &&
             type == step.type &&
             status == step.status &&
@@ -125,7 +125,6 @@ public class Step implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, rowNumber, description, type, status, comment);
     }
 }

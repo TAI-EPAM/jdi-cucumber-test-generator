@@ -1,4 +1,4 @@
-package com.epam.test_generator.transformers;
+package com.epam.test_generator.controllers.suit;
 
 import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;

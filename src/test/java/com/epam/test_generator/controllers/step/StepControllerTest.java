@@ -84,7 +84,6 @@ public class StepControllerTest {
 
         stepCreateDTO = new StepCreateDTO();
         stepCreateDTO.setDescription("description of step");
-        stepCreateDTO.setRowNumber(1);
         stepCreateDTO.setType(StepType.THEN);
         stepCreateDTO.setStatus(Status.NOT_RUN);
 

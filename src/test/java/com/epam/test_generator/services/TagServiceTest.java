@@ -25,7 +25,7 @@ import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
-import com.epam.test_generator.transformers.SuitTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import java.util.ArrayList;
 import java.util.Collections;

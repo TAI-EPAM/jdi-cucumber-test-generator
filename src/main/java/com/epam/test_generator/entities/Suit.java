@@ -5,6 +5,7 @@ import com.epam.test_generator.entities.api.SuitTrait;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -215,6 +216,12 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
         if (cases == null) {
             cases = new ArrayList<>();
         }
+        caze.setRowNumber(cases
+            .stream()
+            .map(Case::getRowNumber)
+            .max(Comparator.naturalOrder())
+            .orElse(0)
+            + 1);
         cases.add(caze);
     }
 

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;

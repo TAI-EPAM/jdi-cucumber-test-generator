@@ -172,7 +172,6 @@ public class StepServiceTest {
     public void add_StepToCase_Success() {
         Step newStep = new Step(3L, 3, "Step 3", StepType.AND, "Comment", Status.NOT_RUN);
         StepCreateDTO newStepDTO = new StepCreateDTO();
-        newStepDTO.setRowNumber(3);
         newStepDTO.setDescription("Step 3");
         newStepDTO.setType(StepType.AND);
         newStepDTO.setComment("Comment");

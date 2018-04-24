@@ -47,6 +47,7 @@ public class CaseDAOTest {
 
         Case caze = new Case("name", "desc", null, null, null, 3,
             Sets.newHashSet(tagWithNotNullId, tagWithNullId), null, "comment");
+        caze.setRowNumber(1);
         Case savedCase = caseDAO.save(caze);
 
         caze.setId(savedCase.getId());
@@ -159,9 +160,11 @@ public class CaseDAOTest {
 
     private Case retrieveCase() {
 
-        return new Case("Case name", "Case description", new ArrayList<>(),
+        Case caze = new Case("Case name", "Case description", new ArrayList<>(),
             ZonedDateTime.now(), ZonedDateTime.now(),
             3, new HashSet<>(), Status.NOT_RUN, "comment");
+        caze.setRowNumber(1);
+        return caze;
     }
 
     private List<Case> retrieveCaseList() {
@@ -169,12 +172,15 @@ public class CaseDAOTest {
         Case case1 = new Case("Case1 name", "Case1 description", new ArrayList<>(),
             ZonedDateTime.now(),
             ZonedDateTime.now(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
+        case1.setRowNumber(1);
         Case case2 = new Case("Case2 name", "Case2 description", new ArrayList<>(),
             ZonedDateTime.now(),
             ZonedDateTime.now(), 1, new HashSet<>(), Status.NOT_RUN, "comment");
+        case2.setRowNumber(2);
         Case case3 = new Case("Case3 name", "Case3 description", new ArrayList<>(),
             ZonedDateTime.now(),
             ZonedDateTime.now(), 3, new HashSet<>(), Status.NOT_RUN, "comment");
+        case3.setRowNumber(3);
 
         ArrayList<Case> cases = new ArrayList<>();
         cases.add(case1);

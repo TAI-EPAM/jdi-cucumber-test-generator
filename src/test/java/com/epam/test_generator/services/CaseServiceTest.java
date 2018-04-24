@@ -39,7 +39,7 @@ import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
-import com.epam.test_generator.transformers.SuitTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -125,23 +125,30 @@ public class CaseServiceTest {
     public void setUp() {
         List<Case> listCases = new ArrayList<>();
 
-        listCases.add(new Case(1L, "name 1", "case 1",
-            listSteps, 1, setOfTags, "comment 1"));
-        listCases.add(new Case(2L, "name 2", "case 2",
-            listSteps, 2, setOfTags, "comment 2"));
+        Case case1 = new Case(1L, "name 1", "case 1",
+            listSteps, 1, setOfTags, "comment 1");
+        case1.setRowNumber(1);
+        Case case2 = new Case(2L, "name 2", "case 2",
+            listSteps, 2, setOfTags, "comment 2");
+        case2.setRowNumber(2);
+        listCases.add(case1);
+        listCases.add(case2);
 
         caze = new Case(SIMPLE_CASE_ID, "case name", "case desc",
             listSteps, 1, setOfTags, "comment");
+        caze.setRowNumber(1);
 
         listCases.add(caze);
         expectedCaseDTO = new CaseDTO(SIMPLE_CASE_ID, "case name", "case desc",
-            expectedListSteps, 1, expectedSetTags, Status.NOT_DONE, "comment");
+            expectedListSteps, 1, expectedSetTags, Status.NOT_DONE, "comment", 1);
+        expectedCaseDTO.setRowNumber(1);
         caseCreateDTO = new CaseCreateDTO("case name", "case desc",
                1, "comment", expectedSetTags);
         caseUpdateDTO = new CaseUpdateDTO(caze.getName(), caze.getDescription(), caze.getPriority(),
                 caze.getStatus(), caze.getComment());
         updatedCase = new Case(SIMPLE_CASE_ID, "case name", "case desc",
                 listSteps, 1, setOfTags, "comment");
+        updatedCase.setRowNumber(1);
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc",
             listCases, 1, setOfTags, 1);
         caseToRestore = new Case(SIMPLE_CASE_ID, "new name", "new description",
@@ -327,10 +334,10 @@ public class CaseServiceTest {
         List<CaseDTO> expectedRemovedCasesDTO = new ArrayList<>();
         expectedRemovedCasesDTO.add(new CaseDTO(1L, "name 1", "case 1",
             expectedListSteps, 1, expectedSetTags,
-            Status.NOT_RUN, "comment 1"));
+            Status.NOT_RUN, "comment 1", 1));
         expectedRemovedCasesDTO.add(new CaseDTO(2L, "name 2", "case 2",
             expectedListSteps, 2, expectedSetTags,
-            Status.NOT_RUN, "comment 2"));
+            Status.NOT_RUN, "comment 2", 2));
 
         List<Long> deleteCaseIds = Arrays.asList(1L, 2L);
 
@@ -489,7 +496,7 @@ public class CaseServiceTest {
             Collections.emptyList(), Action.DELETE, "comment");
         caseEditDTO.setId(SIMPLE_CASE_ID);
         CaseDTO expectedCaseDTO = new CaseDTO(1l, "name", "desc", Collections.emptyList(),
-            1, Collections.emptySet(), Status.NOT_RUN, "comment");
+            1, Collections.emptySet(), Status.NOT_RUN, "comment", 1);
         List<CaseDTO> expectedCaseDTOs = Arrays.asList(expectedCaseDTO);
 
         CaseService mock = mock(CaseService.class);
@@ -512,7 +519,7 @@ public class CaseServiceTest {
             Status.NOT_RUN, Collections.emptyList(), Action.CREATE, "comment");
         caseEditDTO.setId(SIMPLE_CASE_ID);
         CaseDTO expectedCaseDTO = new CaseDTO(1l, "name", "desc", Collections.emptyList(),
-            1, Collections.emptySet(), Status.NOT_RUN, "comment");
+            1, Collections.emptySet(), Status.NOT_RUN, "comment", 1);
         List<CaseDTO> expectedCaseDTOs = Arrays.asList(expectedCaseDTO);
 
         CaseService mock = mock(CaseService.class);

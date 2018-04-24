@@ -13,7 +13,7 @@ import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.transformers.SuitTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Before;

@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.caze;
 
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
+import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -104,8 +106,6 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which will be added a new case",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseDTO", value = "Added case object",
-            required = true, dataType = "CaseDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     })
@@ -262,5 +262,24 @@ public class CaseController {
 
         return new ResponseEntity<>(
             caseService.performEvent(projectId, suitId, caseId, event), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Update cases by rowNumber", nickname = "updateCaseRowNumber")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
+        @ApiResponse(code = 404, message = "Case not found")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
+    @PutMapping("/row-numbers")
+    public ResponseEntity<List<CaseRowNumberUpdateDTO>> updatecaseRowNumber
+        (@PathVariable("projectId") long projectId,
+         @PathVariable("suitId") long suitId,
+         @RequestBody @Valid List<CaseRowNumberUpdateDTO> rowNumberUpdates) {
+
+        List<CaseRowNumberUpdateDTO> updatedCaseRowNumberUpdateDTOs = caseService
+            .updateCaseRowNumber(projectId, suitId, rowNumberUpdates);
+        return new ResponseEntity<>(updatedCaseRowNumberUpdateDTOs, HttpStatus.OK);
     }
 }

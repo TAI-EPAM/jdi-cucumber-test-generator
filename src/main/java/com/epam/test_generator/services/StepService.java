@@ -84,8 +84,8 @@ public class StepService {
 
         Step step = stepTransformer.fromDto(stepCreateDTO);
 
-        step = stepDAO.save(step);
         caze.addStep(step);
+        step = stepDAO.save(step);
 
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);

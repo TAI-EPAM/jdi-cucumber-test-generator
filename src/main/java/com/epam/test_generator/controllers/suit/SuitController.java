@@ -3,7 +3,7 @@ package com.epam.test_generator.controllers.suit;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
-import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
+import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.IOService;

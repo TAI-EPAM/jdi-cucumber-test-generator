@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class StepTransformer {
 
     public StepDTO toDto(Step step) {
-        return new StepDTO(step.getId(),step.getRowNumber(),step.getDescription(),step.getType(),
+        return new StepDTO(step.getId(), step.getRowNumber(), step.getDescription(), step.getType(),
             step.getComment(), step.getStatus());
     }
 
@@ -21,8 +21,8 @@ public class StepTransformer {
     }
 
     public Step fromDto(StepCreateDTO stepCreateDTO) {
-        return new Step(null, stepCreateDTO.getRowNumber(),stepCreateDTO.getDescription(),
-            stepCreateDTO.getType(),stepCreateDTO.getComment(), stepCreateDTO.getStatus());
+        return new Step(null, null, stepCreateDTO.getDescription(),
+            stepCreateDTO.getType(), stepCreateDTO.getComment(), stepCreateDTO.getStatus());
     }
 
     public Step updateFromDto(StepUpdateDTO stepUpdateDTO, Step step) {

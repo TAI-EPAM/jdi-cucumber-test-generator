@@ -107,6 +107,7 @@ public class SuitVersionDAOTest {
 
         Case originalCase = new Case(1L, "name", "description", Collections.emptyList(), 1,
             Collections.emptySet(), "comment");
+        originalCase.setRowNumber(1);
         assertEquals(1, suitVersionAddedCase.getPropertyDifferences().size());
         assertEquals(1, suitVersionEditedCase.getPropertyDifferences().size());
 

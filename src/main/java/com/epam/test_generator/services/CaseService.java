@@ -12,6 +12,7 @@ import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -24,6 +25,7 @@ import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
@@ -107,10 +109,10 @@ public class CaseService {
         caze.setCreationDate(currentTime);
         caze.setUpdateDate(currentTime);
         caze.setLastModifiedDate(currentTime);
-        caze = caseDAO.save(caze);
 
         suit.addCase(caze);
 
+        caze = caseDAO.save(caze);
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
@@ -336,5 +338,31 @@ public class CaseService {
         } else {
             throw new BadRequestException();
         }
+    }
+
+    /**
+     * Updates cases'rowNumbers by cases' ids specified in List of CaseRowNumberUpdateDTOs
+     *
+     * @param rowNumberUpdates List of CaseRowNumberUpdateDTOs
+     * @return list of {@link CaseRowNumberUpdateDTO} to check on the frontend
+     */
+    public List<CaseRowNumberUpdateDTO> updateCaseRowNumber(Long projectId, Long suitId,
+                                                            List<CaseRowNumberUpdateDTO>
+                                                                rowNumberUpdates) {
+        Suit suit = suitService.getSuit(projectId, suitId);
+
+        for(CaseRowNumberUpdateDTO dto : rowNumberUpdates) {
+            Case caze = suit.getCaseById(dto.getId());
+            if( caze == null ) {
+                continue;
+            }
+            caze.setRowNumber(dto.getRowNumber());
+            caseVersionDAO.save(caze);
+            caseDAO.save(caze);
+        }
+
+        suitVersionDAO.save(suit);
+
+        return rowNumberUpdates;
     }
 }

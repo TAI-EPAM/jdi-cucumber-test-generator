@@ -31,6 +31,8 @@ public class CaseDTO {
 
     private long updateDate;
 
+    private Integer rowNumber;
+
     @NotNull
     @Min(value = 1)
     @Max(value = 5)
@@ -51,7 +53,7 @@ public class CaseDTO {
     }
 
     public CaseDTO(Long id, String name, String description, List<StepDTO> steps, Integer priority,
-                   Set<TagDTO> tags, Status status, String comment) {
+                   Set<TagDTO> tags, Status status, String comment, Integer rowNumber) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -60,6 +62,7 @@ public class CaseDTO {
         this.tags = tags;
         this.status = status;
         this.comment = comment;
+        this.rowNumber = rowNumber;
     }
 
     public Long getId() {
@@ -142,6 +145,14 @@ public class CaseDTO {
         this.comment = comment;
     }
 
+    public Integer getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(Integer rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -155,26 +166,25 @@ public class CaseDTO {
             Objects.equals(name, caseDTO.name) &&
             Objects.equals(description, caseDTO.description) &&
             Objects.equals(steps, caseDTO.steps) &&
-            Objects.equals(creationDate, caseDTO.creationDate) &&
-            Objects.equals(updateDate, caseDTO.updateDate) &&
             Objects.equals(priority, caseDTO.priority) &&
             Objects.equals(tags, caseDTO.tags) &&
             status == caseDTO.status &&
-            Objects.equals(comment, caseDTO.comment);
+            Objects.equals(comment, caseDTO.comment) &&
+            Objects.equals(rowNumber, caseDTO.rowNumber);
     }
 
     @Override
     public int hashCode() {
         return Objects
-            .hash(id, name, description, steps, creationDate, updateDate, priority, tags, status,
-                comment);
+            .hash(id, name, description, steps, priority, tags, status, comment, rowNumber);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, priority= %s, tags= %s, status= %s, comment= %s};",
-                id, name, description, steps, creationDate, priority, tags, steps, comment);
+            "CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, " +
+                "priority= %s, tags= %s, status= %s, comment= %s, rowNumber=%s};",
+            id, name, description, steps, creationDate, priority, tags, steps, comment, rowNumber);
     }
 }
 

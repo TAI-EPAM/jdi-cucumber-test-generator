@@ -24,7 +24,7 @@ import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.dto.SuitRowNumberUpdateDTO;
+import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.dto.SuitVersionDTO;
 import com.epam.test_generator.entities.Project;
@@ -33,7 +33,7 @@ import com.epam.test_generator.pojo.PropertyDifference;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-import com.epam.test_generator.transformers.SuitTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -50,7 +50,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -102,6 +101,7 @@ public class SuitServiceTest {
     public void setUp() {
         expectedSuitList = new ArrayList<>();
         expectedSuit = new Suit(SIMPLE_SUIT_ID, "suit1", "desc1");
+        expectedSuit.setRowNumber(1);
         expectedSuitList.add(expectedSuit);
 
         expectedSuitDTOList = new ArrayList<>();

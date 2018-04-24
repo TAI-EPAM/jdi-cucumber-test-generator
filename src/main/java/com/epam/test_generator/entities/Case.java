@@ -5,6 +5,7 @@ import com.epam.test_generator.entities.api.JiraSuitAndCaseTrait;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -60,6 +61,8 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
     private ZonedDateTime updateDate;
 
     private Integer priority;
+
+    private Integer rowNumber;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -168,7 +171,13 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         if (steps == null) {
             steps = new ArrayList<>();
         }
-
+        step.setRowNumber(steps
+            .stream()
+            .map(Step::getRowNumber)
+            .max(Comparator.naturalOrder())
+            .orElse(0)
+            + 1
+        );
         steps.add(step);
     }
 
@@ -269,12 +278,20 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         this.lastJiraSyncDate = lastJiraSyncDate;
     }
 
+    public Integer getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(Integer rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
     @Override
     public String toString() {
         return String.format(
             "Case{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, " +
-                "priority= %s, tags= %s, status= %s, comment= %s};",
-            id, name, description, steps, creationDate, priority, tags, status, comment);
+                "priority= %s, tags= %s, status= %s, comment= %s, rowNumber=%s};",
+            id, name, description, steps, creationDate, priority, tags, status, comment, rowNumber);
     }
 
     @Override
@@ -296,7 +313,8 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
             Objects.equals(priority, aCase.priority) &&
             status == aCase.status &&
             Objects.equals(tags, aCase.tags) &&
-            Objects.equals(comment, aCase.comment);
+            Objects.equals(comment, aCase.comment) &&
+            Objects.equals(rowNumber, aCase.rowNumber);
     }
 
     @Override
@@ -304,6 +322,6 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
 
         return Objects
             .hash(id, name, description, jiraKey, jiraProjectKey, jiraParentKey, steps, priority,
-                status, tags, comment);
+                status, tags, comment, rowNumber);
     }
 }

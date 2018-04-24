@@ -29,4 +29,12 @@
                       tableName="TOKEN"/>
    </changeSet>
 
+    <changeSet id="add_column_rowNumber_casetable" author="">
+        <addColumn tableName="CASE">
+            <column name="ROWNUMBER" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

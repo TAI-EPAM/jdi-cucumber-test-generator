@@ -4,6 +4,7 @@ import com.epam.test_generator.entities.api.ProjectTrait;
 import com.epam.test_generator.entities.api.SuitProjectTrait;
 import com.epam.test_generator.entities.api.UsersProjectTrait;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -114,6 +115,18 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
         users.add(user);
     }
 
+    @Override
+    public void addSuit(Suit suit) {
+        suit.setRowNumber(this.suits
+            .stream()
+            .map(Suit::getRowNumber)
+            .max(Comparator.naturalOrder())
+            .orElse(0)
+            + 1
+        );
+        this.suits.add(suit);
+    }
+
     public void setUsers(Set<User> users) {
         this.users = users;
     }
@@ -140,14 +153,14 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
     @Override
     public String toString() {
         return "project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", jiraKey='" + jiraKey + '\'' +
-                ", suits=" + suits +
-                ", users=" + users +
-                ", active=" + active +
-                '}';
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", jiraKey='" + jiraKey + '\'' +
+            ", suits=" + suits +
+            ", users=" + users +
+            ", active=" + active +
+            '}';
     }
 
     @Override
@@ -160,12 +173,12 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
         }
         Project project = (Project) o;
         return active == project.active &&
-                Objects.equals(id, project.id) &&
-                Objects.equals(name, project.name) &&
-                Objects.equals(description, project.description) &&
-                Objects.equals(suits, project.suits) &&
-                Objects.equals(jiraKey, project.jiraKey) &&
-                Objects.equals(users, project.users);
+            Objects.equals(id, project.id) &&
+            Objects.equals(name, project.name) &&
+            Objects.equals(description, project.description) &&
+            Objects.equals(suits, project.suits) &&
+            Objects.equals(jiraKey, project.jiraKey) &&
+            Objects.equals(users, project.users);
     }
 
     @Override

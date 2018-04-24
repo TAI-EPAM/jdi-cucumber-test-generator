@@ -79,6 +79,7 @@ public class SuitDAOTest {
         Case caze = new Case();
         caze.setName("test");
         caze.addTag(tag);
+        caze.setRowNumber(1);
 
         Suit suit = new Suit("name", "desc", 4, null, null, null,
             Lists.newArrayList(caze), 1);

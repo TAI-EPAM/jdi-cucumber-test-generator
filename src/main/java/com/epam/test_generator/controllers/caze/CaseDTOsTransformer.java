@@ -35,6 +35,7 @@ public class CaseDTOsTransformer{
         caseDTO.setTags(caze.getTags().stream().map(tagTransformer::toDto).collect(Collectors.toSet()));
         caseDTO.setStatus(caze.getStatus());
         caseDTO.setComment(caze.getComment());
+        caseDTO.setRowNumber(caze.getRowNumber());
         return caseDTO;
     }
 

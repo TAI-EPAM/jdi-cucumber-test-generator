@@ -8,7 +8,7 @@ import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.entities.Project;
-import com.epam.test_generator.transformers.SuitTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

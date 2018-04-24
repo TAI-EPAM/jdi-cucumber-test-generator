@@ -8,11 +8,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class StepCreateDTO {
-
-    @NotNull
-    @Min(value = 1)
-    private int rowNumber;
-
     @NotNull
     @Size(min = 1, max = 255)
     private String description;
@@ -25,14 +20,6 @@ public class StepCreateDTO {
 
     @NotNull
     private Status status;
-
-    public int getRowNumber() {
-        return rowNumber;
-    }
-
-    public void setRowNumber(int rowNumber) {
-        this.rowNumber = rowNumber;
-    }
 
     public String getDescription() {
         return description;
@@ -75,8 +62,7 @@ public class StepCreateDTO {
             return false;
         }
         StepCreateDTO that = (StepCreateDTO) o;
-        return rowNumber == that.rowNumber &&
-            Objects.equals(description, that.description) &&
+        return Objects.equals(description, that.description) &&
             type == that.type &&
             Objects.equals(comment, that.comment) &&
             status == that.status;
@@ -85,6 +71,6 @@ public class StepCreateDTO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(rowNumber, description, type, comment, status);
+        return Objects.hash(description, type, comment, status);
     }
 }
