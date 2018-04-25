@@ -1,28 +1,34 @@
 package com.epam.test_generator.services;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
-import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.exceptions.TokenMalformedException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
+import java.io.UnsupportedEncodingException;
+import java.time.Instant;
+import java.util.Date;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-
 @Service
 @PropertySource("classpath:application.properties")
 @Transactional(noRollbackFor = UnauthorizedException.class)
 public class LoginService {
+
+
+    private static final String ELEMENT_FOR_UNIQUE_TOKEN = "cucumber";
+    private static final String JWT_SECRET_KEY = "jwt_secret";
+    private static final String CLAIM_EMAIL = "email";
+    private static final String CLAIM_REFRESH_AFTER = "refresh_at";
 
     @Autowired
     private EmailService emailService;
@@ -36,17 +42,16 @@ public class LoginService {
     @Resource
     private Environment environment;
 
-    @Autowired
-    private UserDAO userDAO;
 
-    private final static String ELEMENT_FOR_UNIQUE_TOKEN = "cucumber";
-
-    public DecodedJWT validate(String token)
-        throws IOException {
-
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(environment.getProperty("jwt_secret")))
-            .withIssuer(ELEMENT_FOR_UNIQUE_TOKEN)
-            .build();
+    public DecodedJWT validate(String token) {
+        JWTVerifier verifier;
+        try {
+            verifier = JWT.require(Algorithm.HMAC256(environment.getProperty(JWT_SECRET_KEY)))
+                .withIssuer(ELEMENT_FOR_UNIQUE_TOKEN)
+                .build();
+        } catch (UnsupportedEncodingException e) {
+            throw new TokenMalformedException("JWT token is not valid");
+        }
         return verifier.verify(token);
     }
 
@@ -77,10 +82,23 @@ public class LoginService {
         userService.invalidateAttempts(user.getId());
     }
 
-    public String getLoginJWTToken(LoginUserDTO loginUserDTO) {
-
-        User user = userService.getUserByEmail(loginUserDTO.getEmail());
+    public String getLoginJWTToken(LoginUserDTO userDTO) {
+        User user = userService.getUserByEmail(userDTO.getEmail());
         return jwtTokenService.createJwtTokenFor(user, ELEMENT_FOR_UNIQUE_TOKEN, environment);
+    }
+
+    public String refreshToken(String token) {
+        DecodedJWT jwt = validate(token);
+        Date now = Date.from(Instant.now());
+        String login = jwt.getClaim(CLAIM_EMAIL).asString();
+        Date expiresAt = jwt.getExpiresAt();
+        Date refreshAt = jwt.getClaim(CLAIM_REFRESH_AFTER).asDate();
+
+        if (expiresAt.after(now) && refreshAt.before(now)) {
+            token = jwtTokenService.createJwtTokenFor(userService.getUserByEmail(login),
+                ELEMENT_FOR_UNIQUE_TOKEN, environment);
+        }
+        return token;
     }
 }
 

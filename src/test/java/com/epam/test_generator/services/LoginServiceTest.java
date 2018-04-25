@@ -2,11 +2,24 @@ package com.epam.test_generator.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,14 +28,21 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class LoginServiceTest {
+
+    private static final String EMAIL = "email";
+    private static final String SECRET = "iteaky";
+    private static final String USER_NAME = "name";
+    private static final String USER_SURNAME = "surname";
+    private static final int AMOUNT_OF_LOGIN_ATTEMPTS = 5;
+    private static final String USER_ROLE = "GUEST";
+
+    private static final String BAD_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJciIsImlkIjoyfQ"
+        + ".dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
+    private static final String GOOD_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9"
+        + ".eyJpc3MiOiJjdWN1bWJlciIsImlkIjoyfQ.dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
+
 
     @Mock
     private UserService userService;
@@ -45,75 +65,70 @@ public class LoginServiceTest {
     @Mock
     private Role role;
 
-    private String badToken;
-    private String goodToken;
-
     @InjectMocks
     private LoginService sut;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(userService.getUserByEmail(anyString())).thenReturn(user);
-        when(environment.getProperty(anyString())).thenReturn("iteaky");
-        when(user.getName()).thenReturn("name");
-        when(user.getSurname()).thenReturn("surname");
-        when(user.getEmail()).thenReturn("email");
-        when(user.getLoginAttempts()).thenReturn(5);
+        when(environment.getProperty(anyString())).thenReturn(SECRET);
+        when(user.getName()).thenReturn(USER_NAME);
+        when(user.getId()).thenReturn(1L);
+        when(user.getSurname()).thenReturn(USER_SURNAME);
+        when(user.getEmail()).thenReturn(EMAIL);
+        when(user.getLoginAttempts()).thenReturn(AMOUNT_OF_LOGIN_ATTEMPTS);
         when(user.getRole()).thenReturn(role);
-        when(role.getName()).thenReturn("GUEST");
-        badToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJciIsImlkIjoyfQ.dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
-        goodToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjdWN1bWJlciIsImlkIjoyfQ.dpsptV5O_062nzcMUeZa4QLTsAmQfXhQntfnpcMlZLU";
-
+        when(role.getName()).thenReturn(USER_ROLE);
     }
 
     @Test
-    public void validate_SimpleToken_Ok() throws Exception {
-        sut.validate(goodToken);
+    public void validate_SimpleToken_Ok() {
+        sut.validate(GOOD_TOKEN);
 
     }
 
     @Test(expected = JWTDecodeException.class)
-    public void validate_notValidToken_Exception() throws Exception {
-        sut.validate(badToken);
+    public void validate_notValidToken_Exception() {
+        sut.validate(BAD_TOKEN);
     }
 
 
     @Test
-    public void getToken_ValidToken_Ok() throws Exception {
-        when(loginUserDTO.getEmail()).thenReturn("email");
+    public void getToken_ValidToken_Ok() {
+        when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
         sut.getLoginJWTToken(loginUserDTO);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void checkPassword_NotExistedUser_Exception() throws Exception {
+    public void checkPassword_NotExistedUser_Exception() {
         sut.checkPassword(loginUserDTO,request);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void checkPassword_IncorrectPassword_Exception() throws Exception {
-        when(loginUserDTO.getEmail()).thenReturn("email");
+    public void checkPassword_IncorrectPassword_Exception() {
+        when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
         sut.checkPassword(loginUserDTO, request);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void checkPassword_LockedUser_UnauthorizedException() throws Exception {
+    public void checkPassword_LockedUser_UnauthorizedException() {
         when(user.isLocked()).thenReturn(true);
 
-        when(loginUserDTO.getEmail()).thenReturn("email");
+        when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
         sut.checkPassword(loginUserDTO, request);
     }
 
     @Test(expected = UnauthorizedException.class)
-    public void getToken_LastFailureAttempt_UnauthorizedException() throws Exception {
+    public void getToken_LastFailureAttempt_UnauthorizedException() {
 
         when(user.getLoginAttempts()).thenReturn(4);
         when(user.isLocked()).thenReturn(false);
 
-        when(loginUserDTO.getEmail()).thenReturn("email");
+        when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(false);
         sut.checkPassword(loginUserDTO,request);
@@ -125,7 +140,7 @@ public class LoginServiceTest {
     @Test
     public void getToken_SuccessAttempt_InvalidateUserAttempts(){
 
-        when(loginUserDTO.getEmail()).thenReturn("email");
+        when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
         sut.checkPassword(loginUserDTO,request);
