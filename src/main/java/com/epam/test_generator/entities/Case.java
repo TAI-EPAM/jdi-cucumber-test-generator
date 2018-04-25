@@ -10,15 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+
+import com.epam.test_generator.entities.api.Taggable;
 import org.springframework.data.domain.Persistable;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
@@ -32,7 +26,7 @@ import org.springframework.statemachine.annotation.WithStateMachine;
  */
 @Entity
 @WithStateMachine
-public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSuitAndCaseTrait {
+public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,7 +61,13 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ElementCollection
+    @CollectionTable(
+            name = "case_tags",
+            joinColumns = @JoinColumn(name = "case_id"))
+    @AttributeOverrides({
+            @AttributeOverride(name="name", column=@Column(name="tag"))
+    })
     private Set<Tag> tags;
 
     private String comment;
@@ -116,23 +116,8 @@ public class Case implements Serializable, Persistable<Long>, CaseTrait, JiraSui
         this.status = status;
     }
 
-    @Override
     public Long getId() {
         return id;
-    }
-
-    /**
-     * Override in order entity manager use merge instead of persist when call with case id = null
-     * and one of tag ids is not null. <br/> For example, with standard behaviour spring data jpa
-     * will call persist on this request {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10,
-     * "name":"soap"}]} and it will cause "detached entity passed to persist" error.
-     */
-    @Override
-    public boolean isNew() {
-        boolean isAllTagsWithNullId = tags == null
-            || tags.stream().allMatch(tag -> tag.getId() == null);
-
-        return id == null && isAllTagsWithNullId;
     }
 
     public void setId(Long id) {

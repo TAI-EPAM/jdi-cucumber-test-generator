@@ -2,7 +2,7 @@ package com.epam.test_generator.services;
 
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
-import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
+import com.epam.test_generator.controllers.caze.CaseTransformer;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
 import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
@@ -15,6 +15,7 @@ import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
+import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -23,6 +24,10 @@ import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.CaseVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
+import com.epam.test_generator.controllers.caze.CaseTransformer;
+import com.epam.test_generator.controllers.tag.TagTransformer;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,7 +46,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 public class CaseService {
 
     @Autowired
-    private CaseDTOsTransformer caseDTOsTransformer;
+    private CaseTransformer caseTransformer;
 
     @Autowired
     private Validator validator;
@@ -88,7 +93,7 @@ public class CaseService {
     }
 
     public CaseDTO getCaseDTO(Long projectId, Long suitId, Long caseId) {
-        return caseDTOsTransformer.toDto(getCase(projectId, suitId, caseId));
+        return caseTransformer.toDto(getCase(projectId, suitId, caseId));
     }
 
     /**
@@ -102,7 +107,7 @@ public class CaseService {
     public CaseDTO addCaseToSuit(Long projectId, Long suitId, @Valid CaseCreateDTO caseCreateDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseDTOsTransformer.fromDto(caseCreateDTO);
+        Case caze = caseTransformer.fromDto(caseCreateDTO);
 
         caze.setJiraParentKey(suit.getJiraKey());
         caze.setJiraProjectKey(suit.getJiraProjectKey());
@@ -118,7 +123,7 @@ public class CaseService {
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
-        return caseDTOsTransformer.toDto(caze);
+        return caseTransformer.toDto(caze);
     }
 
 
@@ -165,15 +170,16 @@ public class CaseService {
         checkNotNull(caze);
 
         if (!suit.hasCase(caze)) {
-            // TBD
-            //throw new BadRequestException("");
+            throw new BadRequestException(
+                    String.format("Error: suit %s does not have case %s", suit.getName(),
+                            caze.getName()));
         }
 
-        Case updatedCase = caseDTOsTransformer.updateFromDto(caseUpdateDTO, caze);
+        Case updatedCase = caseTransformer.updateFromDto(caseUpdateDTO, caze);
 
         updatedCase = caseDAO.save(updatedCase);
 
-        CaseDTO updatedCaseDTO = caseDTOsTransformer.toDto(updatedCase);
+        CaseDTO updatedCaseDTO = caseTransformer.toDto(updatedCase);
 
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
@@ -253,7 +259,7 @@ public class CaseService {
         caseVersionDAO.delete(caze);
         suitVersionDAO.save(suit);
 
-        return caseDTOsTransformer.toDto(caze);
+        return caseTransformer.toDto(caze);
     }
 
     /**
@@ -285,7 +291,7 @@ public class CaseService {
         removedCases.forEach(suit::removeCase);
         suitVersionDAO.save(suit);
 
-        return caseDTOsTransformer.toDtoList(removedCases);
+        return caseTransformer.toDtoList(removedCases);
     }
 
     private void saveIssueToDeleteInJira(Case caze) {
@@ -322,7 +328,7 @@ public class CaseService {
         caseVersionDAO.save(caseToRestore);
         suitVersionDAO.save(suit);
 
-        return caseDTOsTransformer.toDto(restoredCase);
+        return caseTransformer.toDto(restoredCase);
     }
 
     public Status performEvent(Long projectId, Long suitId, Long caseId, Event event)

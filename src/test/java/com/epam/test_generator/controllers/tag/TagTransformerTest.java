@@ -1,12 +1,12 @@
 package com.epam.test_generator.controllers.tag;
 
-import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.controllers.tag.request.TagCreateDTO;
 import com.epam.test_generator.controllers.tag.request.TagUpdateDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Tag;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,20 +26,17 @@ public class TagTransformerTest {
     private static final Long ID = 1L;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         tag = new Tag();
         tag.setName(NAME);
 
         tagDTO = new TagDTO();
-        tagDTO.setId(ID);
         tagDTO.setName(NAME);
     }
 
     @Test
     public void toDto_Tag_Success() {
         TagDTO expectedTagDto = tagDTO;
-
-        tag.setId(ID);
 
         TagDTO resultTagDto = tagTransformer.toDto(tag);
         Assert.assertEquals(expectedTagDto, resultTagDto);
@@ -49,8 +46,6 @@ public class TagTransformerTest {
     public void fromDto_TagCreateDTO_Success() {
         TagCreateDTO tagCreateDTO = new TagCreateDTO();
         tagCreateDTO.setName(NAME);
-
-        tag.setId(null);
 
         Tag resultTag = tagTransformer.fromDto(tagCreateDTO);
         Assert.assertEquals(resultTag, tag);
@@ -64,34 +59,27 @@ public class TagTransformerTest {
         Tag expectedTag = new Tag();
         expectedTag.setName(NAME+ID);
 
-        tag.setId(null);
-
-        Tag resultTag = new Tag();
-        resultTag = tagTransformer.updateFromDto(tagUpdateDTO, tag);
+        Tag resultTag = tagTransformer.updateFromDto(tagUpdateDTO, tag);
         Assert.assertEquals(resultTag, expectedTag);
     }
 
     @Test
-    public void toListDto_Tags_Success() {
-        tag.setId(ID);
-        List<Tag> tags = Collections.singletonList(tag);
+    public void toDtoSet_Tags_Success() {
+        Set<Tag> tags = new HashSet<>(Collections.singletonList(tag));
 
-        List<TagDTO> expectedDTOs = Collections.singletonList(tagDTO);
+        Set<TagDTO> expectedDTOs = new HashSet<>(Collections.singletonList(tagDTO));
 
-        List<TagDTO> resultDTOs = tagTransformer.toListDto(tags);
+        Set<TagDTO> resultDTOs = tagTransformer.toDtoSet(tags);
+
         Assert.assertEquals(expectedDTOs, resultDTOs);
     }
 
     @Test
-    public void fromListDto_TagDTOs_Success() {
-        tag.setId(ID);
+    public void fromDtoSet_TagDTOs_Success() {
+        Set<TagDTO> DTOs = new HashSet<>(Collections.singletonList(tagDTO));
+        Set<Tag> expectedTags = new HashSet<>(Collections.singletonList(tag));
 
-        List<TagDTO> DTOs = Collections.singletonList(tagDTO);
-        List<Tag> expectedTags = Collections.singletonList(tag);
-
-        List<Tag> resultTags = tagTransformer.fromListDto(DTOs);
+        Set<Tag> resultTags = tagTransformer.fromDtoSet(DTOs);
         Assert.assertEquals(resultTags, expectedTags);
     }
-
-
 }

@@ -6,33 +6,32 @@ import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.entities.Case;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CaseDTOsTransformer{
+public class CaseTransformer {
 
     private TagTransformer tagTransformer = new TagTransformer();
 
     private StepTransformer stepTransformer = new StepTransformer();
-
-    public List<CaseDTO> toDtoList(List<Case> cases) {
-        return cases.stream().map(this::toDto).collect(Collectors.toList());
-    }
 
     public CaseDTO toDto(Case caze) {
         CaseDTO caseDTO = new CaseDTO();
         caseDTO.setId(caze.getId());
         caseDTO.setName(caze.getName());
         caseDTO.setDescription(caze.getDescription());
-        caseDTO.setSteps(stepTransformer.toDtoList(caze.getSteps()));
-        caseDTO.setCreationDate(caze.getCreationDate().toInstant().toEpochMilli());
-        caseDTO.setUpdateDate(caze.getUpdateDate().toInstant().toEpochMilli());
+        if (caze.getSteps() != null) {
+            caseDTO.setSteps(stepTransformer.toDtoList(caze.getSteps()));
+        }
+        caseDTO.setCreationDate(caze.getCreationDate().toInstant().getEpochSecond());
+        caseDTO.setUpdateDate(caze.getUpdateDate().toInstant().getEpochSecond());
         caseDTO.setPriority(caze.getPriority());
-        caseDTO.setTags(caze.getTags().stream().map(tagTransformer::toDto).collect(Collectors.toSet()));
+        if (caze.getTags() != null) {
+            caseDTO.setTags(tagTransformer.toDtoSet(caze.getTags()));
+        }
         caseDTO.setDisplayedStatusName(caze.getStatus().getStatusName());
         caseDTO.setComment(caze.getComment());
         caseDTO.setRowNumber(caze.getRowNumber());
@@ -45,8 +44,14 @@ public class CaseDTOsTransformer{
         caze.setDescription(caseCreateDTO.getDescription());
         caze.setPriority(caseCreateDTO.getPriority());
         caze.setComment(caseCreateDTO.getComment());
-        caze.setTags(caseCreateDTO.getTags().stream().map(tagTransformer::fromDto).collect(Collectors.toSet()));
+        if (caseCreateDTO.getTags() != null) {
+            caze.setTags(tagTransformer.fromDtoSet(caseCreateDTO.getTags()));
+        }
         return caze;
+    }
+
+    public List<CaseDTO> toDtoList(List<Case> cases) {
+        return cases.stream().map(this::toDto).collect(Collectors.toList());
     }
 
     public Case updateFromDto(CaseUpdateDTO dto, Case caze) {
@@ -63,7 +68,7 @@ public class CaseDTOsTransformer{
             caze.setStatus(dto.getStatus());
         }
         if (dto.getTags() != null) {
-            caze.setTags(dto.getTags().stream().map(tagTransformer::fromDto).collect(Collectors.toSet()));
+            caze.updateTags(tagTransformer.fromDtoSet(dto.getTags()));
         }
         if (dto.getComment() != null) {
             caze.setComment(dto.getComment());

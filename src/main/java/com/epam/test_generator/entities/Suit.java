@@ -10,15 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+
+import com.epam.test_generator.entities.api.Taggable;
 import org.springframework.data.domain.Persistable;
 
 
@@ -30,7 +24,7 @@ import org.springframework.data.domain.Persistable;
  * {@Link Suit} object.
  */
 @Entity
-public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSuitAndCaseTrait {
+public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +51,13 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
 
     private ZonedDateTime lastJiraSyncDate;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ElementCollection
+    @CollectionTable(
+            name = "suit_tags",
+            joinColumns = @JoinColumn(name = "suit_id"))
+    @AttributeOverrides({
+            @AttributeOverride(name="name", column=@Column(name="tag"))
+    })
     private Set<Tag> tags;
 
     @OneToMany(cascade = {CascadeType.ALL})
@@ -121,25 +121,8 @@ public class Suit implements Serializable, Persistable<Long>, SuitTrait, JiraSui
         this.description = description;
     }
 
-    @Override
     public Long getId() {
         return id;
-    }
-
-    /**
-     * Override in order entity manager use persist only when call with suit id = null and all tag
-     * ids is null and all cases is new. <br/> For example, with standard behaviour spring data jpa
-     * will call persist on this request {"id":null,"description":"4","name":"4","priority":4,"tags":[{"id":10,
-     * "name":"soap"}]} and it will cause "detached entity passed to persist" error.
-     */
-    @Override
-    public boolean isNew() {
-        boolean isAllTagsWithNullId = tags == null ||
-            tags.stream().allMatch(tag -> tag.getId() == null);
-
-        boolean isAllCasesNew = cases == null || cases.stream().allMatch(Case::isNew);
-
-        return id == null && isAllTagsWithNullId && isAllCasesNew;
     }
 
     public Status getStatus() {

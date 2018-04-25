@@ -1,4 +1,4 @@
-package com.epam.test_generator.controllers;
+package com.epam.test_generator.controllers.suit;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epam.test_generator.controllers.GlobalExceptionController;
 import com.epam.test_generator.controllers.suit.SuitController;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;

@@ -38,7 +38,8 @@ import com.epam.test_generator.pojo.PropertyDifference;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
-import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
+import com.epam.test_generator.controllers.caze.CaseTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -104,7 +105,7 @@ public class CaseServiceTest {
     private SuitService suitService;
 
     @Mock
-    private CaseDTOsTransformer caseDTOsTransformer;
+    private CaseTransformer caseTransformer;
 
     @Mock
     private SuitTransformer suitTransformer;
@@ -207,7 +208,7 @@ public class CaseServiceTest {
 
     @Test
     public void get_CaseDTO_Success() {
-        when(caseDTOsTransformer.toDto(any())).thenReturn(expectedCaseDTO);
+        when(caseTransformer.toDto(any())).thenReturn(expectedCaseDTO);
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
@@ -238,19 +239,19 @@ public class CaseServiceTest {
     @Test
     public void add_CaseToSuit_Success() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
-        when(caseDTOsTransformer.fromDto(any(CaseCreateDTO.class))).thenReturn(caze);
+        when(caseTransformer.fromDto(any(CaseCreateDTO.class))).thenReturn(caze);
         when(caseDAO.save(any(Case.class))).thenReturn(caze);
-        when(caseDTOsTransformer.toDto(any(Case.class))).thenReturn(expectedCaseDTO);
+        when(caseTransformer.toDto(any(Case.class))).thenReturn(expectedCaseDTO);
 
         CaseDTO actualCaseDTO = caseService
             .addCaseToSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, caseCreateDTO);
         assertEquals(expectedCaseDTO, actualCaseDTO);
 
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID));
-        verify(caseDTOsTransformer).fromDto(eq(caseCreateDTO));
+        verify(caseTransformer).fromDto(eq(caseCreateDTO));
         verify(caseDAO).save(eq(caze));
         verify(caseVersionDAO).save(eq(caze));
-        verify(caseDTOsTransformer).toDto(eq(caze));
+        verify(caseTransformer).toDto(eq(caze));
     }
 
     @Test(expected = NotFoundException.class)
@@ -264,8 +265,8 @@ public class CaseServiceTest {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(caseDAO.save(caze)).thenReturn(caze);
-        when(caseDTOsTransformer.updateFromDto(caseUpdateDTO, caze)).thenReturn(updatedCase);
-        when(caseDTOsTransformer.toDto(caze)).thenReturn(expectedCaseDTO);
+        when(caseTransformer.updateFromDto(caseUpdateDTO, caze)).thenReturn(updatedCase);
+        when(caseTransformer.toDto(caze)).thenReturn(expectedCaseDTO);
 
 
         CaseDTO actualCaseDTO =
@@ -275,7 +276,7 @@ public class CaseServiceTest {
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID) , eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(caseDAO).save(eq(caze));
-        verify(caseDTOsTransformer).toDto(eq(caze));
+        verify(caseTransformer).toDto(eq(caze));
         verify(caseVersionDAO).save(eq(caze));
     }
 
@@ -302,7 +303,7 @@ public class CaseServiceTest {
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         doNothing().when(caseDAO).delete(caze);
         doNothing().when(caseVersionDAO).delete(caze);
-        when(caseDTOsTransformer.toDto(any(Case.class))).thenReturn(expectedCaseDTO);
+        when(caseTransformer.toDto(any(Case.class))).thenReturn(expectedCaseDTO);
 
         CaseDTO actualRemovedCaseDTO = caseService
             .removeCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
@@ -311,7 +312,7 @@ public class CaseServiceTest {
         verify(caseDAO).findOne(eq(SIMPLE_CASE_ID));
         verify(caseDAO).delete(eq(SIMPLE_CASE_ID));
         verify(caseVersionDAO).delete(eq(caze));
-        verify(caseDTOsTransformer).toDto(eq(caze));
+        verify(caseTransformer).toDto(eq(caze));
     }
 
     @Test(expected = NotFoundException.class)
@@ -342,7 +343,7 @@ public class CaseServiceTest {
         List<Long> deleteCaseIds = Arrays.asList(1L, 2L);
 
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
-        when(caseDTOsTransformer.toDtoList(anyListOf(Case.class)))
+        when(caseTransformer.toDtoList(anyListOf(Case.class)))
             .thenReturn(expectedRemovedCasesDTO);
 
         List<CaseDTO> actualRemovedCasesDTO = caseService
@@ -354,7 +355,7 @@ public class CaseServiceTest {
         verify(caseDAO).delete(eq(1L));
         verify(caseDAO).delete(eq(2L));
         verify(caseVersionDAO, times(2)).delete(any(Case.class));
-        verify(caseDTOsTransformer).toDtoList(anyListOf(Case.class));
+        verify(caseTransformer).toDtoList(anyListOf(Case.class));
     }
 
     @Test(expected = NotFoundException.class)
@@ -414,7 +415,7 @@ public class CaseServiceTest {
         when(caseDAO.findOne(anyLong())).thenReturn(caze);
         when(caseVersionDAO.findByCommitId(anyLong(), anyString())).thenReturn(caze);
         when(caseDAO.save(caze)).thenReturn(caze);
-        when(caseDTOsTransformer.toDto(caze)).thenReturn(expectedCaseDTO);
+        when(caseTransformer.toDto(caze)).thenReturn(expectedCaseDTO);
 
         CaseDTO actualRestoreCaseDTO = caseService
             .restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
@@ -424,7 +425,7 @@ public class CaseServiceTest {
         verify(caseVersionDAO).findByCommitId(SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
         verify(caseDAO).save(eq(caze));
         verify(caseVersionDAO).save(eq(caze));
-        verify(caseDTOsTransformer).toDto(eq(caze));
+        verify(caseTransformer).toDto(eq(caze));
     }
 
     @Test(expected = NotFoundException.class)

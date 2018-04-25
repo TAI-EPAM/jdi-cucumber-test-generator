@@ -129,7 +129,6 @@ public class SuitVersionDAOTest {
         suitVersionDAO.save(suit);
 
         Tag tag = new Tag("name");
-        tag.setId(1L);
 
         suit.addTag(tag);
         suitVersionDAO.save(suit);
@@ -141,7 +140,6 @@ public class SuitVersionDAOTest {
         SuitVersion suitVersionEditedTag = suitVersionDAO.findAll(SUIT_ID).get(2);
 
         Tag originalTag = new Tag("name");
-        originalTag.setId(1L);
 
         assertEquals(1, suitVersionAddedTag.getPropertyDifferences().size());
         assertEquals(2, suitVersionEditedTag.getPropertyDifferences().size());

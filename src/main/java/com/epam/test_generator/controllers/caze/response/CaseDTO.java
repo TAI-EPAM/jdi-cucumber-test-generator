@@ -3,6 +3,8 @@ package com.epam.test_generator.controllers.caze.response;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -48,7 +50,7 @@ public class CaseDTO {
     private String comment;
 
     public CaseDTO() {
-        creationDate = System.currentTimeMillis();
+        creationDate = Instant.now().getEpochSecond();
         updateDate = creationDate;
     }
 
@@ -184,7 +186,7 @@ public class CaseDTO {
         return String.format(
             "CaseDTO{ id= %s ,name= %s, description= %s, steps= %s, creationDate= %s, " +
                 "priority= %s, tags= %s, status= %s, comment= %s, rowNumber=%s};",
-            id, name, description, steps, creationDate, priority, tags, steps, comment, rowNumber);
+            id, name, description, steps, creationDate, priority, tags, status, comment, rowNumber);
     }
 }
 

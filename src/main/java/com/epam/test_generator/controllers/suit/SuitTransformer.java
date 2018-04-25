@@ -1,20 +1,15 @@
 package com.epam.test_generator.controllers.suit;
 
-import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
+import com.epam.test_generator.controllers.caze.CaseTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.controllers.tag.TagTransformer;
-import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.entities.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,16 +19,15 @@ public class SuitTransformer {
     private TagTransformer tagTransformer;
 
     @Autowired
-    private CaseDTOsTransformer caseDTOsTransformer;
+    private CaseTransformer caseTransformer;
 
     public Suit fromDto(SuitCreateDTO suitCreateDTO) {
         Suit suit = new Suit();
         suit.setName(suitCreateDTO.getName());
-        suit.setDescription(suitCreateDTO.getDescription());
         suit.setPriority(suitCreateDTO.getPriority());
+        suit.setDescription(suitCreateDTO.getDescription());
         if (suitCreateDTO.getTags() != null) {
-            List<TagDTO> tagDTOs = new ArrayList<>(suitCreateDTO.getTags());
-            suit.setTags(getSetOfTagsFromListOfTagDTOs(tagDTOs));
+            suit.setTags(tagTransformer.fromDtoSet(suitCreateDTO.getTags()));
         }
         return suit;
     }
@@ -44,45 +38,38 @@ public class SuitTransformer {
         suitDTO.setName(suit.getName());
         suitDTO.setDescription(suit.getDescription());
         suitDTO.setPriority(suit.getPriority());
-        suitDTO.setCreationDate(suit.getCreationDate().toInstant().toEpochMilli());
-        suitDTO.setUpdateDate(suit.getUpdateDate().toInstant().toEpochMilli());
+        suitDTO.setCreationDate(suit.getCreationDate().toInstant().getEpochSecond());
+        suitDTO.setUpdateDate(suit.getUpdateDate().toInstant().getEpochSecond());
         suitDTO.setRowNumber(suit.getRowNumber());
         suitDTO.setDisplayedStatusName(suit.getStatus().getStatusName());
         if (suit.getTags() != null) {
-            List<Tag> tags = new ArrayList<>(suit.getTags());
-            suitDTO.setTags(getSetOfTagDTOsFromListOfTags(tags));
+            suitDTO.setTags(tagTransformer.toDtoSet(suit.getTags()));
         }
-        if(suit.getCases() != null) {
-            suitDTO.setCases(caseDTOsTransformer.toDtoList(suit.getCases()));
+        if (suit.getCases() != null) {
+            suitDTO.setCases(caseTransformer.toDtoList(suit.getCases()));
         }
         return suitDTO;
     }
 
-    public List<SuitDTO> toDtoList(List<Suit> entityList) {
-        return entityList.stream().map(this::toDto).collect(Collectors.toList());
+    public List<SuitDTO> toDtoList(List<Suit> suits) {
+        return suits.stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public void mapDTOToEntity(SuitUpdateDTO suitUpdateDTO, Suit suit) {
-        if (suitUpdateDTO.getName() != null) {
-            suit.setName(suitUpdateDTO.getName());
+    public Suit updateFromDto(SuitUpdateDTO dto, Suit suit) {
+        if (dto.getName() != null) {
+            suit.setName(dto.getName());
         }
-        if (suitUpdateDTO.getDescription() != null) {
-            suit.setDescription(suitUpdateDTO.getDescription());
+        if (dto.getDescription() != null) {
+            suit.setDescription(dto.getDescription());
         }
-        if (suitUpdateDTO.getPriority() != null) {
-            suit.setPriority(suitUpdateDTO.getPriority());
+        if (dto.getPriority() != null) {
+            suit.setPriority(dto.getPriority());
         }
-        if (suitUpdateDTO.getTags().size() != 0) {
-            List<TagDTO> tagDTOs = new ArrayList<>(suitUpdateDTO.getTags());
-            suit.setTags(getSetOfTagsFromListOfTagDTOs(tagDTOs));
+        if (dto.getTags() != null) {
+            suit.updateTags(tagTransformer.fromDtoSet(dto.getTags()));
         }
+
+        return suit;
     }
 
-    private Set<Tag> getSetOfTagsFromListOfTagDTOs(List<TagDTO> tagDTOList) {
-        return new HashSet<>(tagTransformer.fromListDto(tagDTOList));
-    }
-
-    private Set<TagDTO> getSetOfTagDTOsFromListOfTags(List<Tag> tagList) {
-        return new HashSet<>(tagTransformer.toListDto(tagList));
-    }
 }

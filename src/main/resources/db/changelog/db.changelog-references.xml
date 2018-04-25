@@ -20,19 +20,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="" id="new_case_tag_table">
-        <createTable tableName="CASE_TAG">
-            <column name="CASE_ID" type="BIGINT(19)">
-                <constraints nullable="false"
-                    foreignKeyName="fk_caseTag_case" references="case(id)"/>
-            </column>
-            <column name="TAGS_ID" type="BIGINT(19)">
-                <constraints nullable="false"
-                    foreignKeyName="fk_caseTag_tag" references="tag(id)"/>
-            </column>
-        </createTable>
-    </changeSet>
-
     <changeSet author="" id="new_project_suit_table">
         <createTable tableName="PROJECT_SUIT">
             <column name="PROJECT_ID" type="BIGINT(19)">
@@ -68,19 +55,6 @@
             <column name="CASES_ID" type="BIGINT(19)">
                 <constraints nullable="false"
                     foreignKeyName="fk_suitCase_case" references="case(id)"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet author="" id="new_suit_tag_table">
-        <createTable tableName="SUIT_TAG">
-            <column name="SUIT_ID" type="BIGINT(19)">
-                <constraints nullable="false"
-                    foreignKeyName="fk_suitTag_suit" references="suit(id)"/>
-            </column>
-            <column name="TAGS_ID" type="BIGINT(19)">
-                <constraints nullable="false"
-                    foreignKeyName="fk_suitTag_tag" references="tag(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -133,6 +107,30 @@
             constraintName="fk_suitresultCaseresult_case"
             referencedColumnNames="id"
             referencedTableName="caseresult"/>
+    </changeSet>
+
+    <changeSet author="" id="new_suit_tags_table">
+        <createTable tableName="suit_tags">
+            <column name="SUIT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitTag_suit" references="suit(id)"/>
+            </column>
+            <column name="TAG" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_case_tags_table">
+        <createTable tableName="case_tags">
+            <column name="CASE_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseTag_case" references="suit(id)"/>
+            </column>
+            <column name="TAG" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

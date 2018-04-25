@@ -1,38 +1,21 @@
 package com.epam.test_generator.entities;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 
 /**
- * This class represents tag essence. Tag is a type or small characteristic of test cases or even all test suit.
+ * This class represents tag value object. Tag is a type or small characteristic of test case or test suit.
  */
-@Entity
+@Embeddable
 public class Tag implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     private String name;
 
-    public Tag() {
-    }
+    public Tag() {}
 
     public Tag(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

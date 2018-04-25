@@ -91,15 +91,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="" id="new_tag_table">
-        <createTable tableName="TAG">
-            <column name="ID" type="BIGINT(19)" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="NAME" type="VARCHAR(255)"/>
-        </createTable>
-    </changeSet>
-
     <changeSet author="" id="new_user_table">
         <createTable tableName="USER">
             <column name="ID" type="BIGINT(19)" autoIncrement="true">

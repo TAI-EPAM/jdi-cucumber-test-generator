@@ -122,7 +122,7 @@ public class SuitService {
 
         Suit suit = getSuit(projectId, suitId);
 
-        suitTransformer.mapDTOToEntity(suitUpdateDTO, suit);
+        suitTransformer.updateFromDto(suitUpdateDTO, suit);
         ZonedDateTime now = ZonedDateTime.now();
         suit.setUpdateDate(now);
         suit.setLastModifiedDate(now);

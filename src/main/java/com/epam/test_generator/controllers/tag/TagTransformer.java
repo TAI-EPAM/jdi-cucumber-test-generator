@@ -5,6 +5,7 @@ import com.epam.test_generator.controllers.tag.request.TagUpdateDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Tag;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -20,23 +21,21 @@ public class TagTransformer {
     public Tag fromDto(TagDTO tagDTO) {
         Tag tag = new Tag();
         tag.setName(tagDTO.getName());
-        tag.setId(tagDTO.getId());
         return tag;
     }
 
     public TagDTO toDto(Tag tag) {
         TagDTO tagDTO = new TagDTO();
-        tagDTO.setId(tag.getId());
         tagDTO.setName(tag.getName());
         return tagDTO;
     }
 
-    public List<TagDTO> toListDto(List<Tag> tags) {
-        return tags.stream().map(this::toDto).collect(Collectors.toList());
+    public Set<TagDTO> toDtoSet(Set<Tag> tags) {
+        return tags.stream().map(this::toDto).collect(Collectors.toSet());
     }
 
-    public List<Tag> fromListDto(List<TagDTO> tagDTOS) {
-        return tagDTOS.stream().map(this::fromDto).collect(Collectors.toList());
+    public Set<Tag> fromDtoSet(Set<TagDTO> tags) {
+        return tags.stream().map(this::fromDto).collect(Collectors.toSet());
     }
 
     public Tag updateFromDto(TagUpdateDTO updateDTO, Tag tag) {

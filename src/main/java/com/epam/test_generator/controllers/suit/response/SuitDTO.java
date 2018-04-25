@@ -3,6 +3,8 @@ package com.epam.test_generator.controllers.suit.response;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -49,7 +51,8 @@ public class SuitDTO {
     }
 
     public SuitDTO() {
-
+        creationDate = Instant.now().getEpochSecond();
+        updateDate = creationDate;
     }
 
     public Long getId() {

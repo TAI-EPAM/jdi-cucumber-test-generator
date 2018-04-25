@@ -129,7 +129,6 @@ public class CaseVersionDAOTest {
         caseVersionDAO.save(caze);
 
         Tag tag = new Tag("name");
-        tag.setId(1L);
 
         caze.addTag(tag);
         caseVersionDAO.save(caze);
@@ -141,7 +140,6 @@ public class CaseVersionDAOTest {
         CaseVersion caseVersionEditedTag = caseVersionDAO.findAll(CASE_ID).get(2);
 
         Tag originalTag = new Tag("name");
-        originalTag.setId(1L);
 
         assertEquals(1, caseVersionAddedTag.getPropertyDifferences().size());
         assertEquals(2, caseVersionEditedTag.getPropertyDifferences().size());

@@ -5,7 +5,6 @@ import java.util.List;
 
 public interface SuitProjectTrait {
 
-
     List<Suit> getSuits();
 
     String getName();

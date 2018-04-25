@@ -7,8 +7,6 @@ import javax.validation.constraints.Size;
 
 public class TagDTO implements Serializable {
 
-    private Long id;
-
     @NotNull
     @Size(min = 1, max = 255)
     private String name;
@@ -18,14 +16,6 @@ public class TagDTO implements Serializable {
 
     public TagDTO(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -45,14 +35,13 @@ public class TagDTO implements Serializable {
             return false;
         }
         TagDTO tagDTO = (TagDTO) o;
-        return Objects.equals(id, tagDTO.id) &&
-            Objects.equals(name, tagDTO.name);
+        return Objects.equals(name, tagDTO.name);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 
     @Override

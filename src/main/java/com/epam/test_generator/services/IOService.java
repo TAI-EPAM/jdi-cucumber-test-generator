@@ -5,7 +5,8 @@ import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.file_generator.FileGenerator;
-import com.epam.test_generator.controllers.caze.CaseDTOsTransformer;
+import com.epam.test_generator.controllers.caze.CaseTransformer;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.SuitTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class IOService {
     private SuitDAO suitDAO;
 
     @Autowired
-    private CaseDTOsTransformer caseDTOsTransformer;
+    private CaseTransformer caseTransformer;
 
     @Autowired
     private SuitTransformer suitTransformer;
@@ -46,6 +47,6 @@ public class IOService {
                 .collect(Collectors.toList());
 
         return fileGenerator
-                .generate(suitTransformer.toDto(suit), caseDTOsTransformer.toDtoList(cases));
+                .generate(suitTransformer.toDto(suit), caseTransformer.toDtoList(cases));
     }
 }

@@ -59,7 +59,7 @@ public class UserDTO {
     public Long getId() {
         return id;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -75,7 +75,7 @@ public class UserDTO {
     public void setSurname(String surname) {
         this.surname = surname;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -104,6 +104,7 @@ public class UserDTO {
             ", locked=" + locked +
             '}';
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -122,6 +123,7 @@ public class UserDTO {
             Objects.equals(attempts, userDTO.attempts) &&
             Objects.equals(locked, userDTO.locked);
     }
+
 
     @Override
     public int hashCode() {

@@ -6,14 +6,20 @@ import com.epam.test_generator.config.security.AuthenticatedUser;
 import com.epam.test_generator.controllers.project.ProjectTransformer;
 import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.request.ProjectUpdateDTO;
+import com.epam.test_generator.controllers.tag.TagTransformer;
+import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.entities.Project;
+import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.ProjectClosedException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -32,8 +38,23 @@ public class ProjectService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TagTransformer tagTransformer;
+
     public List<ProjectDTO> getProjects() {
         return projectTransformer.toDtoList(projectDAO.findAll());
+    }
+
+    /**
+     * Get all the tags which are used in this project at the moment
+     * @param projectId - id of project
+     * @return set of tag DTO representing set of all the tags in a project
+     */
+    public Set<TagDTO> getTagsByProjectId(Long projectId) {
+        checkNotNull(projectDAO.findOne(projectId));
+        return projectDAO.getTagsByProjectId(projectId).stream()
+                .map(tagTransformer::toDto)
+                .collect(Collectors.toSet());
     }
 
     /**

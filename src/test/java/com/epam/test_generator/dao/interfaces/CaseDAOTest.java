@@ -26,8 +26,6 @@ public class CaseDAOTest {
     @Autowired
     private CaseDAO caseDAO;
 
-    @Autowired
-    private TagDAO tagDAO;
 
     @Test
     public void createAndRetrieve_CaseById_Valid() {
@@ -41,12 +39,11 @@ public class CaseDAOTest {
     }
 
     @Test
-    public void save_CaseWithNullIdAndNotNullTagId_Success() {
-        Tag tagWithNullId = new Tag("tag with null id");
-        Tag tagWithNotNullId = tagDAO.save(new Tag("tag with not null id"));
+    public void save_CaseWithTag_Success() {
+        Tag tag = new Tag("tag with null id");
 
         Case caze = new Case("name", "desc", null, null, null, 3,
-            Sets.newHashSet(tagWithNotNullId, tagWithNullId), null, "comment");
+            Sets.newHashSet(tag), null, "comment");
         caze.setRowNumber(1);
         Case savedCase = caseDAO.save(caze);
 
