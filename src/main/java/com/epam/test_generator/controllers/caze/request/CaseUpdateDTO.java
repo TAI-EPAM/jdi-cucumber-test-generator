@@ -1,15 +1,14 @@
 package com.epam.test_generator.controllers.caze.request;
 
-import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Status;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-import java.util.List;
 import java.util.Set;
 
 public class CaseUpdateDTO {
@@ -22,6 +21,7 @@ public class CaseUpdateDTO {
 
     @Min(value = 1)
     @Max(value = 5)
+    @ApiModelProperty(allowableValues = "range[1, 5]", example = "1")
     private Integer priority;
 
     private Status status;

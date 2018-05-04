@@ -1,15 +1,13 @@
 package com.epam.test_generator.controllers.suit.request;
 
 import com.epam.test_generator.controllers.tag.response.TagDTO;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.Instant;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Set;
 
 public class SuitCreateDTO {
@@ -21,6 +19,7 @@ public class SuitCreateDTO {
     @NotNull
     @Min(value = 1)
     @Max(value = 5)
+    @ApiModelProperty(allowableValues = "range[1, 5]", example = "1")
     private Integer priority;
 
     @Size(max = 255)

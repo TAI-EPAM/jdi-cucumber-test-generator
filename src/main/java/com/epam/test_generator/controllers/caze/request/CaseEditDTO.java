@@ -4,6 +4,7 @@ import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Status;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ public class CaseEditDTO {
 
     @Min(value = 1)
     @Max(value = 5)
+    @ApiModelProperty(allowableValues = "range[1, 5]", example = "1")
     private Integer priority;
 
     private Status status;

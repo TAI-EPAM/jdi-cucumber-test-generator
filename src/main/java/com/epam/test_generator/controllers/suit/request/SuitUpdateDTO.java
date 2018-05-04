@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers.suit.request;
 
 import com.epam.test_generator.controllers.tag.response.TagDTO;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
 import javax.validation.constraints.Max;
@@ -15,6 +16,7 @@ public class SuitUpdateDTO {
 
     @Min(value = 1)
     @Max(value = 5)
+    @ApiModelProperty(allowableValues = "range[1, 5]", example = "1")
     private Integer priority;
 
     @Size(max = 255)
