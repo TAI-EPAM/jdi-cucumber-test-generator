@@ -35,7 +35,7 @@ public class TokenService {
      * @param token
      */
     public void checkToken(String token) {
-        Token resetToken = tokenDAO.findByTokenUuid(token);
+        Token resetToken = getTokenByName(token);
         if (resetToken == null) {
             throw new TokenMissingException("Could not find password reset token.");
         } else if (resetToken.isExpired()) {
@@ -43,5 +43,22 @@ public class TokenService {
             throw new TokenMalformedException(
                     "Token has expired, please request a new password reset.");
         }
+    }
+
+    /**
+     * Returns token by the Uuid string
+     * @param uuid {@link Token#tokenUuid} string
+     * @return {@link Token}
+     */
+    public Token getTokenByName(String uuid) {
+        return tokenDAO.findByTokenUuid(uuid);
+    }
+
+    /**
+     * Removes token from database
+     * @param token {@link Token} which will be removed
+     */
+    public void invalidateToken(Token token) {
+        tokenDAO.delete(token);
     }
 }

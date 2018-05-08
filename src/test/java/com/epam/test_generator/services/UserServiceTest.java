@@ -16,7 +16,6 @@ import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
 import com.epam.test_generator.controllers.user.response.UserDTO;
-import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
@@ -73,9 +72,6 @@ public class UserServiceTest {
 
     @Mock
     private PasswordService passwordService;
-
-    @Mock
-    private TokenDAO tokenDAO;
 
     @InjectMocks
     private UserService sut;
@@ -229,19 +225,19 @@ public class UserServiceTest {
 
     @Test
     public void confirmUser_SimpleToken_Ok() throws Exception {
-        when(passwordService.getTokenByName(anyString())).thenReturn(token);
+        when(tokenService.getTokenByName(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(user);
         sut.confirmUser(anyString());
 
-        verify(tokenDAO).delete(token);
+        verify(tokenService).invalidateToken(token);
     }
 
     @Test(expected = UnauthorizedException.class)
     public void confirmUser_IncorrectToken_Exception() throws Exception {
-        when(passwordService.getTokenByName(anyString())).thenReturn(token);
+        when(tokenService.getTokenByName(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(null);
         sut.confirmUser(anyString());
 
-        verify(tokenDAO).delete(token);
+        verify(tokenService).invalidateToken(token);
     }
 }

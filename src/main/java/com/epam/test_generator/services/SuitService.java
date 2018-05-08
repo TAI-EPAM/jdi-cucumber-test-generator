@@ -114,8 +114,7 @@ public class SuitService {
      * @param projectId id of project
      * @param suitId id of suit to update
      * @param suitUpdateDTO info to update
-     * @return {@link SuitDTO} which contains {@link SuitDTO} and {@link List<Long>} (in fact id of
-     * {@link StepDTO} with FAILED {@link Status} which belong this suit)
+     * @return {@link SuitDTO}
      */
     public SuitDTO updateSuit(long projectId, long suitId, SuitUpdateDTO suitUpdateDTO)
         throws MethodArgumentNotValidException {
@@ -139,7 +138,7 @@ public class SuitService {
      *
      * @param projectId id of project where to delete case
      * @param suitId id of case to delete
-     * @return {@link SuitDTO) of removed suit
+     * @return {@link SuitDTO} of removed suit
      */
     public SuitDTO removeSuit(long projectId, long suitId) {
         Suit suit = getSuit(projectId, suitId);

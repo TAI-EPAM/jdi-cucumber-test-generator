@@ -4,7 +4,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.controllers.user.request.PasswordResetDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
@@ -31,7 +30,7 @@ public class PasswordServiceTest {
     private PasswordResetDTO passwordResetDTO;
 
     @Mock
-    private TokenDAO tokenDAO;
+    private TokenService tokenService;
 
     @Mock
     private User user;
@@ -73,26 +72,20 @@ public class PasswordServiceTest {
     @Test
     public void passwordReset_SimplePasswordResetDTO_Ok() {
         when(passwordResetDTO.getToken()).thenReturn("token");
-        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(token);
+        when(tokenService.getTokenByName(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn("password");
 
         sut.passwordReset(passwordResetDTO);
-        verify(tokenDAO).delete(token);
+        verify(tokenService).invalidateToken(token);
     }
 
     @Test(expected = TokenMissingException.class)
     public void passwordReset_IncorrectToken_Exception() {
         when(passwordResetDTO.getToken()).thenReturn("token");
-        when(tokenDAO.findByTokenUuid(anyString())).thenReturn(null);
+        when(tokenService.getTokenByName(anyString())).thenReturn(null);
 
         sut.passwordReset(passwordResetDTO);
-        verify(tokenDAO).delete(token);
-    }
-
-    @Test
-    public void getTokenByName_SimpleToken_Ok() {
-        sut.getTokenByName(anyString());
-        verify(tokenDAO).findByTokenUuid(anyString());
+        verify(tokenService).invalidateToken(token);
     }
 }

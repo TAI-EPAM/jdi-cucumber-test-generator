@@ -15,6 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -66,6 +67,20 @@ public class TokenServiceTest {
         when(token.isExpired()).thenReturn(true);
         sut.checkToken(anyString());
 
+    }
+
+    @Test
+    public void getTokenByName_SimpleToken_Ok() {
+        when(tokenDAO.findByTokenUuid("token")).thenReturn(token);
+        Token actualToken = sut.getTokenByName("token");
+        verify(tokenDAO).findByTokenUuid("token");
+        Assert.assertEquals(token, actualToken);
+    }
+
+    @Test
+    public void invalidateToken_SimpleInputParameters_Ok() {
+        sut.invalidateToken(token);
+        verify(tokenDAO).delete(token);
     }
 
 }

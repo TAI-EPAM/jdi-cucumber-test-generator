@@ -3,7 +3,6 @@ package com.epam.test_generator.services;
 import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
 import com.epam.test_generator.controllers.user.response.UserDTO;
-import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
@@ -40,13 +39,6 @@ public class UserService {
 
     @Autowired
     private TokenService tokenService;
-
-
-    @Autowired
-    private PasswordService passwordService;
-
-    @Autowired
-    private TokenDAO tokenDAO;
 
     public User getUserById(Long id) {
         return checkUserExist(userDAO.findById(id));
@@ -169,10 +161,10 @@ public class UserService {
 
     public void confirmUser(String token) {
         tokenService.checkToken(token);
-        Token tokenByName = passwordService.getTokenByName(token);
+        Token tokenByName = tokenService.getTokenByName(token);
         User user = checkUserExist(tokenByName.getUser());
         user.unlock();
         saveUser(user);
-        tokenDAO.delete(tokenByName);
+        tokenService.invalidateToken(tokenByName);
     }
 }
