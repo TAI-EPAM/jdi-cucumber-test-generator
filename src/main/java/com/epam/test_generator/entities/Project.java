@@ -117,14 +117,25 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
 
     @Override
     public void addSuit(Suit suit) {
-        suit.setRowNumber(this.suits
+        suit.setRowNumber(rowNumberForNewSuit());
+        this.suits.add(suit);
+    }
+
+    @Override
+    public void addSuits(List<Suit> suits) {
+        Integer lastRow = rowNumberForNewSuit();
+        for( Suit s : suits ) {
+            s.setRowNumber(lastRow++);
+        }
+        this.suits.addAll(suits);
+    }
+
+    private Integer rowNumberForNewSuit() {
+        return suits
             .stream()
             .map(Suit::getRowNumber)
             .max(Comparator.naturalOrder())
-            .orElse(0)
-            + 1
-        );
-        this.suits.add(suit);
+            .orElse(0) + 1;
     }
 
     public void setUsers(Set<User> users) {

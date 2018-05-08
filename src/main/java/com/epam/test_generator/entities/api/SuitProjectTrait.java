@@ -13,11 +13,15 @@ public interface SuitProjectTrait {
         getSuits().add(suit);
     }
 
+    default void addSuits(List<Suit> suits) {
+        getSuits().addAll(suits);
+    }
+
     default boolean hasSuit(Suit suit) {
         return getSuits().contains(suit);
     }
 
-    default boolean removeSuit(Suit suit){
+    default boolean removeSuit(Suit suit) {
         return getSuits().remove(suit);
     }
 

@@ -141,7 +141,7 @@ public class JiraService {
      */
     public Project addStoriesToExistedProject(List<JiraStory> stories, String projectKey) {
         Project project = checkNotNull(projectDAO.findByJiraKey(projectKey));
-        project.getSuits().addAll(mapJiraStoriesToSuits(stories));
+        project.addSuits(mapJiraStoriesToSuits(stories));
         return projectDAO.save(project);
     }
 
@@ -183,7 +183,7 @@ public class JiraService {
         project.setJiraKey(jiraProject.getJiraKey());
         project.setActive(true);
         project.setUsers(Collections.singleton(user));
-        project.setSuits(mapJiraStoriesToSuits(stories));
+        project.addSuits(mapJiraStoriesToSuits(stories));
 
         return projectDAO.save(project);
     }
