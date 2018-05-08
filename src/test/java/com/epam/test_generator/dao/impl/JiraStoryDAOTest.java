@@ -14,6 +14,7 @@ import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import java.util.Collections;
 import java.util.List;
 import net.rcarz.jiraclient.Issue;
+import net.rcarz.jiraclient.IssueType;
 import net.rcarz.jiraclient.JiraClient;
 import net.rcarz.jiraclient.JiraException;
 import net.rcarz.jiraclient.RestException;
@@ -41,6 +42,9 @@ public class JiraStoryDAOTest {
     private Issue issue;
 
     @Mock
+    private IssueType issueType;
+
+    @Mock
     private JiraSettingsDAO jiraSettingsDAO;
 
     @InjectMocks
@@ -64,6 +68,8 @@ public class JiraStoryDAOTest {
     @Test
     public void getStoryByJiraKey_JiraStory_Success() throws Exception {
         when(client.getIssue(anyString())).thenReturn(issue);
+        when(issue.getIssueType()).thenReturn(issueType);
+        when(issueType.isSubtask()).thenReturn(false);
 
         JiraStory expectedStory = new JiraStory(issue);
         JiraStory resultStory = jiraStroryDAO.getStoryByJiraKey(JIRA_SETTINGS_ID, JIRA_KEY);
@@ -88,6 +94,8 @@ public class JiraStoryDAOTest {
         Issue.SearchResult searchResult = new Issue.SearchResult();
         searchResult.issues = Collections.singletonList(issue);
         when(client.searchIssues(anyString(), anyInt())).thenReturn(searchResult);
+        when(issue.getIssueType()).thenReturn(issueType);
+        when(issueType.isSubtask()).thenReturn(false);
         List<JiraStory> expectedStories = Collections.singletonList(new JiraStory(issue));
 
         List<JiraStory> resultStories = jiraStroryDAO

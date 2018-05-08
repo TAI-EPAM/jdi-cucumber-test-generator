@@ -42,7 +42,7 @@ public class JiraStoryDAO {
             jiraProjectKey);
         List<Issue> issues = jiraClientFactory.getJiraClient(clientId)
             .searchIssues(query, MAX_NUMBER_OF_ISSUES).issues;
-        return issues.stream().map(JiraStory::new).collect(Collectors.toList());
+        return mapIssuesToJiraStories(issues);
     }
 
     /**
@@ -67,7 +67,7 @@ public class JiraStoryDAO {
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
         }
-        return issues.stream().map(JiraStory::new).collect(Collectors.toList());
+        return mapIssuesToJiraStories(issues);
     }
 
     public void updateStoryByJiraKey(Long clientId, Suit suit) {
@@ -79,7 +79,7 @@ public class JiraStoryDAO {
                 .field(Field.DESCRIPTION, suit.getDescription())
                 .execute();
         } catch (JiraException e) {
-            throw new JiraRuntimeException(e.getMessage(),e);
+            throw new JiraRuntimeException(e.getMessage(), e);
         }
         suit.setLastJiraSyncDate(ZonedDateTime.now());
         suitDAO.save(suit);
@@ -115,5 +115,14 @@ public class JiraStoryDAO {
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
         }
+    }
+
+
+    private List<JiraStory> mapIssuesToJiraStories(List<Issue> issues) {
+        return issues
+            .stream()
+            .filter(s -> !s.getIssueType().isSubtask())
+            .map(JiraStory::new)
+            .collect(Collectors.toList());
     }
 }

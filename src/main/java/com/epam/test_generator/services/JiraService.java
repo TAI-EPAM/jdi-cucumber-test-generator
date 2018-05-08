@@ -78,10 +78,10 @@ public class JiraService {
     public List<JiraFilter> getAllFilters(Long clientId) {
         return jiraFilterDAO.getFilters(clientId);
     }
+
     @Autowired
     private SuitVersionDAO suitVersionDAO;
 
-    
 
     /**
      * Creates project from Jira in the system with specified jira stories (suits in BDD) and all
@@ -97,8 +97,7 @@ public class JiraService {
                 JiraProject projectByJiraKey = jiraProjectDAO
                     .getProjectByJiraKey(clientId, jiraProjectKey);
                 return createProjectFromJiraProject(projectByJiraKey, auth, stories);
-            }
-            else {
+            } else {
                 throw new JiraRuntimeException("There are some stories from another project");
             }
         }
@@ -114,12 +113,15 @@ public class JiraService {
 
     }
 
-    public ProjectDTO createProjectWithAttachedFilters(Long clienId, String jiraProjectKey,
-                                                       List<JiraFilter>
-        jiraFilters, Authentication auth) {
+    public ProjectDTO createProjectWithAttachedFilters(Long clienId,
+                                                       String jiraProjectKey,
+                                                       List<JiraFilter> jiraFilters,
+                                                       Authentication auth) {
         return projectTransformer
-            .toDto(createProjectWithJiraStories(clienId,jiraProjectKey, findStoriesByFilters
-                    (clienId,jiraFilters),
+            .toDto(createProjectWithJiraStories(
+                clienId,
+                jiraProjectKey,
+                findStoriesByFilters(clienId, jiraFilters),
                 auth));
     }
 
@@ -127,7 +129,7 @@ public class JiraService {
         return jiraFilters
             .stream()
             .map(JiraFilter::getId)
-            .map(fId -> jiraFilterDAO.getFilterByFilterId(clientId,fId))
+            .map(fId -> jiraFilterDAO.getFilterByFilterId(clientId, fId))
             .flatMap(jql -> jiraStoryDAO.getJiraStoriesByFilter(clientId, jql).stream())
             .distinct()
             .collect(Collectors.toList());
@@ -173,8 +175,10 @@ public class JiraService {
      *
      * @param jiraProject - new project from Jira
      */
-    private Project createProjectFromJiraProject(JiraProject jiraProject, Authentication auth, List<JiraStory> stories) {
-        User user = userService.getUserByEmail(((AuthenticatedUser) auth.getPrincipal()).getEmail());
+    private Project createProjectFromJiraProject(JiraProject jiraProject, Authentication auth,
+                                                 List<JiraStory> stories) {
+        User user = userService
+            .getUserByEmail(((AuthenticatedUser) auth.getPrincipal()).getEmail());
 
         Project project = new Project();
 
@@ -406,7 +410,7 @@ public class JiraService {
         return null;
     }
 
-    private void updateStoryInJira(Long clientId, Suit suit){
+    private void updateStoryInJira(Long clientId, Suit suit) {
         Integer actionId;
         switch (suit.getStatus()) {
             case PASSED:
@@ -424,8 +428,8 @@ public class JiraService {
                     Status previousStatus = getStatusFromPropertyDiff(propertyDifferences);
                     if (!suit.getStatus().equals(previousStatus) && previousStatus != null &&
                         previousStatus.equals(Status.PASSED)) {
-                            actionId = JiraStatus.REOPENED.getActionId();
-                            break;
+                        actionId = JiraStatus.REOPENED.getActionId();
+                        break;
                     }
                 }
                 break;

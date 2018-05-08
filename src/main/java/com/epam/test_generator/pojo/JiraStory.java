@@ -1,6 +1,7 @@
 package com.epam.test_generator.pojo;
 
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import net.rcarz.jiraclient.Issue;
 import net.rcarz.jiraclient.Status;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,10 @@ public class JiraStory {
 
 
     public JiraStory(Issue issue) {
+        if(issue.getIssueType().isSubtask()) {
+            throw new JiraRuntimeException("Cannot create JiraStory from substory [key:" + issue.getKey() + "]", null);
+        }
+
         name = issue.getSummary();
         jiraKey = issue.getKey();
         description = StringUtils.substring(StringUtils.defaultIfEmpty(issue.getDescription(), "No description"), 0, 250);
