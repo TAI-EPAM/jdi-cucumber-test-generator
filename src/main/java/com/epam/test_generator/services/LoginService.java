@@ -8,7 +8,7 @@ import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMalformedException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
 import javax.annotation.Resource;
@@ -43,15 +43,12 @@ public class LoginService {
     private Environment environment;
 
 
-    public DecodedJWT validate(String token) {
-        JWTVerifier verifier;
-        try {
-            verifier = JWT.require(Algorithm.HMAC256(environment.getProperty(JWT_SECRET_KEY)))
+    public DecodedJWT decodeJwt(String token)
+            throws IOException {
+
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(environment.getProperty(JWT_SECRET_KEY)))
                 .withIssuer(ELEMENT_FOR_UNIQUE_TOKEN)
                 .build();
-        } catch (UnsupportedEncodingException e) {
-            throw new TokenMalformedException("JWT token is not valid");
-        }
         return verifier.verify(token);
     }
 
@@ -88,7 +85,12 @@ public class LoginService {
     }
 
     public String refreshToken(String token) {
-        DecodedJWT jwt = validate(token);
+        DecodedJWT jwt;
+        try {
+            jwt = decodeJwt(token);
+        } catch (Exception e) {
+            throw new TokenMalformedException("JWT token is not valid");
+        }
         Date now = Date.from(Instant.now());
         String login = jwt.getClaim(CLAIM_EMAIL).asString();
         Date expiresAt = jwt.getExpiresAt();

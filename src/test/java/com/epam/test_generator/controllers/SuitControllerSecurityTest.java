@@ -2,7 +2,7 @@ package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
-import com.epam.test_generator.config.security.JwtAuthenticationProvider;
+import com.epam.test_generator.config.security.JwtAuthenticationFilter;
 import com.epam.test_generator.controllers.suit.SuitController;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
@@ -56,7 +56,7 @@ public class SuitControllerSecurityTest {
 
     @InjectMocks
     @Autowired
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
+    private JwtAuthenticationFilter JwtAuthenticationFilter;
 
     @Mock
     private User invalidUser;
@@ -191,7 +191,7 @@ public class SuitControllerSecurityTest {
 
         when(validUser.isLocked()).thenReturn(true);
 
-        mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
+        mvc.perform(get("/projects/" + 1L + "/suits").header("Authorization", token).contentType("application/json"))
             .andExpect(status().isForbidden());
     }
 

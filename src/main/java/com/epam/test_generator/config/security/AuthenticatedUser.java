@@ -1,6 +1,5 @@
 package com.epam.test_generator.config.security;
 
-import com.epam.test_generator.entities.Project;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;

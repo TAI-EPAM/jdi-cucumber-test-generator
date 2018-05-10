@@ -9,6 +9,10 @@ public class ErrorDTO {
         this.message = throwable.getMessage();
     }
 
+    public ErrorDTO(String message) {
+        this.message = message;
+    }
+
     public Boolean getError() {
         return isError;
     }

@@ -1,7 +1,5 @@
 package com.epam.test_generator.services;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.anyLong;
@@ -10,15 +8,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,14 +76,14 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void validate_SimpleToken_Ok() {
-        sut.validate(GOOD_TOKEN);
+    public void decodeJwt_SimpleToken_Ok() throws Exception{
+        sut.decodeJwt(GOOD_TOKEN);
 
     }
 
     @Test(expected = JWTDecodeException.class)
-    public void validate_notValidToken_Exception() {
-        sut.validate(BAD_TOKEN);
+    public void decodeJwt_notValidToken_Exception() throws Exception {
+        sut.decodeJwt(BAD_TOKEN);
     }
 
 

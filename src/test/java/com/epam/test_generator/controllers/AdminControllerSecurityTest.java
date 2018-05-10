@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
-import com.epam.test_generator.config.security.JwtAuthenticationProvider;
+import com.epam.test_generator.config.security.JwtAuthenticationFilter;
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
@@ -58,7 +58,7 @@ public class AdminControllerSecurityTest {
 
     @InjectMocks
     @Autowired
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Mock
     private User user;

@@ -5,7 +5,6 @@ import org.springframework.security.core.AuthenticationException;
 import com.epam.test_generator.services.AdminService;
 import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
-import com.epam.test_generator.config.security.JwtAuthenticationProvider;
 
 /**
  * Exception that can be thrown when {@link AdminService}, {@link LoginService},

@@ -1,7 +1,6 @@
 package com.epam.test_generator.services.exceptions;
 
 import com.epam.test_generator.controllers.GlobalExceptionController;
-import com.epam.test_generator.config.security.JwtAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import com.epam.test_generator.services.TokenService;
 
