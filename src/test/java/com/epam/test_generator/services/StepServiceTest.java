@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.bouncycastle.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,14 +88,18 @@ public class StepServiceTest {
         expectedListSteps.add(expectedStep);
 
         caze = new Case(SIMPLE_CASE_ID, "name", "Case desc", listSteps, 1, setOfTags, "comment");
+        caze.setStatus(Status.NOT_RUN);
 
         List<Case> listCases = new ArrayList<>();
 
-        listCases.add(new Case(1L, "name 1", "Case 1", listSteps, 1, setOfTags, "comment1"));
-        listCases.add(new Case(2L, "name 2", "Case 2", listSteps, 2, setOfTags, "comment2"));
+        listCases.add(
+            new Case(1L, "name 1", "Case 1", new ArrayList<>(listSteps), 1, setOfTags, "comment1"));
+        listCases.add(
+            new Case(2L, "name 2", "Case 2", new ArrayList<>(listSteps), 2, setOfTags, "comment2"));
         listCases.add(caze);
 
         suit = new Suit(SIMPLE_SUIT_ID, "Suit 1", "Suit desc", listCases, 1, setOfTags, 1);
+        suit.setStatus(Status.NOT_RUN);
     }
 
     @Test
@@ -191,6 +196,35 @@ public class StepServiceTest {
         verify(caseVersionDAO).save(eq(caze));
     }
 
+    @Test
+    public void add_StepToCaseWithoutSteps_ChangesSuitAndStepStatusToNotRun() {
+        Step newStep = new Step(3L, 3, "Step 3", StepType.AND, "Comment", Status.NOT_RUN);
+        StepCreateDTO newStepDTO = new StepCreateDTO();
+        newStepDTO.setDescription("Step 3");
+        newStepDTO.setType(StepType.AND);
+        newStepDTO.setComment("Comment");
+        newStepDTO.setStatus(Status.NOT_RUN);
+
+        Case newCase =
+            new Case(3L, "name", "Case desc", new ArrayList<>(), 1, setOfTags, "comment");
+        newCase.setStatus(Status.NOT_DONE);
+        ArrayList<Case> cases = new ArrayList<>();
+        cases.add(caze);
+        Suit newSuit = new Suit(2L, "Suit 1", "Suit desc", cases, 1, setOfTags, 1);
+        newSuit.setStatus(Status.NOT_DONE);
+
+        when(suitService.getSuit(SIMPLE_PROJECT_ID, 2L)).thenReturn(newSuit);
+        when(caseService.getCase(SIMPLE_PROJECT_ID, 2L,3L)).thenReturn(newCase);
+        when(stepDAO.save(any(Step.class))).thenReturn(newStep);
+        when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
+
+        Long actualId = stepService.addStepToCase(SIMPLE_PROJECT_ID, 2L, 3L, newStepDTO);
+        assertEquals(Status.NOT_RUN, newCase.getStatus());
+        assertEquals(Status.NOT_RUN, newSuit.getStatus());
+        assertEquals(newStep.getId(), actualId);
+        assertTrue(newCase.getSteps().contains(newStep));
+    }
+
 	@Test(expected = NotFoundException.class)
 	public void add_Step_NotFoundExceptionFromSuit() {
         doThrow(NotFoundException.class).when(suitService).getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID);
@@ -261,12 +295,47 @@ public class StepServiceTest {
 
         stepService.removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
         assertTrue(!caze.getSteps().contains(step));
-
+        assertEquals(Status.NOT_RUN, caze.getStatus());
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID));
         verify(caseService).getCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID),eq(SIMPLE_CASE_ID));
         verify(stepDAO).findOne(eq(SIMPLE_STEP_ID));
         verify(stepDAO).delete(eq(SIMPLE_STEP_ID));
         verify(caseVersionDAO).save(eq(caze));
+    }
+
+    @Test
+    public void remove_AllStepsFromCase_CaseStatusChangesToNotDone() {
+        when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
+        when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID))
+            .thenReturn(caze);
+        when(stepDAO.findOne(anyLong())).thenReturn(caze.getSteps().get(0))
+                                        .thenReturn(caze.getSteps().get(1))
+                                        .thenReturn(step);
+        stepService.removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+        stepService.removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+        stepService.removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+        assertEquals(Status.NOT_DONE, caze.getStatus());
+        assertEquals(Status.NOT_DONE, suit.getStatus());
+    }
+
+    @Test
+    public void remove_AllStepsFromAllCases_SuitStatusChangesToNotDone() {
+        when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
+        for(Case caze : suit.getCases()) {
+            when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID))
+                .thenReturn(caze);
+            when(stepDAO.findOne(anyLong())).thenReturn(caze.getSteps().get(0))
+                                            .thenReturn(caze.getSteps().get(1))
+                                            .thenReturn(caze.getSteps().get(2));
+            stepService
+                .removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+            stepService
+                .removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+            stepService
+                .removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
+
+        }
+        assertEquals(Status.NOT_DONE, suit.getStatus());
     }
 
 	@Test(expected = NotFoundException.class)

@@ -19,9 +19,9 @@ import org.springframework.data.domain.Persistable;
 /**
  * This class represents test suit essence. Test suit is a collection of test cases that are
  * intended to be used for testing software's behaviour. Besides some simple fields like id, name,
- * description, history it consists of tags and cases. List of {@Link Case} represents sequence of
- * test cases that are linked to current {@Link Suit}. List of {@Link Tag} represents types of
- * {@Link Suit} object.
+ * description, history it consists of tags and cases. List of {@link Case} represents sequence of
+ * test cases that are linked to current {@link Suit}. List of {@link Tag} represents types of
+ * {@link Suit} object.
  */
 @Entity
 public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializable {
@@ -68,11 +68,13 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
     public Suit() {
         this.creationDate = ZonedDateTime.now();
         this.updateDate = this.creationDate;
+        status = Status.NOT_DONE;
     }
 
     public Suit(Long id, String name, String description, List<Case> cases, Integer priority,
                 Set<Tag> tags, int rowNumber) {
-        this();
+        this.creationDate = ZonedDateTime.now();
+        this.updateDate = this.creationDate;
         this.id = id;
         this.name = name;
         this.description = description;
@@ -80,6 +82,7 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
         this.priority = priority;
         this.tags = tags;
         this.rowNumber = rowNumber;
+        updateStatus();
     }
 
     public Suit(String name, String description, Integer priority, ZonedDateTime creationDate,
@@ -193,19 +196,6 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
 
     public void setCases(List<Case> cases) {
         this.cases = cases;
-    }
-
-    public void addCase(Case caze) {
-        if (cases == null) {
-            cases = new ArrayList<>();
-        }
-        caze.setRowNumber(cases
-            .stream()
-            .map(Case::getRowNumber)
-            .max(Comparator.naturalOrder())
-            .orElse(0)
-            + 1);
-        cases.add(caze);
     }
 
     public void addTag(Tag tag) {

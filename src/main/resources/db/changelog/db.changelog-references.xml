@@ -125,7 +125,7 @@
         <createTable tableName="case_tags">
             <column name="CASE_ID" type="BIGINT(19)">
                 <constraints nullable="false"
-                    foreignKeyName="fk_caseTag_case" references="suit(id)"/>
+                    foreignKeyName="fk_caseTag_case" references="case(id)"/>
             </column>
             <column name="TAG" type="VARCHAR(255)">
                 <constraints nullable="false"/>

@@ -9,6 +9,7 @@ import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.services.exceptions.BadRequestException;
@@ -85,6 +86,9 @@ public class StepService {
         Step step = stepTransformer.fromDto(stepCreateDTO);
 
         caze.addStep(step);
+
+        suit.updateStatus();
+
         step = stepDAO.save(step);
 
         caseVersionDAO.save(caze);
@@ -132,6 +136,8 @@ public class StepService {
         Step step = checkNotNull(stepDAO.findOne(stepId));
         throwExceptionIfStepIsNotInCase(caze, step);
         caze.removeStep(step);
+        suit.updateStatus();
+
         stepDAO.delete(stepId);
 
         caseVersionDAO.save(caze);

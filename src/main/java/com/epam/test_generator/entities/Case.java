@@ -22,7 +22,7 @@ import org.springframework.statemachine.annotation.WithStateMachine;
  * some software's behavior. Case consists of some simple fields like id of the case, it's name,
  * description, history information, result of testing and etc, also it includes sequence of steps
  * and tags. List of {@link Step} objects represents steps that must be done for verification within
- * current case. List of {@Link Tag} objects represents types of current case.
+ * current case. List of {@link Tag} objects represents types of current case.
  */
 @Entity
 @WithStateMachine
@@ -75,12 +75,14 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
     public Case() {
         creationDate = ZonedDateTime.now();
         updateDate = creationDate;
+        status = Status.NOT_DONE;
     }
 
 
     public Case(Long id, String name, String description, List<Step> steps,
                 Integer priority, Set<Tag> tags, String comment) {
-        this();
+        creationDate = ZonedDateTime.now();
+        updateDate = creationDate;
         this.id = id;
         this.name = name;
         this.description = description;
@@ -88,6 +90,7 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
         this.priority = priority;
         this.tags = tags;
         this.comment = comment;
+        status = steps.isEmpty() ? Status.NOT_DONE : Status.NOT_RUN;
     }
 
     public Case(String name, String description, List<Step> steps, ZonedDateTime creationDate,
@@ -106,7 +109,8 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
 
     public Case(String name, String description, List<Step> steps,
                 Integer priority, Set<Tag> tags, Status status, String comment) {
-        this();
+        creationDate = ZonedDateTime.now();
+        updateDate = creationDate;
         this.name = name;
         this.description = description;
         this.steps = steps;
@@ -150,20 +154,6 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
 
     public void setSteps(List<Step> steps) {
         this.steps = steps;
-    }
-
-    public void addStep(Step step) {
-        if (steps == null) {
-            steps = new ArrayList<>();
-        }
-        step.setRowNumber(steps
-            .stream()
-            .map(Step::getRowNumber)
-            .max(Comparator.naturalOrder())
-            .orElse(0)
-            + 1
-        );
-        steps.add(step);
     }
 
     public void addTag(Tag tag) {

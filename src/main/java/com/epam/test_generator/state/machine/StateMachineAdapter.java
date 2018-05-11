@@ -27,7 +27,7 @@ public class StateMachineAdapter {
     private StateMachineFactory<Status, Event> stateMachineFactory;
 
     /**
-     * Persists and restores state from class <T>
+     * Persists and restores state from class {@code <T>}
      */
     @Autowired
     private StateMachinePersister<Status, Event, Case> persister;

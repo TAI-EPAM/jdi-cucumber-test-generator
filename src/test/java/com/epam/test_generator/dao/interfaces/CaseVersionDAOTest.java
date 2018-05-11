@@ -108,7 +108,7 @@ public class CaseVersionDAOTest {
 
         Step originalStep = new Step(1L, 1, "description", StepType.GIVEN, "Comment",
             Status.NOT_RUN);
-        assertEquals(1, caseVersionAddedStep.getPropertyDifferences().size());
+        assertEquals(2, caseVersionAddedStep.getPropertyDifferences().size());
         assertEquals(1, caseVersionEditedStep.getPropertyDifferences().size());
 
         assertEquals(new PropertyDifference(
