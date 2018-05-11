@@ -269,6 +269,12 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
             id, name, description, steps, creationDate, priority, tags, status, comment, rowNumber);
     }
 
+    /**
+     * Equals for Case entity, as a business key using only id, name, description,
+     * priority and status. Using collections in equals and hasCode methods are not recommended.
+     *
+     * @return true if equals
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -281,22 +287,20 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
         return Objects.equals(id, aCase.id) &&
             Objects.equals(name, aCase.name) &&
             Objects.equals(description, aCase.description) &&
-            Objects.equals(jiraKey, aCase.jiraKey) &&
-            Objects.equals(jiraProjectKey, aCase.jiraProjectKey) &&
-            Objects.equals(jiraParentKey, aCase.jiraParentKey) &&
-            Objects.equals(steps, aCase.steps) &&
             Objects.equals(priority, aCase.priority) &&
-            status == aCase.status &&
-            Objects.equals(tags, aCase.tags) &&
-            Objects.equals(comment, aCase.comment) &&
-            Objects.equals(rowNumber, aCase.rowNumber);
+            Objects.equals(status, aCase.status);
     }
 
+    /**
+     * HashCode for Case entity, as a business key using only id, name, description,
+     * priority and status. Using collections in equals and hasCode methods are not recommended.
+     *
+     * @return int hashCode value
+     */
     @Override
     public int hashCode() {
 
         return Objects
-            .hash(id, name, description, jiraKey, jiraProjectKey, jiraParentKey, steps, priority,
-                status, tags, comment, rowNumber);
+            .hash(id, name, description, priority, status);
     }
 }

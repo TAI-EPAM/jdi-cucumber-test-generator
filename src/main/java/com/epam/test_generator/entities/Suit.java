@@ -268,6 +268,12 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
             jiraProjectKey, tags, cases, rowNumber);
     }
 
+    /**
+     * Equals for Suit entity, as a business key using only id, name, description,
+     * priority and status. Using collections in equals and hasCode methods are not recommended.
+     *
+     * @return true if equals
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -281,17 +287,17 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
             Objects.equals(name, suit.name) &&
             Objects.equals(description, suit.description) &&
             Objects.equals(priority, suit.priority) &&
-            Objects.equals(status, suit.status) &&
-            Objects.equals(jiraKey, suit.jiraKey) &&
-            Objects.equals(jiraProjectKey, suit.jiraProjectKey) &&
-            Objects.equals(tags, suit.tags) &&
-            Objects.equals(cases, suit.cases) &&
-            Objects.equals(rowNumber, suit.rowNumber);
+            Objects.equals(status, suit.status);
     }
 
+    /**
+     * HashCode for Suit entity, as a business key using only id, name, description,
+     * priority and status. Using collections in equals and hasCode methods are not recommended.
+     *
+     * @return int hashCode value
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, priority, status, jiraKey, jiraProjectKey, tags,
-            cases, rowNumber);
+        return Objects.hash(id, name, description, priority, status);
     }
 }

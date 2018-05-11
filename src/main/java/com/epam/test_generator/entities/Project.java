@@ -174,6 +174,12 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
             '}';
     }
 
+    /**
+     * Equals for Project entity, as a business key using only id and name fields.
+     * Using collections in equals and hasCode methods are not recommended.
+     *
+     * @return true if equals
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -185,16 +191,18 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
         Project project = (Project) o;
         return active == project.active &&
             Objects.equals(id, project.id) &&
-            Objects.equals(name, project.name) &&
-            Objects.equals(description, project.description) &&
-            Objects.equals(suits, project.suits) &&
-            Objects.equals(jiraKey, project.jiraKey) &&
-            Objects.equals(users, project.users);
+            Objects.equals(name, project.name);
     }
 
+    /**
+     * HashCode for Case entity, as a business key using only id and name fields.
+     * Using collections in equals and hasCode methods are not recommended.
+     *
+     * @return int hashCode value
+     */
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, description, suits, users, active, jiraKey);
+        return Objects.hash(id, name);
     }
 }
