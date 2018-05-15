@@ -1,25 +1,25 @@
-package com.epam.test_generator.dto;
+package com.epam.test_generator.controllers.stepsuggestion.request;
 
 import com.epam.test_generator.entities.StepType;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-public class StepSuggestionUpdateDTO {
-
-    private String content;
-
-    private StepType type;
+public class StepSuggestionCreateDTO {
 
     @NotNull
-    private Long version;
+    @Size(min = 1, max = 255)
+    private String content;
 
-    public StepSuggestionUpdateDTO() {
+    @NotNull
+    private StepType type;
+
+    public StepSuggestionCreateDTO() {
     }
 
-    public StepSuggestionUpdateDTO(String content, StepType type, Long version) {
+    public StepSuggestionCreateDTO(String content, StepType type) {
         this.content = content;
         this.type = type;
-        this.version = version;
     }
 
     public String getContent() {
@@ -38,14 +38,6 @@ public class StepSuggestionUpdateDTO {
         this.type = type;
     }
 
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,15 +46,14 @@ public class StepSuggestionUpdateDTO {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StepSuggestionUpdateDTO that = (StepSuggestionUpdateDTO) o;
+        StepSuggestionCreateDTO that = (StepSuggestionCreateDTO) o;
         return Objects.equals(content, that.content) &&
-            type == that.type &&
-            Objects.equals(version, that.version);
+            type == that.type;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(content, type, version);
+        return Objects.hash(content, type);
     }
 }

@@ -64,8 +64,8 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="" id="new_stepsuggestion_table">
-        <createTable tableName="STEPSUGGESTION">
+    <changeSet author="" id="new_defaultstepsuggestion_table">
+        <createTable tableName="DEFAULTSTEPSUGGESTION">
             <column autoIncrement="true" name="ID" type="BIGINT(19)">
                 <constraints primaryKey="true"/>
             </column>
@@ -197,10 +197,21 @@
         </createTable>
     </changeSet>
 
-    <!--Adds version column to step suggestion table-->
-    <changeSet author="" id="add_version_stepsuggestion">
-        <addColumn tableName="STEPSUGGESTION">
-            <column name="VERSION" type="BIGINT(19)"/>
-        </addColumn>
+
+    <changeSet id="create_table_stepSuggestion" author="">
+        <createTable tableName="STEPSUGGESTION">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="VERSION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

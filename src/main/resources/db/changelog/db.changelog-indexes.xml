@@ -54,4 +54,10 @@
             <column name="TESTRESULT_ID"/>
         </createIndex>
     </changeSet>
+    <changeSet author="" id="new_projectStepSuggestion_idx">
+        <createIndex indexName="idx_projectStepSuggestion_projectId"
+            tableName="PROJECT_STEPSUGGESTION">
+            <column name="PROJECT_ID"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

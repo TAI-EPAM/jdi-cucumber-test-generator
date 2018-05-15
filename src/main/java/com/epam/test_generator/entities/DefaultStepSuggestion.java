@@ -1,9 +1,5 @@
 package com.epam.test_generator.entities;
 
-import com.epam.test_generator.entities.api.Versionable;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * This class represents example of possible steps for user.
  */
 @Entity
-public class StepSuggestion implements Versionable {
+public class DefaultStepSuggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,16 +26,18 @@ public class StepSuggestion implements Versionable {
     @Enumerated(EnumType.STRING)
     private StepType type;
 
-    @Version
-    @NotNull
-    private Long version;
-
-    public StepSuggestion() {
-    }
-
-    public StepSuggestion(String content, StepType type) {
+    public DefaultStepSuggestion(Long id, String content, StepType type) {
+        this.id = id;
         this.content = content;
         this.type = type;
+    }
+
+    public DefaultStepSuggestion(String content, StepType type) {
+        this.content = content;
+        this.type = type;
+    }
+
+    public DefaultStepSuggestion() {
     }
 
     public Long getId() {
@@ -66,23 +64,15 @@ public class StepSuggestion implements Versionable {
         this.type = type;
     }
 
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof DefaultStepSuggestion)) {
             return false;
         }
-        StepSuggestion that = (StepSuggestion) o;
+        DefaultStepSuggestion that = (DefaultStepSuggestion) o;
         return Objects.equals(id, that.id);
     }
 

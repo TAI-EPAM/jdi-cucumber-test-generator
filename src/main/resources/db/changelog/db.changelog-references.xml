@@ -63,7 +63,8 @@
         <createTable tableName="SUITRESULT_CASERESULT">
             <column name="SUITRESULT_ID" type="BIGINT(19)">
                 <constraints nullable="false"
-                    foreignKeyName="fk_suitresultCaseresult_suitresult" references="suitresult(id)"/>
+                    foreignKeyName="fk_suitresultCaseresult_suitresult"
+                    references="suitresult(id)"/>
             </column>
             <column name="CASERESULTS_ID" type="BIGINT(19)">
                 <constraints nullable="false"
@@ -75,11 +76,13 @@
         <createTable tableName="TESTRESULT_SUITRESULT">
             <column name="TESTRESULT_ID" type="BIGINT(19)">
                 <constraints nullable="false"
-                    foreignKeyName="fk_testresultSuitresult_testresult" references="testresult(id)"/>
+                    foreignKeyName="fk_testresultSuitresult_testresult"
+                    references="testresult(id)"/>
             </column>
             <column name="SUITS_ID" type="BIGINT(19)">
                 <constraints nullable="false"
-                    foreignKeyName="fk_testresultSuitresult_suitresult" references="suitresult(id)"/>
+                    foreignKeyName="fk_testresultSuitresult_suitresult"
+                    references="suitresult(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -88,11 +91,13 @@
         <createTable tableName="CASERESULT_STEPRESULT">
             <column name="CASERESULT_ID" type="BIGINT(19)">
                 <constraints nullable="false"
-                    foreignKeyName="fk_caseresultStepresult_caseresult" references="caseresult(id)"/>
+                    foreignKeyName="fk_caseresultStepresult_caseresult"
+                    references="caseresult(id)"/>
             </column>
             <column name="STEPS_ID" type="BIGINT(19)">
                 <constraints nullable="false"
-                    foreignKeyName="fk_caseresultStepresult_stepresult" references="stepresult(id)"/>
+                    foreignKeyName="fk_caseresultStepresult_stepresult"
+                    references="stepresult(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -129,6 +134,21 @@
             </column>
             <column name="TAG" type="VARCHAR(255)">
                 <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="new_project_stepsuggestions_table" author="">
+        <createTable tableName="PROJECT_STEPSUGGESTION">
+            <column name="PROJECT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectStepSuggestion_project"
+                    references="project(id)"/>
+            </column>
+            <column name="STEPSUGGESTION_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectStepSuggestion_stepSuggestion"
+                    references="stepsuggestion(id)"/>
             </column>
         </createTable>
     </changeSet>

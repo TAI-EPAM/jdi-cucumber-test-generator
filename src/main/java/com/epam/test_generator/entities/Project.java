@@ -1,6 +1,7 @@
 package com.epam.test_generator.entities;
 
 import com.epam.test_generator.entities.api.ProjectTrait;
+import com.epam.test_generator.entities.api.StepSuggestionProjectTrait;
 import com.epam.test_generator.entities.api.SuitProjectTrait;
 import com.epam.test_generator.entities.api.UsersProjectTrait;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -26,7 +29,11 @@ import javax.persistence.OneToMany;
  * of current project. More rights are granted with more significant {@link Role} of a user.
  */
 @Entity
-public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrait {
+public class Project implements
+    ProjectTrait,
+    SuitProjectTrait,
+    UsersProjectTrait,
+    StepSuggestionProjectTrait {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +53,14 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
 
     @ManyToMany
     private Set<User> users = new HashSet<>();
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+        name = "PROJECT_STEPSUGGESTION",
+        joinColumns = @JoinColumn(name = "PROJECT_ID"),
+        inverseJoinColumns = @JoinColumn(name = "STEPSUGGESTION_ID")
+    )
+    private Set<StepSuggestion> stepSuggestions = new HashSet<>();
 
     @Column(columnDefinition = "boolean default true", nullable = false)
     private boolean active;
@@ -160,6 +175,10 @@ public class Project implements ProjectTrait, SuitProjectTrait, UsersProjectTrai
         this.jiraKey = jiraKey;
     }
 
+    @Override
+    public Set<StepSuggestion> getStepSuggestions() {
+        return stepSuggestions;
+    }
 
     @Override
     public String toString() {

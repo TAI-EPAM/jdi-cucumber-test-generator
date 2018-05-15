@@ -1,11 +1,14 @@
-package com.epam.test_generator.dto;
+package com.epam.test_generator.controllers.stepsuggestion.response;
 
 import com.epam.test_generator.entities.StepType;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class StepSuggestionCreateDTO {
+public class StepSuggestionDTO {
+
+    @NotNull
+    private Long id;
 
     @NotNull
     @Size(min = 1, max = 255)
@@ -14,12 +17,26 @@ public class StepSuggestionCreateDTO {
     @NotNull
     private StepType type;
 
-    public StepSuggestionCreateDTO() {
-    }
-
-    public StepSuggestionCreateDTO(String content, StepType type) {
+    public StepSuggestionDTO(Long id, String content, StepType type) {
+        this.id = id;
         this.content = content;
         this.type = type;
+    }
+
+    public StepSuggestionDTO(String content, StepType type) {
+        this.content = content;
+        this.type = type;
+    }
+
+    public StepSuggestionDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -39,6 +56,15 @@ public class StepSuggestionCreateDTO {
     }
 
     @Override
+    public String toString() {
+        return "StepSuggestionDTO{" +
+            "id=" + id +
+            ", content='" + content + '\'' +
+            ", type=" + type +
+            '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -46,14 +72,15 @@ public class StepSuggestionCreateDTO {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StepSuggestionCreateDTO that = (StepSuggestionCreateDTO) o;
-        return Objects.equals(content, that.content) &&
+        StepSuggestionDTO that = (StepSuggestionDTO) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(content, that.content) &&
             type == that.type;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(content, type);
+        return Objects.hash(id, content, type);
     }
 }

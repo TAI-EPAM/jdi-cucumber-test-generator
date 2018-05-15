@@ -1,258 +1,174 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.entities.StepType.GIVEN;
+import static com.epam.test_generator.entities.StepType.THEN;
+import static com.epam.test_generator.entities.StepType.WHEN;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
-import com.epam.test_generator.dto.StepSuggestionCreateDTO;
-import com.epam.test_generator.dto.StepSuggestionDTO;
-import com.epam.test_generator.dto.StepSuggestionUpdateDTO;
+import com.epam.test_generator.controllers.stepsuggestion.StepSuggestionTransformer;
+import com.epam.test_generator.dao.interfaces.ProjectDAO;
+import com.epam.test_generator.dao.interfaces.ProjectStepSuggestionDAO;
+import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
+import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
+import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
+import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.StepSuggestion;
-import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.exceptions.BadRequestException;
-import com.epam.test_generator.services.exceptions.NotFoundException;
-import com.epam.test_generator.transformers.StepSuggestionTransformer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StepSuggestionServiceTest {
 
-    private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
-    private static final long SIMPLE_STEP_SUGGESTION_ID = 1L;
-    private static final int PAGE_SIZE = 1;
-    private static final String SEARCH_STRING = "I%20click";
-    private static final int NUMBER_OF_RETURN_RESULTS = 10;
+    private static final Long PROJECT_ID = 1L;
+    private static final Long ID_1 = 1L;
+    private static final Long ID_2 = 2L;
+    private static final Long ID_3 = 3L;
+    private static final String CONTENT_1 = "CONTENT 1";
+    private static final String CONTENT_2 = "CONTENT 2";
+    private static final String CONTENT_3 = "CONTENT 3";
+    private static final Long VERSION = 0L;
+
+    @Mock
+    private Project project;
+
+    @Mock
+    private ProjectDAO projectDAO;
+
+    @Mock
+    private ProjectStepSuggestionDAO projectStepSuggestionDAO;
 
     @Mock
     private StepSuggestionTransformer stepSuggestionTransformer;
-    @Mock
-    private StepSuggestionDAO stepSuggestionDAO;
+
     @InjectMocks
     private StepSuggestionService stepSuggestionService;
-    private List<StepSuggestion> listSteps;
-    private List<StepSuggestionDTO> expectedListSteps;
+
+    private List<StepSuggestionDTO> stepSuggestionDTOS = new ArrayList<>();
+    private Set<StepSuggestion> stepSuggestions = new HashSet<>();
+    private StepSuggestion expectedStepSuggestion;
+    private StepSuggestionDTO expectedStepSuggestionDTO;
 
     @Before
-    public void setUp() {
-        listSteps = new ArrayList<>();
-        listSteps.add(new StepSuggestion(1L, "StepSuggestion 1", StepType.GIVEN, 0L));
-        listSteps.add(new StepSuggestion(2L, "StepSuggestion 2", StepType.THEN, 0L));
+    public void setUp() throws Exception {
+        expectedStepSuggestionDTO = new StepSuggestionDTO(ID_1, CONTENT_1, GIVEN);
+        stepSuggestionDTOS.add(expectedStepSuggestionDTO);
+        stepSuggestionDTOS.add(new StepSuggestionDTO(ID_2, CONTENT_2, WHEN));
+        stepSuggestionDTOS.add(new StepSuggestionDTO(ID_3, CONTENT_3, THEN));
 
-        expectedListSteps = new ArrayList<>();
-        expectedListSteps.add(new StepSuggestionDTO(1L, "StepSuggestion 1", StepType.GIVEN, 0L));
-        expectedListSteps.add(new StepSuggestionDTO(2L, "StepSuggestion 2", StepType.THEN, 0L));
+        expectedStepSuggestion = new StepSuggestion(CONTENT_1, GIVEN);
+        expectedStepSuggestion.setId(ID_1);
+        expectedStepSuggestion.setVersion(VERSION);
+        StepSuggestion stepSuggestion2 = new StepSuggestion(CONTENT_2, WHEN);
+        stepSuggestion2.setId(ID_2);
+        StepSuggestion stepSuggestion3 = new StepSuggestion(CONTENT_3, WHEN);
+        stepSuggestion3.setId(ID_3);
+        stepSuggestions.add(expectedStepSuggestion);
+        stepSuggestions.add(stepSuggestion2);
+        stepSuggestions.add(stepSuggestion3);
+
+        when(projectDAO.getOne(PROJECT_ID)).thenReturn(project);
     }
 
     @Test
-    public void get_StepsSuggestions_Success() {
-        when(stepSuggestionDAO.findAll()).thenReturn(listSteps);
-        when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
+    public void getStepsSuggestions_Success() throws Exception {
+        when(project.getStepSuggestions()).thenReturn(stepSuggestions);
+        when(stepSuggestionTransformer.toDtoList(any())).thenReturn(stepSuggestionDTOS);
 
-        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
-            .getStepsSuggestions(null, null, null);
-        assertTrue(
-            Arrays.deepEquals(expectedListSteps.toArray(), getListStepsSuggestion.toArray()));
+        List<StepSuggestionDTO> actualStepSuggestions =
+            stepSuggestionService.getStepsSuggestions(PROJECT_ID);
 
-        verify(stepSuggestionDAO).findAll();
+        assertEquals(stepSuggestionDTOS, actualStepSuggestions);
     }
 
     @Test
-    public void get_StepsSuggestionsPage_Success() {
-        Page<StepSuggestion> testPage = new PageImpl<>(listSteps.subList(0, 1));
+    public void getStepSuggestionDTO_Success() throws Exception {
+        when(projectStepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
+        when(project.hasStepSuggestion(any())).thenReturn(true);
+        when(stepSuggestionTransformer.toDto(any())).thenReturn(expectedStepSuggestionDTO);
 
-        when(stepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
-        when(stepSuggestionTransformer.toDtoList(testPage.getContent())).thenReturn(expectedListSteps.subList(0, 1));
+        StepSuggestionDTO actualDto =
+            stepSuggestionService.getStepSuggestionDTO(PROJECT_ID, ID_1);
 
-        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
-                .getStepsSuggestions(null, 1, PAGE_SIZE);
-        assertEquals(expectedListSteps.subList(0, 1), getListStepsSuggestion);
-
-        verify(stepSuggestionDAO).findAll(any(Pageable.class));
-        verify(stepSuggestionTransformer).toDtoList(testPage.getContent());
-    }
-
-    @Test
-    public void get_StepsSuggestionsByTypePage1_Success() {
-        Page<StepSuggestion> testPage = new PageImpl<>(listSteps.subList(0, 1));
-
-        when(stepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
-        when(stepSuggestionTransformer.toDtoList(testPage.getContent())).thenReturn(expectedListSteps.subList(0, 1));
-
-        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
-                .getStepsSuggestions(StepType.GIVEN, 1, PAGE_SIZE);
-        assertEquals(expectedListSteps.subList(0, 1), getListStepsSuggestion);
-
-        verify(stepSuggestionDAO).findAll(any(Pageable.class));
-        verify(stepSuggestionTransformer).toDtoList(testPage.getContent());
-    }
-
-    @Test
-    public void get_StepsSuggestionsByTypePage2_Success() {
-        Page<StepSuggestion> testPage = new PageImpl<>(listSteps.subList(1, 2));
-
-        when(stepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
-        when(stepSuggestionTransformer.toDtoList(testPage.getContent())).thenReturn(expectedListSteps.subList(1, 2));
-
-        List<StepSuggestionDTO> getListStepsSuggestion = stepSuggestionService
-                .getStepsSuggestions(StepType.THEN, 2, PAGE_SIZE);
-        assertEquals(expectedListSteps.subList(1, 2), getListStepsSuggestion);
-
-        verify(stepSuggestionDAO).findAll(any(Pageable.class));
-        verify(stepSuggestionTransformer).toDtoList(testPage.getContent());
-    }
-
-    @Test
-    public void get_StepSuggestionById_Success() {
-        StepSuggestion expected = new StepSuggestion(SIMPLE_STEP_SUGGESTION_ID, "StepSuggestion 1",
-            StepType.GIVEN, 0L);
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID,
-            "StepSuggestion 1", StepType.GIVEN, 0L);
-
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
-        when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedDTO);
-
-        assertEquals(stepSuggestionService.getStepsSuggestion(SIMPLE_STEP_SUGGESTION_ID),
-            expectedDTO);
-
-        verify(stepSuggestionDAO).findOne(anyLong());
-        verify(stepSuggestionTransformer).toDto(any(StepSuggestion.class));
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void get_StepSuggestionById_NotFoundException() {
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
-
-        stepSuggestionService.getStepsSuggestion(SIMPLE_STEP_SUGGESTION_ID);
-    }
-
-    @Test
-    public void get_StepSuggestionByType_Success() {
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2",
-            StepType.WHEN, 0L);
-        StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN, 0L);
-
-        when(stepSuggestionDAO.findAll()).thenReturn(Collections.singletonList(expected));
-        when(stepSuggestionTransformer.toDtoList(anyList()))
-            .thenReturn(Collections.singletonList(expectedDTO));
-
-        List<StepSuggestionDTO> actual = stepSuggestionService.getStepsSuggestionsByType
-            (StepType.GIVEN);
-
-        assertEquals(Collections.singletonList(expectedDTO), actual);
-
-        verify(stepSuggestionDAO).findAll();
-    }
-
-    @Test
-    public void add_StepSuggestion_Success() {
-        StepSuggestion newStepSuggestion = new StepSuggestion(3L, "StepSuggestion 3", StepType.AND, 0L);
-        StepSuggestionCreateDTO newStepSuggestionDTO = new StepSuggestionCreateDTO("StepSuggestion 3",
-            StepType.AND);
-
-        when(stepSuggestionDAO.save(any(StepSuggestion.class))).thenReturn(newStepSuggestion);
-
-        Long id = stepSuggestionService.addStepSuggestion(newStepSuggestionDTO);
-        assertEquals(newStepSuggestion.getId(), id);
-
-        verify(stepSuggestionDAO).save(any(StepSuggestion.class));
-    }
-
-    @Test
-    public void update_StepSuggestion_Success() {
-        StepSuggestionUpdateDTO expectedUpdateDTO = new StepSuggestionUpdateDTO("StepSuggestion 2", StepType.WHEN, 0L);
-        StepSuggestionDTO expectedDTO = new StepSuggestionDTO(2L, "StepSuggestion 2",
-            StepType.WHEN, 0L);
-        StepSuggestion expected = new StepSuggestion(2L, "StepSuggestion 2", StepType.WHEN, 0L);
-
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
-        when(stepSuggestionService.getStepsSuggestion(anyLong())).thenReturn(expectedDTO);
-
-        stepSuggestionService.updateStepSuggestion(SIMPLE_STEP_SUGGESTION_ID, expectedUpdateDTO);
-        StepSuggestionDTO actual = stepSuggestionService.getStepsSuggestion(2L);
-        assertEquals(expectedDTO, actual);
-
-        verify(stepSuggestionDAO).save(any(StepSuggestion.class));
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void update_StepSuggestion_NotFoundException() {
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
-
-        stepSuggestionService
-            .updateStepSuggestion(SIMPLE_STEP_SUGGESTION_ID, any(StepSuggestionUpdateDTO.class));
-    }
-
-    @Test(expected = OptimisticLockingFailureException.class)
-    public void update_StepSuggestion_OptimisticLockingFailureException() {
-        StepSuggestion stepSuggestion = new StepSuggestion(
-            SIMPLE_STEP_SUGGESTION_ID, "content", StepType.GIVEN, 0L);
-        StepSuggestionUpdateDTO stepSuggestionUpdateDTO =
-            new StepSuggestionUpdateDTO("updated", StepType.GIVEN, 1L);
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(stepSuggestion);
-
-        stepSuggestionService
-            .updateStepSuggestion(SIMPLE_STEP_SUGGESTION_ID, stepSuggestionUpdateDTO);
-    }
-
-    @Test
-    public void remove_StepSuggestion_Success() {
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(listSteps.get(0));
-
-        stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
-
-        verify(stepSuggestionDAO).findOne(anyLong());
-        verify(stepSuggestionDAO).delete(SIMPLE_AUTOCOMPLETE_ID);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void remove_StepSuggestion_NotFoundException() {
-        when(stepSuggestionDAO.findOne(anyLong())).thenReturn(null);
-
-        stepSuggestionService.removeStepSuggestion(SIMPLE_AUTOCOMPLETE_ID);
-    }
-
-    @Test
-    public void findStepsSuggestions_CorrectSearchString_Success() {
-        when(stepSuggestionDAO.findByContentIgnoreCaseContaining(eq(SEARCH_STRING), any())).thenReturn(listSteps);
-        when(stepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
-
-        stepSuggestionService.findStepsSuggestions(SEARCH_STRING, NUMBER_OF_RETURN_RESULTS);
-
-        verify(stepSuggestionDAO).findByContentIgnoreCaseContaining(eq(SEARCH_STRING), any());
-        verify(stepSuggestionTransformer).toDtoList(listSteps);
+        assertEquals(expectedStepSuggestionDTO, actualDto);
     }
 
     @Test(expected = BadRequestException.class)
-    public void findStepsSuggestions_IncorrectSearchString_BadRequestException() {
-        stepSuggestionService.findStepsSuggestions("", NUMBER_OF_RETURN_RESULTS);
+    public void getStepSuggestionDTO_NotFound() throws Exception {
+        when(projectStepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
+        when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(false);
 
+        stepSuggestionService.getStepSuggestionDTO(PROJECT_ID, ID_1);
     }
 
-    @Test(expected = BadRequestException.class)
-    public void findStepsSuggestions_IncorrectLimit_Success() {
-        stepSuggestionService.findStepsSuggestions(SEARCH_STRING, -5);
+    @Test
+    public void getStepSuggestionsByType_Success() throws Exception {
+        when(project.getStepSuggestions()).thenReturn(stepSuggestions);
+        when(stepSuggestionTransformer.toDtoList(any())).thenCallRealMethod();
+        when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
+
+        List<StepSuggestionDTO> expectedDTOs = stepSuggestionDTOS.stream()
+            .filter(s -> s.getType().equals(GIVEN))
+            .collect(Collectors.toList());
+        List<StepSuggestionDTO> actualDTOs =
+            stepSuggestionService.getStepsSuggestionsByType(PROJECT_ID, GIVEN);
+
+        assertEquals(expectedDTOs, actualDTOs);
     }
 
+    @Test
+    public void addStepSuggestion_Success() throws Exception {
+        when(projectStepSuggestionDAO.save(any(StepSuggestion.class)))
+            .thenReturn(expectedStepSuggestion);
 
+        StepSuggestionCreateDTO createDTO =
+            new StepSuggestionCreateDTO(CONTENT_1, GIVEN);
+        Long id = stepSuggestionService.addStepSuggestion(PROJECT_ID, createDTO);
+
+        assertEquals(ID_1, id);
+        verify(project).addStepSuggestion(expectedStepSuggestion);
+    }
+
+    @Test
+    public void updateStepSuggestion_Success() throws Exception {
+        when(projectStepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
+        when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
+        when(projectStepSuggestionDAO.save(any(StepSuggestion.class)))
+            .thenAnswer(a -> a.getArgumentAt(0, StepSuggestion.class));
+        when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
+        doCallRealMethod().when(stepSuggestionTransformer).updateFromDto(any(), any());
+
+        StepSuggestionUpdateDTO updateDTO = new StepSuggestionUpdateDTO();
+        updateDTO.setContent(CONTENT_2);
+        updateDTO.setVersion(0L);
+
+        StepSuggestionDTO expectedDto = new StepSuggestionDTO(ID_1, CONTENT_2, GIVEN);
+
+        StepSuggestionDTO actualDto =
+            stepSuggestionService.updateStepSuggestion(PROJECT_ID, ID_1, updateDTO);
+
+        assertEquals(expectedDto, actualDto);
+    }
+
+    @Test
+    public void removeTestSuggestion_Success() throws Exception {
+        when(projectStepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
+        when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
+
+        stepSuggestionService.removeStepSuggestion(PROJECT_ID, ID_1);
+    }
 
 }
