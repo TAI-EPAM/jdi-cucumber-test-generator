@@ -2,6 +2,8 @@ package com.epam.test_generator.services;
 
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -10,9 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 @Transactional
 @PropertySource("classpath:email.messages.properties")

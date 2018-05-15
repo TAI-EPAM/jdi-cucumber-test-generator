@@ -1,10 +1,11 @@
 package com.epam.test_generator.services;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.controllers.user.request.PasswordResetDTO;
+import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMissingException;
@@ -15,7 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,7 +75,6 @@ public class PasswordServiceTest {
         when(passwordResetDTO.getToken()).thenReturn("token");
         when(tokenService.getTokenByName(anyString())).thenReturn(token);
         when(token.getUser()).thenReturn(user);
-        when(passwordEncoder.encode(anyString())).thenReturn("password");
 
         sut.passwordReset(passwordResetDTO);
         verify(tokenService).invalidateToken(token);

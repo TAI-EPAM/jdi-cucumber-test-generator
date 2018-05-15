@@ -1,22 +1,21 @@
 package com.epam.test_generator.services;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMalformedException;
 import com.epam.test_generator.services.exceptions.TokenMissingException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,9 +33,6 @@ public class TokenServiceTest {
     @InjectMocks
     private TokenService sut;
 
-    @Before
-    public void setUp() throws Exception {
-    }
 
     @Test
     public void createToken_SimpleInputParameters_Ok() {

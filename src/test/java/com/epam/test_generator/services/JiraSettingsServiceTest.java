@@ -1,9 +1,9 @@
 package com.epam.test_generator.services;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,13 +19,14 @@ import com.epam.test_generator.services.exceptions.NotFoundException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraSettingsServiceTest {
@@ -48,7 +49,7 @@ public class JiraSettingsServiceTest {
     private static final String JIRA_PASSWORD = "password";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         jiraSettingsCreateDTO = new JiraSettingsCreateDTO();
         jiraSettingsUpdateDTO = new JiraSettingsUpdateDTO();
     }
@@ -90,7 +91,7 @@ public class JiraSettingsServiceTest {
         jiraSettingsUpdateDTO.setUri("new_uri");
 
         JiraSettings existedJiraSettings = new JiraSettings(JIRA_URI, JIRA_LOGIN, JIRA_PASSWORD);
-        when(jiraSettingsDAO.findById(anyLong())).thenReturn(existedJiraSettings);
+        when(jiraSettingsDAO.findById(anyLong())).thenReturn(Optional.of(existedJiraSettings));
 
         doCallRealMethod().when(jiraSettingsTransformer).updateFromDto(any(), any());
         jiraSettingsService.updateJiraSettings(JIRA_SETTINGS_ID, jiraSettingsUpdateDTO);
@@ -104,7 +105,7 @@ public class JiraSettingsServiceTest {
     @Test(expected = NotFoundException.class)
     public void updateJiraSettings_WrongId_Exception() {
 
-        when(jiraSettingsDAO.findById(anyLong())).thenReturn(null);
+        when(jiraSettingsDAO.findById(anyLong())).thenReturn(Optional.empty());
         jiraSettingsService.updateJiraSettings(JIRA_SETTINGS_ID, jiraSettingsUpdateDTO);
     }
 

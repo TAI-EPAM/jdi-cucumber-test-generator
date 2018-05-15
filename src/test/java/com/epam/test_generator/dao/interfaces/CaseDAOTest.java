@@ -1,5 +1,9 @@
 package com.epam.test_generator.dao.interfaces;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
@@ -35,7 +39,7 @@ public class CaseDAOTest {
         Case newCase = retrieveCase();
         newCase.setId(id);
 
-        Assert.assertEquals(newCase, caseDAO.findOne(id));
+        Assert.assertEquals(newCase, caseDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -64,7 +68,8 @@ public class CaseDAOTest {
         newCase.setId(id);
         newCase.setName("modified name");
 
-        Assert.assertEquals(newCase.getName(), caseDAO.findOne(id).getName());
+        assertTrue(caseDAO.findById(id).isPresent());
+        assertEquals(newCase.getName(), caseDAO.findById(id).get().getName());
 
     }
 
@@ -79,7 +84,7 @@ public class CaseDAOTest {
         newCase.setId(id);
         newCase.setDescription("modified description");
 
-        Assert.assertEquals(newCase, caseDAO.findOne(id));
+        Assert.assertEquals(newCase, caseDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -94,7 +99,7 @@ public class CaseDAOTest {
         newCase.setPriority(5);
         caseDAO.save(newCase);
 
-        Assert.assertEquals(newCase, caseDAO.findOne(id));
+        Assert.assertEquals(newCase, caseDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -112,16 +117,16 @@ public class CaseDAOTest {
         newCase.setCreationDate(date);
         newCase.setId(id);
 
-        Assert.assertEquals(newCase, caseDAO.findOne(id));
+        Assert.assertEquals(newCase, caseDAO.findById(id).orElse(null));
     }
 
     @Test
     public void removeById_Case_Success() {
         Case originalCase = retrieveCase();
         long id = caseDAO.save(originalCase).getId();
-        caseDAO.delete(id);
+        caseDAO.deleteById(id);
 
-        Assert.assertTrue(!caseDAO.exists(id));
+        assertFalse(caseDAO.existsById(id));
     }
 
     @Test
@@ -129,28 +134,29 @@ public class CaseDAOTest {
         Case savedCase = caseDAO.save(retrieveCase());
         caseDAO.delete(savedCase);
 
-        Assert.assertTrue(!caseDAO.exists(savedCase.getId()));
+        Assert.assertFalse(caseDAO.existsById(savedCase.getId()));
     }
 
     @Test
     public void addList_Cases_Success() {
         List<Case> cases = retrieveCaseList();
 
-        List<Long> ids = caseDAO.save(cases).stream().map(Case::getId).collect(Collectors.toList());
+        List<Long> ids = caseDAO.saveAll(cases).stream().map(Case::getId).collect(Collectors.toList
+            ());
 
         List<Case> newCases = retrieveCaseList();
         newCases.get(0).setId(ids.get(0));
         newCases.get(1).setId(ids.get(1));
         newCases.get(2).setId(ids.get(2));
 
-        Assert.assertTrue(newCases.equals(caseDAO.findAll()));
+        Assert.assertEquals(newCases, caseDAO.findAll());
     }
 
     @Test
     public void removeList_Cases_Success() {
-        List<Case> savedCases = caseDAO.save(retrieveCaseList());
+        List<Case> savedCases = caseDAO.saveAll(retrieveCaseList());
 
-        caseDAO.delete(savedCases);
+        caseDAO.deleteAll(savedCases);
 
         Assert.assertTrue(caseDAO.findAll().isEmpty());
     }

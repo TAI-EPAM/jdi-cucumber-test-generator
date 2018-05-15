@@ -2,15 +2,16 @@ package com.epam.test_generator.services;
 
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
+import com.epam.test_generator.controllers.step.response.StepDTO;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
+import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
+import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
+import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
-import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
-import com.epam.test_generator.controllers.suit.response.SuitDTO;
-import com.epam.test_generator.controllers.step.response.StepDTO;
-import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
-import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.dto.SuitVersionDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -18,7 +19,7 @@ import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
-import com.epam.test_generator.controllers.suit.SuitTransformer;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Transactional
 @Service
@@ -65,7 +65,7 @@ public class SuitService {
 
     public Suit getSuit(long projectId, long suitId) {
         Project project = projectService.getProjectByProjectId(projectId);
-        Suit suit = checkNotNull(suitDAO.findOne(suitId));
+        Suit suit = suitDAO.findById(suitId).orElseThrow(NotFoundException::new);
         if (project.hasSuit(suit)) {
             return suit;
         } else {
@@ -116,8 +116,7 @@ public class SuitService {
      * @param suitUpdateDTO info to update
      * @return {@link SuitDTO}
      */
-    public SuitDTO updateSuit(long projectId, long suitId, SuitUpdateDTO suitUpdateDTO)
-        throws MethodArgumentNotValidException {
+    public SuitDTO updateSuit(long projectId, long suitId, SuitUpdateDTO suitUpdateDTO) {
 
         Suit suit = getSuit(projectId, suitId);
 
@@ -147,7 +146,7 @@ public class SuitService {
             removedIssueDAO.save(new RemovedIssue(suit.getJiraKey()));
         }
 
-        suitDAO.delete(suitId);
+        suitDAO.delete(suit);
 
         suitVersionDAO.delete(suit);
         caseVersionDAO.delete(suit.getCases());
@@ -205,7 +204,7 @@ public class SuitService {
             suit.setRowNumber(patch.get(suit.getId()));
         }
 
-        suitDAO.save(suits);
+        suitDAO.saveAll(suits);
         suitVersionDAO.save(suits);
 
         return rowNumberUpdates;

@@ -1,5 +1,7 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+
 import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
 import com.epam.test_generator.controllers.user.response.UserDTO;
@@ -7,21 +9,18 @@ import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 
 @Transactional
 @Service
 public class UserService {
 
-    public static final int MAX_ATTEMPTS = 5;
+    static final int MAX_ATTEMPTS = 5;
 
     private static final String DEFAULT_ROLE = "GUEST";
 
@@ -41,8 +40,7 @@ public class UserService {
     private TokenService tokenService;
 
     public User getUserById(Long id) {
-        return checkUserExist(userDAO.findById(id));
-
+        return userDAO.findById(id).orElseThrow(() -> new UnauthorizedException("User not found."));
     }
 
     public User getUserByEmail(String email) {
@@ -89,7 +87,7 @@ public class UserService {
      * @return created user instance
      */
     public User createUser(RegistrationUserDTO registrationUserDTO) {
-        if (this.getUserByEmail(registrationUserDTO.getEmail()) != null) {
+        if (getUserByEmail(registrationUserDTO.getEmail()) != null) {
             throw new UnauthorizedException(
                 "user with email:" + registrationUserDTO.getEmail() + " already exist!");
         } else {

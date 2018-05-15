@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JiraSettingsDAO extends JpaRepository<JiraSettings, Long> {
     JiraSettings findByLogin(String login);
-    JiraSettings findById(Long id);
 }

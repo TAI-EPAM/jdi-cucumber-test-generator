@@ -73,9 +73,8 @@ public class StepSuggestionService {
      */
     public Long addStepSuggestion(Long projectId, StepSuggestionCreateDTO stepSuggestionCreateDTO) {
         Project project = projectDAO.getOne(projectId);
-        StepSuggestion stepSuggestion = stepSuggestionTransformer.fromDto(
-            stepSuggestionCreateDTO
-        );
+        StepSuggestion stepSuggestion = stepSuggestionTransformer
+            .fromDto(stepSuggestionCreateDTO);
         stepSuggestion = projectStepSuggestionDAO
             .save(stepSuggestion);
         project.addStepSuggestion(stepSuggestion);

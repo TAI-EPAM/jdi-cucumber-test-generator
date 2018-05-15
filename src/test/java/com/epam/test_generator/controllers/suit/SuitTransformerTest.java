@@ -1,9 +1,13 @@
 package com.epam.test_generator.controllers.suit;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.anySet;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import com.epam.test_generator.controllers.caze.CaseTransformer;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
@@ -15,14 +19,16 @@ import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SuitTransformerTest {
@@ -30,15 +36,10 @@ public class SuitTransformerTest {
     private static final String SUIT_DESCRIPTION = "description";
     private static final String SUIT_NAME = "name";
     private static final int SUIT_PRIORITY = 3;
-    private static final ZonedDateTime SUIT_CREATION_DATE = ZonedDateTime.parse("1995-09-01T12:45Z");
     private static final Tag TAG_1 = new Tag("tag_1");
-    private static final Tag TAG_2 = new Tag("tag_2");
     private static final TagDTO TAG_DTO_1 = new TagDTO("tag_1");
-    private static final TagDTO TAG_DTO_2 = new TagDTO("tag_2");
     private static final Set<Tag> TAGS = new HashSet<>(Collections.singletonList(TAG_1));
-    private static final Set<Tag> NEW_TAGS = new HashSet<>(Arrays.asList(TAG_1, TAG_2));
     private static final Set<TagDTO> TAG_DTOS = new HashSet<>(Collections.singletonList(TAG_DTO_1));
-    private static final Set<TagDTO> NEW_TAG_DTOS = new HashSet<>(Arrays.asList(TAG_DTO_1, TAG_DTO_2));
     private static final Long SUIT_ID = 42L;
     private static final Integer SUIT_ROW_NUMBER = 1;
     private static final Status SUIT_STATUS = Status.PASSED;
@@ -178,7 +179,7 @@ public class SuitTransformerTest {
     }
 
     @Test
-    public void updateFromDto_SuitWithSomeTagsAndSuitUpdateDTOWithEmptySetOfTags_TagsRemovedFromSuit() throws Exception {
+    public void updateFromDto_SuitWithSomeTagsAndSuitUpdateDTOWithEmptySetOfTags_TagsRemovedFromSuit() {
         Suit suit = new Suit();
         suit.setTags(TAGS);
 

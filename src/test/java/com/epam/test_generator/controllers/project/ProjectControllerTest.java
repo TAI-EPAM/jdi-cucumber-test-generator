@@ -1,9 +1,8 @@
 package com.epam.test_generator.controllers.project;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -18,18 +17,16 @@ import com.epam.test_generator.controllers.GlobalExceptionController;
 import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.request.ProjectUpdateDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
-import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,6 +37,8 @@ public class ProjectControllerTest {
 
     private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_USER_ID = 0L;
+    private static final String USER_ID = "userId";
+    private static final String USER_ID_VALUE = "0";
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private ProjectDTO projectDTO;
@@ -62,50 +61,39 @@ public class ProjectControllerTest {
 
     @Test
     public void getUserProjects_CorrectRequest_StatusOk() throws Exception {
-        when(projectService.getAuthenticatedUserProjects(any(Authentication.class)))
-            .thenReturn(Arrays.asList(projectDTO));
-
         mockMvc.perform(get("/projects"))
             .andExpect(status().isOk());
 
-        verify(projectService).getAuthenticatedUserProjects(anyObject());
+        verify(projectService).getAuthenticatedUserProjects(any());
     }
 
     @Test
     public void getProject_CorrectProjectId_StatusOk() throws Exception {
-        when(projectService.getAuthUserFullProject(anyLong(), any(Authentication.class)))
-            .thenReturn(new ProjectFullDTO());
-
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID))
             .andExpect(status().isOk());
 
-        verify(projectService).getAuthUserFullProject(eq(SIMPLE_PROJECT_ID), anyObject());
+        verify(projectService).getAuthUserFullProject(eq(SIMPLE_PROJECT_ID), any());
     }
 
     @Test
     public void getProject_IncorrectProjectId_StatusNotFound() throws Exception {
-        when(projectService.getAuthUserFullProject(anyLong(), anyObject()))
+        when(projectService.getAuthUserFullProject(anyLong(), any()))
             .thenThrow(new NotFoundException());
 
         mockMvc.perform(get("/projects/" + SIMPLE_PROJECT_ID))
             .andExpect(status().isNotFound());
 
-        verify(projectService).getAuthUserFullProject(eq(SIMPLE_PROJECT_ID), anyObject());
+        verify(projectService).getAuthUserFullProject(eq(SIMPLE_PROJECT_ID), any());
     }
 
     @Test
     public void createProject_CorrectDTO_StatusCreated() throws Exception {
         projectDTO.setId(null);
-        when(projectService.createProject(any(ProjectCreateDTO.class), any(Authentication.class)))
-            .thenReturn(projectDTO);
-
         mockMvc.perform(post("/projects")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(projectDTO)))
             .andExpect(status().isCreated());
 
-        verify(projectService)
-            .createProject(any(ProjectCreateDTO.class), any(Authentication.class));
     }
 
     @Test
@@ -190,7 +178,7 @@ public class ProjectControllerTest {
     @Test
     public void assignUserToProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/user/" + SIMPLE_USER_ID)
-            .param("userId", "0"))
+            .param(USER_ID, USER_ID_VALUE))
             .andExpect(status().isOk());
 
         verify(projectService).addUserToProject(anyLong(), anyLong());
@@ -201,7 +189,7 @@ public class ProjectControllerTest {
         doThrow(NotFoundException.class)
             .when(projectService).addUserToProject(anyLong(), anyLong());
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/user/" + SIMPLE_USER_ID)
-            .param("userId", "0"))
+            .param(USER_ID, USER_ID_VALUE))
             .andExpect(status().isNotFound());
 
         verify(projectService).addUserToProject(anyLong(), anyLong());
@@ -212,7 +200,7 @@ public class ProjectControllerTest {
         doThrow(ProjectClosedException.class)
             .when(projectService).addUserToProject(anyLong(), anyLong());
         mockMvc.perform(put("/projects/" + SIMPLE_PROJECT_ID + "/user/" + SIMPLE_USER_ID)
-            .param("userId", "0"))
+            .param(USER_ID, USER_ID_VALUE))
             .andExpect(status().isForbidden());
 
         verify(projectService).addUserToProject(anyLong(), anyLong());
@@ -221,7 +209,7 @@ public class ProjectControllerTest {
     @Test
     public void removeUserFromProject_ValidInput_StatusOk() throws Exception {
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/user/" + SIMPLE_USER_ID)
-            .param("userId", "0"))
+            .param(USER_ID, USER_ID_VALUE))
             .andExpect(status().isOk());
 
         verify(projectService).removeUserFromProject(anyLong(), anyLong());
@@ -232,7 +220,7 @@ public class ProjectControllerTest {
         doThrow(NotFoundException.class)
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/user/" + SIMPLE_USER_ID)
-            .param("userId", "0"))
+            .param(USER_ID, USER_ID_VALUE))
             .andExpect(status().isNotFound());
 
         verify(projectService).removeUserFromProject(anyLong(), anyLong());
@@ -243,7 +231,7 @@ public class ProjectControllerTest {
         doThrow(ProjectClosedException.class)
             .when(projectService).removeUserFromProject(anyLong(), anyLong());
         mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/user/" + SIMPLE_USER_ID)
-            .param("userId", "0"))
+            .param(USER_ID, USER_ID_VALUE))
             .andExpect(status().isForbidden());
 
         verify(projectService).removeUserFromProject(anyLong(), anyLong());

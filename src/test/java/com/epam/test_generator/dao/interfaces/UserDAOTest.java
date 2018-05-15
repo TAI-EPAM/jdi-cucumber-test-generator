@@ -1,8 +1,16 @@
 package com.epam.test_generator.dao.interfaces;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,13 +18,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class})
@@ -56,11 +57,11 @@ public class UserDAOTest {
         aUser.setName("new Name");
         userDAO.save(aUser);
 
-        User aUserWithUpdatedName = userDAO.findById(savedAUser.getId());
+        Optional<User> aUserWithUpdatedNameOptional = userDAO.findById(savedAUser.getId());
 
-        assertNotNull(aUserWithUpdatedName);
+        assertTrue(aUserWithUpdatedNameOptional.isPresent());
 
-        String newName = aUserWithUpdatedName.getName();
+        String newName = aUserWithUpdatedNameOptional.get().getName();
         String oldName = aUser.getName();
         assertEquals(newName, oldName);
 
@@ -82,11 +83,11 @@ public class UserDAOTest {
         aUser.setSurname("new Surname");
         userDAO.save(aUser);
 
-        User aUserWithUpdatedSurname = userDAO.findById(savedAUser.getId());
+        Optional<User> aUserWithUpdatedSurnameOptional = userDAO.findById(savedAUser.getId());
 
-        assertNotNull(aUserWithUpdatedSurname);
+        assertTrue(aUserWithUpdatedSurnameOptional.isPresent());
 
-        String newSurname = aUserWithUpdatedSurname.getSurname();
+        String newSurname = aUserWithUpdatedSurnameOptional.get().getSurname();
         String oldSurname = aUser.getSurname();
         assertEquals(newSurname, oldSurname);
     }
@@ -106,7 +107,7 @@ public class UserDAOTest {
         User user = new User();
 
         userDAO.save(user);
-        assertEquals(user, userDAO.findById(user.getId()));
+        assertEquals(user, userDAO.findById(user.getId()).orElse(null));
     }
 
     @Test
@@ -116,7 +117,7 @@ public class UserDAOTest {
         for (int i = 0; i < 10; i++) {
             users.add(new User());
         }
-        userDAO.save(users);
+        userDAO.saveAll(users);
         assertEquals(users.size(), userDAO.findAll().size() - previousSize);
     }
 

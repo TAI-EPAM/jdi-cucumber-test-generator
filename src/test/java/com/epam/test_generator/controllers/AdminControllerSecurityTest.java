@@ -56,10 +56,6 @@ public class AdminControllerSecurityTest {
     @Mock
     private ProjectService projectService;
 
-    @InjectMocks
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Mock
     private User user;
 
@@ -83,6 +79,10 @@ public class AdminControllerSecurityTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     @Autowired
     private Filter springSecurityFilterChain;
@@ -117,6 +117,7 @@ public class AdminControllerSecurityTest {
         ReflectionTestUtils.setField(adminService, "userService", userService);
         ReflectionTestUtils.setField(adminService, "roleService", roleService);
         ReflectionTestUtils.setField(loginService, "userService", userService);
+        ReflectionTestUtils.setField(jwtAuthenticationFilter, "userService", userService);
     }
 
     @Test
@@ -144,7 +145,8 @@ public class AdminControllerSecurityTest {
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(
-            get("/admin/users").header("Authorization", token).contentType("application/json"))
+            get("/admin/users").header("Authorization", "Bearer " + token)
+                .contentType("application/json"))
             .andExpect(status().isForbidden());
     }
 
@@ -198,8 +200,8 @@ public class AdminControllerSecurityTest {
 
         String json = new ObjectMapper().writeValueAsString(userRoleUpdateDTO);
 
-        mvc.perform(put("/admin/role").header("Authorization", token).content(json)
-            .contentType("application/json"))
+        mvc.perform(put("/admin/role").header("Authorization", "Bearer " +
+            token).content(json).contentType("application/json"))
             .andExpect(status().isForbidden());
     }
 

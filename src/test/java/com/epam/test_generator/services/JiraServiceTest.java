@@ -1,11 +1,10 @@
 package com.epam.test_generator.services;
 
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,12 +29,11 @@ import com.epam.test_generator.pojo.JiraProject;
 import com.epam.test_generator.pojo.JiraStatus;
 import com.epam.test_generator.pojo.JiraStory;
 import com.epam.test_generator.pojo.JiraSubTask;
+import com.google.common.collect.Lists;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import net.rcarz.jiraclient.Issue;
-import net.rcarz.jiraclient.Issue.SearchResult;
 import net.rcarz.jiraclient.JiraClient;
 import net.rcarz.jiraclient.JiraException;
 import org.junit.Assert;
@@ -44,11 +42,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraServiceTest {
+
+    private static final String JIRA_PROJECT_KEY = "jira_project_key";
+    private static final String JIRA_KEY = "key";
+    private static final String PRIORITY = "no priority";
+    private static final String CLOSE_JIRA_KEY = "key2";
+    private static final Long JIRA_SETTINGS_ID = 1L;
+    private static final String SUIT_NAME = "suit_name";
+    private static final String USER_EMAIL = "la@l.ka";
 
     @Mock
     private Authentication authentication;
@@ -102,10 +108,6 @@ public class JiraServiceTest {
     @Mock
     private Case caze;
 
-
-    @Mock
-    private Issue issue;
-
     @Mock
     private AuthenticatedUser userDetails;
 
@@ -116,32 +118,15 @@ public class JiraServiceTest {
     @InjectMocks
     private JiraService jiraService;
 
-    private SearchResult searchResult;
     private Suit testSuit;
     private Suit closedSuit;
     private Case closedCase;
 
 
 
-    private static final String NAME = "name";
-    private static final String PASSWORD = "pass";
-    private static final String JIRA_PROJECT_KEY = "jira_project_key";
-    private static final String JIRA_KEY = "key";
-    private static final String PRIORITY = "no priority";
-    private static final String CLOSE_JIRA_KEY = "key2";
-    private static final Long JIRA_SETTINGS_ID = 1L;
 
     @Before
-    public void setUp() throws Exception {
-        when(projectDAO.findByJiraKey(anyString())).thenReturn(project);
-        when(client.searchIssues(anyString(), anyInt())).thenReturn(searchResult);
-        when(jiraStory.getPriority()).thenReturn(PRIORITY);
-        when(jiraSubTask.getPriority()).thenReturn(PRIORITY);
-        when(authentication.getPrincipal()).thenReturn(userDetails);
-        when(userDetails.getEmail()).thenReturn("la@l.ka");
-        when(userService.getUserByEmail(anyString())).thenReturn(user);
-        when(jiraStory.getJiraProjectKey()).thenReturn(JIRA_PROJECT_KEY);
-
+    public void setUp() {
         closedSuit = new Suit();
         closedSuit.setJiraKey(CLOSE_JIRA_KEY);
         closedCase = new Case();
@@ -150,9 +135,21 @@ public class JiraServiceTest {
 
 
         testSuit = new Suit();
-        testSuit.setName("suit");
+        testSuit.setName(SUIT_NAME);
         testSuit.setJiraKey(JIRA_KEY);
         testSuit.setJiraProjectKey(JIRA_PROJECT_KEY);
+
+        when(userService.getUserByEmail(anyString())).thenReturn(user);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(userDetails.getEmail()).thenReturn(USER_EMAIL);
+
+        when(jiraStory.getJiraProjectKey()).thenReturn(JIRA_PROJECT_KEY);
+        when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
+        when(jiraSubTask.getJiraParentKey()).thenReturn(JIRA_KEY);
+        when(jiraSubTask.getPriority()).thenReturn(PRIORITY);
+
+        when(projectDAO.findByJiraKey(closedSuit.getJiraProjectKey())).thenReturn(project);
+        when(project.getSuits()).thenReturn(Lists.newArrayList(closedSuit));
 
 
     }
@@ -160,18 +157,13 @@ public class JiraServiceTest {
     @Test
     public void createProjectWithAttachments_Project_Success() {
         when(jiraProjectDAO.getProjectByJiraKey(anyLong(), anyString())).thenReturn(jiraProject);
-        when(userDAO.findByEmail(anyString())).thenReturn(user);
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraSubTask));
-        when(suitDAO.findByJiraKey(anyString())).thenReturn(suit);
-        when(caseDAO.findByJiraKey(anyString())).thenReturn(null);
         when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
-        when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
         when(jiraStory.getStatus()).thenReturn(JiraStatus.RESOLVED);
+        when(jiraStory.getPriority()).thenReturn(PRIORITY);
 
-        jiraService
-            .createProjectWithJiraStories(JIRA_SETTINGS_ID,JIRA_PROJECT_KEY, Collections
-                    .singletonList(jiraStory),
-                authentication);
+
+        jiraService.createProjectWithJiraStories(JIRA_SETTINGS_ID, JIRA_PROJECT_KEY,
+            Collections.singletonList(jiraStory), authentication);
 
         verify(projectDAO).save(any(Project.class));
     }
@@ -179,13 +171,10 @@ public class JiraServiceTest {
     @Test
     public void addStoriesToExistedProject_SuitAndCase_Success() {
 
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraSubTask));
-        when(suitDAO.findByJiraKey(anyString())).thenReturn(suit);
-        when(caseDAO.findByJiraKey(anyString())).thenReturn(null);
         when(jiraStory.getJiraKey()).thenReturn(JIRA_KEY);
-        when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
         when(jiraStory.getStatus()).thenReturn(JiraStatus.RESOLVED);
-
+        when(projectDAO.findByJiraKey(JIRA_PROJECT_KEY)).thenReturn(project);
+        when(jiraStory.getPriority()).thenReturn(PRIORITY);
         jiraService.addStoriesToExistedProject(Collections.singletonList(jiraStory), JIRA_PROJECT_KEY);
 
         verify(projectDAO).save(any(Project.class));
@@ -201,7 +190,6 @@ public class JiraServiceTest {
 
     @Test
     public void getJiraStoriesFromJiraProjectByProjectId_JiraStories_Success() {
-        when(projectDAO.getOne(anyLong())).thenReturn(project);
         when(jiraStoryDAO.getNonexistentStoriesByProject(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
 
         List<JiraStory> stories = jiraService.getJiraStoriesFromJiraProjectByProjectId(JIRA_SETTINGS_ID, JIRA_PROJECT_KEY);
@@ -211,7 +199,8 @@ public class JiraServiceTest {
     @Test
     public void getNonexistedJiraProjects_JiraProjects_Success() {
         when(jiraProjectDAO.getAllProjects(anyLong())).thenReturn(Collections.singletonList(jiraProject));
-        when(projectDAO.findByJiraKey(anyString())).thenReturn(null);
+        when(jiraProject.getJiraKey()).thenReturn(JIRA_PROJECT_KEY);
+        when(projectDAO.findByJiraKey(jiraProject.getJiraKey())).thenReturn(null);
 
         List<JiraProject> projects = jiraService.getNonexistentJiraProjects(JIRA_SETTINGS_ID);
         Assert.assertTrue(!projects.isEmpty());
@@ -220,12 +209,18 @@ public class JiraServiceTest {
     @Test
     public void syncFromJiraUpdateSuitAndCase_SuitAndCase_Success() {
         when(projectDAO.findAll()).thenReturn(Collections.singletonList(project));
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(
-            Collections.singletonList(jiraSubTask));
-        when(suitDAO.findAll()).thenReturn(Collections.singletonList(suit));
-        when(caseDAO.findAll()).thenReturn(Collections.singletonList(caze));
-        when(jiraStoryDAO.getJiraStoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
-        when(suitDAO.findByJiraKey(anyString())).thenReturn(suit);
+        when(jiraStoryDAO.getJiraStoriesByFilter(anyLong(), anyString()))
+            .thenReturn(Collections.singletonList(jiraStory));
+        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString()))
+            .thenReturn(Collections.singletonList(jiraSubTask));
+        when(suitDAO.findByJiraKey(jiraStory.getJiraKey())).thenReturn(suit);
+        when(suitDAO.findByJiraKey(jiraSubTask.getJiraParentKey())).thenReturn(suit);
+
+
+        when(suitDAO.findAll()).thenReturn(Collections.singletonList(closedSuit));
+        when(caseDAO.findAll()).thenReturn(Collections.singletonList(closedCase));
+        when(suitDAO.findByJiraKey(closedCase.getJiraParentKey())).thenReturn(suit);
+        when(suit.getCases()).thenReturn(Lists.newArrayList(closedCase));
         when(caseDAO.findByJiraKey(anyString())).thenReturn(caze);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
 
@@ -238,13 +233,20 @@ public class JiraServiceTest {
     @Test
     public void syncFromJiraDeleteClosedSuitAndCase_SuitAndCase_Success() {
         when(projectDAO.findAll()).thenReturn(Collections.singletonList(project));
-        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString())).thenReturn(
-            Collections.singletonList(jiraSubTask));
+        when(jiraStoryDAO.getJiraStoriesByFilter(anyLong(), anyString()))
+            .thenReturn(Collections.singletonList(jiraStory));
+        when(jiraSubStoryDAO.getJiraSubtoriesByFilter(anyLong(), anyString()))
+            .thenReturn(Collections.singletonList(jiraSubTask));
+
+
+
+
+
+
+        when(suitDAO.findByJiraKey(CLOSE_JIRA_KEY)).thenReturn(closedSuit);
         when(suitDAO.findAll()).thenReturn(Arrays.asList(suit, closedSuit));
         when(caseDAO.findAll()).thenReturn(Arrays.asList(caze, closedCase));
-        when(jiraStoryDAO.getJiraStoriesByFilter(anyLong(), anyString())).thenReturn(Collections.singletonList(jiraStory));
         when(suitDAO.findByJiraKey(not(eq(CLOSE_JIRA_KEY)))).thenReturn(suit);
-        when(suitDAO.findByJiraKey(CLOSE_JIRA_KEY)).thenReturn(closedSuit);
         when(caseDAO.findByJiraKey(not(eq(CLOSE_JIRA_KEY)))).thenReturn(caze);
 
         jiraService.syncFromJira(JIRA_SETTINGS_ID);

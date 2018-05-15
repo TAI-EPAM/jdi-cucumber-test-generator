@@ -1,6 +1,5 @@
 package com.epam.test_generator.controllers.jenkins;
 
-import com.epam.test_generator.controllers.jenkins.JenkinsTransformer;
 import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.ExecutedJenkinsJobDTO;
 import com.offbytwo.jenkins.model.Executable;
@@ -11,8 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JenkinsTransformerTest {

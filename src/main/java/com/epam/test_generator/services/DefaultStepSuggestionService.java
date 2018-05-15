@@ -1,16 +1,13 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-
-import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
+import com.epam.test_generator.controllers.stepsuggestion.DefaultStepSuggestionTransformer;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
+import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
 import com.epam.test_generator.entities.DefaultStepSuggestion;
 import com.epam.test_generator.entities.StepType;
-import com.epam.test_generator.controllers.stepsuggestion.DefaultStepSuggestionTransformer;
-
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.PageRequest;
@@ -35,9 +32,8 @@ public class DefaultStepSuggestionService {
     }
 
     public StepSuggestionDTO getStepSuggestion(long stepSuggestionId) {
-        DefaultStepSuggestion defaultStepSuggestion = defaultStepSuggestionDAO.findOne(stepSuggestionId);
-
-        checkNotNull(defaultStepSuggestion);
+        DefaultStepSuggestion defaultStepSuggestion = defaultStepSuggestionDAO
+            .findById(stepSuggestionId).orElseThrow(NotFoundException::new);
 
         return defaultStepSuggestionTransformer.toDto(defaultStepSuggestion);
     }

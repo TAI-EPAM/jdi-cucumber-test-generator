@@ -1,7 +1,7 @@
 package com.epam.test_generator.dao.impl;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.JiraSettingsDAO;
@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraProjectDAOTest {
@@ -44,8 +44,6 @@ public class JiraProjectDAOTest {
     @InjectMocks
     private JiraProjectDAO jiraProjectDAO;
 
-    private static final String NAME = "name";
-    private static final String PASSWORD = "pass";
     private static final String JIRA_KEY = "key";
     private static final Long JIRA_SETTINGS_ID = 1L;
 
@@ -56,13 +54,11 @@ public class JiraProjectDAOTest {
         jiraSettings.setLogin("login");
         jiraSettings.setPassword("password");
         jiraSettings.setUri("jira_uri");
-        when(jiraSettingsDAO.findById(anyLong())).thenReturn(jiraSettings);
     }
 
     @Test
     public void getProjectByJiraKey_JiraProject_Success() throws Exception {
         when(client.getProject(anyString())).thenReturn(project);
-        when(jiraFilterDAO.getFilters(JIRA_SETTINGS_ID)).thenReturn(Collections.emptyList());
 
         JiraProject expectedProject = new JiraProject(project);
         JiraProject resultProject = jiraProjectDAO.getProjectByJiraKey(JIRA_SETTINGS_ID, JIRA_KEY);
@@ -85,7 +81,6 @@ public class JiraProjectDAOTest {
     @Test
     public void getAllProjects_JiraProjects_Success() throws Exception {
         when(client.getProjects()).thenReturn(Collections.singletonList(project));
-        when(jiraFilterDAO.getFilters(JIRA_SETTINGS_ID)).thenReturn(Collections.emptyList());
 
         List<JiraProject> resultProjects = jiraProjectDAO.getAllProjects(JIRA_SETTINGS_ID);
         List<JiraProject> expectedProjects = Collections.singletonList(new JiraProject(project));
@@ -93,8 +88,7 @@ public class JiraProjectDAOTest {
     }
 
     @Test
-    public void getEmptyListOfProjects_JiraProjects_Success() throws Exception {
-        when(client.getProject(anyString())).thenThrow(new JiraException("a",new RestException("a",404,"bad")));
+    public void getEmptyListOfProjects_JiraProjects_Success() {
         List<JiraProject> resultProjects = jiraProjectDAO.getAllProjects(JIRA_SETTINGS_ID);
         Assert.assertTrue(resultProjects.isEmpty());
     }

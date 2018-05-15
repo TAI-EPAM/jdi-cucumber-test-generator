@@ -1,19 +1,18 @@
 package com.epam.test_generator.controllers.project;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.request.ProjectUpdateDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
-import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
+import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.controllers.suit.SuitTransformer;
 import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectTransformerTest {
@@ -117,14 +116,13 @@ public class ProjectTransformerTest {
 
     @Test
     public void updateFromDto_ProjectUpdateDTO_Project_Success() {
-        when(suitTransformer.fromDto(any(SuitCreateDTO.class))).thenReturn(suit);
 
         Project expectedProject = project;
 
         Project updateProject = new Project();
         updateProject.setId(ID);
         updateProject.setJiraKey(JIRA_KEY);
-        updateProject.setActive(true);
+        updateProject.activate();
 
         ProjectUpdateDTO projectDTO = new ProjectUpdateDTO();
         projectDTO.setName(NAME);

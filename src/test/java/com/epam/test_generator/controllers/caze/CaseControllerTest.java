@@ -1,10 +1,10 @@
 package com.epam.test_generator.controllers.caze;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -567,7 +567,7 @@ public class CaseControllerTest {
     @Test
     public void removeCases_SuitOrCaseNotExist_NotFound() throws Exception {
         doThrow(NotFoundException.class).when(casesService).removeCases(anyLong(), anyLong(),
-            anyListOf(Long.class));
+            anyList());
 
         mockMvc.perform(
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
@@ -582,7 +582,7 @@ public class CaseControllerTest {
     @Test
     public void removeCases_SuitNotContainsCase_StatusBadRequest() throws Exception {
         doThrow(BadRequestException.class).when(casesService)
-            .removeCases(anyLong(), anyLong(), anyListOf(Long.class));
+            .removeCases(anyLong(), anyLong(), anyList());
 
         mockMvc.perform(
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
@@ -597,7 +597,7 @@ public class CaseControllerTest {
     @Test
     public void removeCases_RuntimeException_StatusInternalServerError() throws Exception {
         doThrow(RuntimeException.class).when(casesService)
-            .removeCases(anyLong(), anyLong(), anyListOf(Long.class));
+            .removeCases(anyLong(), anyLong(), anyList());
 
         mockMvc.perform(
             delete("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")

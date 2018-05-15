@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -116,24 +117,26 @@ public class DefaultStepSuggestionServiceTest {
 
     @Test
     public void get_StepSuggestionById_Success() {
-        DefaultStepSuggestion expected = new DefaultStepSuggestion(SIMPLE_STEP_SUGGESTION_ID, "DefaultStepSuggestion 1",
+        DefaultStepSuggestion expected = new DefaultStepSuggestion(SIMPLE_STEP_SUGGESTION_ID,
+            "DefaultStepSuggestion 1",
             StepType.GIVEN);
         StepSuggestionDTO expectedDTO = new StepSuggestionDTO(SIMPLE_STEP_SUGGESTION_ID,
             "DefaultStepSuggestion 1", StepType.GIVEN);
 
-        when(defaultStepSuggestionDAO.findOne(anyLong())).thenReturn(expected);
-        when(defaultStepSuggestionTransformer.toDto(any(DefaultStepSuggestion.class))).thenReturn(expectedDTO);
+        when(defaultStepSuggestionDAO.findById(anyLong())).thenReturn(Optional.of(expected));
+        when(defaultStepSuggestionTransformer.toDto(any(DefaultStepSuggestion.class)))
+            .thenReturn(expectedDTO);
 
         assertEquals(defaultStepSuggestionService.getStepSuggestion(SIMPLE_STEP_SUGGESTION_ID),
             expectedDTO);
 
-        verify(defaultStepSuggestionDAO).findOne(anyLong());
+        verify(defaultStepSuggestionDAO).findById(anyLong());
         verify(defaultStepSuggestionTransformer).toDto(any(DefaultStepSuggestion.class));
     }
 
     @Test(expected = NotFoundException.class)
     public void get_StepSuggestionById_NotFoundException() {
-        when(defaultStepSuggestionDAO.findOne(anyLong())).thenReturn(null);
+        when(defaultStepSuggestionDAO.findById(anyLong())).thenReturn(Optional.empty());
 
         defaultStepSuggestionService.getStepSuggestion(SIMPLE_STEP_SUGGESTION_ID);
     }

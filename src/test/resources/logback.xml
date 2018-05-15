@@ -1,0 +1,12 @@
+<!-- This log configuration decreases amount of console output during test phase so -->
+<!-- travis would not hit limit of 4mb -->
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.sssXXX, UTC} [%thread] %-5level %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="warn">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

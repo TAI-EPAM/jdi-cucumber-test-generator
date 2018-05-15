@@ -13,17 +13,17 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Configuration class customizing the default Java-based configuration for Spring MVC.
- * @see WebMvcConfigurerAdapter
+ * @see WebMvcConfigurer
  */
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.epam.test_generator")
 @PropertySource(value = "classpath:email.properties")
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
     @Resource
     private Environment environment;

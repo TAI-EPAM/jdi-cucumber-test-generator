@@ -1,5 +1,11 @@
 package com.epam.test_generator.dao.interfaces;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Suit;
@@ -7,7 +13,15 @@ import com.epam.test_generator.entities.Tag;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.time.ZonedDateTime;
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,16 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class})
@@ -42,12 +46,16 @@ public class SuitDAOTest {
 
         Suit newSuit = retrieveSuit();
 
-        Set<Tag> tagsWithIds = suitDAO.findOne(id).getTags();
+        Optional<Suit> byIdOptional = suitDAO.findById(id);
+
+        assertTrue(byIdOptional.isPresent());
+
+        Set<Tag> tagsWithIds = byIdOptional.get().getTags();
 
         newSuit.setId(id);
         newSuit.setTags(tagsWithIds);
 
-        assertEquals(newSuit, suitDAO.findOne(id));
+        assertEquals(newSuit, byIdOptional.get());
     }
 
     @Test
@@ -92,7 +100,7 @@ public class SuitDAOTest {
             suit.getTags().add(tag);
         }
 
-        List<Suit> savedSuits = suitDAO.save(suits);
+        List<Suit> savedSuits = suitDAO.saveAll(suits);
 
         assertEquals(suits.size(), savedSuits.size());
 
@@ -113,7 +121,10 @@ public class SuitDAOTest {
 
         Suit newSuit = retrieveSuit();
 
-        Set<Tag> tags = suitDAO.findOne(id).getTags();
+        Optional<Suit> byIdOprtional = suitDAO.findById(id);
+
+        assertTrue(byIdOprtional.isPresent());
+        Set<Tag> tags = byIdOprtional.get().getTags();
 
         newSuit.setId(id);
         newSuit.setPriority(4);
@@ -133,7 +144,11 @@ public class SuitDAOTest {
 
         Suit newSuit = retrieveSuit();
 
-        Set<Tag> tags = suitDAO.findOne(id).getTags();
+        Optional<Suit> byIdOptional = suitDAO.findById(id);
+
+        assertTrue(byIdOptional.isPresent());
+
+        Set<Tag> tags = byIdOptional.get().getTags();
 
         newSuit.setId(id);
         newSuit.setDescription("modified description");
@@ -166,7 +181,11 @@ public class SuitDAOTest {
 
         Suit newSuit = retrieveSuit();
 
-        Set<Tag> tags = suitDAO.findOne(id).getTags();
+        Optional<Suit> byIdOptional = suitDAO.findById(id);
+
+        assertTrue(byIdOptional.isPresent());
+
+        Set<Tag> tags = byIdOptional.get().getTags();
 
         newSuit.setId(id);
         newSuit.setName("Suit4a");
@@ -185,29 +204,45 @@ public class SuitDAOTest {
             new Suit(null, "2", "2", new ArrayList<>(), 2, new HashSet<>(), 2),
             new Suit(null, "3", "3", new ArrayList<>(), 3, new HashSet<>(), 3)
         ));
-        suitDAO.save(suits);
+        suitDAO.saveAll(suits);
 
-        Suit suit1 = suitDAO.findOne(suits.get(0).getId());
+        Optional<Suit> byIdOptional1 = suitDAO.findById(suits.get(0).getId());
+
+        assertTrue(byIdOptional1.isPresent());
+
+        Suit suit1 = byIdOptional1.get();
         suit1.setRowNumber(3);
-        Suit suit2 = suitDAO.findOne(suits.get(1).getId());
+
+        Optional<Suit> byIdOptional2 = suitDAO.findById(suits.get(1).getId());
+        assertTrue(byIdOptional2.isPresent());
+
+        Suit suit2 = byIdOptional2.get();
+
         suit2.setRowNumber(1);
-        Suit suit3 = suitDAO.findOne(suits.get(2).getId());
+        Optional<Suit> byIdOptional3 = suitDAO.findById(suits.get(2).getId());
+
+        assertTrue(byIdOptional3.isPresent());
+
+        Suit suit3 = byIdOptional3.get();
         suit3.setRowNumber(2);
 
-        suitDAO.save(Arrays.asList(suit1, suit2, suit3));
+        suitDAO.saveAll(Arrays.asList(suit1, suit2, suit3));
 
-        assertThat(3, is(equalTo(suitDAO.findOne(suits.get(0).getId()).getRowNumber())));
-        assertThat(1, is(equalTo(suitDAO.findOne(suits.get(1).getId()).getRowNumber())));
-        assertThat(2, is(equalTo(suitDAO.findOne(suits.get(2).getId()).getRowNumber())));
+        assertThat(3,
+            is(equalTo(suitDAO.findById(suits.get(0).getId()).orElse(suit1).getRowNumber())));
+        assertThat(1,
+            is(equalTo(suitDAO.findById(suits.get(1).getId()).orElse(suit2).getRowNumber())));
+        assertThat(2, is(equalTo(suitDAO.findById(suits.get(2).getId()).orElse(suit3).getRowNumber()
+        )));
     }
 
     @Test
     public void removeById_Suit_Success() {
         Suit originalSuit = retrieveSuit();
         long id = suitDAO.save(originalSuit).getId();
-        suitDAO.delete(id);
+        suitDAO.deleteById(id);
 
-        Assert.assertTrue(!suitDAO.exists(id));
+        Assert.assertFalse(suitDAO.existsById(id));
     }
 
     @Test
@@ -216,12 +251,12 @@ public class SuitDAOTest {
         Suit savedSuit = suitDAO.save(originalSuit);
         suitDAO.delete(originalSuit);
 
-        Assert.assertTrue(!suitDAO.exists(savedSuit.getId()));
+        Assert.assertFalse(suitDAO.existsById(savedSuit.getId()));
     }
 
     @Test
     public void addList_Suits_Success() {
-        List<Suit> savedSuits = suitDAO.save(retrieveSuiteList());
+        List<Suit> savedSuits = suitDAO.saveAll(retrieveSuiteList());
 
         List<Suit> newSuits = retrieveSuiteList();
 
@@ -231,14 +266,14 @@ public class SuitDAOTest {
 
         List<Suit> findSuits = suitDAO.findAll();
 
-        Assert.assertTrue(newSuits.equals(findSuits));
+        Assert.assertEquals(newSuits, findSuits);
     }
 
     @Test
     public void removeList_Suits_Success() {
-        List<Suit> savedSuits = suitDAO.save(retrieveSuiteList());
+        List<Suit> savedSuits = suitDAO.saveAll(retrieveSuiteList());
 
-        suitDAO.delete(savedSuits);
+        suitDAO.deleteAll(savedSuits);
 
         Assert.assertTrue(suitDAO.findAll().isEmpty());
     }
@@ -288,7 +323,6 @@ public class SuitDAOTest {
 
     private void fillIdsForListOfSuits(List<Suit> savedSuits, List<Suit> newSuits) {
         for (int i = 0; i < savedSuits.size(); i++) {
-            Set<Tag> savedTags = savedSuits.get(i).getTags();
             Set<Tag> tags = newSuits.get(i).getTags();
             newSuits.get(i).setId(savedSuits.get(i).getId());
             newSuits.get(i).setTags(tags);

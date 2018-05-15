@@ -1,7 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-
 import com.epam.test_generator.controllers.admin.JiraSettingsTransformer;
 import com.epam.test_generator.controllers.admin.request.JiraSettingsCreateDTO;
 import com.epam.test_generator.controllers.admin.request.JiraSettingsUpdateDTO;
@@ -9,9 +7,8 @@ import com.epam.test_generator.controllers.admin.response.JiraSettingsDTO;
 import com.epam.test_generator.dao.interfaces.JiraSettingsDAO;
 import com.epam.test_generator.entities.JiraSettings;
 import com.epam.test_generator.services.exceptions.JiraAuthenticationException;
-
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.util.List;
-
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,8 +36,8 @@ public class JiraSettingsService {
     }
 
     public void updateJiraSettings(Long id, JiraSettingsUpdateDTO jiraSettingsUpdateDTO) {
-        JiraSettings jiraSettings = jiraSettingsDAO.findById(id);
-        checkNotNull(jiraSettings);
+        JiraSettings jiraSettings = jiraSettingsDAO.findById(id)
+            .orElseThrow(NotFoundException::new);
         jiraSettingsTransformer.updateFromDto(jiraSettingsUpdateDTO, jiraSettings);
         jiraSettingsDAO.save(jiraSettings);
     }

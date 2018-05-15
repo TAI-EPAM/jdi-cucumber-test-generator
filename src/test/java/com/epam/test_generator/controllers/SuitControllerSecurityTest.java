@@ -1,27 +1,31 @@
 package com.epam.test_generator.controllers;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationFilter;
 import com.epam.test_generator.controllers.suit.SuitController;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
-import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.SuitService;
-import com.epam.test_generator.services.LoginService;
 import com.epam.test_generator.services.UserService;
 import com.google.common.collect.Lists;
+import javax.servlet.Filter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -31,15 +35,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.Filter;
-
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class, DatabaseConfigForTests.class})
 @WebAppConfiguration
@@ -48,15 +43,9 @@ public class SuitControllerSecurityTest {
 
     private final LoginUserDTO loginUserDTO = new LoginUserDTO();
 
-    @Autowired
-    private UserDAO userDAO;
 
     @Autowired
-    private PasswordEncoder encoder;
-
-    @InjectMocks
-    @Autowired
-    private JwtAuthenticationFilter JwtAuthenticationFilter;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Mock
     private User invalidUser;
@@ -79,7 +68,6 @@ public class SuitControllerSecurityTest {
     @Mock
     private SuitService suitService;
 
-    @InjectMocks
     @Autowired
     private SuitController suitController;
 
@@ -127,6 +115,9 @@ public class SuitControllerSecurityTest {
         when(suitService.getSuitsFromProject(anyLong())).thenReturn(Lists.newArrayList());
 
         ReflectionTestUtils.setField(suitController, "suitService", suitService);
+        ReflectionTestUtils.setField(jwtAuthenticationFilter, "userService", userService);
+        ReflectionTestUtils
+            .setField(jwtAuthenticationFilter, "projectService", projectService);
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.epam.test_generator.controllers;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,7 +15,6 @@ import com.epam.test_generator.dto.RawSuitResultDTO;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.TestResultService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,9 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -56,7 +54,7 @@ public class TestResultControllerTest {
     private TestResultController testResultController;
 
     @Before
-    public void setup() throws ParseException {
+    public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(testResultController)
             .setControllerAdvice(new GlobalExceptionController()).build();
 
@@ -82,9 +80,6 @@ public class TestResultControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(rawSuitResultDTOS)))
             .andExpect(status().isOk());
-
-        verify(testResultService).saveResult(eq(SIMPLE_PROJECT_ID), eq(rawSuitResultDTOS), any(
-            Authentication.class));
     }
 
     @Test
@@ -136,7 +131,6 @@ public class TestResultControllerTest {
 
     @Test
     public void getTestRunResultsFromTo_NegativeRange_BadRequest() throws Exception {
-
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/tests/results/")
                 .param("offset", String.valueOf(NEGATIVE))
@@ -149,7 +143,6 @@ public class TestResultControllerTest {
 
     @Test
     public void getTestRunResultsFromTo_onlyOffsetIsPresent_BadRequest() throws Exception {
-
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/tests/results/")
                 .param("offset", String.valueOf(FROM)))
@@ -161,9 +154,6 @@ public class TestResultControllerTest {
 
     @Test
     public void getTestRunResultsFromToByDate_StatusOk() throws Exception {
-        when(testResultService.getTestResults(SIMPLE_PROJECT_ID, FROM_DATE, TO_DATE))
-            .thenReturn(testResultDTOS.subList(1, 2));
-
         Long from = ZonedDateTime.parse("2018-02-26T00:00Z").toInstant().toEpochMilli();
         Long to = ZonedDateTime.parse("2018-02-27T00:00Z").toInstant().toEpochMilli();
 
@@ -179,7 +169,6 @@ public class TestResultControllerTest {
 
     @Test
     public void getTestRunResultsFromToByDate_ToBeforeFrom_BadRequest() throws Exception {
-
         mockMvc.perform(
             get("/projects/" + SIMPLE_PROJECT_ID + "/tests/results/dates")
                 .param("from", String.valueOf(TO_DATE))

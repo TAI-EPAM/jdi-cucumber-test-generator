@@ -117,7 +117,6 @@ public class StepSuggestionServiceTest {
     @Test
     public void getStepSuggestionsByType_Success() throws Exception {
         when(project.getStepSuggestions()).thenReturn(stepSuggestions);
-        when(stepSuggestionTransformer.toDtoList(any())).thenCallRealMethod();
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
 
         List<StepSuggestionDTO> expectedDTOs = stepSuggestionDTOS.stream()
@@ -130,12 +129,14 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void addStepSuggestion_Success() throws Exception {
+    public void addStepSuggestion_Success() {
+        StepSuggestionCreateDTO createDTO =
+            new StepSuggestionCreateDTO(CONTENT_1, GIVEN);
+
+        when(stepSuggestionTransformer.fromDto(createDTO)).thenReturn(expectedStepSuggestion);
         when(projectStepSuggestionDAO.save(any(StepSuggestion.class)))
             .thenReturn(expectedStepSuggestion);
 
-        StepSuggestionCreateDTO createDTO =
-            new StepSuggestionCreateDTO(CONTENT_1, GIVEN);
         Long id = stepSuggestionService.addStepSuggestion(PROJECT_ID, createDTO);
 
         assertEquals(ID_1, id);
@@ -147,7 +148,7 @@ public class StepSuggestionServiceTest {
         when(projectStepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
         when(projectStepSuggestionDAO.save(any(StepSuggestion.class)))
-            .thenAnswer(a -> a.getArgumentAt(0, StepSuggestion.class));
+            .thenAnswer(a -> a.getArgument(0));
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
         doCallRealMethod().when(stepSuggestionTransformer).updateFromDto(any(), any());
 

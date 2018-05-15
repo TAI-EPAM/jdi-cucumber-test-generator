@@ -32,7 +32,9 @@ public class DefaultDefaultStepSuggestionDAOTest {
         DefaultStepSuggestion newDefaultStepSuggestion = retrieveStepSuggestion();
         newDefaultStepSuggestion.setId(id);
 
-        Assert.assertEquals(newDefaultStepSuggestion, defaultStepSuggestionDAO.findOne(id));
+        Assert.assertTrue(defaultStepSuggestionDAO.findById(id).isPresent());
+
+        Assert.assertEquals(newDefaultStepSuggestion, defaultStepSuggestionDAO.findById(id).get());
     }
 
     @Test
@@ -47,7 +49,9 @@ public class DefaultDefaultStepSuggestionDAOTest {
         newDefaultStepSuggestion.setId(id);
         newDefaultStepSuggestion.setContent("new content");
 
-        Assert.assertEquals(newDefaultStepSuggestion, defaultStepSuggestionDAO.findOne(id));
+        Assert.assertTrue(defaultStepSuggestionDAO.findById(id).isPresent());
+
+        Assert.assertEquals(newDefaultStepSuggestion, defaultStepSuggestionDAO.findById(id).get());
     }
 
     @Test
@@ -62,7 +66,9 @@ public class DefaultDefaultStepSuggestionDAOTest {
         newDefaultStepSuggestion.setId(id);
         newDefaultStepSuggestion.setType(StepType.AND);
 
-        Assert.assertEquals(newDefaultStepSuggestion, defaultStepSuggestionDAO.findOne(id));
+        Assert.assertTrue(defaultStepSuggestionDAO.findById(id).isPresent());
+
+        Assert.assertEquals(newDefaultStepSuggestion, defaultStepSuggestionDAO.findById(id).get());
     }
 
     @Test
@@ -70,9 +76,9 @@ public class DefaultDefaultStepSuggestionDAOTest {
         DefaultStepSuggestion originalDefaultStepSuggestion = retrieveStepSuggestion();
         long id = defaultStepSuggestionDAO.save(originalDefaultStepSuggestion).getId();
 
-        defaultStepSuggestionDAO.delete(id);
+        defaultStepSuggestionDAO.deleteById(id);
 
-        Assert.assertTrue(!defaultStepSuggestionDAO.exists(id));
+        Assert.assertFalse(defaultStepSuggestionDAO.existsById(id));
     }
 
     @Test
@@ -83,7 +89,7 @@ public class DefaultDefaultStepSuggestionDAOTest {
 
         defaultStepSuggestionDAO.delete(originalDefaultStepSuggestion);
 
-        Assert.assertTrue(!defaultStepSuggestionDAO.exists(id));
+        Assert.assertFalse(defaultStepSuggestionDAO.existsById(id));
     }
 
     @Test
@@ -92,7 +98,7 @@ public class DefaultDefaultStepSuggestionDAOTest {
 
         int expectedSize = defaultStepSuggestionDAO.findAll().size();
 
-        List<Long> ids = defaultStepSuggestionDAO.save(defaultStepSuggestions).stream().map(
+        List<Long> ids = defaultStepSuggestionDAO.saveAll(defaultStepSuggestions).stream().map(
             DefaultStepSuggestion::getId)
             .collect(Collectors.toList());
 
@@ -113,9 +119,9 @@ public class DefaultDefaultStepSuggestionDAOTest {
 
         int expectedSize = defaultStepSuggestionDAO.findAll().size();
 
-        defaultStepSuggestions =  defaultStepSuggestionDAO.save(defaultStepSuggestions);
+        defaultStepSuggestions =  defaultStepSuggestionDAO.saveAll(defaultStepSuggestions);
 
-        defaultStepSuggestionDAO.delete(defaultStepSuggestions);
+        defaultStepSuggestionDAO.deleteAll(defaultStepSuggestions);
 
         Assert.assertEquals(expectedSize, defaultStepSuggestionDAO.findAll().size());
     }
@@ -123,7 +129,7 @@ public class DefaultDefaultStepSuggestionDAOTest {
     @Test
     public void findByContentIgnoreCaseContaining_SearchString_Success() {
         List<DefaultStepSuggestion> defaultStepSuggestions = retrieveStepSuggestionList();
-        defaultStepSuggestions =  defaultStepSuggestionDAO.save(defaultStepSuggestions);
+        defaultStepSuggestions =  defaultStepSuggestionDAO.saveAll(defaultStepSuggestions);
 
         PageRequest numberOfReturnedResults = new PageRequest(0, 10);
         List<DefaultStepSuggestion> content = defaultStepSuggestionDAO

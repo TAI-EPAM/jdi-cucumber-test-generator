@@ -30,7 +30,7 @@ public class StepDAOTest {
         Step newStep = retrieveStep();
         newStep.setId(id);
 
-        Assert.assertEquals(newStep, stepDAO.findOne(id));
+        Assert.assertEquals(newStep, stepDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class StepDAOTest {
         Step newStep = retrieveStep();
         newStep.setId(id);
         newStep.setDescription("Modified description");
-        Assert.assertEquals(newStep, stepDAO.findOne(id));
+        Assert.assertEquals(newStep, stepDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class StepDAOTest {
         newStep.setId(id);
         newStep.setRowNumber(3);
 
-        Assert.assertEquals(newStep, stepDAO.findOne(id));
+        Assert.assertEquals(newStep, stepDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class StepDAOTest {
         newStep.setId(id);
         newStep.setType(StepType.THEN);
 
-        Assert.assertEquals(newStep, stepDAO.findOne(id));
+        Assert.assertEquals(newStep, stepDAO.findById(id).orElse(null));
     }
 
     @Test
@@ -80,9 +80,9 @@ public class StepDAOTest {
         Step step = retrieveStep();
         long id = stepDAO.save(step).getId();
 
-        stepDAO.delete(id);
+        stepDAO.delete(step);
 
-        Assert.assertTrue(!stepDAO.exists(id));
+        Assert.assertFalse(stepDAO.existsById(id));
     }
 
     @Test
@@ -92,30 +92,31 @@ public class StepDAOTest {
 
         stepDAO.delete(step);
 
-        Assert.assertTrue(!stepDAO.exists(id));
+        Assert.assertFalse(stepDAO.existsById(id));
     }
 
     @Test
     public void addList_Steps_Success() {
         List<Step> steps = retrieveStepList();
 
-        List<Long> ids = stepDAO.save(steps).stream().map(Step::getId).collect(Collectors.toList());
+        List<Long> ids = stepDAO.saveAll(steps).stream().map(Step::getId).collect(Collectors.toList
+            ());
 
         List<Step> newSteps = retrieveStepList();
         newSteps.get(0).setId(ids.get(0));
         newSteps.get(1).setId(ids.get(1));
         newSteps.get(2).setId(ids.get(2));
 
-        Assert.assertTrue(newSteps.equals(stepDAO.findAll()));
+        Assert.assertEquals(newSteps, stepDAO.findAll());
     }
 
     @Test
     public void removeList_Steps_Success() {
         List<Step> steps = retrieveStepList();
 
-        stepDAO.save(steps);
+        stepDAO.saveAll(steps);
 
-        stepDAO.delete(steps);
+        stepDAO.deleteAll(steps);
 
         Assert.assertTrue(stepDAO.findAll().isEmpty());
     }

@@ -3,6 +3,7 @@ package com.epam.test_generator.services.jenkins;
 import com.epam.test_generator.controllers.jenkins.JenkinsTransformer;
 import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.ExecutedJenkinsJobDTO;
+import com.epam.test_generator.services.exceptions.JenkinsRuntimeInternalException;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Executable;
 import com.offbytwo.jenkins.model.Job;
@@ -13,11 +14,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Exchanger;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.TimerTask;
 
 /**
  * Service class that allows getting jobs from Jenkins server and running them
@@ -51,9 +51,8 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
                 .map(jenkinsTransformer::toCommonDto).collect(Collectors.toList());
             return response;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new JenkinsRuntimeInternalException();
         }
-        return null;
     }
 
     /**
@@ -78,9 +77,8 @@ public class JenkinsJobServiceImpl implements JenkinsJobService {
             return response;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new JenkinsRuntimeInternalException();
         }
-        return null;
     }
 
     /**

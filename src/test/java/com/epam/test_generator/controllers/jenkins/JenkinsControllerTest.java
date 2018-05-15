@@ -1,6 +1,6 @@
 package com.epam.test_generator.controllers.jenkins;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -10,10 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.controllers.GlobalExceptionController;
-import com.epam.test_generator.controllers.jenkins.JenkinsController;
 import com.epam.test_generator.controllers.jenkins.request.ExecuteJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.ExecutedJenkinsJobDTO;
+import com.epam.test_generator.services.exceptions.JenkinsRuntimeInternalException;
 import com.epam.test_generator.services.jenkins.JenkinsJobServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -69,7 +69,7 @@ public class JenkinsControllerTest {
 
     @Test
     public void getJobs_Jobs_StatusInternalServerError() throws Exception {
-        when(jenkinsJobService.getJobs()).thenThrow(Exception.class);
+        when(jenkinsJobService.getJobs()).thenThrow(JenkinsRuntimeInternalException.class);
         mockMvc.perform(get("/jenkins/jobs"))
             .andExpect(status().isInternalServerError());
     }
@@ -94,7 +94,6 @@ public class JenkinsControllerTest {
     public void executeJob_JobWithoutJobName_StatusBadRequest() throws Exception {
         ExecuteJenkinsJobDTO jobDTO = new ExecuteJenkinsJobDTO();
 
-        when(jenkinsJobService.runJob(jobName)).thenReturn(executedJenkinsJobResponse);
         String json = mapper.writeValueAsString(jobDTO);
         mockMvc.perform(
             post("/jenkins/job/execute").contentType(MediaType.APPLICATION_JSON).content(json))

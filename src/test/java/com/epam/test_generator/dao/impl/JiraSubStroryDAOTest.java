@@ -1,8 +1,8 @@
 package com.epam.test_generator.dao.impl;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.dao.interfaces.JiraSettingsDAO;
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraSubStroryDAOTest {
@@ -57,7 +57,6 @@ public class JiraSubStroryDAOTest {
         jiraSettings.setLogin("login");
         jiraSettings.setPassword("password");
         jiraSettings.setUri("jira_uri");
-        when(jiraSettingsDAO.findById(anyLong())).thenReturn(jiraSettings);
     }
 
     @Test
@@ -112,14 +111,9 @@ public class JiraSubStroryDAOTest {
 
     @Test(expected = JiraRuntimeException.class)
     public void updateSubStoryByJiraKey() throws JiraException {
-        when(client.getIssue(anyString())).thenReturn(issue);
-        when(client.getIssue(anyString()).update()).thenCallRealMethod();
+        when(jiraClientFactory.getJiraClient(JIRA_SETTINGS_ID)).thenReturn(client);
+        when(client.getIssue(caze.getJiraKey())).thenReturn(issue);
+        when(issue.update()).thenCallRealMethod();
         jiraSubStroryDAO.updateSubStoryByJiraKey(JIRA_SETTINGS_ID, caze);
-    }
-
-    @Test(expected = JiraRuntimeException.class)
-    public void createSubStory() throws JiraException {
-        when(client.createIssue(anyString(), anyString())).thenCallRealMethod();
-        jiraSubStroryDAO.createSubStory(JIRA_SETTINGS_ID, caze);
     }
 }

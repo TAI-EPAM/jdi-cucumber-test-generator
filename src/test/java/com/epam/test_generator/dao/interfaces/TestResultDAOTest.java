@@ -1,10 +1,19 @@
 package com.epam.test_generator.dao.interfaces;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.results.TestResult;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,14 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.transaction.Transactional;
-import java.time.Month;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class})
@@ -52,13 +53,13 @@ public class TestResultDAOTest {
 
     @Test
     public void save() {
-        List<TestResult> save = testResultDAO.save(testResults);
+        List<TestResult> save = testResultDAO.saveAll(testResults);
         assertThat(save.size(), is(equalTo(10)));
     }
 
     @Test
     public void findAllByProjectIdOrderByDateDesc() {
-        List<TestResult> save = testResultDAO.save(testResults);
+        List<TestResult> save = testResultDAO.saveAll(testResults);
         assertThat(save.size(), is(equalTo(10)));
 
         Long projectId = save.get(0).getProject().getId();
@@ -80,7 +81,7 @@ public class TestResultDAOTest {
 
     @Test
     public void findAllByProjectIdAndDateBetweenOrderByDateDesc() {
-        List<TestResult> save = testResultDAO.save(testResults);
+        List<TestResult> save = testResultDAO.saveAll(testResults);
         assertThat(save.size(), is(equalTo(10)));
 
         Long projectId = save.get(0).getProject().getId();

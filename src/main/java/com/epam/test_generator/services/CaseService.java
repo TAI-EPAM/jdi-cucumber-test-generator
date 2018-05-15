@@ -8,14 +8,12 @@ import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
 import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.controllers.version.caze.CaseVersionTransformer;
 import com.epam.test_generator.controllers.version.caze.response.CaseVersionDTO;
 import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
-import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -23,17 +21,15 @@ import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.CaseVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
-import com.epam.test_generator.controllers.caze.CaseTransformer;
-import com.epam.test_generator.controllers.tag.TagTransformer;
-import java.time.LocalDateTime;
-import java.util.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +45,7 @@ public class CaseService {
     private CaseTransformer caseTransformer;
 
     @Autowired
+    @Qualifier("defaultValidator")
     private Validator validator;
 
     @Autowired
@@ -67,9 +64,6 @@ public class CaseService {
     private StateMachineAdapter stateMachineAdapter;
 
     @Autowired
-    private TagTransformer tagTransformer;
-
-    @Autowired
     private RemovedIssueDAO removedIssueDAO;
 
     @Autowired
@@ -82,7 +76,7 @@ public class CaseService {
 
     public Case getCase(Long projectId, Long suitId, Long caseId) {
         Suit suit = suitService.getSuit(projectId, suitId);
-        Case caze = checkNotNull(caseDAO.findOne(caseId));
+        Case caze = caseDAO.findById(caseId).orElseThrow(NotFoundException::new);
         if (suit.hasCase(caze)) {
             return caze;
         } else {
@@ -165,9 +159,7 @@ public class CaseService {
                               CaseUpdateDTO caseUpdateDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
 
-        Case caze = caseDAO.findOne(caseId);
-
-        checkNotNull(caze);
+        Case caze = caseDAO.findById(caseId).orElseThrow(NotFoundException::new);
 
         if (!suit.hasCase(caze)) {
             throw new BadRequestException(
@@ -254,7 +246,7 @@ public class CaseService {
 
         saveIssueToDeleteInJira(caze);
 
-        caseDAO.delete(caseId);
+        caseDAO.delete(caze);
 
         caseVersionDAO.delete(caze);
         suitVersionDAO.save(suit);
@@ -279,7 +271,7 @@ public class CaseService {
             .filter(caze -> caseIds.stream()
                 .anyMatch(id -> id.equals(caze.getId())))
             .forEach(caze -> {
-                caseDAO.delete(caze.getId());
+                caseDAO.deleteById(caze.getId());
 
                 caseVersionDAO.delete(caze);
 

@@ -1,9 +1,9 @@
 package com.epam.test_generator.controllers.suit;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -20,10 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.controllers.GlobalExceptionController;
-import com.epam.test_generator.controllers.suit.SuitController;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
-import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.NotFoundException;
@@ -34,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -243,8 +242,6 @@ public class SuitControllerTest {
     public void add_SuitWithNullName_StatusBadRequest() throws Exception {
         suitDTO.setId(null);
         suitDTO.setName(null);
-        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
-
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(suitDTO)))
@@ -254,28 +251,16 @@ public class SuitControllerTest {
     }
 
     @Test
-    public void add_SuitWithMoreThanTheRequiredPriority_StatusBadRequest() throws Exception {
+    public void add_SuitWithMoreThanTheRequiredPriority_StatusBadRequest() {
         suitDTO.setId(null);
         suitDTO.setPriority(6);
-        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
-
-        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new SuitCreateDTO())))
-                .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
 
     @Test
-    public void add_SuitWithLessThanTheRequiredPriority_StatusbadRequest() throws Exception {
+    public void add_SuitWithLessThanTheRequiredPriority_StatusbadRequest() {
         suitDTO.setPriority(-1);
-        when(suitService.addSuit(anyLong(), any(SuitCreateDTO.class))).thenThrow(new RuntimeException());
-
-        mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(new SuitCreateDTO())))
-            .andExpect(status().isBadRequest());
 
         verify(suitService, times(0)).addSuit(anyLong(), any(SuitCreateDTO.class));
     }

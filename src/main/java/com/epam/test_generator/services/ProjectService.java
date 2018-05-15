@@ -6,17 +6,16 @@ import com.epam.test_generator.config.security.AuthenticatedUser;
 import com.epam.test_generator.controllers.project.ProjectTransformer;
 import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.request.ProjectUpdateDTO;
+import com.epam.test_generator.controllers.project.response.ProjectDTO;
+import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
-import com.epam.test_generator.controllers.project.response.ProjectDTO;
-import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.entities.Project;
-import com.epam.test_generator.entities.Tag;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.ProjectClosedException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,10 +50,14 @@ public class ProjectService {
      * @return set of tag DTO representing set of all the tags in a project
      */
     public Set<TagDTO> getTagsByProjectId(Long projectId) {
-        checkNotNull(projectDAO.findOne(projectId));
-        return projectDAO.getTagsByProjectId(projectId).stream()
+        if (projectDAO.existsById(projectId)) {
+            return projectDAO.getTagsByProjectId(projectId).stream()
                 .map(tagTransformer::toDto)
                 .collect(Collectors.toSet());
+        }
+        else {
+            throw new NotFoundException();
+        }
     }
 
     /**
@@ -69,12 +72,12 @@ public class ProjectService {
     }
 
     public List<Project> getProjectsByUserId(Long userId) {
-        User user = checkNotNull(userService.getUserById(userId));
+        User user = userService.getUserById(userId);
         return projectDAO.findByUsers(user);
     }
 
     public Project getProjectByProjectId(Long projectId) {
-        return checkNotNull(projectDAO.findOne(projectId));
+        return projectDAO.findById(projectId).orElseThrow(NotFoundException::new);
     }
 
     public Project getProjectByJiraKey(String key) {
@@ -125,7 +128,7 @@ public class ProjectService {
      * @param projectDTO update info
      */
     public void updateProject(Long projectId, ProjectUpdateDTO projectDTO) {
-        Project project = checkNotNull(projectDAO.findOne(projectId));
+        Project project = projectDAO.findById(projectId).orElseThrow(NotFoundException::new);
 
         throwExceptionIfProjectIsNotActive(project);
 
@@ -139,7 +142,7 @@ public class ProjectService {
      * @param projectId id of project to delete
      */
     public void removeProject(Long projectId) {
-        projectDAO.delete(checkNotNull(projectDAO.findOne(projectId)));
+        projectDAO.delete(projectDAO.findById(projectId).orElseThrow(NotFoundException::new));
     }
 
     /**
@@ -148,7 +151,7 @@ public class ProjectService {
      * @param userId id of user to add
      */
     public void addUserToProject(long projectId, long userId) {
-        Project project = checkNotNull(projectDAO.findOne(projectId));
+        Project project = projectDAO.findById(projectId).orElseThrow(NotFoundException::new);
 
         throwExceptionIfProjectIsNotActive(project);
 
@@ -163,7 +166,7 @@ public class ProjectService {
      * @param userId id of user to remove
      */
     public void removeUserFromProject(long projectId, long userId) {
-        Project project = checkNotNull(projectDAO.findOne(projectId));
+        Project project = projectDAO.findById(projectId).orElseThrow(NotFoundException::new);
 
         throwExceptionIfProjectIsNotActive(project);
 
@@ -180,7 +183,7 @@ public class ProjectService {
      * @param projectId id of project to close
      */
     public void closeProject(long projectId) {
-        Project project = checkNotNull(projectDAO.findOne(projectId));
+        Project project = projectDAO.findById(projectId).orElseThrow(NotFoundException::new);
 
         throwExceptionIfProjectIsNotActive(project);
 

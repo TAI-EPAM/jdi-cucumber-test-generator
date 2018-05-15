@@ -14,6 +14,7 @@ import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.controllers.step.StepTransformer;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,7 @@ public class StepService {
      */
     public StepDTO getStep(Long projectId, Long suitId, Long caseId, Long stepId) {
         Case caze = caseService.getCase(projectId, suitId, caseId);
-        Step step = checkNotNull(stepDAO.findOne(stepId));
+        Step step = stepDAO.findById(stepId).orElseThrow(NotFoundException::new);
 
         throwExceptionIfStepIsNotInCase(caze, step);
 
@@ -111,7 +112,7 @@ public class StepService {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseService.getCase(projectId, suitId, caseId);
 
-        Step step = checkNotNull(stepDAO.findOne(stepId));
+        Step step = stepDAO.findById(stepId).orElseThrow(NotFoundException::new);
         throwExceptionIfStepIsNotInCase(caze, step);
 
         step = stepTransformer.updateFromDto(stepUpdateDTO, step);
@@ -133,12 +134,12 @@ public class StepService {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseService.getCase(projectId, suitId, caseId);
 
-        Step step = checkNotNull(stepDAO.findOne(stepId));
+        Step step = stepDAO.findById(stepId).orElseThrow(NotFoundException::new);
         throwExceptionIfStepIsNotInCase(caze, step);
         caze.removeStep(step);
         suit.updateStatus();
 
-        stepDAO.delete(stepId);
+        stepDAO.delete(step);
 
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
