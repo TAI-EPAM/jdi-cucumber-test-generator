@@ -79,7 +79,7 @@ public class StepService {
      * @param stepCreateDTO DTO where step specified
      * @return id of added step
      */
-    public Long addStepToCase(Long projectId, Long suitId, Long caseId,
+    public StepDTO addStepToCase(Long projectId, Long suitId, Long caseId,
                               StepCreateDTO stepCreateDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseService.getCase(projectId, suitId, caseId);
@@ -95,7 +95,7 @@ public class StepService {
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
-        return step.getId();
+        return stepTransformer.toDto(step);
     }
 
     /**
@@ -107,7 +107,7 @@ public class StepService {
      * @param stepUpdateDTO DTO where step specified
      * @param stepId id of step which to update
      */
-    public void updateStep(Long projectId, Long suitId, Long caseId, Long stepId,
+    public StepDTO updateStep(Long projectId, Long suitId, Long caseId, Long stepId,
                            StepUpdateDTO stepUpdateDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseService.getCase(projectId, suitId, caseId);
@@ -120,6 +120,8 @@ public class StepService {
 
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
+
+        return stepTransformer.toDto(step);
     }
 
     /**

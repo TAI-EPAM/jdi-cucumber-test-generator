@@ -211,13 +211,13 @@ public class StepControllerTest {
     @Test
     public void addStepToCase_StepDTO_StatusCreated() throws Exception {
         when(stepService.addStepToCase(anyLong(), anyLong(), anyLong(), any(StepCreateDTO.class)))
-            .thenReturn(SIMPLE_STEP_ID);
+            .thenReturn(stepDTO);
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/" + SIMPLE_CASE_ID + "/steps")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepCreateDTO)))
             .andExpect(status().isCreated())
-            .andExpect(content().string(String.valueOf(SIMPLE_STEP_ID)));
+            .andExpect(content().string(mapper.writeValueAsString(stepDTO)));
 
         verify(stepService)
             .addStepToCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID), any(StepCreateDTO.class));

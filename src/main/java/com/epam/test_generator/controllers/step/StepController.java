@@ -108,7 +108,7 @@ public class StepController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping
-    public ResponseEntity<Long> addStepToCase(@PathVariable("projectId") long projectId,
+    public ResponseEntity<StepDTO> addStepToCase(@PathVariable("projectId") long projectId,
                                               @PathVariable("suitId") long suitId,
                                               @PathVariable("caseId") long caseId,
                                               @RequestBody @Valid StepCreateDTO stepCreateDTO) {
@@ -134,19 +134,17 @@ public class StepController {
         @ApiImplicitParam(name = "stepId", value = "ID of step to update",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepUpdateDTO", value = "Updated step object",
-            required = true, dataType = "StepUpdateDTO", paramType = "boy"),
+            required = true, dataType = "StepUpdateDTO", paramType = "body"),
         @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PutMapping("/{stepId}")
-    public ResponseEntity<Void> updateStep(@PathVariable("projectId") long projectId,
+    public ResponseEntity<StepDTO> updateStep(@PathVariable("projectId") long projectId,
                                            @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
                                            @PathVariable("stepId") long stepId,
-                                           @RequestBody @Valid StepUpdateDTO stepDTO) {
-        stepService.updateStep(projectId, suitId, caseId, stepId, stepDTO);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+                                           @RequestBody @Valid StepUpdateDTO stepUpdateDTO) {
+        return new ResponseEntity<>(stepService.updateStep(projectId, suitId, caseId, stepId, stepUpdateDTO), HttpStatus.OK);
     }
 
 

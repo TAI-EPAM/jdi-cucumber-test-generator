@@ -180,8 +180,8 @@ public class StepServiceTest {
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
         when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
 
-        Long actualId = stepService.addStepToCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, newStepDTO);
-        assertEquals(newStep.getId(), actualId);
+        StepDTO actualDto = stepService.addStepToCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, newStepDTO);
+        assertEquals(stepTransformer.toDto(newStep), actualDto);
         assertTrue(caze.getSteps().contains(newStep));
 
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID));
@@ -213,10 +213,10 @@ public class StepServiceTest {
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
         when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
 
-        Long actualId = stepService.addStepToCase(SIMPLE_PROJECT_ID, 2L, 3L, newStepDTO);
+        StepDTO actualDto = stepService.addStepToCase(SIMPLE_PROJECT_ID, 2L, 3L, newStepDTO);
         assertEquals(Status.NOT_RUN, newCase.getStatus());
         assertEquals(Status.NOT_RUN, newSuit.getStatus());
-        assertEquals(newStep.getId(), actualId);
+        assertEquals(stepTransformer.toDto(newStep), actualDto);
         assertTrue(newCase.getSteps().contains(newStep));
     }
 
