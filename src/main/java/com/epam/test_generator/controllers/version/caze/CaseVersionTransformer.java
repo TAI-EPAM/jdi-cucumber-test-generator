@@ -17,7 +17,7 @@ public class CaseVersionTransformer {
     public CaseVersionDTO toDto(CaseVersion caseVersion) {
         return new CaseVersionDTO(
             caseVersion.getCommitId(),
-            caseVersion.getUpdatedDate().toString(),
+            String.valueOf(caseVersion.getUpdatedDate().toInstant().getEpochSecond()),
             caseVersion.getAuthor(),
             propertyDifferenceTransformer.toListDto(caseVersion.getPropertyDifferences())
         );
