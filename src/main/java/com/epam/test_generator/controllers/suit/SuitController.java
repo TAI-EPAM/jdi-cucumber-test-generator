@@ -120,8 +120,7 @@ public class SuitController {
     @PutMapping("/{suitId}")
     public ResponseEntity<SuitDTO> updateSuit(@PathVariable("projectId") long projectId,
                                               @PathVariable("suitId") long suitId,
-                                              @RequestBody @Valid SuitUpdateDTO suitUpdateDTO)
-        throws MethodArgumentNotValidException {
+                                              @RequestBody @Valid SuitUpdateDTO suitUpdateDTO) {
         SuitDTO updatedSuitDTO = suitService.updateSuit(projectId, suitId, suitUpdateDTO);
 
         return new ResponseEntity<>(updatedSuitDTO, HttpStatus.OK);
@@ -145,16 +144,27 @@ public class SuitController {
         return new ResponseEntity<>(updatedSuitRowNumberUpdateDTOs, HttpStatus.OK);
     }
 
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiOperation(value = "Generate and download cucumber feature file", nickname = "downloadFile")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 404, message = "Project, suit or case not found")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "suitId", value = "ID of suit",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "caseIds", value = "IDs of cases",
+            required = true, dataType = "Array[long]", paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping("/{suitId}/feature-file")
-    public ResponseEntity<String> downloadFile(@RequestBody @Valid SuitDTO suitDTO)
+    public ResponseEntity<String> downloadFile(@PathVariable("projectId") long projectId,
+                                               @PathVariable("suitId") long suitId,
+                                               @RequestBody List<Long> caseIds)
         throws IOException {
-        List<Long> caseIds = suitDTO.getCases().stream().map(CaseDTO::getId)
-            .collect(Collectors.toList());
-
-        return new ResponseEntity<>(ioService.generateFile(suitDTO.getId(), caseIds),
-            HttpStatus.OK);
+        return new ResponseEntity<>(ioService.generateFile(suitId, caseIds), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete suit by id", nickname = "removeSuit")

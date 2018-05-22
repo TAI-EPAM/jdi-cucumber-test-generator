@@ -1,6 +1,6 @@
 <#if suit.tags?has_content>
 <#assign t = "">
-<#list suit.tags?split(" ") as tags><#if tags?has_content><#assign t += tags?ensure_starts_with('@') + " "></#if></#list>
+<#list suit.tags as tags><#if tags?has_content><#assign t += tags.name?ensure_starts_with('@') + " "></#if></#list>
 ${t?trim}
 </#if>
 Feature: ${suit.description}
