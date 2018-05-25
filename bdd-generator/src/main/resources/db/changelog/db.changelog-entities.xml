@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="" id="new_case_table">
+        <createTable tableName="CASE">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="JIRAKEY" type="VARCHAR(255)"/>
+            <column name="JIRAPROJECTKEY" type="VARCHAR(255)"/>
+            <column name="JIRAPARENTKEY" type="VARCHAR(255)"/>
+            <column name="COMMENT" type="VARCHAR(255)"/>
+            <column name="CREATIONDATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="LASTMODIFIEDDATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="LASTJIRASYNCDATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PRIORITY" type="INT(10)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+            <column name="UPDATEDATE" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_project_table">
+        <createTable tableName="PROJECT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="true" name="ACTIVE" type="BOOLEAN(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JIRAKEY" type="VARCHAR(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_role_table">
+        <createTable tableName="ROLE">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_step_table">
+        <createTable tableName="STEP">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="COMMENT" type="VARCHAR(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="ROWNUMBER" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="VARCHAR(255)"/>
+            <column name="TYPE" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_defaultstepsuggestion_table">
+        <createTable tableName="DEFAULTSTEPSUGGESTION">
+            <column autoIncrement="true" name="ID" type="BIGINT(19)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="CONTENT" type="VARCHAR(255)"/>
+            <column name="TYPE" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_suit_table">
+        <createTable tableName="SUIT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="JIRAKEY" type="VARCHAR(255)"/>
+            <column name="JIRAPROJECTKEY" type="VARCHAR(255)"/>
+            <column name="CREATIONDATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="LASTMODIFIEDDATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="LASTJIRASYNCDATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PRIORITY" type="INT(10)"/>
+            <column name="ROWNUMBER" type="INT(10)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_user_table">
+        <createTable tableName="USER">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ATTEMPTS" type="INT(10)"/>
+            <column name="EMAIL" type="VARCHAR(255)"/>
+            <column name="LOCKED" type="BOOLEAN(1)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PASSWORD" type="VARCHAR(255)"/>
+            <column name="SURNAME" type="VARCHAR(255)"/>
+            <column name="ROLE_ID" type="BIGINT(19)">
+                <constraints foreignKeyName="fk_user_role" references="role(id)"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_token_table">
+        <createTable tableName="TOKEN">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="EXPIRYDATE" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOKEN" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_ID" type="BIGINT(19)">
+                <constraints foreignKeyName="fk_user" references="user(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="new_removedIssue_table" author="">
+        <createTable tableName="REMOVEDISSUE">
+            <column name="JIRAKEY" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+         </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_caseresult_table">
+        <createTable tableName="CASERESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="COMMENT" type="VARCHAR(255)"/>
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_stepresult_table">
+        <createTable tableName="STEPRESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_suit_result_table">
+        <createTable tableName="SUITRESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_testresult_table">
+        <createTable tableName="TESTRESULT">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="AMOUNTOFFAILED" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNTOFPASSED" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNTOFSKIPPED" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXECUTEDBY" type="VARCHAR(255)"/>
+            <column name="STATUS" type="VARCHAR(255)"/>
+            <column name="PROJECT_ID" type="BIGINT(19)">
+                <constraints foreignKeyName="fk_project" references="project(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="create_table_stepSuggestion" author="">
+        <createTable tableName="STEPSUGGESTION">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="VERSION" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

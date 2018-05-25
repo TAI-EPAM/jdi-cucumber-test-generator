@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="" id="new_case_step_table">
+        <createTable tableName="CASE_STEP">
+            <column name="CASE_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseStep_case" references="case(id)"/>
+            </column>
+            <column name="STEPS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseStep_step" references="step(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_project_suit_table">
+        <createTable tableName="PROJECT_SUIT">
+            <column name="PROJECT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectSuit_project" references="project(id)"/>
+            </column>
+            <column name="SUITS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectSuit_suit" references="suit(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_project_user_table">
+        <createTable tableName="PROJECT_USER">
+            <column name="PROJECT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectUser_project" references="project(id)"/>
+            </column>
+            <column name="USERS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectUser_user" references="user(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_suit_case_table">
+        <createTable tableName="SUIT_CASE">
+            <column name="SUIT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitCase_suit" references="suit(id)"/>
+            </column>
+            <column name="CASES_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitCase_case" references="case(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_suitresult_caseresult_table">
+        <createTable tableName="SUITRESULT_CASERESULT">
+            <column name="SUITRESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitresultCaseresult_suitresult"
+                    references="suitresult(id)"/>
+            </column>
+            <column name="CASERESULTS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitresultCaseresult_case" references="case(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="" id="new_testresult_suitresult_table">
+        <createTable tableName="TESTRESULT_SUITRESULT">
+            <column name="TESTRESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_testresultSuitresult_testresult"
+                    references="testresult(id)"/>
+            </column>
+            <column name="SUITS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_testresultSuitresult_suitresult"
+                    references="suitresult(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new caseresult_stepresult_table">
+        <createTable tableName="CASERESULT_STEPRESULT">
+            <column name="CASERESULT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseresultStepresult_caseresult"
+                    references="caseresult(id)"/>
+            </column>
+            <column name="STEPS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseresultStepresult_stepresult"
+                    references="stepresult(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- fix bug with incorrect constraint in SUITRESULT_CASERESULT -->
+    <changeSet author="" id="change_suitresult_constraint">
+        <dropForeignKeyConstraint baseTableName="SUITRESULT_CASERESULT"
+            constraintName="fk_suitresultCaseresult_case"/>
+
+        <addForeignKeyConstraint baseColumnNames="CASERESULTS_ID"
+            baseTableName="SUITRESULT_CASERESULT"
+            constraintName="fk_suitresultCaseresult_case"
+            referencedColumnNames="id"
+            referencedTableName="caseresult"/>
+    </changeSet>
+
+    <changeSet author="" id="new_suit_tags_table">
+        <createTable tableName="suit_tags">
+            <column name="SUIT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_suitTag_suit" references="suit(id)"/>
+            </column>
+            <column name="TAG" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="new_case_tags_table">
+        <createTable tableName="case_tags">
+            <column name="CASE_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_caseTag_case" references="case(id)"/>
+            </column>
+            <column name="TAG" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="new_project_stepsuggestions_table" author="">
+        <createTable tableName="PROJECT_STEPSUGGESTION">
+            <column name="PROJECT_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectStepSuggestion_project"
+                    references="project(id)"/>
+            </column>
+            <column name="STEPSUGGESTION_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_projectStepSuggestion_stepSuggestion"
+                    references="stepsuggestion(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

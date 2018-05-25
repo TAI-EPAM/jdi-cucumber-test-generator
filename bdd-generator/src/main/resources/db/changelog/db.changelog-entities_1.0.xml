@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="" id="new_jirasettings_table">
+        <createTable tableName="JIRASETTINGS">
+            <column name="ID" type="BIGINT(19)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="LOGIN" type="VARCHAR(255)"/>
+            <column name="URI" type="VARCHAR(255)"/>
+            <column name="PASSWORD" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="" id="add_column_duration">
+        <addColumn tableName="STEPRESULT">
+            <column name="DURATION" type="BIGINT(19)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+   </changeSet>
+  
+   <changeSet author="liquibase-docs" id="rename_column_in_token_table">
+        <renameColumn newColumnName="TOKENUUID"
+                      oldColumnName="TOKEN"
+                      tableName="TOKEN"/>
+   </changeSet>
+
+    <changeSet id="add_column_rowNumber_casetable" author="">
+        <addColumn tableName="CASE">
+            <column name="ROWNUMBER" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

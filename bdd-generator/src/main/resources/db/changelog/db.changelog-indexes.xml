@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet author="" id="new_SuitCase_idx">
+        <createIndex indexName="idx_suitCase_suitId" tableName="SUIT_CASE">
+            <column name="SUIT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_user_idx">
+        <createIndex indexName="idx_user_roleId" tableName="USER">
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_projectSuit_idx">
+        <createIndex indexName="idx_projectSuit_projectId" tableName="PROJECT_SUIT">
+            <column name="PROJECT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_caseStep_idx">
+        <createIndex indexName="idx_caseStep_caseId" tableName="CASE_STEP">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_token_idx">
+        <createIndex indexName="idx_token_userId" tableName="TOKEN">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="" id="new_projectUser_idx">
+        <createIndex indexName="idx_projectUser_userId" tableName="PROJECT_USER">
+            <column name="USERS_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_suitresultCaseresult_idx">
+        <createIndex indexName="idx_suitresultCaseresult_suitresultId"
+            tableName="SUITRESULT_CASERESULT">
+            <column name="SUITRESULT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_caseresultStepresult_idx">
+        <createIndex indexName="idx_caseresultStepresult_casereusltId"
+            tableName="CASERESULT_STEPRESULT">
+            <column name="CASERESULT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_testresultSuitresult_idx">
+        <createIndex indexName="idx_testresultSuitresult_testresultId"
+            tableName="TESTRESULT_SUITRESULT">
+            <column name="TESTRESULT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="" id="new_projectStepSuggestion_idx">
+        <createIndex indexName="idx_projectStepSuggestion_projectId"
+            tableName="PROJECT_STEPSUGGESTION">
+            <column name="PROJECT_ID"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
