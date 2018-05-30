@@ -114,7 +114,7 @@ public class StepDTO {
             Objects.equals(description, stepDTO.description) &&
             type == stepDTO.type &&
             Objects.equals(comment, stepDTO.comment) &&
-            status == stepDTO.status;
+            Objects.equals(status, stepDTO.status);
     }
 
     @Override

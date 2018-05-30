@@ -151,7 +151,7 @@ public class SuitDTO {
             Objects.equals(priority, suitDTO.priority) &&
             Objects.equals(creationDate, suitDTO.creationDate) &&
             Objects.equals(tags, suitDTO.tags) &&
-            status == suitDTO.status &&
+            Objects.equals(status, suitDTO.status) &&
             Objects.equals(rowNumber, suitDTO.rowNumber);
     }
 

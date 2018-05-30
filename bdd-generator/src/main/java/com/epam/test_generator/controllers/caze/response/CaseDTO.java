@@ -170,7 +170,7 @@ public class CaseDTO {
             Objects.equals(steps, caseDTO.steps) &&
             Objects.equals(priority, caseDTO.priority) &&
             Objects.equals(tags, caseDTO.tags) &&
-            status == caseDTO.status &&
+            Objects.equals(status, caseDTO.status) &&
             Objects.equals(comment, caseDTO.comment) &&
             Objects.equals(rowNumber, caseDTO.rowNumber);
     }

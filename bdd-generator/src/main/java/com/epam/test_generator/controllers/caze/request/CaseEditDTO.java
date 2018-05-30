@@ -148,7 +148,7 @@ public class CaseEditDTO {
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(priority, that.priority) &&
-            status == that.status &&
+            Objects.equals(status, that.status) &&
             Objects.equals(steps, that.steps) &&
             Objects.equals(tags, that.tags) &&
             action == that.action &&

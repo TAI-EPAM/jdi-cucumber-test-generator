@@ -119,7 +119,7 @@ public class Step implements Serializable {
             Objects.equals(rowNumber, step.rowNumber) &&
             Objects.equals(description, step.description) &&
             type == step.type &&
-            status == step.status &&
+            Objects.equals(status, step.status) &&
             Objects.equals(comment, step.comment);
     }
 
