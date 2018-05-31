@@ -1,9 +1,9 @@
 package com.epam.test_generator.entities;
 
 import com.epam.test_generator.entities.api.Versionable;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,6 +33,14 @@ public class StepSuggestion implements Versionable {
     @Version
     @NotNull
     private Long version;
+
+    @ManyToOne
+    @JoinTable(
+        name = "PROJECT_STEPSUGGESTION",
+        joinColumns = @JoinColumn(name = "STEPSUGGESTION_ID"),
+        inverseJoinColumns = @JoinColumn(name = "PROJECT_ID")
+    )
+    private Project project;
 
     public StepSuggestion() {
     }
@@ -72,6 +80,14 @@ public class StepSuggestion implements Versionable {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override

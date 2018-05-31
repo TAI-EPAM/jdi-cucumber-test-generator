@@ -13,12 +13,13 @@ import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,22 @@ public class StepSuggestionService {
     public List<StepSuggestionDTO> getStepsSuggestions(Long projectId) {
         Project project = checkNotNull(projectDAO.getOne(projectId));
         return stepSuggestionTransformer.toDtoList(project.getStepSuggestions());
+    }
+
+    public List<StepSuggestionDTO> getStepsSuggestions(Long projectId,StepType stepType, int pageNumber, int pageSize) {
+        Project project = checkNotNull(projectDAO.getOne(projectId));
+
+        Pageable request = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "id");
+
+        if (stepType == StepType.ANY) {
+            return projectStepSuggestionDAO.findByProject(project, request).getContent().stream()
+                .map(stepSuggestionTransformer::toDto)
+                .collect(Collectors.toList());
+        }
+        return projectStepSuggestionDAO.findByProjectAndType(project, stepType, request).getContent().stream()
+            .filter(s -> s.getType() == stepType)
+            .map(stepSuggestionTransformer::toDto)
+            .collect(Collectors.toList());
     }
 
     public StepSuggestionDTO getStepSuggestionDTO(Long projectId, Long stepSuggestionId) {

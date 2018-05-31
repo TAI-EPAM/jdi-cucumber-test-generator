@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
@@ -89,14 +90,15 @@ public class DefaultStepSuggestionServiceTest {
     public void get_StepsSuggestionsByTypePage1_Success() {
         Page<DefaultStepSuggestion> testPage = new PageImpl<>(listSteps.subList(0, 1));
 
-        when(defaultStepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
+        when(defaultStepSuggestionDAO.findByType(eq(StepType.GIVEN), any(Pageable.class))).thenReturn(testPage);
         when(defaultStepSuggestionTransformer.toDto(any(DefaultStepSuggestion.class))).thenReturn(expectedListSteps.get(0));
 
         List<StepSuggestionDTO> getListStepsSuggestion = defaultStepSuggestionService
                 .getStepsSuggestionsByTypeAndPage(StepType.GIVEN, 1, PAGE_SIZE);
         assertEquals(expectedListSteps.subList(0, 1), getListStepsSuggestion);
 
-        verify(defaultStepSuggestionDAO).findAll(any(Pageable.class));
+        verify(defaultStepSuggestionDAO, never()).findAll(any(Pageable.class));
+        verify(defaultStepSuggestionDAO).findByType(eq(StepType.GIVEN), any(Pageable.class));
         verify(defaultStepSuggestionTransformer).toDto(any(DefaultStepSuggestion.class));
     }
 
@@ -104,14 +106,15 @@ public class DefaultStepSuggestionServiceTest {
     public void get_StepsSuggestionsByTypePage2_Success() {
         Page<DefaultStepSuggestion> testPage = new PageImpl<>(listSteps.subList(1, 2));
 
-        when(defaultStepSuggestionDAO.findAll(any(Pageable.class))).thenReturn(testPage);
+        when(defaultStepSuggestionDAO.findByType(eq(StepType.THEN), any(Pageable.class))).thenReturn(testPage);
         when(defaultStepSuggestionTransformer.toDto(any(DefaultStepSuggestion.class))).thenReturn(expectedListSteps.get(1));
 
         List<StepSuggestionDTO> getListStepsSuggestion = defaultStepSuggestionService
                 .getStepsSuggestionsByTypeAndPage(StepType.THEN, 2, PAGE_SIZE);
         assertEquals(expectedListSteps.subList(1, 2), getListStepsSuggestion);
 
-        verify(defaultStepSuggestionDAO).findAll(any(Pageable.class));
+        verify(defaultStepSuggestionDAO, never()).findAll(any(Pageable.class));
+        verify(defaultStepSuggestionDAO).findByType(eq(StepType.THEN), any(Pageable.class));
         verify(defaultStepSuggestionTransformer).toDto(any(DefaultStepSuggestion.class));
     }
 

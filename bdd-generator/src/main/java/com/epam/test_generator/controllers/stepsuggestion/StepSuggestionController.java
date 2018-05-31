@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,7 +38,7 @@ public class StepSuggestionController {
     private StepSuggestionService stepSuggestionService;
 
     @ApiOperation(
-        value = "Get all step suggestions",
+        value = "Get step suggestions by type and pages",
         nickname = "getStepsSuggestions")
     @ApiResponses(value = {
         @ApiResponse(
@@ -47,18 +48,47 @@ public class StepSuggestionController {
             responseContainer = "List")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
-            paramType = "header", dataType = "string", required = true),
-        @ApiImplicitParam(name = "projectId", value = "Id of project", paramType = "path",
-            dataType = "long", required = true),
+        @ApiImplicitParam(
+            name = "Authorization",
+            value = "add here your token",
+            paramType = "header",
+            dataType = "string",
+            required = true),
+        @ApiImplicitParam(
+            name = "projectId",
+            value = "Id of project",
+            paramType = "path",
+            dataType = "long",
+            required = true),
+        @ApiImplicitParam(
+            name = "stepType",
+            value = "Type of step suggestion that we want to return",
+            dataType = "StepType",
+            paramType = "query",
+            required = true),
+        @ApiImplicitParam(
+            name = "page",
+            value = "page",
+            paramType = "query",
+            dataType = "string",
+            required = true),
+        @ApiImplicitParam(
+            name = "size",
+            value = "size",
+            paramType = "query",
+            dataType = "string",
+            required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping
     public ResponseEntity<List<StepSuggestionDTO>> getStepsSuggestions(
-        @PathVariable("projectId") Long projectId) {
+        @PathVariable("projectId") Long projectId,
+        @RequestParam(value = "stepType") StepType stepType,
+        @RequestParam(value = "page") Integer pageNumber,
+        @RequestParam(value = "size") Integer pageSize) {
 
         return new ResponseEntity<>(
-            stepSuggestionService.getStepsSuggestions(projectId), HttpStatus.OK);
+            stepSuggestionService.getStepsSuggestions(projectId, stepType, pageNumber, pageSize), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get all step suggestions by type",

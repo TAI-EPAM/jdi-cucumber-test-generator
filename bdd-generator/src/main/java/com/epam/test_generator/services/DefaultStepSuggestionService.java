@@ -47,14 +47,14 @@ public class DefaultStepSuggestionService {
      * @return list of {@link StepSuggestionDTO}
      */
     public List<StepSuggestionDTO> getStepsSuggestionsByTypeAndPage(StepType stepType, int pageNumber, int pageSize) {
-        Pageable request = new PageRequest(pageNumber - 1, pageSize, Sort.Direction.ASC, "id");
+        Pageable request = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "id");
 
         if (stepType == StepType.ANY) {
             return defaultStepSuggestionDAO.findAll(request).getContent().stream()
                     .map(defaultStepSuggestionTransformer::toDto)
                     .collect(Collectors.toList());
         }
-        return defaultStepSuggestionDAO.findAll(request).getContent().stream()
+        return defaultStepSuggestionDAO.findByType(stepType, request).getContent().stream()
                     .filter(s -> s.getType() == stepType)
                     .map(defaultStepSuggestionTransformer::toDto)
                     .collect(Collectors.toList());
