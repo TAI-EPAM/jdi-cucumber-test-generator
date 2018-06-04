@@ -50,6 +50,11 @@ public class StepSuggestion implements Versionable {
         this.type = type;
     }
 
+    public StepSuggestion(DefaultStepSuggestion defaultStepSuggestion){
+        this.content = defaultStepSuggestion.getContent();
+        this.type = defaultStepSuggestion.getType();
+    }
+
     public Long getId() {
         return id;
     }
@@ -99,11 +104,13 @@ public class StepSuggestion implements Versionable {
             return false;
         }
         StepSuggestion that = (StepSuggestion) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) &&
+            Objects.equals(content, that.content) &&
+            Objects.equals(type,that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, content, type);
     }
 }
