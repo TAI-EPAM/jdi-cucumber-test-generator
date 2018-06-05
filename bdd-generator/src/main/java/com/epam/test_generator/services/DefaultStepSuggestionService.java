@@ -5,6 +5,7 @@ import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestio
 import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
 import com.epam.test_generator.entities.DefaultStepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,14 +80,18 @@ public class DefaultStepSuggestionService {
     }
 
     /**
-     * Find all steps suggestions by string ignoring case
+     * Find all default steps suggestions by string ignoring case
      *
      * @param searchString - string for search
      * @param limit - count of results
      * @return list with found steps suggestions
      */
     public List<StepSuggestionDTO> findStepsSuggestions(String searchString, int limit) {
-        Pageable numberOfReturnedResults = new PageRequest(0, limit);
+        if (limit < 1) {
+            throw new BadRequestException("Limit must not be less than one!");
+        }
+
+        Pageable numberOfReturnedResults = PageRequest.of(0, limit);
         List<DefaultStepSuggestion> foundStepsSuggestions = defaultStepSuggestionDAO
             .findByContentIgnoreCaseContaining(searchString, numberOfReturnedResults);
 

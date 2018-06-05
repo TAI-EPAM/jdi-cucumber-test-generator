@@ -9,8 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProjectStepSuggestionDAO extends JpaRepository<StepSuggestion, Long> {
+public interface StepSuggestionDAO extends JpaRepository<StepSuggestion, Long> {
+
     Page<StepSuggestion> findByProjectAndType(Project project, StepType type, Pageable pageable);
 
     Page<StepSuggestion> findByProject(Project project, Pageable pageable);
+
+    Page<StepSuggestion> findByProjectIdAndContentIgnoreCaseContaining(Long projectId,
+                                                                       String searchString,
+                                                                       Pageable pageable);
 }

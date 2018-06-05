@@ -2,18 +2,21 @@ package com.epam.test_generator.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
+
+import com.epam.test_generator.controllers.stepsuggestion.DefaultStepSuggestionTransformer;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
+import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
 import com.epam.test_generator.entities.DefaultStepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
-import com.epam.test_generator.controllers.stepsuggestion.DefaultStepSuggestionTransformer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,9 +27,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,7 +39,7 @@ public class DefaultStepSuggestionServiceTest {
     private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
     private static final long SIMPLE_STEP_SUGGESTION_ID = 1L;
     private static final int PAGE_SIZE = 1;
-    private static final String SEARCH_STRING = "I%20click";
+    private static final String SEARCH_STRING = "text";
     private static final int NUMBER_OF_RETURN_RESULTS = 10;
 
     @Mock
@@ -165,13 +169,22 @@ public class DefaultStepSuggestionServiceTest {
 
     @Test
     public void findStepsSuggestions_CorrectSearchString_Success() {
-        when(defaultStepSuggestionDAO.findByContentIgnoreCaseContaining(eq(SEARCH_STRING), any())).thenReturn(listSteps);
+        when(defaultStepSuggestionDAO.findByContentIgnoreCaseContaining(eq(SEARCH_STRING),
+            any(PageRequest.class))).thenReturn(listSteps);
         when(defaultStepSuggestionTransformer.toDtoList(listSteps)).thenReturn(expectedListSteps);
 
         defaultStepSuggestionService.findStepsSuggestions(SEARCH_STRING, NUMBER_OF_RETURN_RESULTS);
 
         verify(defaultStepSuggestionDAO).findByContentIgnoreCaseContaining(eq(SEARCH_STRING), any());
         verify(defaultStepSuggestionTransformer).toDtoList(listSteps);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void findStepsSuggestions_IncorrectLimit_BadRequestException() {
+        int incorrectLimit = -1;
+        defaultStepSuggestionService.findStepsSuggestions(SEARCH_STRING, incorrectLimit);
+
+        verifyZeroInteractions(defaultStepSuggestionService);
     }
 
 }

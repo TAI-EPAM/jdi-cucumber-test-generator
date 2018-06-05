@@ -88,7 +88,8 @@ public class StepSuggestionController {
         @RequestParam(value = "size") Integer pageSize) {
 
         return new ResponseEntity<>(
-            stepSuggestionService.getStepsSuggestions(projectId, stepType, pageNumber, pageSize), HttpStatus.OK);
+            stepSuggestionService.getStepsSuggestions(projectId, stepType, pageNumber, pageSize),
+            HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get all step suggestions by type",
@@ -196,5 +197,34 @@ public class StepSuggestionController {
         stepSuggestionService.removeStepSuggestion(projectId, stepSuggestionId);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Find steps suggestions belong to project", nickname = "findStepsSuggestions")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 400, message = "Invalid input")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true),
+        @ApiImplicitParam(name = "text", value = "String for search", paramType = "query",
+            dataType = "string", required = true),
+        @ApiImplicitParam(name = "pageNumber", value = "Number of page", paramType = "query",
+            dataType = "int", required = true),
+        @ApiImplicitParam(name = "pageSize", value = "Page size", paramType = "query",
+            dataType = "int", required = true)
+    })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<StepSuggestionDTO>> searchStepsSuggestions(
+        @PathVariable("projectId") Long projectId,
+        @RequestParam("text") String searchString,
+        @RequestParam("pageNumber") int pageNumber,
+        @RequestParam("pageSize") int pageSize) {
+
+        List<StepSuggestionDTO> foundStepsSuggestions = stepSuggestionService
+            .findStepsSuggestions(projectId, searchString, pageNumber, pageSize);
+
+        return new ResponseEntity<>(foundStepsSuggestions, HttpStatus.OK);
     }
 }

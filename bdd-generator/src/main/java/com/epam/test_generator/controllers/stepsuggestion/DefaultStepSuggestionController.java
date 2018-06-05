@@ -3,7 +3,6 @@ package com.epam.test_generator.controllers.stepsuggestion;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.DefaultStepSuggestionService;
-import com.epam.test_generator.services.exceptions.BadRequestException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -100,7 +99,7 @@ public class DefaultStepSuggestionController {
                 HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Find steps suggestions", nickname = "findStepsSuggestions")
+    @ApiOperation(value = "Find default steps suggestions", nickname = "findDefaultStepsSuggestions")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
         @ApiResponse(code = 400, message = "Invalid input")
@@ -118,10 +117,6 @@ public class DefaultStepSuggestionController {
     public ResponseEntity<List<StepSuggestionDTO>> searchStepsSuggestions(
         @RequestParam("text") String searchString,
         @RequestParam("limit") int limit) {
-
-        if (limit < 1) {
-            throw new BadRequestException("Limit must not be less than one!");
-        }
 
         List<StepSuggestionDTO> foundStepsSuggestions = defaultStepSuggestionService
             .findStepsSuggestions(searchString, limit);

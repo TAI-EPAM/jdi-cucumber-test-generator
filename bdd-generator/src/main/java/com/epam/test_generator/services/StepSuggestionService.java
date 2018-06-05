@@ -3,18 +3,17 @@ package com.epam.test_generator.services;
 import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 import com.epam.test_generator.controllers.stepsuggestion.StepSuggestionTransformer;
-import com.epam.test_generator.dao.interfaces.ProjectDAO;
-import com.epam.test_generator.dao.interfaces.ProjectStepSuggestionDAO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
-import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
+import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
+import com.epam.test_generator.dao.interfaces.ProjectDAO;
+import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +31,7 @@ public class StepSuggestionService {
     private StepSuggestionTransformer stepSuggestionTransformer;
 
     @Autowired
-    private ProjectStepSuggestionDAO projectStepSuggestionDAO;
+    private StepSuggestionDAO stepSuggestionDAO;
 
     @Autowired
     private ProjectDAO projectDAO;
@@ -42,17 +41,19 @@ public class StepSuggestionService {
         return stepSuggestionTransformer.toDtoList(project.getStepSuggestions());
     }
 
-    public List<StepSuggestionDTO> getStepsSuggestions(Long projectId,StepType stepType, int pageNumber, int pageSize) {
+    public List<StepSuggestionDTO> getStepsSuggestions(Long projectId, StepType stepType,
+                                                       int pageNumber, int pageSize) {
         Project project = checkNotNull(projectDAO.getOne(projectId));
 
         Pageable request = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "id");
 
         if (stepType == StepType.ANY) {
-            return projectStepSuggestionDAO.findByProject(project, request).getContent().stream()
+            return stepSuggestionDAO.findByProject(project, request).getContent().stream()
                 .map(stepSuggestionTransformer::toDto)
                 .collect(Collectors.toList());
         }
-        return projectStepSuggestionDAO.findByProjectAndType(project, stepType, request).getContent().stream()
+        return stepSuggestionDAO.findByProjectAndType(project, stepType, request)
+            .getContent().stream()
             .filter(s -> s.getType() == stepType)
             .map(stepSuggestionTransformer::toDto)
             .collect(Collectors.toList());
@@ -64,9 +65,10 @@ public class StepSuggestionService {
 
     /**
      * Find all step suggestions of particular type in particular project.
+     *
      * @param projectId id of a project
-     * @param stepType type of step suggestion. If it is StepType.ANY, then step
-     *                   suggestions of all types in given project are returned
+     * @param stepType type of step suggestion. If it is StepType.ANY, then step suggestions of all
+     * types in given project are returned
      * @return list of {@link StepSuggestionDTO}
      */
     public List<StepSuggestionDTO> getStepsSuggestionsByType(Long projectId,
@@ -78,9 +80,9 @@ public class StepSuggestionService {
 
         Project project = checkNotNull(projectDAO.getOne(projectId));
         return project.getStepSuggestions().stream()
-                .filter(s -> s.getType() == stepType)
-                .map(stepSuggestionTransformer::toDto)
-                .collect(Collectors.toList());
+            .filter(s -> s.getType() == stepType)
+            .map(stepSuggestionTransformer::toDto)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -92,7 +94,7 @@ public class StepSuggestionService {
         Project project = projectDAO.getOne(projectId);
         StepSuggestion stepSuggestion = stepSuggestionTransformer
             .fromDto(stepSuggestionCreateDTO);
-        stepSuggestion = projectStepSuggestionDAO
+        stepSuggestion = stepSuggestionDAO
             .save(stepSuggestion);
         project.addStepSuggestion(stepSuggestion);
 
@@ -106,14 +108,14 @@ public class StepSuggestionService {
      * @param stepSuggestionUpdateDTO info to update
      */
     public StepSuggestionDTO updateStepSuggestion(Long projectId,
-                                     Long stepSuggestionId,
-                                     StepSuggestionUpdateDTO stepSuggestionUpdateDTO) {
+                                                  Long stepSuggestionId,
+                                                  StepSuggestionUpdateDTO stepSuggestionUpdateDTO) {
         StepSuggestion stepSuggestion = getStepSuggestion(projectId, stepSuggestionId);
         checkNotNull(stepSuggestion);
         stepSuggestion.verifyVersion(stepSuggestionUpdateDTO.getVersion());
         stepSuggestionTransformer.updateFromDto(stepSuggestion, stepSuggestionUpdateDTO);
         return stepSuggestionTransformer.toDto(
-            projectStepSuggestionDAO.save(stepSuggestion));
+            stepSuggestionDAO.save(stepSuggestion));
     }
 
     /**
@@ -134,10 +136,10 @@ public class StepSuggestionService {
 
     private StepSuggestion getStepSuggestion(Long projectId, Long stepSuggestionId) {
         Project project = checkNotNull(projectDAO.getOne(projectId));
-        StepSuggestion stepSuggestion = projectStepSuggestionDAO
+        StepSuggestion stepSuggestion = stepSuggestionDAO
             .getOne(stepSuggestionId);
         checkNotNull(stepSuggestion);
-        if(!project.hasStepSuggestion(stepSuggestion)) {
+        if (!project.hasStepSuggestion(stepSuggestion)) {
             throw new BadRequestException(String.format(
                 "Error: project %s does not have step suggestion '%s'",
                 project.getName(),
@@ -145,4 +147,32 @@ public class StepSuggestionService {
         }
         return stepSuggestion;
     }
+
+    /**
+     * Find project steps suggestions by string ignoring case and apply pagination
+     *
+     * @param searchString - string for search
+     * @param pageNumber - number of page
+     * @param pageSize - count of results
+     * @return list with found steps suggestions
+     */
+    public List<StepSuggestionDTO> findStepsSuggestions(Long projectId, String searchString,
+                                                        int pageNumber, int pageSize) {
+        if (pageNumber < 1 || pageSize < 1) {
+            throw new BadRequestException("Page number or page size must not be less than one!");
+        }
+
+        Pageable numberOfReturnedResults = PageRequest.of(pageNumber - 1, pageSize);
+        List<StepSuggestion> foundStepsSuggestions = stepSuggestionDAO
+            .findByProjectIdAndContentIgnoreCaseContaining(projectId, searchString,
+                numberOfReturnedResults)
+            .getContent();
+
+        List<StepSuggestionDTO> stepsSuggestionsDTO = stepSuggestionTransformer
+            .toDtoList(foundStepsSuggestions);
+
+        return stepsSuggestionsDTO;
+    }
+
+
 }
