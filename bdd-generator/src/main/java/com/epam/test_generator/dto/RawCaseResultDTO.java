@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class RawCaseResultDTO {
@@ -18,7 +20,8 @@ public class RawCaseResultDTO {
     @NotNull
     private Status status;
 
-    @NotNull
+    @NotEmpty
+    @Valid
     private List<RawStepResultDTO> steps;
 
 
@@ -34,7 +37,7 @@ public class RawCaseResultDTO {
     public RawCaseResultDTO() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

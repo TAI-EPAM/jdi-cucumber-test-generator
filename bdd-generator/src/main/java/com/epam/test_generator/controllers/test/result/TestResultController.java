@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.test.result;
 
 import com.epam.test_generator.controllers.test.result.response.TestResultDTO;
 import com.epam.test_generator.dto.RawSuitResultDTO;
+import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.services.TestResultService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import io.swagger.annotations.ApiImplicitParam;
@@ -48,10 +49,10 @@ public class TestResultController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping
     public ResponseEntity<Void> runTests(@PathVariable("projectId") long projectId,
-                                         @RequestBody @Valid List<RawSuitResultDTO> rawSuitResultDTOS,
+                                         @RequestBody @Valid ListWrapper<RawSuitResultDTO> rawSuitResultDTOS,
                                          Authentication authentication) {
 
-        testResultService.saveResult(projectId, rawSuitResultDTOS, authentication);
+        testResultService.saveResult(projectId, rawSuitResultDTOS.getList(), authentication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

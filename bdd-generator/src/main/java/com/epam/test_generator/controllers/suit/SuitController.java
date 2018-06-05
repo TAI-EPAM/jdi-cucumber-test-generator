@@ -6,6 +6,7 @@ import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
+import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.services.IOService;
 import com.epam.test_generator.services.SuitService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -133,38 +134,20 @@ public class SuitController {
         @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
         @ApiResponse(code = 404, message = "Suit not found")
     })
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @PutMapping("/row-numbers")
-    public ResponseEntity<List<SuitRowNumberUpdateDTO>> updateSuitRowNumber
-        (@RequestBody @Valid List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
-
-        List<SuitRowNumberUpdateDTO> updatedSuitRowNumberUpdateDTOs = suitService
-            .updateSuitRowNumber(rowNumberUpdates);
-        return new ResponseEntity<>(updatedSuitRowNumberUpdateDTOs, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Generate and download cucumber feature file", nickname = "downloadFile")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "OK"),
-        @ApiResponse(code = 404, message = "Project, suit or case not found")
-    })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "suitId", value = "ID of suit",
-            required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseIds", value = "IDs of cases",
-            required = true, dataType = "Array[long]", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
     })
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @PostMapping("/{suitId}/feature-file")
-    public ResponseEntity<String> downloadFile(@PathVariable("projectId") long projectId,
-                                               @PathVariable("suitId") long suitId,
-                                               @RequestBody List<Long> caseIds)
-        throws IOException {
-        return new ResponseEntity<>(ioService.generateFile(suitId, caseIds), HttpStatus.OK);
+    @PutMapping("/row-numbers")
+    public ResponseEntity<List<SuitRowNumberUpdateDTO>> updateSuitRowNumber(@PathVariable("projectId") long projectId,
+                                                                            @RequestBody @Valid ListWrapper<SuitRowNumberUpdateDTO> rowNumberUpdates) {
+
+        List<SuitRowNumberUpdateDTO> updatedSuitRowNumberUpdateDTOs = suitService
+            .updateSuitRowNumber(rowNumberUpdates.getList());
+        return new ResponseEntity<>(updatedSuitRowNumberUpdateDTOs, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete suit by id", nickname = "removeSuit")

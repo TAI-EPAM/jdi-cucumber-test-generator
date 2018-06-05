@@ -173,12 +173,6 @@ public class SuitService {
             throw new BadRequestException("The list has not to be empty");
         }
 
-        for (SuitRowNumberUpdateDTO update : rowNumberUpdates) {
-            if (Objects.isNull(update.getId()) || Objects.isNull(update.getRowNumber())) {
-                throw new BadRequestException("Id or rowNumber has not to be null");
-            }
-        }
-
         Map<Long, Integer> patch = rowNumberUpdates
             .stream()
             .collect(Collectors

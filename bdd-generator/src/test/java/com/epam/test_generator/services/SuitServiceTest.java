@@ -320,17 +320,6 @@ public class SuitServiceTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void updateSuitRowNumber_throwsException_IfIdOrRowNumberIsNull() {
-        List<SuitRowNumberUpdateDTO> rowNumbers = Lists.newArrayList(
-            new SuitRowNumberUpdateDTO(null, null),
-            new SuitRowNumberUpdateDTO(null, null),
-            new SuitRowNumberUpdateDTO(null, null)
-        );
-
-        suitService.updateSuitRowNumber(rowNumbers);
-    }
-
-    @Test(expected = BadRequestException.class)
     public void updateSuitRowNumber_throwsException_DuplicateRowNumber() {
         List<SuitRowNumberUpdateDTO> rowNumbers = Lists.newArrayList(
             new SuitRowNumberUpdateDTO(5L, 2),

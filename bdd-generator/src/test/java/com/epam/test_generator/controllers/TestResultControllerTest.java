@@ -11,7 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epam.test_generator.controllers.test.result.TestResultController;
 import com.epam.test_generator.controllers.test.result.response.TestResultDTO;
+import com.epam.test_generator.dto.RawCaseResultDTO;
+import com.epam.test_generator.dto.RawStepResultDTO;
 import com.epam.test_generator.dto.RawSuitResultDTO;
+import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.TestResultService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,7 +48,7 @@ public class TestResultControllerTest {
     private MockMvc mockMvc;
     private TestResultDTO testResultDTO;
     private List<TestResultDTO> testResultDTOS;
-    private List<RawSuitResultDTO> rawSuitResultDTOS;
+    private ListWrapper<RawSuitResultDTO> rawSuitResultDTOListWrapper;
 
     @Mock
     private TestResultService testResultService;
@@ -71,14 +74,18 @@ public class TestResultControllerTest {
         testResultDTO = crateTestResultDTOWithDate(TO_DATE);
         testResultDTOS.add(testResultDTO);
 
-        rawSuitResultDTOS = Collections.emptyList();
+        rawSuitResultDTOListWrapper = new ListWrapper<>();
+        rawSuitResultDTOListWrapper.setList(Collections.singletonList(
+            new RawSuitResultDTO(0, Collections.singletonList(
+                new RawCaseResultDTO(0,0,Status.NOT_RUN, Collections.singletonList(
+                    new RawStepResultDTO(0, Status.NOT_RUN)))))));
     }
 
     @Test
     public void runTests_StatusOk() throws Exception {
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID + "/tests")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(rawSuitResultDTOS)))
+            .content(mapper.writeValueAsString(rawSuitResultDTOListWrapper)))
             .andExpect(status().isOk());
     }
 

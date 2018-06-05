@@ -2,11 +2,14 @@ package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 public class RawStepResultDTO {
 
+    @NotNull
     private Long id;
 
+    @NotNull
     private Status status;
 
     public RawStepResultDTO(long id, Status status) {
@@ -17,7 +20,7 @@ public class RawStepResultDTO {
     public RawStepResultDTO() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

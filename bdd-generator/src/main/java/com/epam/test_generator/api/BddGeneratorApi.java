@@ -97,10 +97,6 @@ public class BddGeneratorApi {
 	public static RestMethod loginUsingPOST;
 
 	@ContentType(JSON)
-	@GET("/proba/opa/{projectId}")
-	public static RestMethod getTestRunResultsFromToUsingGET;
-
-	@ContentType(JSON)
 	@GET("/projects")
 	public static RestMethod getUserProjects;
 
@@ -119,6 +115,30 @@ public class BddGeneratorApi {
 	@ContentType(JSON)
 	@DELETE("/projects/{projectId}")
 	public static RestMethod closeProject;
+
+	@ContentType(JSON)
+	@POST("/projects/{projectId}/feature-file")
+	public static RestMethod downloadFile;
+
+	@ContentType(JSON)
+	@GET("/projects/{projectId}/step-suggestions")
+	public static RestMethod getStepsSuggestions_1;
+
+	@ContentType(JSON)
+	@POST("/projects/{projectId}/step-suggestions")
+	public static RestMethod addStepSuggestion;
+
+	@ContentType(JSON)
+	@PUT("/projects/{projectId}/step-suggestions/{stepSuggestionId}")
+	public static RestMethod updateStepSuggestion;
+
+	@ContentType(JSON)
+	@DELETE("/projects/{projectId}/step-suggestions/{stepSuggestionId}")
+	public static RestMethod removeStepSuggestion;
+
+	@ContentType(JSON)
+	@GET("/projects/{projectId}/step-suggestions/{stepType}")
+	public static RestMethod getStepsSuggestionsByType_1;
 
 	@ContentType(JSON)
 	@GET("/projects/{projectId}/suits")
@@ -209,10 +229,6 @@ public class BddGeneratorApi {
 	public static RestMethod restoreCase;
 
 	@ContentType(JSON)
-	@POST("/projects/{projectId}/suits/{suitId}/feature-file")
-	public static RestMethod downloadFileUsingPOST;
-
-	@ContentType(JSON)
 	@GET("/projects/{projectId}/suits/{suitId}/versions")
 	public static RestMethod getSuitVersions;
 
@@ -249,20 +265,8 @@ public class BddGeneratorApi {
 	public static RestMethod getStepsSuggestions;
 
 	@ContentType(JSON)
-	@POST("/step-suggestions")
-	public static RestMethod addStepSuggestion;
-
-	@ContentType(JSON)
 	@GET("/step-suggestions/search")
 	public static RestMethod findStepsSuggestions;
-
-	@ContentType(JSON)
-	@PUT("/step-suggestions/{stepSuggestionId}")
-	public static RestMethod updateStepSuggestion;
-
-	@ContentType(JSON)
-	@DELETE("/step-suggestions/{stepSuggestionId}")
-	public static RestMethod removeStepSuggestion;
 
 	@ContentType(JSON)
 	@GET("/step-suggestions/{stepType}")
