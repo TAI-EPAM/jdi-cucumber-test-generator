@@ -62,7 +62,11 @@ public abstract class JwtAuthenticationFilter extends OncePerRequestFilter {
             .map(a -> a.replaceAll("^Bearer ", ""))
             .orElseGet(() -> request.getParameter("token"));
 
-        if (token == null) {
+        // We should exclude some API methods used for confirm email from this filter
+        // due to they have the same parameter as 'token'
+        if (token == null ||
+            request.getServletPath().startsWith("/user/validate-reset-token") ||
+            request.getServletPath().startsWith("/user/confirm-email")) {
             chain.doFilter(request, response);
             return;
         }
@@ -88,7 +92,7 @@ public abstract class JwtAuthenticationFilter extends OncePerRequestFilter {
             AuthenticatedUser credentials = new AuthenticatedUser(user.getId(), user.getEmail(),
                 token,
                 authorityList, projectIds,
-                user.isLocked());
+                user.isLocked() || user.isBlockedByAdmin());
 
             if (!credentials.isAccountNonLocked()) {
                 setResponseErrorMsg(response, "User Account is locked!");

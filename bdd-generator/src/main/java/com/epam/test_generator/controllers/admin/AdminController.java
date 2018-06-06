@@ -68,6 +68,24 @@ public class AdminController {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    })
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/user/{userId}/block")
+    public ResponseEntity<UserDTO> blockUser(@PathVariable long userId) {
+        return new ResponseEntity<>(adminService.setBlockedStatusForUser(userId, true), HttpStatus.OK);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    })
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/user/{userId}/unblock")
+    public ResponseEntity<UserDTO> unblockUser(@PathVariable long userId) {
+        return new ResponseEntity<>(adminService.setBlockedStatusForUser(userId, false), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get all projects", nickname = "getProjects")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = ProjectDTO.class, responseContainer = "List")

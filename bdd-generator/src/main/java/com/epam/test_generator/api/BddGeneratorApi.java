@@ -291,4 +291,12 @@ public class BddGeneratorApi {
 	@ContentType(JSON)
 	@GET("/user/validate-reset-token")
 	public static RestMethod displayResetPasswordPageUsingGET;
+
+	@ContentType(JSON)
+	@PUT("/admin/user/{userId}/block")
+	public static RestMethod blockUserUsingPUT;
+
+	@ContentType(JSON)
+	@PUT("/admin/user/{userId}/unblock")
+	public static RestMethod unblockUserUsingPUT;
 }

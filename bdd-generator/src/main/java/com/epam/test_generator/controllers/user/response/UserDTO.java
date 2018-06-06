@@ -26,6 +26,8 @@ public class UserDTO {
 
     private Boolean locked;
 
+    private Boolean blockedByAdmin;
+
     public Integer getAttempts() {
         return attempts;
     }
@@ -40,6 +42,14 @@ public class UserDTO {
 
     public void setLocked(Boolean locked) {
         this.locked = locked;
+    }
+
+    public Boolean getBlockedByAdmin() {
+        return blockedByAdmin;
+    }
+
+    public void setBlockedByAdmin(Boolean blockedByAdmin) {
+        this.blockedByAdmin = blockedByAdmin;
     }
 
     public UserDTO(String name, String surname, String role, String email) {
@@ -102,6 +112,7 @@ public class UserDTO {
             ", role='" + role + '\'' +
             ", attempts=" + attempts +
             ", locked=" + locked +
+            ", blockedByAdmin=" + blockedByAdmin +
             '}';
     }
 
@@ -121,6 +132,7 @@ public class UserDTO {
             Objects.equals(email, userDTO.email) &&
             Objects.equals(role, userDTO.role) &&
             Objects.equals(attempts, userDTO.attempts) &&
+            Objects.equals(blockedByAdmin, userDTO.blockedByAdmin) &&
             Objects.equals(locked, userDTO.locked);
     }
 
@@ -128,7 +140,7 @@ public class UserDTO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, surname, email, role, attempts, locked);
+        return Objects.hash(id, name, surname, email, role, attempts, locked, blockedByAdmin);
     }
 }
 

@@ -18,6 +18,7 @@ import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,7 +97,7 @@ public class UserServiceTest {
 
     }
 
-    @Test(expected = UnauthorizedException.class)
+    @Test(expected = NotFoundException.class)
     public void getUserById_NoSuchUser_Success() {
         when(userDAO.findById(anyLong())).thenReturn(Optional.empty());
         sut.getUserById(USER_ID);

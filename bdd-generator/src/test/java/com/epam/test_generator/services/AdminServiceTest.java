@@ -3,13 +3,19 @@ package com.epam.test_generator.services;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
+import com.epam.test_generator.controllers.user.UserDTOsTransformer;
+import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRoleException;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +38,9 @@ public class AdminServiceTest {
 
     @Mock
     private RoleService roleService;
+
+    @Mock
+    private UserDTOsTransformer userDTOsTransformer;
 
     @InjectMocks
     private AdminService adminService;
@@ -96,6 +105,7 @@ public class AdminServiceTest {
         User user = new User();
         user.setEmail(userEmail);
         user.setRole(userRole);
+        user.setBlockedByAdmin(false);
         return user;
     }
 
@@ -104,5 +114,22 @@ public class AdminServiceTest {
         userRoleDTO.setEmail(userEmail);
         userRoleDTO.setRole(userRole);
         return userRoleDTO;
+    }
+
+    @Test
+    public void setBlockedStatusForUser_CorrectUser_Success() {
+        when(userService.getUserById(anyLong())).thenReturn(user);
+        when(userDTOsTransformer.toUserDTO(user)).thenCallRealMethod();
+
+        assertFalse(user.isBlockedByAdmin());
+        UserDTO userDTO = adminService.setBlockedStatusForUser(2L, true);
+        assertTrue(userDTO.getBlockedByAdmin());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void setBlockedStatusForUser_WrongUserId_Success() {
+        when(userService.getUserById(anyLong())).thenThrow(NotFoundException.class);
+
+        UserDTO userDTO = adminService.setBlockedStatusForUser(33L, true);
     }
 }

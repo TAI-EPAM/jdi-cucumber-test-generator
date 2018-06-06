@@ -1,9 +1,12 @@
 package com.epam.test_generator.services;
 
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
+import com.epam.test_generator.controllers.user.UserDTOsTransformer;
+import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRoleException;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ public class AdminService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private UserDTOsTransformer userDTOsTransformer;
 
     /**
      * Changes user role to role specified in userRoleUpdateDTO. Searching user occurs by e-mail
@@ -55,5 +61,18 @@ public class AdminService {
             throw new BadRoleException("Invalid name for Role");
         }
         return aRole;
+    }
+
+
+    public UserDTO setBlockedStatusForUser(long userId, boolean blocked) {
+
+        User user = userService.getUserById(userId);
+
+        if(user == null){
+            throw new NotFoundException("User with id: " + userId + " not found.");
+        }
+
+        user.setBlockedByAdmin(blocked);
+        return userDTOsTransformer.toUserDTO(user);
     }
 }

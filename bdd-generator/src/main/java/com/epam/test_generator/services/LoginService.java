@@ -60,7 +60,7 @@ public class LoginService {
                 String.format("User with email: %s not found.", loginUserDTO.getEmail()));
         }
 
-        if (user.isLocked()) {
+        if (user.isLocked() || user.isBlockedByAdmin()) {
             throw new UnauthorizedException("User Account is locked!");
         }
 
