@@ -21,10 +21,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class AdminServiceTest {
 
 
-    private final static String USER_EMAIL = "test@test.com";
+    private static final String USER_EMAIL = "test@test.com";
 
-    private final static String OLD_USER_ROLE = "GUEST";
-    private final static String NEW_USER_ROLE = "ADMIN";
+    private static final String OLD_USER_ROLE = "GUEST";
+    private static final String NEW_USER_ROLE = "ADMIN";
+    private static final String TEST_ENGINEER_ROLE = "TEST_ENGINEER";
 
     @Mock
     private UserService userService;
@@ -37,39 +38,49 @@ public class AdminServiceTest {
 
     private UserRoleUpdateDTO userRoleDTO;
 
+    private UserRoleUpdateDTO userEngineerRoleDTO;
+
     private User user;
 
     private Role oldRole;
 
-    private Role newRole;
+    private Role testEngineerRole;
 
     @Before
     public void setUp() {
         userRoleDTO = getUserDtoFor(USER_EMAIL, NEW_USER_ROLE);
+        userEngineerRoleDTO = getUserDtoFor(USER_EMAIL, TEST_ENGINEER_ROLE);
         oldRole = getRoleFor(OLD_USER_ROLE);
-        newRole = getRoleFor(NEW_USER_ROLE);
+        testEngineerRole = getRoleFor(TEST_ENGINEER_ROLE);
         user = getUserFor(USER_EMAIL, oldRole);
     }
 
+
+    @Test( expected = BadRoleException.class)
+    public void change_UserRole_To_Admin_Exception() {
+        assertThat(user.getRole(), is(equalTo(oldRole)));
+
+        when(userService.getUserByEmail(anyString())).thenReturn(user);
+        adminService.changeUserRole(userRoleDTO);
+
+    }
 
     @Test
     public void change_UserRole_Success() {
         assertThat(user.getRole(), is(equalTo(oldRole)));
 
         when(userService.getUserByEmail(anyString())).thenReturn(user);
-        when(roleService.getRoleByName(anyString())).thenReturn(newRole);
-        adminService.changeUserRole(userRoleDTO);
+        when(roleService.getRoleByName(anyString())).thenReturn(testEngineerRole);
+        adminService.changeUserRole(userEngineerRoleDTO);
 
-        assertThat(user.getRole(), is(equalTo(newRole)));
+        assertThat(user.getRole(), is(equalTo(testEngineerRole)));
     }
-
 
     @Test(expected = BadRoleException.class)
     public void change_UserRole_Exception() {
         assertThat(user.getRole(), is(equalTo(oldRole)));
 
         when(userService.getUserByEmail(anyString())).thenReturn(user);
-        when(roleService.getRoleByName(anyString())).thenReturn(null);
         adminService.changeUserRole(userRoleDTO);
 
     }
