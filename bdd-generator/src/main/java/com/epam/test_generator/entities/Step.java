@@ -5,14 +5,18 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
 
 
 /**
  * This class represents step essence. Step means one of the actions that should be done within the relative test case.
- * Step consist of simple fields: id, number, description of action and {@Link StepType} which describe type of action
+ * Step consist of simple fields: id, number, description of action and {@link StepType} which describe type of action
  * in test case.
  */
 @Entity
@@ -94,16 +98,14 @@ public class Step implements Serializable {
         this.status = status;
     }
 
+
+
     @Override
     public String toString() {
-        return "Step{" +
-            "id=" + id +
-            ", rowNumber=" + rowNumber +
-            ", description='" + description + '\'' +
-            ", type=" + type +
-            ", status=" + status +
-            ", comment='" + comment + '\'' +
-            '}';
+        return String.format(
+            "Step{ id= %s, rowNumber= %s, description= %s, type = %s, status = %s,"
+                + "comment = %s};",
+            id, rowNumber, description, type, status, comment);
     }
 
     @Override

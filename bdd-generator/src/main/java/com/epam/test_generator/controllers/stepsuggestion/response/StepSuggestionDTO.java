@@ -1,6 +1,10 @@
 package com.epam.test_generator.controllers.stepsuggestion.response;
 
+import com.epam.test_generator.controllers.step.response.StepDTO;
+import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,11 +21,14 @@ public class StepSuggestionDTO {
     @NotNull
     private StepType type;
 
+    private List<StepDTO> steps = new ArrayList<>();
+
     public StepSuggestionDTO(Long id, String content, StepType type) {
         this.id = id;
         this.content = content;
         this.type = type;
     }
+
 
     public StepSuggestionDTO(String content, StepType type) {
         this.content = content;
@@ -29,6 +36,13 @@ public class StepSuggestionDTO {
     }
 
     public StepSuggestionDTO() {
+    }
+
+    public StepSuggestionDTO(Long id, String content, StepType type, List<StepDTO> steps) {
+        this.id = id;
+        this.content = content;
+        this.type = type;
+        this.steps = steps;
     }
 
     public Long getId() {
@@ -55,12 +69,21 @@ public class StepSuggestionDTO {
         this.type = type;
     }
 
+    public List<StepDTO> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<StepDTO> steps) {
+        this.steps = steps;
+    }
+
     @Override
     public String toString() {
         return "StepSuggestionDTO{" +
             "id=" + id +
             ", content='" + content + '\'' +
             ", type=" + type +
+            ", steps=" + steps +
             '}';
     }
 

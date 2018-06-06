@@ -13,9 +13,11 @@ import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.SuitVersionDTO;
+import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
 import com.epam.test_generator.entities.Status;
+import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
@@ -54,6 +56,9 @@ public class SuitService {
 
     @Autowired
     private SuitVersionTransformer suitVersionTransformer;
+
+    @Autowired
+    private StepSuggestionService stepSuggestionService;
 
     public List<SuitDTO> getSuitsDTO() {
         return suitTransformer.toDtoList(suitDAO.findAll());
@@ -145,6 +150,9 @@ public class SuitService {
         if (suit.isImportedFromJira()) {
             removedIssueDAO.save(new RemovedIssue(suit.getJiraKey()));
         }
+        List<Step> steps = suit.getCases().stream().flatMap(caze -> caze.getSteps().stream())
+            .collect(Collectors.toList());
+        stepSuggestionService.removeSteps(projectId, steps);
 
         suitDAO.delete(suit);
 

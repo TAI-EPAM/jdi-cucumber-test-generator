@@ -72,6 +72,9 @@ public class SuitServiceTest {
     private ProjectService projectService;
 
     @Mock
+    private StepSuggestionService stepSuggestionService;
+
+    @Mock
     private SuitVersionTransformer suitVersionTransformer;
 
     @Mock

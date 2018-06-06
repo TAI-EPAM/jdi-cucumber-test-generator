@@ -8,9 +8,12 @@ import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestion
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
+import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.entities.Project;
+import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import com.epam.test_generator.services.exceptions.AlreadyExistsException;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +38,25 @@ public class StepSuggestionService {
 
     @Autowired
     private ProjectDAO projectDAO;
+
+    @Autowired
+    private StepDAO stepDAO;
+
+    @Autowired
+    private StepService stepService;
+
+    public StepSuggestion getStepSuggestion(Long projectId, Step step) {
+        Project project = checkNotNull(projectDAO.getOne(projectId));
+
+        for (StepSuggestion stepSuggestion : project.getStepSuggestions()) {
+            if (compareStepToStepSuggestion(stepSuggestion, step)) {
+                return stepSuggestion;
+            }
+        }
+        StepSuggestionDTO stepSuggestionDTO = addStepSuggestion(projectId,
+            new StepSuggestionCreateDTO(step.getDescription(), step.getType()));
+        return stepSuggestionDAO.getOne(stepSuggestionDTO.getId());
+    }
 
     public List<StepSuggestionDTO> getStepsSuggestions(Long projectId) {
         Project project = checkNotNull(projectDAO.getOne(projectId));
@@ -90,15 +112,19 @@ public class StepSuggestionService {
      *
      * @return id of step suggestion
      */
-    public Long addStepSuggestion(Long projectId, StepSuggestionCreateDTO stepSuggestionCreateDTO) {
-        Project project = projectDAO.getOne(projectId);
+    public StepSuggestionDTO addStepSuggestion(Long projectId,
+                                               StepSuggestionCreateDTO stepSuggestionCreateDTO) {
+        Project project = checkNotNull(projectDAO.getOne(projectId));
         StepSuggestion stepSuggestion = stepSuggestionTransformer
             .fromDto(stepSuggestionCreateDTO);
+
+        checkStepSuggestionExistence(project, stepSuggestion);
+
         stepSuggestion = stepSuggestionDAO
             .save(stepSuggestion);
         project.addStepSuggestion(stepSuggestion);
 
-        return stepSuggestion.getId();
+        return stepSuggestionTransformer.toDto(stepSuggestion);
     }
 
     /**
@@ -114,6 +140,11 @@ public class StepSuggestionService {
         checkNotNull(stepSuggestion);
         stepSuggestion.verifyVersion(stepSuggestionUpdateDTO.getVersion());
         stepSuggestionTransformer.updateFromDto(stepSuggestion, stepSuggestionUpdateDTO);
+        stepSuggestion.getSteps().forEach(step -> {
+            step.setDescription(stepSuggestion.getContent());
+            step.setType(stepSuggestion.getType());
+        });
+        stepDAO.saveAll(stepSuggestion.getSteps());
         return stepSuggestionTransformer.toDto(
             stepSuggestionDAO.save(stepSuggestion));
     }
@@ -128,10 +159,41 @@ public class StepSuggestionService {
 
         StepSuggestion stepSuggestion =
             getStepSuggestion(projectId, stepSuggestionId);
+        stepSuggestion.getSteps().forEach(step -> stepService.removeStep(projectId, step.getId()));
 
         project.removeStepSuggestion(stepSuggestion);
 
         projectDAO.save(project);
+    }
+
+    public void removeSteps(Long projectId, List<Step> steps) {
+        steps.forEach(step -> {
+            StepSuggestion stepSuggestion = getStepSuggestion(projectId, step);
+            stepSuggestion.remove(step);
+            stepSuggestionDAO.save(stepSuggestion);
+        });
+    }
+
+    private boolean compareStepSuggestions(StepSuggestion stepSuggestion1,
+                                           StepSuggestion stepSuggestion2) {
+        return stepSuggestion1.getContent().equals(stepSuggestion2.getContent()) &&
+            stepSuggestion1.getType().equals(stepSuggestion2.getType());
+    }
+
+    private boolean compareStepToStepSuggestion(StepSuggestion stepSuggestion, Step step) {
+        return stepSuggestion.getContent().equals(step.getDescription()) &&
+            stepSuggestion.getType().equals(step.getType());
+    }
+
+    private void checkStepSuggestionExistence(Project project, StepSuggestion stepSuggestion) {
+
+        for (StepSuggestion stepSuggestionFromProject : project.getStepSuggestions()) {
+            if (compareStepSuggestions(stepSuggestionFromProject, stepSuggestion)) {
+                throw new AlreadyExistsException("Step suggestion with type = \""
+                    + stepSuggestion.getType() + "\", description = \""
+                    + stepSuggestion.getContent() + "\" already exists.");
+            }
+        }
     }
 
     private StepSuggestion getStepSuggestion(Long projectId, Long stepSuggestionId) {
@@ -168,10 +230,8 @@ public class StepSuggestionService {
                 numberOfReturnedResults)
             .getContent();
 
-        List<StepSuggestionDTO> stepsSuggestionsDTO = stepSuggestionTransformer
+        return stepSuggestionTransformer
             .toDtoList(foundStepsSuggestions);
-
-        return stepsSuggestionsDTO;
     }
 
 

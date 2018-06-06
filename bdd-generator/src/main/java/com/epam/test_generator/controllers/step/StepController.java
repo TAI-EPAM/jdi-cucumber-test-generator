@@ -166,7 +166,7 @@ public class StepController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @DeleteMapping("/{stepId}")
-    public ResponseEntity<Void> removeCase(@PathVariable("projectId") long projectId,
+    public ResponseEntity<Void> removeStep(@PathVariable("projectId") long projectId,
                                            @PathVariable("suitId") long suitId,
                                            @PathVariable("caseId") long caseId,
                                            @PathVariable("stepId") long stepId) {

@@ -134,13 +134,13 @@ public class StepSuggestionController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping
-    public ResponseEntity<Long> addStepSuggestion(
+    public ResponseEntity<StepSuggestionDTO> addStepSuggestion(
         @PathVariable("projectId") Long projectId,
         @RequestBody @Valid StepSuggestionCreateDTO stepSuggestionCreateDTO) {
 
         return new ResponseEntity<>(
             stepSuggestionService.addStepSuggestion(projectId, stepSuggestionCreateDTO),
-            HttpStatus.OK);
+            HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update step suggestion by id", nickname = "updateStepSuggestion")

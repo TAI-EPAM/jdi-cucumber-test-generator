@@ -16,10 +16,12 @@ import com.epam.test_generator.controllers.step.request.StepUpdateDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.Tag;
@@ -29,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.bouncycastle.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +66,9 @@ public class StepServiceTest {
     private SuitService suitService;
 
     @Mock
+    private StepSuggestionService stepSuggestionService;
+
+    @Mock
     private CaseService caseService;
 
     @Mock
@@ -72,6 +76,9 @@ public class StepServiceTest {
 
     @Mock
     private SuitVersionDAO suitVersionDAO;
+
+    @Mock
+    private StepSuggestionDAO stepSuggestionDAO;
 
     @Before
     public void setUp() {
@@ -169,6 +176,7 @@ public class StepServiceTest {
     @Test
     public void add_StepToCase_Success() {
         Step newStep = new Step(3L, 3, "Step 3", StepType.AND, "Comment", Status.NOT_RUN);
+        StepSuggestion stepSuggestion = new StepSuggestion("Step 3", StepType.AND, new ArrayList<>());
         StepCreateDTO newStepDTO = new StepCreateDTO();
         newStepDTO.setDescription("Step 3");
         newStepDTO.setType(StepType.AND);
@@ -178,8 +186,9 @@ public class StepServiceTest {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
+        when(stepSuggestionDAO.save(any(StepSuggestion.class))).thenReturn(stepSuggestion);
         when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
-
+        when(stepSuggestionService.getStepSuggestion(SIMPLE_PROJECT_ID, newStep)).thenReturn(stepSuggestion);
         StepDTO actualDto = stepService.addStepToCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, newStepDTO);
         assertEquals(stepTransformer.toDto(newStep), actualDto);
         assertTrue(caze.getSteps().contains(newStep));
@@ -194,6 +203,7 @@ public class StepServiceTest {
     @Test
     public void add_StepToCaseWithoutSteps_ChangesSuitAndStepStatusToNotRun() {
         Step newStep = new Step(3L, 3, "Step 3", StepType.AND, "Comment", Status.NOT_RUN);
+        StepSuggestion stepSuggestion = new StepSuggestion("Step 3", StepType.AND, new ArrayList<>());
         StepCreateDTO newStepDTO = new StepCreateDTO();
         newStepDTO.setDescription("Step 3");
         newStepDTO.setType(StepType.AND);
@@ -211,7 +221,9 @@ public class StepServiceTest {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, 2L)).thenReturn(newSuit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, 2L,3L)).thenReturn(newCase);
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
+        when(stepSuggestionDAO.save(any(StepSuggestion.class))).thenReturn(stepSuggestion);
         when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
+        when(stepSuggestionService.getStepSuggestion(SIMPLE_PROJECT_ID, newStep)).thenReturn(stepSuggestion);
 
         StepDTO actualDto = stepService.addStepToCase(SIMPLE_PROJECT_ID, 2L, 3L, newStepDTO);
         assertEquals(Status.NOT_RUN, newCase.getStatus());
@@ -284,9 +296,11 @@ public class StepServiceTest {
 
     @Test
     public void remove_Step() {
+        StepSuggestion stepSuggestion = new StepSuggestion("Step desc", StepType.GIVEN, new ArrayList<>());
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.findById(anyLong())).thenReturn(Optional.of(step));
+        when(stepSuggestionService.getStepSuggestion(SIMPLE_PROJECT_ID, step)).thenReturn(stepSuggestion);
 
         stepService.removeStep(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_STEP_ID);
         assertTrue(!caze.getSteps().contains(step));
@@ -300,6 +314,8 @@ public class StepServiceTest {
 
     @Test
     public void remove_AllStepsFromCase_CaseStatusChangesToNotDone() {
+        StepSuggestion stepSuggestion = new StepSuggestion("Step desc", StepType.GIVEN, new ArrayList<>());
+        when(stepSuggestionService.getStepSuggestion(anyLong(), any(Step.class))).thenReturn(stepSuggestion);
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID))
             .thenReturn(caze);
@@ -315,6 +331,9 @@ public class StepServiceTest {
 
     @Test
     public void remove_AllStepsFromAllCases_SuitStatusChangesToNotDone() {
+        StepSuggestion stepSuggestion = new StepSuggestion("Step desc", StepType.GIVEN, new ArrayList<>());
+        when(stepSuggestionService.getStepSuggestion(anyLong(), any(Step.class))).thenReturn(stepSuggestion);
+
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         for(Case caze : suit.getCases()) {
             when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID))

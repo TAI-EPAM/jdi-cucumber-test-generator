@@ -3,6 +3,7 @@ package com.epam.test_generator.controllers;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.epam.test_generator.dto.ErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
+import com.epam.test_generator.services.exceptions.AlreadyExistsException;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.IncorrectURI;
@@ -127,6 +128,12 @@ public class GlobalExceptionController {
         logger.warn("Incorrect URI", ex);
 
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.I_AM_A_TEAPOT);
+    }
+
+    @ExceptionHandler(value = AlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> addingFailed(AlreadyExistsException ex) {
+        logger.warn("Adding Error" ,ex);
+        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.CONFLICT);
     }
 
 }

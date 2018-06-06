@@ -92,17 +92,15 @@ public class StepSuggestionControllerTest {
         StepSuggestionCreateDTO stepSuggestionCreateDTO = new StepSuggestionCreateDTO();
         stepSuggestionCreateDTO.setContent("content");
         stepSuggestionCreateDTO.setType(StepType.ANY);
-
+        StepSuggestionDTO stepSuggestionDTO = new StepSuggestionDTO("content", StepType.ANY);
         when(stepSuggestionService.addStepSuggestion(SIMPLE_PROJECT_ID, stepSuggestionCreateDTO))
-            .thenReturn(1L);
+            .thenReturn(stepSuggestionDTO);
 
         mockMvc.perform(post("/projects/" + SIMPLE_PROJECT_ID +
             "/step-suggestions/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(stepSuggestionCreateDTO)))
-            .andExpect(status().isOk())
-            .andExpect(content().string(Long.valueOf(1L).toString()));
-
+            .andExpect(status().isCreated());
         verify(stepSuggestionService).addStepSuggestion(SIMPLE_PROJECT_ID, stepSuggestionCreateDTO);
     }
 

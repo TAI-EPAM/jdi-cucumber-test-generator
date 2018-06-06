@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import com.epam.test_generator.controllers.stepsuggestion.StepSuggestionTransformer;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
+import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
@@ -59,6 +60,9 @@ public class StepSuggestionServiceTest {
 
     @Mock
     private StepSuggestionDAO stepSuggestionDAO;
+
+    @Mock
+    private StepDAO stepDAO;
 
     @Mock
     private StepSuggestionTransformer stepSuggestionTransformer;
@@ -141,15 +145,15 @@ public class StepSuggestionServiceTest {
     public void addStepSuggestion_Success() {
         StepSuggestionCreateDTO createDTO =
             new StepSuggestionCreateDTO(CONTENT_1, GIVEN);
-
+        when(stepSuggestionTransformer.toDto(any(StepSuggestion.class))).thenReturn(expectedStepSuggestionDTO);
         when(stepSuggestionTransformer.fromDto(createDTO)).thenReturn(expectedStepSuggestion);
         when(stepSuggestionDAO.save(any(StepSuggestion.class)))
             .thenReturn(expectedStepSuggestion);
-
-        Long id = stepSuggestionService.addStepSuggestion(PROJECT_ID, createDTO);
+        Long id= stepSuggestionService
+            .addStepSuggestion(PROJECT_ID, createDTO).getId();
 
         assertEquals(ID_1, id);
-        verify(project).addStepSuggestion(expectedStepSuggestion);
+        verify(stepSuggestionDAO).save(expectedStepSuggestion);
     }
 
     @Test
