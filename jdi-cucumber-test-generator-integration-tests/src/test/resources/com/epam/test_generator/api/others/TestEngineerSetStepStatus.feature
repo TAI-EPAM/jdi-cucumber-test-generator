@@ -1,7 +1,7 @@
 Feature: Test engineer sets step status
     
 Scenario Outline: One step
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
         | name         | description         |
         | project_name | project_description |

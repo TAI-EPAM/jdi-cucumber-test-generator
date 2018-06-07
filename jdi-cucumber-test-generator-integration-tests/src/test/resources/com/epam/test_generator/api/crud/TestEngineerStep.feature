@@ -1,8 +1,8 @@
-Feature: CRUD step scenarios for TestEngineer
+Feature: CRUD Step scenarios for TestEngineer and TestLead
 
 
-  Scenario: Successfully create step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully create step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -18,9 +18,13 @@ Feature: CRUD step scenarios for TestEngineer
       | step description | step comment | SKIPPED | THEN |
     Then The step should be created
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully create step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully create step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -36,9 +40,13 @@ Feature: CRUD step scenarios for TestEngineer
       |             | step comment | SKIPPED | THEN |
     Then The step shouldn't be created
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Successfully read step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully read step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -55,9 +63,13 @@ Feature: CRUD step scenarios for TestEngineer
     When I get step by id
     Then The step should be returned
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully read step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully read step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -74,9 +86,13 @@ Feature: CRUD step scenarios for TestEngineer
     When I get step by id
     Then The step shouldn't be founded
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Successfully update step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully update step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -95,9 +111,13 @@ Feature: CRUD step scenarios for TestEngineer
       | updated step description | updated step comment | FAILED | GIVEN | 200       |
     Then The step should be updated
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully update step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully update step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -116,9 +136,13 @@ Feature: CRUD step scenarios for TestEngineer
       |             | updated step comment | FAILED | GIVEN | 200       |
     Then The step shouldn't be updated
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Successfully delete step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully delete step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -135,9 +159,13 @@ Feature: CRUD step scenarios for TestEngineer
     When I delete step
     Then The step should be deleted
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully delete step
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully delete step
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -153,3 +181,8 @@ Feature: CRUD step scenarios for TestEngineer
       | -1 |
     When I delete step
     Then The step shouldn't be founded
+
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |

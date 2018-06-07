@@ -20,7 +20,7 @@ public class RoleChanger extends StepBackground {
         restApiFacade.loginAdmin();
     }
 
-    @And("I have user with role (.*)$")
+    @And("I have user with role '(.*)'$")
     public void iHaveNewUserWithRole(String role) throws Throwable{
         restApiFacade.registerUser();
         restApiFacade.loginAdmin();

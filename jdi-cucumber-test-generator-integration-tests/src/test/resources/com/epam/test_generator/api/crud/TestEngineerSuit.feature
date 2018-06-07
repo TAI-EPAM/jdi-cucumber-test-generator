@@ -1,8 +1,7 @@
-Feature: CRUD suit scenarios
+Feature: CRUD Suit scenarios for TestEngineer and TestLead
 
-
-  Scenario: Successfully create suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully create suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -15,9 +14,13 @@ Feature: CRUD suit scenarios
       | suit_name | suit_description | 1        |
     Then The suit should be created
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully create suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully create suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -30,9 +33,13 @@ Feature: CRUD suit scenarios
       | suit_name | suit_description | 0        |
     Then The suit shouldn't be created
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Successfully read suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully read suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -46,9 +53,13 @@ Feature: CRUD suit scenarios
     When I get suit by id
     Then The suit should be returned
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully read suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully read suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -62,9 +73,13 @@ Feature: CRUD suit scenarios
     When I get suit by id
     Then The suit shouldn't be founded
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Successfully update suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully update suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -83,9 +98,13 @@ Feature: CRUD suit scenarios
       | updated_name | updated_description | 2        |
     Then The suit should be updated
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully update suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully update suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -101,9 +120,13 @@ Feature: CRUD suit scenarios
       | suit_name | suit_description | 0        |
     Then The suit shouldn't be updated
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Successfully delete suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully delete suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -117,9 +140,13 @@ Feature: CRUD suit scenarios
     When I delete suit
     Then The suit should be deleted
 
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |
 
-  Scenario: Unsuccessfully delete suit
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully delete suit
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -132,3 +159,8 @@ Feature: CRUD suit scenarios
       | -1 |
     When I delete suit
     Then The suit shouldn't be founded
+
+  Examples:
+  | ROLE   |
+  | TEST_ENGINEER |
+  | TEST_LEAD |

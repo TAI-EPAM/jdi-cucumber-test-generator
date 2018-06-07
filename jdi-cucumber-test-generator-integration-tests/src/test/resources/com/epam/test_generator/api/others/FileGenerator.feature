@@ -2,7 +2,7 @@ Feature: As a test engineer I want to generate and download cucumber feature fil
 
 
   Scenario: Successfully download file
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -21,7 +21,7 @@ Feature: As a test engineer I want to generate and download cucumber feature fil
     Then The file should be returned
 
   Scenario: Unsuccessfully download file
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |
