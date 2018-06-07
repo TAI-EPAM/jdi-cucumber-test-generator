@@ -37,6 +37,14 @@ public class BddGeneratorApi {
 	public static RestMethod changeUserRoleUsingPUT;
 
 	@ContentType(JSON)
+	@PUT("/admin/user/{userId}/block")
+	public static RestMethod blockUserUsingPUT;
+
+	@ContentType(JSON)
+	@PUT("/admin/user/{userId}/unblock")
+	public static RestMethod unblockUserUsingPUT;
+
+	@ContentType(JSON)
 	@GET("/admin/users")
 	public static RestMethod getUsersUsingGET;
 
@@ -127,6 +135,10 @@ public class BddGeneratorApi {
 	@ContentType(JSON)
 	@POST("/projects/{projectId}/step-suggestions")
 	public static RestMethod addStepSuggestion;
+
+	@ContentType(JSON)
+	@GET("/projects/{projectId}/step-suggestions/search")
+	public static RestMethod findStepsSuggestions;
 
 	@ContentType(JSON)
 	@PUT("/projects/{projectId}/step-suggestions/{stepSuggestionId}")
@@ -266,7 +278,7 @@ public class BddGeneratorApi {
 
 	@ContentType(JSON)
 	@GET("/step-suggestions/search")
-	public static RestMethod findStepsSuggestions;
+	public static RestMethod findDefaultStepsSuggestions;
 
 	@ContentType(JSON)
 	@GET("/step-suggestions/{stepType}")
@@ -291,12 +303,4 @@ public class BddGeneratorApi {
 	@ContentType(JSON)
 	@GET("/user/validate-reset-token")
 	public static RestMethod displayResetPasswordPageUsingGET;
-
-	@ContentType(JSON)
-	@PUT("/admin/user/{userId}/block")
-	public static RestMethod blockUserUsingPUT;
-
-	@ContentType(JSON)
-	@PUT("/admin/user/{userId}/unblock")
-	public static RestMethod unblockUserUsingPUT;
 }

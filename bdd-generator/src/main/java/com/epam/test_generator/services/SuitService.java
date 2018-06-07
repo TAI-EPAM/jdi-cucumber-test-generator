@@ -1,8 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-
-import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
@@ -13,24 +10,21 @@ import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.SuitVersionDTO;
-import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.Project;
-import com.epam.test_generator.entities.RemovedIssue;
-import com.epam.test_generator.entities.Status;
-import com.epam.test_generator.entities.Step;
-import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.entities.*;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 @Transactional
 @Service

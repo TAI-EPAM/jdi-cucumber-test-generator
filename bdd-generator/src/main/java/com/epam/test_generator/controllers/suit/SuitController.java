@@ -1,36 +1,21 @@
 package com.epam.test_generator.controllers.suit;
 
-import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
-import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
-import com.epam.test_generator.services.IOService;
 import com.epam.test_generator.services.SuitService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Allow work with suits of specified project.
@@ -41,9 +26,6 @@ public class SuitController {
 
     @Autowired
     private SuitService suitService;
-
-    @Autowired
-    private IOService ioService;
 
 
     @ApiOperation(value = "Get all suits", nickname = "getSuits")
