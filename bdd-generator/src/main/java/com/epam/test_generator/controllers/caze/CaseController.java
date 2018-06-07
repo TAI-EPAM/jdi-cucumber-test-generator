@@ -7,6 +7,7 @@ import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
+import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.CaseService;
@@ -167,10 +168,11 @@ public class CaseController {
     @PutMapping
     public ResponseEntity<List<CaseDTO>> updateCases(@PathVariable("projectId") long projectId,
                                                   @PathVariable("suitId") long suitId,
-                                                  @RequestBody @Valid List<CaseEditDTO> editDTOList)
+                                                  @RequestBody @Valid ListWrapper<CaseEditDTO> editDTOList)
         throws MethodArgumentNotValidException {
 
-        List<CaseDTO> updatedCasesDTO = caseService.updateCases(projectId, suitId, editDTOList);
+        List<CaseDTO> updatedCasesDTO = caseService.updateCases(projectId, suitId,
+            editDTOList.getList());
 
         return new ResponseEntity<>(updatedCasesDTO, HttpStatus.OK);
     }
@@ -275,10 +277,10 @@ public class CaseController {
     public ResponseEntity<List<CaseRowNumberUpdateDTO>> updatecaseRowNumber
         (@PathVariable("projectId") long projectId,
          @PathVariable("suitId") long suitId,
-         @RequestBody @Valid List<CaseRowNumberUpdateDTO> rowNumberUpdates) {
+         @RequestBody @Valid ListWrapper<CaseRowNumberUpdateDTO> rowNumberUpdates) {
 
         List<CaseRowNumberUpdateDTO> updatedCaseRowNumberUpdateDTOs = caseService
-            .updateCaseRowNumber(projectId, suitId, rowNumberUpdates);
+            .updateCaseRowNumber(projectId, suitId, rowNumberUpdates.getList());
         return new ResponseEntity<>(updatedCaseRowNumberUpdateDTOs, HttpStatus.OK);
     }
 }

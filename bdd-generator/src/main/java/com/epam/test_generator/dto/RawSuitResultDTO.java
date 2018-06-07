@@ -2,6 +2,8 @@ package com.epam.test_generator.dto;
 
 import java.util.List;
 import java.util.Objects;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class RawSuitResultDTO {
@@ -9,7 +11,8 @@ public class RawSuitResultDTO {
     @NotNull
     private Long id;
 
-    @NotNull
+    @NotEmpty
+    @Valid
     private List<RawCaseResultDTO> caseResultDTOList;
 
     public RawSuitResultDTO() {
@@ -20,7 +23,7 @@ public class RawSuitResultDTO {
         this.caseResultDTOList = caseResultDTOList;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

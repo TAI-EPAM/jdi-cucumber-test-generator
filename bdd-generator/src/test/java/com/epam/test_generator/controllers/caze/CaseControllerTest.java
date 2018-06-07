@@ -24,6 +24,7 @@ import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
@@ -57,7 +58,7 @@ public class CaseControllerTest {
 
     private List<CaseEditDTO> updateCaseDTOList;
     private CaseUpdateDTO caseUpdateDTO;
-
+    private ListWrapper<CaseEditDTO> caseUpdateDTOListWrapper;
     private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
@@ -138,6 +139,9 @@ public class CaseControllerTest {
 
         caseUpdateDTO = new CaseUpdateDTO("name", "descr", 1,
                 Status.NOT_RUN, "comment");
+
+        caseUpdateDTOListWrapper = new ListWrapper<>();
+        caseUpdateDTOListWrapper.setList(updateCaseDTOList);
 
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenReturn(suitDTO);
     }
@@ -689,7 +693,7 @@ public class CaseControllerTest {
         mockMvc
             .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateCaseDTOList)))
+                .content(mapper.writeValueAsString(caseUpdateDTOListWrapper)))
             .andExpect(status().isOk());
 
         verify(casesService)

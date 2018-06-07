@@ -72,6 +72,9 @@ public class SuitServiceTest {
     private ProjectService projectService;
 
     @Mock
+    private StepSuggestionService stepSuggestionService;
+
+    @Mock
     private SuitVersionTransformer suitVersionTransformer;
 
     @Mock
@@ -316,17 +319,6 @@ public class SuitServiceTest {
         );
 
         when(suitDAO.findByIdInOrderById(Sets.newHashSet(5L, 4L))).thenReturn(new ArrayList<>());
-        suitService.updateSuitRowNumber(rowNumbers);
-    }
-
-    @Test(expected = BadRequestException.class)
-    public void updateSuitRowNumber_throwsException_IfIdOrRowNumberIsNull() {
-        List<SuitRowNumberUpdateDTO> rowNumbers = Lists.newArrayList(
-            new SuitRowNumberUpdateDTO(null, null),
-            new SuitRowNumberUpdateDTO(null, null),
-            new SuitRowNumberUpdateDTO(null, null)
-        );
-
         suitService.updateSuitRowNumber(rowNumbers);
     }
 

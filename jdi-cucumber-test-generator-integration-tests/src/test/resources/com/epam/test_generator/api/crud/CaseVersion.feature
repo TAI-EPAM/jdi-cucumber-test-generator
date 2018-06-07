@@ -1,7 +1,7 @@
 Feature: case version scenarios
 
   Scenario: As a test engineer I want to get case history. Successful.
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -19,7 +19,7 @@ Feature: case version scenarios
     Then The case version should be returned
 
   Scenario: As a test engineer I want to get case history. Unsuccessful.
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |

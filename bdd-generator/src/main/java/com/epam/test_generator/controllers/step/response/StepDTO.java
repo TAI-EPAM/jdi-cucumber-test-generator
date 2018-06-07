@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers.step.response;
 
 import com.epam.test_generator.entities.Status;
+import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import java.util.Objects;
 import javax.validation.constraints.Min;
@@ -31,7 +32,8 @@ public class StepDTO {
     public StepDTO() {
     }
 
-    public StepDTO(Long id, int rowNumber, String description, StepType type, String comment, String status) {
+    public StepDTO(Long id, int rowNumber, String description, StepType type,
+                   String comment, String status) {
         this.id = id;
         this.rowNumber = rowNumber;
         this.description = description;
@@ -88,6 +90,7 @@ public class StepDTO {
         this.status = status;
     }
 
+
     @Override
     public String toString() {
         return "StepDTO{" +
@@ -97,7 +100,7 @@ public class StepDTO {
             ", type=" + type +
             ", comment='" + comment + '\'' +
             ", status=" + status +
-            '}';
+            "}";
     }
 
     @Override
@@ -114,7 +117,7 @@ public class StepDTO {
             Objects.equals(description, stepDTO.description) &&
             type == stepDTO.type &&
             Objects.equals(comment, stepDTO.comment) &&
-            status == stepDTO.status;
+            Objects.equals(status, stepDTO.status);
     }
 
     @Override

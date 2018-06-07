@@ -10,6 +10,7 @@ import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.controllers.tag.TagTransformer;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
+import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.User;
@@ -39,6 +40,9 @@ public class ProjectService {
 
     @Autowired
     private TagTransformer tagTransformer;
+
+    @Autowired
+    private DefaultStepSuggestionDAO defaultStepSuggestionDAO;
 
     public List<ProjectDTO> getProjects() {
         return projectTransformer.toDtoList(projectDAO.findAll());
@@ -106,6 +110,7 @@ public class ProjectService {
 
         Project project = projectTransformer.fromDto(projectDTO);
         project.addUser(authUser);
+        project.addStepSuggestions(defaultStepSuggestionDAO.findAll());
         project.activate();
         project = projectDAO.save(project);
 

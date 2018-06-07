@@ -65,7 +65,7 @@ public class StepCreateDTO {
         return Objects.equals(description, that.description) &&
             type == that.type &&
             Objects.equals(comment, that.comment) &&
-            status == that.status;
+            Objects.equals(status, that.status);
     }
 
     @Override

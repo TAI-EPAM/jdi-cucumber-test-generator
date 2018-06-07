@@ -55,6 +55,9 @@ public class CaseService {
     private SuitService suitService;
 
     @Autowired
+    private StepSuggestionService stepSuggestionService;
+
+    @Autowired
     private CaseVersionDAO caseVersionDAO;
 
     @Autowired
@@ -241,7 +244,7 @@ public class CaseService {
         Suit suit = suitService.getSuit(projectId, suitId);
 
         Case caze = getCase(projectId, suitId, caseId);
-
+        stepSuggestionService.removeSteps(projectId, caze.getSteps());
         suit.removeCase(caze);
 
         saveIssueToDeleteInJira(caze);
@@ -271,6 +274,7 @@ public class CaseService {
             .filter(caze -> caseIds.stream()
                 .anyMatch(id -> id.equals(caze.getId())))
             .forEach(caze -> {
+                stepSuggestionService.removeSteps(projectId, caze.getSteps());
                 caseDAO.deleteById(caze.getId());
 
                 caseVersionDAO.delete(caze);

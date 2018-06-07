@@ -15,11 +15,15 @@ import com.epam.test_generator.controllers.project.ProjectTransformer;
 import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.request.ProjectUpdateDTO;
 import com.epam.test_generator.controllers.user.response.UserDTO;
+import com.epam.test_generator.dao.interfaces.DefaultStepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
+import com.epam.test_generator.entities.DefaultStepSuggestion;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Role;
+import com.epam.test_generator.entities.StepSuggestion;
+import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
@@ -27,7 +31,10 @@ import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -55,6 +62,9 @@ public class ProjectServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private DefaultStepSuggestionDAO defaultStepSuggestionDAO;
 
     @InjectMocks
     private ProjectService projectService;
@@ -309,17 +319,21 @@ public class ProjectServiceTest {
             null,
              null,
             false);
+        DefaultStepSuggestion defaultStepSuggestion = new DefaultStepSuggestion("content", StepType.GIVEN);
+        StepSuggestion expectedStepSuggestion = new StepSuggestion("content", StepType.GIVEN);
 
         when(projectTransformer.fromDto(any(ProjectCreateDTO.class))).thenReturn(actualProject);
         when(authentication.getPrincipal()).thenReturn(new AuthenticatedUser(
             null, simpleUser1.getEmail(), null, null, null, false));
         when(userService.getUserByEmail(simpleUser1.getEmail())).thenReturn(simpleUser1);
+        when(defaultStepSuggestionDAO.findAll()).thenReturn(Collections.singletonList(defaultStepSuggestion));
         when(projectDAO.save(any(Project.class))).thenReturn(simpleProject1);
 
         projectService.createProject(projectCreateDTO, authentication);
 
         assertTrue(actualProject.isActive());
         assertTrue(actualProject.getUsers().contains(simpleUser1));
+        assertTrue(actualProject.getStepSuggestions().contains(expectedStepSuggestion));
         assertEquals(actualProject, projectTransformer.fromDto(projectCreateDTO));
     }
 

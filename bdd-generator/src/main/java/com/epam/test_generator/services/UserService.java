@@ -8,6 +8,7 @@ import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
+import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class UserService {
     private TokenService tokenService;
 
     public User getUserById(Long id) {
-        return userDAO.findById(id).orElseThrow(() -> new UnauthorizedException("User not found."));
+        return userDAO.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
     }
 
     public User getUserByEmail(String email) {
@@ -71,6 +72,7 @@ public class UserService {
                 "admin@mail.com",
                 encoder.encode("admin"),
                 roleService.getRoleByName("ADMIN"));
+            user.setBlockedByAdmin(false);
 
             userDAO.save(user);
         }
@@ -95,6 +97,7 @@ public class UserService {
             User user = userDTOsTransformer.fromDTO(registrationUserDTO);
             user.setRole(roleService.getRoleByName(DEFAULT_ROLE));
             user.lock();
+            user.setBlockedByAdmin(false);
             userDAO.save(user);
             return user;
         }

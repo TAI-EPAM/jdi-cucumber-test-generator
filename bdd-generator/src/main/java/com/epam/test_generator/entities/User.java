@@ -35,6 +35,8 @@ public class User implements UserTrait {
 
     private Boolean locked;
 
+    private Boolean blockedByAdmin;
+
 
     public User(String name, String surname, String email, String password, Role role) {
         this();
@@ -117,8 +119,8 @@ public class User implements UserTrait {
 
     @Override
     public String toString() {
-        return String.format("User {id= %s, name= %s, surname= %s, email= %s, password= %s, role= %s, attempts =%s, locked = %s}",
-                id, name, surname, email, password, role, attempts, locked);
+        return String.format("User {id= %s, name= %s, surname= %s, email= %s, password= %s, role= %s, attempts =%s, locked = %s, blockedByAdmin = %s}",
+                id, name, surname, email, password, role, attempts, locked, blockedByAdmin);
     }
 
     @Override
@@ -137,13 +139,22 @@ public class User implements UserTrait {
             Objects.equals(password, user.password) &&
             Objects.equals(role, user.role) &&
             Objects.equals(attempts, user.attempts) &&
-            Objects.equals(locked, user.locked);
+            Objects.equals(locked, user.locked) &&
+            Objects.equals(blockedByAdmin, user.blockedByAdmin);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, surname, email, password, role, attempts, locked);
+        return Objects.hash(id, name, surname, email, password, role, attempts, locked, blockedByAdmin);
+    }
+
+    public Boolean isBlockedByAdmin() {
+        return blockedByAdmin;
+    }
+
+    public void setBlockedByAdmin(Boolean blockedByAdmin) {
+        this.blockedByAdmin = blockedByAdmin;
     }
 }
 

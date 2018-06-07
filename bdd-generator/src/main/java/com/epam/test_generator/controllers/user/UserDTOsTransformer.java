@@ -38,6 +38,7 @@ public class UserDTOsTransformer {
         userDTO.setEmail(user.getEmail());
         userDTO.setAttempts(user.getLoginAttempts());
         userDTO.setLocked(user.isLocked());
+        userDTO.setBlockedByAdmin(user.isBlockedByAdmin());
         if (user.getRole() != null) {
             userDTO.setRole(user.getRole().getName());
         }

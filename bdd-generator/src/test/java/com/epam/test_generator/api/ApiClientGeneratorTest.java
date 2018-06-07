@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ApiClientGeneratorTest {
 
-    //private static final String SWAGGER_API_URL = "http://localhost:8080/cucumber/v2/api-docs";
+    //private static final String SWAGGER_API_URL = "http://localhost:8080/v2/api-docs";
     private static final String SWAGGER_API_URL = "/swagger-api.json";
     private static final String API_FILE = "src/test/java/com/epam/test_generator/api/"
         + API_CLASS_NAME

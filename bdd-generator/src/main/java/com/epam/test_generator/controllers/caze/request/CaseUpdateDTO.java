@@ -102,7 +102,7 @@ public class CaseUpdateDTO {
         return Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(priority, that.priority) &&
-            status == that.status &&
+            Objects.equals(status, that.status) &&
             Objects.equals(tags, that.tags) &&
             Objects.equals(comment, that.comment);
     }

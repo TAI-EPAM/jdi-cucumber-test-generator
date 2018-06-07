@@ -37,4 +37,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_column_blockedByAdmin_usertable" author="">
+        <addColumn tableName="USER">
+            <column name="BLOCKEDBYADMIN" type="BOOLEAN(1)" defaultValueBoolean="0">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

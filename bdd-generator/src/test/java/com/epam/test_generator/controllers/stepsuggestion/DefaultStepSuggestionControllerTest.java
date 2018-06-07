@@ -1,20 +1,14 @@
 package com.epam.test_generator.controllers.stepsuggestion;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.controllers.GlobalExceptionController;
-import com.epam.test_generator.controllers.stepsuggestion.DefaultStepSuggestionController;
-import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
+import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.DefaultStepSuggestionService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
@@ -26,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -37,7 +31,7 @@ public class DefaultStepSuggestionControllerTest {
     private static final int PAGE_NUMBER = 1;
     private static final int PAGE_SIZE = 2;
     private static final StepType STEP_TYPE = StepType.GIVEN;
-    private static final String SEARCH_STRING = "I%20click";
+    private static final String SEARCH_STRING = "text";
     private static final int NUMBER_OF_RETURN_RESULTS = 10;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
@@ -146,8 +140,11 @@ public class DefaultStepSuggestionControllerTest {
 
     @Test
     public void searchStepsSuggestions_IncorrectLimit_StatusBadRequest() throws Exception {
-        int limit = -1;
-        mockMvc.perform(get("/step-suggestions/search?text=" + SEARCH_STRING + "&limit=" + limit))
+        int incorrectLimit = -1;
+        when(defaultStepSuggestionService.findStepsSuggestions(eq(SEARCH_STRING), eq(incorrectLimit))).thenThrow(BadRequestException.class);
+        mockMvc.perform(get("/step-suggestions/search?text=" + SEARCH_STRING + "&limit=" + incorrectLimit))
             .andExpect(status().isBadRequest());
+
+        verify(defaultStepSuggestionService).findStepsSuggestions(eq(SEARCH_STRING), eq(incorrectLimit));
     }
 }

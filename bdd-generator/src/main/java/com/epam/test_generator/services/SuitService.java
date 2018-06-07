@@ -1,8 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-
-import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
@@ -13,22 +10,21 @@ import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.SuitVersionDTO;
-import com.epam.test_generator.entities.Project;
-import com.epam.test_generator.entities.RemovedIssue;
-import com.epam.test_generator.entities.Status;
-import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.entities.*;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 @Transactional
 @Service
@@ -54,6 +50,9 @@ public class SuitService {
 
     @Autowired
     private SuitVersionTransformer suitVersionTransformer;
+
+    @Autowired
+    private StepSuggestionService stepSuggestionService;
 
     public List<SuitDTO> getSuitsDTO() {
         return suitTransformer.toDtoList(suitDAO.findAll());
@@ -145,6 +144,9 @@ public class SuitService {
         if (suit.isImportedFromJira()) {
             removedIssueDAO.save(new RemovedIssue(suit.getJiraKey()));
         }
+        List<Step> steps = suit.getCases().stream().flatMap(caze -> caze.getSteps().stream())
+            .collect(Collectors.toList());
+        stepSuggestionService.removeSteps(projectId, steps);
 
         suitDAO.delete(suit);
 
@@ -171,12 +173,6 @@ public class SuitService {
                                                                 rowNumberUpdates) {
         if (rowNumberUpdates.isEmpty()) {
             throw new BadRequestException("The list has not to be empty");
-        }
-
-        for (SuitRowNumberUpdateDTO update : rowNumberUpdates) {
-            if (Objects.isNull(update.getId()) || Objects.isNull(update.getRowNumber())) {
-                throw new BadRequestException("Id or rowNumber has not to be null");
-            }
         }
 
         Map<Long, Integer> patch = rowNumberUpdates

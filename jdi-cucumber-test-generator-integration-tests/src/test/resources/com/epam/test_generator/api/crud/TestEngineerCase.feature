@@ -1,8 +1,8 @@
-Feature:CRUD case scenarios for TestEngineer
+Feature: CRUD Case scenarios for TestEngineer and TestLead
 
 
-  Scenario: Successfully create case
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Successfully create case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -18,9 +18,14 @@ Feature:CRUD case scenarios for TestEngineer
       | case name | case description | case comment | 1        |
     Then The case should be created
 
+  Examples:
+  | ROLE  |
+  | TEST_ENGINEER  |
+  | TEST_LEAD  |
 
-  Scenario: Unsuccessfully create case
-    Given I have user with role TEST_ENGINEER
+
+  Scenario Outline: Unsuccessfully create case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -33,9 +38,14 @@ Feature:CRUD case scenarios for TestEngineer
       | case name | case description | case comment | 0        |
     Then The case shouldn't be created
 
+  Examples:
+  | ROLE  |
+  | TEST_ENGINEER  |
+  | TEST_LEAD  |
 
-  Scenario: Successfully read case
-    Given I have user with role TEST_ENGINEER
+
+  Scenario Outline: Successfully read case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -53,9 +63,14 @@ Feature:CRUD case scenarios for TestEngineer
     When I get case by id
     Then The case should be returned
 
+  Examples:
+  | ROLE  |
+  | TEST_ENGINEER  |
+  | TEST_LEAD  |
 
-  Scenario: Unsuccessfully read case
-    Given I have user with role TEST_ENGINEER
+
+  Scenario Outline: Unsuccessfully read case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -69,9 +84,14 @@ Feature:CRUD case scenarios for TestEngineer
     When I get case by id
     Then The case shouldn't be founded
 
+  Examples:
+  | ROLE  |
+  | TEST_ENGINEER  |
+  | TEST_LEAD  |
 
-  Scenario: Successfully update case
-    Given I have user with role TEST_ENGINEER
+
+  Scenario Outline: Successfully update case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -93,9 +113,14 @@ Feature:CRUD case scenarios for TestEngineer
       | case name | case description | case comment | 1        | FAILED |
     Then The case should be updated
 
+  Examples:
+  | ROLE  |
+  | TEST_ENGINEER  |
+  | TEST_LEAD  |
 
-  Scenario: Unsuccessfully update case
-    Given I have user with role TEST_ENGINEER
+
+  Scenario Outline: Unsuccessfully update case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -114,9 +139,14 @@ Feature:CRUD case scenarios for TestEngineer
       | case name | case description | case comment | 0        | FAILED |
     Then The case shouldn't be updated
 
+  Examples:
+  | ROLE  |
+  | TEST_ENGINEER  |
+  | TEST_LEAD  |
 
-  Scenario: Successfully delete case
-    Given I have user with role TEST_ENGINEER
+
+  Scenario Outline: Successfully delete case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -132,10 +162,14 @@ Feature:CRUD case scenarios for TestEngineer
       | case name | case description | case comment | 1        |
     When I delete case
     Then The case should be deleted
+    Examples:
+      | ROLE |
+      | TEST_ENGINEER |
+      | TEST_LEAD |
 
 
-  Scenario: Unsuccessfully delete case
-    Given I have user with role TEST_ENGINEER
+  Scenario Outline: Unsuccessfully delete case
+    Given I have user with role '<ROLE>'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -148,3 +182,8 @@ Feature:CRUD case scenarios for TestEngineer
       | -1 |
     When I delete case
     Then The case shouldn't be founded
+
+    Examples:
+      | ROLE   |
+      | TEST_ENGINEER |
+      | TEST_LEAD |

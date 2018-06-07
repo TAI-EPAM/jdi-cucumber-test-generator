@@ -81,4 +81,22 @@ public class AdminControllerTest {
 
         verify(jiraSettingsService).getJiraSettings();
     }
+
+    @Test
+    public void blockUser_CorrectUser_StatusOk() throws Exception {
+        final Long userId = 2L;
+        mockMvc.perform(put("/admin/user/" + userId + "/block"))
+               .andExpect(status().isOk());
+
+        verify(adminService).setBlockedStatusForUser(eq(userId), eq(true));
+    }
+
+    @Test
+    public void unblockUser_CorrectUser_StatusOk() throws Exception {
+        final Long userId = 2L;
+        mockMvc.perform(put("/admin/user/" + userId + "/unblock"))
+               .andExpect(status().isOk());
+
+        verify(adminService).setBlockedStatusForUser(eq(userId), eq(false));
+    }
 }

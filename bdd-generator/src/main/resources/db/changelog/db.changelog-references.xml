@@ -20,6 +20,19 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="" id="new_stepsuggestion_step_table">
+        <createTable tableName="STEPSUGGESTION_STEP">
+            <column name="STEPSUGGESTION_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_stepsuggestionStep_stepsuggestion" references="stepsuggestion(id)"/>
+            </column>
+            <column name="STEPS_ID" type="BIGINT(19)">
+                <constraints nullable="false"
+                    foreignKeyName="fk_stepsuggestionStep_step" references="step(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet author="" id="new_project_suit_table">
         <createTable tableName="PROJECT_SUIT">
             <column name="PROJECT_ID" type="BIGINT(19)">

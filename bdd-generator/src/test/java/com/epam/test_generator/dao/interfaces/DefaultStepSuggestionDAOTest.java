@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
-public class DefaultDefaultStepSuggestionDAOTest {
+public class DefaultStepSuggestionDAOTest {
 
     @Autowired
     DefaultStepSuggestionDAO defaultStepSuggestionDAO;

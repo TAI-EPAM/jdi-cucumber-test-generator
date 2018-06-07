@@ -1,7 +1,7 @@
 Feature: As a test engineer I want to set status for a case
 
   Scenario: In suit with 3 cases with status PASSED change one case's status to FAILED
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -22,7 +22,7 @@ Feature: As a test engineer I want to set status for a case
     Then Suit should have status 'FAILED'
 
   Scenario: In suit with 3 cases with status FAILED change one case's status to PASSED
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -42,7 +42,7 @@ Feature: As a test engineer I want to set status for a case
     Then Suit should have status 'FAILED'
 
   Scenario: Set all case's statuses to PASSED in suit
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |
@@ -61,7 +61,7 @@ Feature: As a test engineer I want to set status for a case
     Then Suit should have status 'PASSED'
 
   Scenario Outline: Change case's status, that is the only one in suit
-    Given I have user with role TEST_ENGINEER
+    Given I have user with role 'TEST_ENGINEER'
     And I have a project
       | name         | description         |
       | project_name | project_description |

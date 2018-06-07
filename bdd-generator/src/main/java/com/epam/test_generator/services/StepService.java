@@ -5,17 +5,20 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 import com.epam.test_generator.controllers.step.request.StepCreateDTO;
 import com.epam.test_generator.controllers.step.request.StepUpdateDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
+import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.Status;
+import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,13 +37,22 @@ public class StepService {
     private SuitService suitService;
 
     @Autowired
+    private StepSuggestionService stepSuggestionService;
+
+    @Autowired
     private CaseVersionDAO caseVersionDAO;
 
     @Autowired
     private SuitVersionDAO suitVersionDAO;
 
     @Autowired
+    private StepSuggestionDAO stepSuggestionDAO;
+
+    @Autowired
     private StepTransformer stepTransformer;
+
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * @param projectId id of project
@@ -80,18 +92,18 @@ public class StepService {
      * @return id of added step
      */
     public StepDTO addStepToCase(Long projectId, Long suitId, Long caseId,
-                              StepCreateDTO stepCreateDTO) {
+                                 StepCreateDTO stepCreateDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseService.getCase(projectId, suitId, caseId);
 
         Step step = stepTransformer.fromDto(stepCreateDTO);
-
+        StepSuggestion stepSuggestion = stepSuggestionService.getStepSuggestion(projectId, step);
+        stepSuggestion.add(step);
         caze.addStep(step);
-
         suit.updateStatus();
 
         step = stepDAO.save(step);
-
+        stepSuggestionDAO.save(stepSuggestion);
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
@@ -108,20 +120,26 @@ public class StepService {
      * @param stepId id of step which to update
      */
     public StepDTO updateStep(Long projectId, Long suitId, Long caseId, Long stepId,
-                           StepUpdateDTO stepUpdateDTO) {
+                              StepUpdateDTO stepUpdateDTO) {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseService.getCase(projectId, suitId, caseId);
 
-        Step step = stepDAO.findById(stepId).orElseThrow(NotFoundException::new);
-        throwExceptionIfStepIsNotInCase(caze, step);
-
-        step = stepTransformer.updateFromDto(stepUpdateDTO, step);
-        stepDAO.save(step);
-
+        Step oldStep = stepDAO.findById(stepId).orElseThrow(NotFoundException::new);
+        throwExceptionIfStepIsNotInCase(caze, oldStep);
+        StepSuggestion oldStepSuggestion = stepSuggestionService.getStepSuggestion(projectId, oldStep);
+        Step newStep = stepTransformer.updateFromDto(stepUpdateDTO, oldStep);
+        StepSuggestion newStepSuggestion = stepSuggestionService.getStepSuggestion(projectId, newStep);
+        stepDAO.save(newStep);
+        if(!Objects.equals(oldStepSuggestion, newStepSuggestion)) {
+            oldStepSuggestion.remove(oldStep);
+            newStepSuggestion.add(newStep);
+            stepSuggestionDAO.save(oldStepSuggestion);
+            stepSuggestionDAO.save(newStepSuggestion);
+        }
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
-        return stepTransformer.toDto(step);
+        return stepTransformer.toDto(newStep);
     }
 
     /**
@@ -138,13 +156,37 @@ public class StepService {
 
         Step step = stepDAO.findById(stepId).orElseThrow(NotFoundException::new);
         throwExceptionIfStepIsNotInCase(caze, step);
+
+        StepSuggestion stepSuggestion = stepSuggestionService.getStepSuggestion(projectId, step);
+
+        stepSuggestion.remove(step);
         caze.removeStep(step);
         suit.updateStatus();
 
+        stepSuggestionDAO.save(stepSuggestion);
         stepDAO.delete(step);
-
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
+    }
+
+    public void removeStep(Long projectId, Long stepId) {
+        Project project = checkNotNull(projectService.getProjectByProjectId(projectId));
+
+        for (Suit suit: project.getSuits()) {
+            for (Case caze: suit.getCases()) {
+                for (Step step: caze.getSteps()) {
+                    if(stepId.equals(step.getId())){
+                        caze.removeStep(step);
+                        suit.updateStatus();
+                        stepDAO.delete(step);
+                        caseVersionDAO.save(caze);
+                        suitVersionDAO.save(suit);
+                        return;
+                    }
+                }
+            }
+        }
+
     }
 
     private void throwExceptionIfStepIsNotInCase(Case aCase, Step step) {

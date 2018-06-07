@@ -108,6 +108,9 @@ public class CaseServiceTest {
     private CaseService caseService;
 
     @Mock
+    private StepSuggestionService stepSuggestionService;
+
+    @Mock
     private StateMachineAdapter stateMachineAdapter;
 
     @Mock
