@@ -1,7 +1,5 @@
 package com.epam.test_generator.services;
 
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
-
 import com.epam.test_generator.config.security.AuthenticatedUser;
 import com.epam.test_generator.controllers.project.ProjectTransformer;
 import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
@@ -84,10 +82,6 @@ public class ProjectService {
         return projectDAO.findById(projectId).orElseThrow(NotFoundException::new);
     }
 
-    public Project getProjectByJiraKey(String key) {
-        return checkNotNull(projectDAO.findByJiraKey(key));
-    }
-
     public ProjectFullDTO getAuthUserFullProject(Long projectId, Authentication authentication) {
         AuthenticatedUser userDetails = (AuthenticatedUser) authentication.getPrincipal();
         User user = userService.getUserByEmail(userDetails.getEmail());
@@ -115,16 +109,6 @@ public class ProjectService {
         project = projectDAO.save(project);
 
         return projectTransformer.toDto(project);
-    }
-
-    public Long createProjectwithoutPrincipal(ProjectCreateDTO projectDTO) {
-
-        Project project = projectTransformer.fromDto(projectDTO);
-        project.activate();
-
-        project = projectDAO.save(project);
-
-        return project.getId();
     }
 
     /**

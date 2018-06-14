@@ -71,7 +71,7 @@ Feature: CRUD Suit scenarios for TestEngineer and TestLead
       | id |
       | -1 |
     When I get suit by id
-    Then The suit shouldn't be founded
+    Then The suit shouldn't be found
 
   Examples:
   | ROLE   |
@@ -158,7 +158,7 @@ Feature: CRUD Suit scenarios for TestEngineer and TestLead
       | id |
       | -1 |
     When I delete suit
-    Then The suit shouldn't be founded
+    Then The suit shouldn't be found
 
   Examples:
   | ROLE   |

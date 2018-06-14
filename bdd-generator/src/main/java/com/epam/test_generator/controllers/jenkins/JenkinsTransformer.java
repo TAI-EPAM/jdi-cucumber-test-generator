@@ -4,7 +4,6 @@ package com.epam.test_generator.controllers.jenkins;
 import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.ExecutedJenkinsJobDTO;
 import com.offbytwo.jenkins.model.Job;
-import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueReference;
 import com.offbytwo.jenkins.model.Executable;
 import org.springframework.stereotype.Component;

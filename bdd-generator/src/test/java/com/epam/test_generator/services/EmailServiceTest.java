@@ -53,7 +53,7 @@ public class EmailServiceTest {
     private EmailServiceImpl sut;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(environment.getProperty(anyString())).thenReturn("environmentValue");
 
     }

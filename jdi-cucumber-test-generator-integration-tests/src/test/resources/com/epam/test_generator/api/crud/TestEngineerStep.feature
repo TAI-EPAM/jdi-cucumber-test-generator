@@ -84,7 +84,7 @@ Feature: CRUD Step scenarios for TestEngineer and TestLead
       | id |
       | -1 |
     When I get step by id
-    Then The step shouldn't be founded
+    Then The step shouldn't be found
 
   Examples:
   | ROLE   |
@@ -180,7 +180,7 @@ Feature: CRUD Step scenarios for TestEngineer and TestLead
       | id |
       | -1 |
     When I delete step
-    Then The step shouldn't be founded
+    Then The step shouldn't be found
 
   Examples:
   | ROLE   |

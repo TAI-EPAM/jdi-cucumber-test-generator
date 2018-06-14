@@ -1,5 +1,6 @@
 package com.epam.test_generator.state.machine;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,14 +20,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {StateMachineConfig.class})
 public class StateMachineAdapterTest {
 
     @InjectMocks
@@ -36,12 +38,13 @@ public class StateMachineAdapterTest {
     private CaseStatePersister persister;
 
     @Mock
-    private StateMachineFactory<Status, Event> stateMachineFactory;
+    private StateMachineFactory<Status, Event> mockedStateMachineFactory;
 
+    @Mock
     private StateMachine<Status, Event> stateMachine;
 
-    private ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-        StateMachineConfig.class);
+    @Autowired
+    private StateMachineFactory<Status, Event> realStateMachineFactory;
 
     private Case cs;
 
@@ -55,7 +58,7 @@ public class StateMachineAdapterTest {
     public void restore_Case_Success() throws Exception {
         stateMachineAdapter.restore(cs);
 
-        verify(persister).restore(eq(stateMachine), eq(cs));
+        verify(persister).restore(any(), eq(cs));
     }
 
     @Test
@@ -67,8 +70,8 @@ public class StateMachineAdapterTest {
 
     @Test
     public void availableTransitions_StatusNotDone_Success() {
-        when(stateMachineFactory.getStateMachine())
-            .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
+        when(mockedStateMachineFactory.getStateMachine())
+            .thenReturn(realStateMachineFactory.getStateMachine());
         Status status = Status.NOT_DONE;
 
         List<Event> expectedEvents = Collections.singletonList(Event.CREATE);
@@ -78,8 +81,8 @@ public class StateMachineAdapterTest {
 
     @Test
     public void availableTransitions_StatusNotRun_Success() {
-        when(stateMachineFactory.getStateMachine())
-            .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
+        when(mockedStateMachineFactory.getStateMachine())
+            .thenReturn(realStateMachineFactory.getStateMachine());
         Status status = Status.NOT_RUN;
 
         List<Event> expectedEvents = Arrays.asList(Event.PASS, Event.FAIL, Event.SKIP);
@@ -89,32 +92,30 @@ public class StateMachineAdapterTest {
 
     @Test
     public void availableTransitions_StatusPassed_Success() {
-        when(stateMachineFactory.getStateMachine())
-            .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
+        when(mockedStateMachineFactory.getStateMachine())
+            .thenReturn(realStateMachineFactory.getStateMachine());
         Status status = Status.PASSED;
 
         List<Event> expectedEvents = Collections.singletonList(Event.EDIT);
-        ;
 
         Assert.assertEquals(expectedEvents, stateMachineAdapter.availableTransitions(status));
     }
 
     @Test
     public void availableTransitions_StatusFailed_Success() {
-        when(stateMachineFactory.getStateMachine())
-            .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
+        when(mockedStateMachineFactory.getStateMachine())
+            .thenReturn(realStateMachineFactory.getStateMachine());
         Status status = Status.FAILED;
 
         List<Event> expectedEvents = Collections.singletonList(Event.EDIT);
-        ;
 
         Assert.assertEquals(expectedEvents, stateMachineAdapter.availableTransitions(status));
     }
 
     @Test
     public void availableTransitions_StatusSkipped_Success() {
-        when(stateMachineFactory.getStateMachine())
-            .thenReturn(applicationContext.getBean(StateMachineFactory.class).getStateMachine());
+        when(mockedStateMachineFactory.getStateMachine())
+            .thenReturn(realStateMachineFactory.getStateMachine());
         Status status = Status.SKIPPED;
 
         List<Event> expectedEvents = Collections.singletonList(Event.EDIT);

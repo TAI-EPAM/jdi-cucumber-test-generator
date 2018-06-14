@@ -5,7 +5,7 @@ import java.util.Objects;
 
 /**
  * This DTO is used for organise history of test cases. Case version has information about all
- * changes of the current case. It includes list of {@Link PropertyDifferenceDTO} objects, which
+ * changes of the current case. It includes list of {@link PropertyDifferenceDTO} objects, which
  * contains information about properties that have been changed.
  */
 public class CaseVersionDTO {

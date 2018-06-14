@@ -11,14 +11,14 @@ import cucumber.api.java.en.Then;
 public class CaseVersion extends StepBackground {
 
     @Then("^The case version should be returned$")
-    public void theCaseVersionShouldBeReturned() throws Throwable{
+    public void theCaseVersionShouldBeReturned() {
         RestResponse response = testContext.getResponse();
         assertThat(response.status.code, equalTo(200));
         assertThat(response.raResponse().print(), not("[]"));
     }
 
     @Then("^The case version shouldn't be returned$")
-    public void theCaseVersionShouldnTBeReturned() throws Throwable {
+    public void theCaseVersionShouldnTBeReturned() {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(404));
         assertThat(response.raResponse().print(), equalTo(""));

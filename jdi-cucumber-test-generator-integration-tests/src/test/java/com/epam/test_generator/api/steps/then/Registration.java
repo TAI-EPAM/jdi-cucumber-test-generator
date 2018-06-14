@@ -37,7 +37,7 @@ public class Registration extends StepBackground {
     }
 
     @Then("^I get bad status$")
-    public void  badStatusAndWarning() throws Throwable{
+    public void badStatusAndWarning() {
         RestResponse response = testContext.getResponse();
 
         assertThat(response.raResponse().getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));

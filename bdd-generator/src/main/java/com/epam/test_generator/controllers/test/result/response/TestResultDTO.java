@@ -102,7 +102,7 @@ public class TestResultDTO {
             amountOfSkipped == that.amountOfSkipped &&
             Objects.equals(date, that.date) &&
             Objects.equals(duration, that.duration) &&
-            status == that.status &&
+            Objects.equals(status, that.status) &&
             Objects.equals(executedBy, that.executedBy) &&
             Objects.equals(suitResults, that.suitResults);
     }

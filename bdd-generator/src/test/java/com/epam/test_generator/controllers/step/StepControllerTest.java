@@ -23,14 +23,10 @@ import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.entities.StepType;
-import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.StepService;
-import com.epam.test_generator.services.SuitService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -57,10 +53,6 @@ public class StepControllerTest {
     private StepController stepController;
     @Mock
     private StepService stepService;
-    @Mock
-    private CaseService caseService;
-    @Mock
-    private SuitService suitService;
     private ObjectMapper mapper = new ObjectMapper();
     private MockMvc mockMvc;
     private StepDTO stepDTO;
@@ -69,7 +61,7 @@ public class StepControllerTest {
     private List<StepDTO> stepDTOS;
 
     @Before
-    public void setUp() throws ParseException {
+    public void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(stepController)
             .setControllerAdvice(new GlobalExceptionController())
             .build();
@@ -90,8 +82,6 @@ public class StepControllerTest {
         stepUpdateDTO = new StepUpdateDTO();
         stepUpdateDTO.setDescription("Updated description");
         stepUpdateDTO.setComment("new comment");
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 
         CaseDTO caseDTO = new CaseDTO();
         caseDTO.setId(SIMPLE_CASE_ID);

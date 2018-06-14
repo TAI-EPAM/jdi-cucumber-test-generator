@@ -82,7 +82,7 @@ Feature: CRUD Case scenarios for TestEngineer and TestLead
       | id |
       | -1 |
     When I get case by id
-    Then The case shouldn't be founded
+    Then The case shouldn't be found
 
   Examples:
   | ROLE  |
@@ -181,7 +181,7 @@ Feature: CRUD Case scenarios for TestEngineer and TestLead
       | id |
       | -1 |
     When I delete case
-    Then The case shouldn't be founded
+    Then The case shouldn't be found in suit
 
     Examples:
       | ROLE   |

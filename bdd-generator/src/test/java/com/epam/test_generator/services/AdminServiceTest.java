@@ -130,6 +130,6 @@ public class AdminServiceTest {
     public void setBlockedStatusForUser_WrongUserId_Success() {
         when(userService.getUserById(anyLong())).thenThrow(NotFoundException.class);
 
-        UserDTO userDTO = adminService.setBlockedStatusForUser(33L, true);
+        adminService.setBlockedStatusForUser(33L, true);
     }
 }

@@ -10,7 +10,7 @@ public class Tag extends StepBackground {
 
     @Given("^I have a list of tags$")
     public void iHaveAListOfTags(DataTable dataTable) {
-        testContext.setTestDTO(new HashSet<>(dataTable.asList(TagDTO.class)));
+        testContext.setCollectionTestDTO(new HashSet<>(dataTable.asList(TagDTO.class)), TagDTO.class);
     }
 
 }

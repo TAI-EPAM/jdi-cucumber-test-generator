@@ -40,7 +40,7 @@ public class JenkinsController {
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping("/jobs")
-    public ResponseEntity<List<CommonJenkinsJobDTO>> getJobs() throws Exception {
+    public ResponseEntity<List<CommonJenkinsJobDTO>> getJobs() {
         return new ResponseEntity<>(jenkinsJobService.getJobs(), HttpStatus.OK);
     }
 
@@ -55,7 +55,7 @@ public class JenkinsController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @PostMapping("/job/execute")
     public ResponseEntity<ExecutedJenkinsJobDTO> executeJob(
-        @RequestBody @Valid ExecuteJenkinsJobDTO jobDTO) throws Exception {
+        @RequestBody @Valid ExecuteJenkinsJobDTO jobDTO) {
         return new ResponseEntity<>(jenkinsJobService.runJob(jobDTO.getJobName()), HttpStatus.OK);
     }
 }

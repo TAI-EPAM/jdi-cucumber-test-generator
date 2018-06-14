@@ -7,11 +7,8 @@ import static org.junit.Assert.assertThat;
 
 import com.epam.http.response.RestResponse;
 import com.epam.test_generator.api.steps.StepBackground;
-import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
-import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import cucumber.api.java.en.Then;
 

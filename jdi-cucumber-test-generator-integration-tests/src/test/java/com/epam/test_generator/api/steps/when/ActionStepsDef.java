@@ -1,23 +1,16 @@
 package com.epam.test_generator.api.steps.when;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.test_generator.api.ApiTokenInserter.requestBodyAndToken;
 import static com.epam.test_generator.api.ApiTokenInserter.requestDataAndToken;
-import static com.epam.test_generator.api.BddGeneratorApi.addCaseToSuit;
-import static com.epam.test_generator.api.BddGeneratorApi.createProject;
-import static com.epam.test_generator.api.BddGeneratorApi.createSuit;
 import static com.epam.test_generator.api.BddGeneratorApi.getProjectSuit;
 import static com.epam.test_generator.api.BddGeneratorApi.updateCase;
 
 import com.epam.http.response.RestResponse;
 import com.epam.test_generator.api.BddGeneratorApi;
 import com.epam.test_generator.api.steps.StepBackground;
-import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
-import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.entities.Status;
 import cucumber.api.java.en.When;

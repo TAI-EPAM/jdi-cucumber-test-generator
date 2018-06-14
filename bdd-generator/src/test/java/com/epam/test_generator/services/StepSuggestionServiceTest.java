@@ -76,7 +76,7 @@ public class StepSuggestionServiceTest {
     private StepSuggestionDTO expectedStepSuggestionDTO;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         expectedStepSuggestionDTO = new StepSuggestionDTO(ID_1, CONTENT_1, GIVEN);
         stepSuggestionDTOS.add(expectedStepSuggestionDTO);
         stepSuggestionDTOS.add(new StepSuggestionDTO(ID_2, CONTENT_2, WHEN));
@@ -97,7 +97,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepsSuggestions_Success() throws Exception {
+    public void getStepsSuggestions_Success() {
         when(project.getStepSuggestions()).thenReturn(stepSuggestions);
         when(stepSuggestionTransformer.toDtoList(any())).thenReturn(stepSuggestionDTOS);
 
@@ -108,7 +108,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepSuggestionDTO_Success() throws Exception {
+    public void getStepSuggestionDTO_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(any())).thenReturn(true);
         when(stepSuggestionTransformer.toDto(any())).thenReturn(expectedStepSuggestionDTO);
@@ -120,7 +120,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void getStepSuggestionDTO_NotFound() throws Exception {
+    public void getStepSuggestionDTO_NotFound() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(false);
 
@@ -128,7 +128,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepSuggestionsByType_Success() throws Exception {
+    public void getStepSuggestionsByType_Success() {
         when(project.getStepSuggestions()).thenReturn(stepSuggestions);
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
 
@@ -157,7 +157,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void updateStepSuggestion_Success() throws Exception {
+    public void updateStepSuggestion_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
         when(stepSuggestionDAO.save(any(StepSuggestion.class)))
@@ -178,7 +178,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void removeTestSuggestion_Success() throws Exception {
+    public void removeTestSuggestion_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
 

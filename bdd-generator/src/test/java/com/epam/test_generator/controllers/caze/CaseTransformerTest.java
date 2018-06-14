@@ -1,7 +1,7 @@
 package com.epam.test_generator.controllers.caze;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyList;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -78,7 +78,6 @@ public class CaseTransformerTest {
         caze.setStatus(STATUS);
         caze.setSteps(STEPS);
         caze.setRowNumber(ROW_NUMBER);
-        List<Case> cases = Collections.singletonList(caze);
 
         CaseDTO caseDto = new CaseDTO();
         caseDto.setId(ID);

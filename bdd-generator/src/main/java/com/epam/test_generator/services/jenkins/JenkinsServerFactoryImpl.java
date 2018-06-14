@@ -1,5 +1,6 @@
 package com.epam.test_generator.services.jenkins;
 
+import com.epam.test_generator.pojo.JenkinsCredentials;
 import com.offbytwo.jenkins.JenkinsServer;
 import java.net.URI;
 import java.net.URISyntaxException;

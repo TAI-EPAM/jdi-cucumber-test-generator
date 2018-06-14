@@ -2,8 +2,7 @@ package com.epam.test_generator.api.steps.when;
 
 import static com.epam.test_generator.api.ApiTokenInserter.requestDataAndToken;
 import static com.epam.test_generator.api.BddGeneratorApi.addStepToCase;
-import static com.epam.test_generator.api.BddGeneratorApi.getStep;
-import static com.epam.test_generator.api.BddGeneratorApi.removeCase_1;
+import static com.epam.test_generator.api.BddGeneratorApi.removeStep;
 import static com.epam.test_generator.api.BddGeneratorApi.updateStep;
 
 import com.epam.http.response.RestResponse;
@@ -79,7 +78,7 @@ public class Step extends StepBackground {
         Long suitId = testContext.getTestDTO(SuitDTO.class).getId();
         Long caseId = testContext.getTestDTO(CaseDTO.class).getId();
         Long stepId = testContext.getTestDTO(StepDTO.class).getId();
-        RestResponse response = removeCase_1.call(
+        RestResponse response = removeStep.call(
             requestDataAndToken(
                 d -> {
                     d.pathParams.addOrReplace("projectId", projectId.toString());

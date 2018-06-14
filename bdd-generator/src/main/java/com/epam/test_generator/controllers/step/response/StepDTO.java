@@ -1,7 +1,5 @@
 package com.epam.test_generator.controllers.step.response;
 
-import com.epam.test_generator.entities.Status;
-import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import java.util.Objects;
 import javax.validation.constraints.Min;

@@ -34,7 +34,6 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import net.rcarz.jiraclient.JiraClient;
 import net.rcarz.jiraclient.JiraException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,9 +59,6 @@ public class JiraServiceTest {
     private Authentication authentication;
 
     @Mock
-    private JiraClient client;
-
-    @Mock
     private JiraSubStoryDAO jiraSubStoryDAO;
 
     @Mock
@@ -79,9 +75,6 @@ public class JiraServiceTest {
 
     @Mock
     private CaseDAO caseDAO;
-
-    @Mock
-    private UserDAO userDAO;
 
     @Mock
     private RemovedIssueDAO removedIssueDAO;

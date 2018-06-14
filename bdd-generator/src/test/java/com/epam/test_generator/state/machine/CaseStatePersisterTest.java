@@ -13,17 +13,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.state.State;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {StateMachineConfig.class})
+public class CaseStatePersisterTest {
 
     @Mock
     private StateMachine<Status, Event> stateMachine;
@@ -33,9 +32,6 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private StateMachineFactory<Status, Event> stateMachineFactory;
-
-    private ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-        StateMachineConfig.class);
 
     private Case cs;
 
@@ -59,7 +55,6 @@ public class CaseStatePersisterTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void restore_StatusNotRun_Success() {
-        stateMachineFactory = applicationContext.getBean(StateMachineFactory.class);
         StateMachine<Status, Event> stateMachine1 = stateMachineFactory.getStateMachine();
 
         cs.setStatus(Status.NOT_RUN);

@@ -2,7 +2,6 @@ package com.epam.test_generator.controllers.suit.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * SuitRowNumberUpdateDTO is a data transfer object, that represents suitable struct for updating

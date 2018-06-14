@@ -62,10 +62,17 @@ public class Case extends StepBackground {
         assertThat(actualCaseDTO.getTags(), equalTo(expectedCaseDTO.getTags()));
     }
 
-    @Then("^The case shouldn't be founded$")
-    public void theCaseShouldntBeFounded() {
+    @Then("^The case shouldn't be found$")
+    public void theCaseShouldntBeFound() {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(404));
+        assertThat(response.raResponse().print(), equalTo(""));
+    }
+
+    @Then("^The case shouldn't be found in suit$")
+    public void theCaseShouldntBeFoundInSuit() {
+        RestResponse response = testContext.getResponse();
+        assertThat(response.raResponse().getStatusCode(), equalTo(400));
         assertThat(response.raResponse().print(), equalTo(""));
     }
 
@@ -130,7 +137,26 @@ public class Case extends StepBackground {
             )
         );
         assertThat(oldCaseResponse.raResponse().getStatusCode(), equalTo(404));
-        theCaseShouldBeReturned();
+
+        RestResponse response = testContext.getResponse();
+        CaseDTO[] actualCaseDTOs = mapper.readValue(response.raResponse().print(), CaseDTO[].class);
+        assertThat(actualCaseDTOs.length, equalTo(1));
+        CaseDTO actualCaseDTO = actualCaseDTOs[0];
+        CaseDTO expectedCaseDTO = testContext.getAndDeleteTestDTO(CaseDTO.class);
+
+        assertThat(response.raResponse().getStatusCode(), equalTo(200));
+        assertThat(actualCaseDTO.getId(), equalTo(expectedCaseDTO.getId()));
+        assertThat(actualCaseDTO.getName(), equalTo(expectedCaseDTO.getName()));
+        assertThat(actualCaseDTO.getDescription(), equalTo(expectedCaseDTO.getDescription()));
+        assertThat(actualCaseDTO.getPriority(), equalTo(expectedCaseDTO.getPriority()));
+        assertThat(actualCaseDTO.getCreationDate(), equalTo(expectedCaseDTO.getCreationDate()));
+        assertThat(actualCaseDTO.getDisplayedStatusName(),
+            equalTo(expectedCaseDTO.getDisplayedStatusName()));
+        assertThat(actualCaseDTO.getUpdateDate(), equalTo(expectedCaseDTO.getUpdateDate()));
+        assertThat(actualCaseDTO.getRowNumber(), equalTo(expectedCaseDTO.getRowNumber()));
+        assertThat(actualCaseDTO.getSteps(), equalTo(expectedCaseDTO.getSteps()));
+        assertThat(actualCaseDTO.getComment(), equalTo(expectedCaseDTO.getComment()));
+        assertThat(actualCaseDTO.getTags(), equalTo(expectedCaseDTO.getTags()));
     }
 
 }

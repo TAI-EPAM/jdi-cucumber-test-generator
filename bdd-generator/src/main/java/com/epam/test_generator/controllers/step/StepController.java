@@ -148,7 +148,7 @@ public class StepController {
     }
 
 
-    @ApiOperation(value = "Delete step by id", nickname = "removeCase")
+    @ApiOperation(value = "Delete step by id", nickname = "removeStep")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")

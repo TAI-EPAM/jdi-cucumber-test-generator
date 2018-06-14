@@ -11,14 +11,14 @@ import org.springframework.http.HttpStatus;
 public class RoleChanger extends StepBackground {
 
     @Then("^User role must be changed$")
-    public void userRoleMustBeChanged() throws Throwable {
+    public void userRoleMustBeChanged() {
         RestResponse response = testContext.getResponse();
 
         assertThat(response.raResponse().getStatusCode(), equalTo(HttpStatus.OK.value()));
     }
 
     @Then("^User role should not be changed$")
-    public void userRoleShouldNotBeChanged() throws Throwable {
+    public void userRoleShouldNotBeChanged() {
         RestResponse response = testContext.getResponse();
 
         assertThat(response.raResponse().getStatusCode(), equalTo(401));

@@ -13,7 +13,7 @@ import cucumber.api.java.en.When;
 public class CaseVersion extends StepBackground {
 
     @When("^I get case version by case id$")
-    public void iGetCaseVersionByCaseId() throws Throwable {
+    public void iGetCaseVersionByCaseId() {
 
         Long projectId = testContext.getAndDeleteTestDTO(ProjectDTO.class).getId();
         Long suitId = testContext.getAndDeleteTestDTO(SuitDTO.class).getId();

@@ -1,7 +1,6 @@
 package com.epam.test_generator.controllers.stepsuggestion.response;
 
 import com.epam.test_generator.controllers.step.response.StepDTO;
-import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepType;
 import java.util.ArrayList;
 import java.util.List;

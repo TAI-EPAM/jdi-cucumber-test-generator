@@ -5,7 +5,6 @@ import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
-import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepSuggestion;
 import java.util.Collection;
 import java.util.List;

@@ -59,8 +59,8 @@ public class Suit extends StepBackground {
         assertThat(actualSuitDTO.getTags(), equalTo(expectedSuitDTO.getTags()));
     }
 
-    @Then("^The suit shouldn't be founded$")
-    public void theSuitShouldntBeFounded() {
+    @Then("^The suit shouldn't be found$")
+    public void theSuitShouldntBeFound() {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(404));
         assertThat(response.raResponse().print(), equalTo(""));

@@ -34,4 +34,4 @@ Feature: As a test engineer I want to generate and download cucumber feature fil
       | -1 |
     And I have information for generating feature file
     When I download file
-    Then The case shouldn't be founded
+    Then The case shouldn't be found

@@ -1,8 +1,6 @@
 package com.epam.test_generator.dto;
 
 import com.epam.test_generator.entities.Status;
-import java.time.Duration;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import javax.validation.Valid;

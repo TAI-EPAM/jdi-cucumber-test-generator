@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="suit" type="com.epam.test_generator.controllers.suit.response.SuitDTO" -->
 <#if suit.tags?has_content>
 <#assign t = "">
 <#list suit.tags as tags><#if tags?has_content><#assign t += tags.name?ensure_starts_with('@') + " "></#if></#list>

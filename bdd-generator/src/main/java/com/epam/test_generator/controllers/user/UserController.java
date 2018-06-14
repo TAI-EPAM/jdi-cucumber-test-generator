@@ -59,7 +59,7 @@ public class UserController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity passwordForgot(@RequestBody EmailDTO email,
-                                         HttpServletRequest request) throws Exception {
+                                         HttpServletRequest request) {
 
         User user = userService.getUserByEmail(email.getEmail());
         userService.checkUserExist(user);

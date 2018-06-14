@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
 import com.epam.test_generator.controllers.user.response.UserDTO;
-import com.epam.test_generator.dao.interfaces.TokenDAO;
 import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
@@ -64,19 +63,10 @@ public class UserServiceTest {
     private RegistrationUserDTO registrationUserDTO;
 
     @Mock
-    private EmailService emailService;
-
-    @Mock
     private TokenService tokenService;
 
     @Mock
     private Token token;
-
-    @Mock
-    private PasswordService passwordService;
-
-    @Mock
-    private TokenDAO tokenDAO;
 
     @InjectMocks
     private UserService sut;

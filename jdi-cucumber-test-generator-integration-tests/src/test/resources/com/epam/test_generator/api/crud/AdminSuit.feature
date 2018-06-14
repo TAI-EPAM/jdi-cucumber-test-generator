@@ -64,7 +64,7 @@ Feature: CRUD suit scenarios
       | id |
       | -1 |
     When I get suit by id
-    Then The suit shouldn't be founded
+    Then The suit shouldn't be found
 
 
   Scenario: Successfully update suit
@@ -139,4 +139,4 @@ Feature: CRUD suit scenarios
       | id |
       | -1 |
     When I delete suit
-    Then The suit shouldn't be founded
+    Then The suit shouldn't be found

@@ -1,8 +1,7 @@
 package com.epam.test_generator.controllers.admin.request;
 
 import java.util.Objects;
-import org.hibernate.validator.constraints.Email;
-
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 

@@ -96,12 +96,12 @@ public class TestResultServiceTest {
         step.setId(SUIT_ID);
         step.setDescription("STEP_DESCRIPTION");
 
-        testResult = generateTestResult(ZonedDateTime.now(), 12);
+        testResult = generateTestResult(ZonedDateTime.now());
 
         testResults = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            testResults.add(generateTestResult(ZonedDateTime.now(), i));
+            testResults.add(generateTestResult(ZonedDateTime.now()));
         }
         TestResultDTO testResultDTO = new TestResultDTO();
         testResultDTO.setAmountOfSkipped(0);
@@ -158,7 +158,7 @@ public class TestResultServiceTest {
             .findAllByProjectIdAndDateAfterAndDateBefore(eq(PROJECT_ID), eq(from), eq(to));
     }
 
-    private TestResult generateTestResult(ZonedDateTime localDate, Integer day) {
+    private TestResult generateTestResult(ZonedDateTime localDate) {
         TestResult testResult = new TestResult();
         testResult.setAmountOfPassed(1);
         testResult.setAmountOfFailed(0);

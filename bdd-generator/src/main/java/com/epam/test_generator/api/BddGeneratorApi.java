@@ -181,10 +181,6 @@ public class BddGeneratorApi {
 	public static RestMethod getCases;
 
 	@ContentType(JSON)
-	@PUT("/projects/{projectId}/suits/{suitId}/cases")
-	public static RestMethod updateCases;
-
-	@ContentType(JSON)
 	@POST("/projects/{projectId}/suits/{suitId}/cases")
 	public static RestMethod addCaseToSuit;
 
@@ -203,10 +199,6 @@ public class BddGeneratorApi {
 	@ContentType(JSON)
 	@PUT("/projects/{projectId}/suits/{suitId}/cases/{caseId}")
 	public static RestMethod updateCase;
-
-	@ContentType(JSON)
-	@DELETE("/projects/{projectId}/suits/{suitId}/cases/{caseId}")
-	public static RestMethod removeCase;
 
 	@ContentType(JSON)
 	@PUT("/projects/{projectId}/suits/{suitId}/cases/{caseId}/events/{event}")
@@ -230,7 +222,7 @@ public class BddGeneratorApi {
 
 	@ContentType(JSON)
 	@DELETE("/projects/{projectId}/suits/{suitId}/cases/{caseId}/steps/{stepId}")
-	public static RestMethod removeCase_1;
+	public static RestMethod removeStep;
 
 	@ContentType(JSON)
 	@GET("/projects/{projectId}/suits/{suitId}/cases/{caseId}/versions")

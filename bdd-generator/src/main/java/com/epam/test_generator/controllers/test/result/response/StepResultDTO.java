@@ -37,7 +37,7 @@ public class StepResultDTO {
         }
         StepResultDTO that = (StepResultDTO) o;
         return Objects.equals(description, that.description) &&
-            status == that.status;
+            Objects.equals(status, that.status);
     }
 
     @Override

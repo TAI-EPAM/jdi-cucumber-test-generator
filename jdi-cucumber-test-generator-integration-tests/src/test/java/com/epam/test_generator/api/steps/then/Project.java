@@ -52,8 +52,8 @@ public class Project extends StepBackground {
         assertThat(actualProjectDTO.getDescription(), equalTo(expectedProjectDTO.getDescription()));
     }
 
-    @Then("^The project shouldn't be founded$")
-    public void theProjectShouldntBeFounded() {
+    @Then("^The project shouldn't be found$")
+    public void theProjectShouldntBeFound() {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(403));
     }

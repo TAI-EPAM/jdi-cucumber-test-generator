@@ -15,7 +15,7 @@ import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.When;
-import java.util.HashSet;
+import java.util.Set;
 
 public class Suit extends StepBackground {
 
@@ -25,7 +25,7 @@ public class Suit extends StepBackground {
     public void iCreateSuit(DataTable dataTable) throws Throwable {
         Long projectId = testContext.getTestDTO(ProjectDTO.class).getId();
         SuitCreateDTO suitCreateDTO = dataTable.asList(SuitCreateDTO.class).get(FIRST_INDEX);
-        suitCreateDTO.setTags(testContext.getAndDeleteTestDTO(HashSet.class));
+        suitCreateDTO.setTags((Set<TagDTO>)testContext.getAndDeleteCollectionTestDTO(TagDTO.class));
         testContext.setTestDTO(suitCreateDTO);
         String suitCreateDTOAsString = mapper.writeValueAsString(suitCreateDTO);
         RestResponse response = createSuit.call(
@@ -58,7 +58,7 @@ public class Suit extends StepBackground {
         Long projectId = testContext.getTestDTO(ProjectDTO.class).getId();
         Long suitId = testContext.getTestDTO(SuitDTO.class).getId();
         SuitUpdateDTO suitUpdateDTO = dataTable.asList(SuitUpdateDTO.class).get(FIRST_INDEX);
-        suitUpdateDTO.setTags(testContext.getAndDeleteTestDTO(HashSet.class));
+        suitUpdateDTO.setTags((Set<TagDTO>)testContext.getAndDeleteCollectionTestDTO(TagDTO.class));
 
         String suitUpdateDTOAsString = mapper.writeValueAsString(suitUpdateDTO);
 

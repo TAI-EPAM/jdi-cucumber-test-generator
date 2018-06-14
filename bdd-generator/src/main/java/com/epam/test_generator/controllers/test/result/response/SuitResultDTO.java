@@ -53,7 +53,7 @@ public class SuitResultDTO {
         SuitResultDTO that = (SuitResultDTO) o;
         return duration == that.duration &&
             Objects.equals(name, that.name) &&
-            status == that.status &&
+            Objects.equals(status, that.status) &&
             Objects.equals(caseResults, that.caseResults);
     }
 

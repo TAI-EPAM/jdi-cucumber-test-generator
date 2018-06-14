@@ -131,7 +131,7 @@ public class DefaultStepSuggestionDAOTest {
         List<DefaultStepSuggestion> defaultStepSuggestions = retrieveStepSuggestionList();
         defaultStepSuggestions =  defaultStepSuggestionDAO.saveAll(defaultStepSuggestions);
 
-        PageRequest numberOfReturnedResults = new PageRequest(0, 10);
+        PageRequest numberOfReturnedResults = PageRequest.of(0, 10);
         List<DefaultStepSuggestion> content = defaultStepSuggestionDAO
             .findByContentIgnoreCaseContaining("content", numberOfReturnedResults);
 

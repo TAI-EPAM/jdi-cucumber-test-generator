@@ -76,7 +76,7 @@ Feature: CRUD step scenarios
       | id |
       | -1 |
     When I get step by id
-    Then The step shouldn't be founded
+    Then The step shouldn't be found
 
 
   Scenario: Successfully update step
@@ -160,4 +160,4 @@ Feature: CRUD step scenarios
       | id |
       | -1 |
     When I delete step
-    Then The step shouldn't be founded
+    Then The step shouldn't be found

@@ -40,7 +40,7 @@ Feature: CRUD project scenarios
       | id |
       | -1 |
     When I get project by id
-    Then The project shouldn't be founded
+    Then The project shouldn't be found
 
 
   Scenario: Successfully update project
@@ -88,4 +88,4 @@ Feature: CRUD project scenarios
       | id |
       | -1 |
     When I close project
-    Then The project shouldn't be founded
+    Then The project shouldn't be found

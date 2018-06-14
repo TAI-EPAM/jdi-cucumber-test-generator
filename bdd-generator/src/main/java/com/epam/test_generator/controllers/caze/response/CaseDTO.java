@@ -2,7 +2,6 @@ package com.epam.test_generator.controllers.caze.response;
 
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
-import com.epam.test_generator.entities.Status;
 
 import java.time.Instant;
 import java.util.List;

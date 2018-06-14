@@ -10,7 +10,7 @@ import cucumber.api.java.en.When;
 public class AssigningProjects extends StepBackground {
 
     @When("^I try to get projects$")
-    public void getUsersProjects() throws Throwable {
+    public void getUsersProjects() {
         RestResponse response = getUserProjects.call(requestToken(testContext.getToken()));
         testContext.setResponse(response);
     }

@@ -8,9 +8,10 @@ import com.epam.test_generator.api.steps.StepBackground;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.controllers.tag.response.TagDTO;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Given;
-import java.util.HashSet;
+import java.util.Set;
 
 public class Suit extends StepBackground {
 
@@ -25,7 +26,7 @@ public class Suit extends StepBackground {
     public void iHaveASuit(DataTable dataTable) throws Throwable {
         Long projectId = testContext.getTestDTO(ProjectDTO.class).getId();
         SuitCreateDTO suitCreateDTO = dataTable.asList(SuitCreateDTO.class).get(FIRST_INDEX);
-        suitCreateDTO.setTags(testContext.getAndDeleteTestDTO(HashSet.class));
+        suitCreateDTO.setTags((Set<TagDTO>)testContext.getAndDeleteCollectionTestDTO(TagDTO.class));
         String suitCreateDTOAsString = mapper.writeValueAsString(suitCreateDTO);
         RestResponse response = createSuit.call(
             requestDataAndToken(d -> {

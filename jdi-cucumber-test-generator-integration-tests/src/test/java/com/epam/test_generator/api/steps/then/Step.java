@@ -19,7 +19,7 @@ import cucumber.api.java.en.Then;
 
 public class Step extends StepBackground {
 
-    RestApiFacade restApiFacade = new RestApiFacade();
+    private RestApiFacade restApiFacade = new RestApiFacade();
 
     @Then("^The step should be created$")
     public void theStepShouldBeCreated() throws Throwable {
@@ -61,8 +61,8 @@ public class Step extends StepBackground {
         assertThat(actualStepDTO.getType(), equalTo(expectedStepDTO.getType()));
     }
 
-    @Then("^The step shouldn't be founded$")
-    public void theStepShouldntBeFounded() {
+    @Then("^The step shouldn't be found$")
+    public void theStepShouldntBeFound() {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(404));
         assertThat(response.raResponse().print(), equalTo(""));

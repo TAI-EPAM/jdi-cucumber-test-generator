@@ -54,10 +54,10 @@ public class SuitServiceTest {
 
     private static final String SUIT_NAME = "suit1";
     private static final String SUIT_DESC = "desc1";
-    private static long SIMPLE_PROJECT_ID = 0L;
-    private static long SIMPLE_SUIT_ID = 1L;
-    private static String SIMPLE_COMMIT_ID = "1.5";
-    private static long INVALID_PROJECT_ID = -1L;
+    private static final long SIMPLE_PROJECT_ID = 0L;
+    private static final long SIMPLE_SUIT_ID = 1L;
+    private static final String SIMPLE_COMMIT_ID = "1.5";
+    private static final long INVALID_PROJECT_ID = -1L;
 
     @InjectMocks
     private SuitService suitService;

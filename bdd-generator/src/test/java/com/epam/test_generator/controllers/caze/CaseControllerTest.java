@@ -20,12 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epam.test_generator.controllers.GlobalExceptionController;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
-import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
+import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
-import com.epam.test_generator.entities.Action;
 import com.epam.test_generator.entities.Event;
 import com.epam.test_generator.entities.Status;
 import com.epam.test_generator.services.CaseService;
@@ -56,9 +55,7 @@ public class CaseControllerTest {
     private SuitDTO suitDTO;
     private List<CaseDTO> caseDTOList;
 
-    private List<CaseEditDTO> updateCaseDTOList;
     private CaseUpdateDTO caseUpdateDTO;
-    private ListWrapper<CaseEditDTO> caseUpdateDTOListWrapper;
     private static final long SIMPLE_PROJECT_ID = 0L;
     private static final long SIMPLE_SUIT_ID = 1L;
     private static final long SIMPLE_CASE_ID = 2L;
@@ -121,27 +118,8 @@ public class CaseControllerTest {
 
         suitDTO.setCases(caseDTOList);
 
-        updateCaseDTOList = new ArrayList<>();
-
-        CaseEditDTO updateCaseDTO1 = new CaseEditDTO(1l,"descr", "name", 1,
-            Status.NOT_RUN, Collections.emptyList(), Action.CREATE, "comment");
-        updateCaseDTO1.setId(CASE_IDS[0]);
-        CaseEditDTO updateCaseDTO2 = new CaseEditDTO(1l,"descr", "name", 1,
-            Status.NOT_RUN, Collections.emptyList(), Action.UPDATE, "comment");
-        updateCaseDTO2.setId(CASE_IDS[1]);
-        CaseEditDTO updateCaseDTO3 = new CaseEditDTO(1l,"descr", "name", 1,
-            Status.NOT_RUN, Collections.emptyList(), Action.UPDATE, "comment");
-        updateCaseDTO3.setId(CASE_IDS[2]);
-
-        updateCaseDTOList.add(updateCaseDTO1);
-        updateCaseDTOList.add(updateCaseDTO2);
-        updateCaseDTOList.add(updateCaseDTO3);
-
         caseUpdateDTO = new CaseUpdateDTO("name", "descr", 1,
                 Status.NOT_RUN, "comment");
-
-        caseUpdateDTOListWrapper = new ListWrapper<>();
-        caseUpdateDTOListWrapper.setList(updateCaseDTOList);
 
         when(suitService.getSuitDTO(anyLong(), anyLong())).thenReturn(suitDTO);
     }
@@ -377,7 +355,7 @@ public class CaseControllerTest {
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateCaseDTOList.get(0))))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isNotFound());
 
         verify(casesService)
@@ -394,7 +372,7 @@ public class CaseControllerTest {
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateCaseDTOList.get(0))))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isBadRequest());
 
         verify(casesService)
@@ -477,72 +455,12 @@ public class CaseControllerTest {
             put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
                 + SIMPLE_CASE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateCaseDTOList.get(0))))
+                .content(mapper.writeValueAsString(caseUpdateDTO)))
             .andExpect(status().isInternalServerError());
 
         verify(casesService)
             .updateCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID),
                 any(CaseUpdateDTO.class));
-    }
-
-    @Test
-    public void removeCase_Case_StatusOk() throws Exception {
-        when(casesService.removeCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID)).thenReturn(caseDTO);
-        mockMvc.perform(delete(
-            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
-                + SIMPLE_CASE_ID))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id", is((int)SIMPLE_CASE_ID)))
-            .andExpect(jsonPath("$.name", is(caseDTO.getName())))
-            .andExpect(jsonPath("$.displayedStatusName", is(caseDTO.getDisplayedStatusName())));
-
-        verify(casesService)
-            .removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
-        verifyNoMoreInteractions(casesService);
-    }
-
-    @Test
-    public void removeCase_SuitOrCaseNotExist_NotFound() throws Exception {
-        doThrow(NotFoundException.class).when(casesService)
-            .removeCase(anyLong(), anyLong(), anyLong());
-
-        mockMvc.perform(delete(
-            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
-                + SIMPLE_CASE_ID))
-            .andExpect(status().isNotFound());
-
-        verify(casesService)
-            .removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
-    }
-
-    @Test
-    public void removeCase_SuitNotContainsCase_StatusBadRequest() throws Exception {
-        suitDTO.setCases(null);
-        doThrow(BadRequestException.class).when(casesService)
-            .removeCase(anyLong(), anyLong(), anyLong());
-
-        mockMvc.perform(delete(
-            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
-                + SIMPLE_CASE_ID))
-            .andExpect(status().isBadRequest());
-
-        verify(casesService)
-            .removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
-    }
-
-    @Test
-    public void removeCase_RuntimeException_StatusInternalServerError() throws Exception {
-        doThrow(RuntimeException.class).when(casesService)
-            .removeCase(anyLong(), anyLong(), anyLong());
-
-        mockMvc.perform(delete(
-            "/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases/"
-                + SIMPLE_CASE_ID))
-            .andExpect(status().isInternalServerError());
-
-        verify(casesService)
-            .removeCase(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(SIMPLE_CASE_ID));
     }
 
     @Test
@@ -689,14 +607,63 @@ public class CaseControllerTest {
     }
 
     @Test
-    public void updateCases_Cases_StatusOk() throws Exception {
+    public void updateCaseRowNumber_ValidData_StatusOk() throws Exception {
+        CaseRowNumberUpdateDTO caseRowNumberUpdateDTO = new CaseRowNumberUpdateDTO(CASE_IDS[0],
+            1);
+        ListWrapper<CaseRowNumberUpdateDTO> listWrapper = new ListWrapper<>(
+            Collections.singletonList(caseRowNumberUpdateDTO));
         mockMvc
-            .perform(put("/projects/" + SIMPLE_PROJECT_ID + "/suits/" + SIMPLE_SUIT_ID + "/cases")
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID +
+                "/suits/" + SIMPLE_SUIT_ID + "/cases/row-numbers")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(caseUpdateDTOListWrapper)))
+                .content(mapper.writeValueAsString(listWrapper)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isOk());
 
         verify(casesService)
-            .updateCases(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), eq(updateCaseDTOList));
+            .updateCaseRowNumber(eq(SIMPLE_PROJECT_ID), eq(SIMPLE_SUIT_ID), anyList());
+        verifyNoMoreInteractions(casesService);
+    }
+
+    @Test
+    public void updateCaseRowNumber_InvalidRowNumber_StatusBadRequest() throws Exception {
+        CaseRowNumberUpdateDTO caseRowNumberUpdateDTO = new CaseRowNumberUpdateDTO(CASE_IDS[0],
+            0);
+        ListWrapper<CaseRowNumberUpdateDTO> listWrapper = new ListWrapper<>(
+            Collections.singletonList(caseRowNumberUpdateDTO));
+        mockMvc
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID +
+                "/suits/" + SIMPLE_SUIT_ID + "/cases/row-numbers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(listWrapper)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateCaseRowNumber_EmptyRowNumber_StatusBadRequest() throws Exception {
+        CaseRowNumberUpdateDTO caseRowNumberUpdateDTO = new CaseRowNumberUpdateDTO(CASE_IDS[0],
+            null);
+        ListWrapper<CaseRowNumberUpdateDTO> listWrapper = new ListWrapper<>(
+            Collections.singletonList(caseRowNumberUpdateDTO));
+        mockMvc
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID +
+                "/suits/" + SIMPLE_SUIT_ID + "/cases/row-numbers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(listWrapper)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateCaseRowNumber_EmptyId_StatusBadRequest() throws Exception {
+        CaseRowNumberUpdateDTO caseRowNumberUpdateDTO = new CaseRowNumberUpdateDTO(null,
+            1);
+        ListWrapper<CaseRowNumberUpdateDTO> listWrapper = new ListWrapper<>(
+            Collections.singletonList(caseRowNumberUpdateDTO));
+        mockMvc
+            .perform(put("/projects/" + SIMPLE_PROJECT_ID +
+                "/suits/" + SIMPLE_SUIT_ID + "/cases/row-numbers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(listWrapper)))
+            .andExpect(status().isBadRequest());
     }
 }

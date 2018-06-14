@@ -2,6 +2,7 @@ package com.epam.test_generator.api.container;
 
 import com.epam.http.response.RestResponse;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,12 +37,24 @@ public class TestContext {
         map.put(object.getClass().getCanonicalName(), object);
     }
 
+    public <C extends Collection, T> void setCollectionTestDTO(C object, Class<T> clazz) {
+        map.put("Collection<" + clazz.getCanonicalName() + ">", object);
+    }
+
     public <T> T getTestDTO(Class<T> objectClass) {
         return (T) map.get(objectClass.getCanonicalName());
     }
 
     public <T> T getAndDeleteTestDTO(Class<T> objectClass) {
         return (T) map.remove(objectClass.getCanonicalName());
+    }
+
+    public <T extends Collection> T getCollectionTestDTO(Class<T> objectClass) {
+        return (T) map.get("Collection<" + objectClass.getCanonicalName() + ">");
+    }
+
+    public <T> T getAndDeleteCollectionTestDTO(Class<T> objectClass) {
+        return (T) map.remove("Collection<" + objectClass.getCanonicalName() + ">");
     }
 
     public String getToken() {

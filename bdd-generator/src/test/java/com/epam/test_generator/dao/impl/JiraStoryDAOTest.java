@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.epam.test_generator.dao.interfaces.JiraSettingsDAO;
 import com.epam.test_generator.entities.JiraSettings;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.factory.JiraClientFactory;
@@ -42,9 +41,6 @@ public class JiraStoryDAOTest {
 
     @Mock
     private IssueType issueType;
-
-    @Mock
-    private JiraSettingsDAO jiraSettingsDAO;
 
     @InjectMocks
     private JiraStoryDAO jiraStroryDAO;

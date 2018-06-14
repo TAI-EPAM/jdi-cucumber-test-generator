@@ -1,8 +1,7 @@
 package com.epam.test_generator.controllers.user.response;
 
 import java.util.Objects;
-import org.hibernate.validator.constraints.Email;
-
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 public class UserDTO {

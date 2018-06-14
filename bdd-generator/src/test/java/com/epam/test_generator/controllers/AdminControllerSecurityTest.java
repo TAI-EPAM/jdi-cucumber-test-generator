@@ -1,8 +1,8 @@
 package com.epam.test_generator.controllers;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -13,7 +13,6 @@ import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationFilter;
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
-import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.AdminService;
@@ -30,7 +29,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -46,12 +44,6 @@ public class AdminControllerSecurityTest {
 
     private final LoginUserDTO loginUserDTO = new LoginUserDTO();
     private final UserRoleUpdateDTO userRoleUpdateDTO = new UserRoleUpdateDTO();
-
-    @Autowired
-    private UserDAO userDAO;
-
-    @Autowired
-    private PasswordEncoder encoder;
 
     @Mock
     private ProjectService projectService;

@@ -1,6 +1,5 @@
 package com.epam.test_generator.controllers.stepsuggestion;
 
-import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.entities.DefaultStepSuggestion;
 import java.util.List;

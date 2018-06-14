@@ -119,7 +119,7 @@ public class FileGeneratorTest extends Assert {
         case1.setDescription("case3");
         case1.setPriority(1);
         case1.setTags(null);
-        case1.setSteps(new ArrayList<StepDTO>());
+        case1.setSteps(new ArrayList<>());
         cases.add(case1);
         suit.setCases(cases);
 

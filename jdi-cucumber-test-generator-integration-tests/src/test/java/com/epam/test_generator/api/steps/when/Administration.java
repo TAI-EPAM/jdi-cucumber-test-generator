@@ -12,7 +12,7 @@ import cucumber.api.java.en.When;
 public class Administration extends StepBackground {
 
     @When("^I block user$")
-    public void iBlockUser() throws Throwable {
+    public void iBlockUser() {
         Long userId = testContext.getTestDTO(UserDTO.class).getId();
         RestResponse response = blockUserUsingPUT.call(
             requestDataAndToken(
@@ -23,7 +23,7 @@ public class Administration extends StepBackground {
     }
 
     @When("^I unblock user$")
-    public void iUnblockUser() throws Throwable {
+    public void iUnblockUser() {
         Long userId = testContext.getTestDTO(UserDTO.class).getId();
         RestResponse response = unblockUserUsingPUT.call(
             requestDataAndToken(
@@ -34,7 +34,7 @@ public class Administration extends StepBackground {
     }
 
     @When("^I block user with wrong id$")
-    public void iBlockUserWithWrongId() throws Throwable {
+    public void iBlockUserWithWrongId() {
         Long userId = Long.MAX_VALUE;
         RestResponse response = blockUserUsingPUT.call(
             requestDataAndToken(

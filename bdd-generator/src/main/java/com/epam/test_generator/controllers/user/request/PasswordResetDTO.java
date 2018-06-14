@@ -1,6 +1,6 @@
 package com.epam.test_generator.controllers.user.request;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 
 /**

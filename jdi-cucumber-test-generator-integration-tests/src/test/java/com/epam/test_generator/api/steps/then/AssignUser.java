@@ -11,7 +11,7 @@ import cucumber.api.java.en.Then;
 public class AssignUser extends StepBackground {
 
     @Then("^The user is assigned to a project$")
-    public void theUserIsAssignedToAProject() throws Throwable {
+    public void theUserIsAssignedToAProject() {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(200));
     }

@@ -2,7 +2,6 @@ package com.epam.test_generator.dao.interfaces;
 
 
 import com.epam.test_generator.DatabaseConfigForTests;
-import com.epam.test_generator.dao.interfaces.RoleDAO;
 import com.epam.test_generator.entities.Role;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 

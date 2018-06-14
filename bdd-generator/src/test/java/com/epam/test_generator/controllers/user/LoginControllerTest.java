@@ -1,6 +1,5 @@
 package com.epam.test_generator.controllers.user;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,9 +25,6 @@ public class LoginControllerTest {
 
     @InjectMocks
     private LoginController loginController;
-
-    @Mock
-    private LoginUserDTO loginUserDTO;
 
     private MockMvc mockMvc;
     private LoginUserDTO user;

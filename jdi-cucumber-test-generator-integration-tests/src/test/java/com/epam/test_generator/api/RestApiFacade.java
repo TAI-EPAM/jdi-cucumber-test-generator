@@ -5,17 +5,16 @@ import com.epam.test_generator.api.container.TestContext;
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
-import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
 import com.epam.test_generator.controllers.user.response.UserDTO;
 import com.epam.test_generator.dto.TokenDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashSet;
+import java.util.Set;
 import org.springframework.http.HttpStatus;
 
 import static com.epam.http.requests.RequestData.requestBody;
@@ -101,7 +100,7 @@ public class RestApiFacade {
     public void addCaseToSuit(CaseCreateDTO caseCreateDTO) throws Throwable {
         Long projectId = testContext.getTestDTO(ProjectDTO.class).getId();
         Long suitId = testContext.getTestDTO(SuitDTO.class).getId();
-        caseCreateDTO.setTags(testContext.getAndDeleteTestDTO(HashSet.class));
+        caseCreateDTO.setTags((Set<TagDTO>)testContext.getAndDeleteCollectionTestDTO(TagDTO.class));
         String caseCreateDTOAsString = mapper.writeValueAsString(caseCreateDTO);
         RestResponse response = addCaseToSuit.call(
             requestDataAndToken(d -> {

@@ -1,15 +1,16 @@
 package com.epam.test_generator.controllers.user.request;
 
+import com.epam.test_generator.controllers.user.response.UserDTO;
+import com.epam.test_generator.entities.User;
 import java.util.Objects;
-import org.hibernate.validator.constraints.Email;
-
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * This DTO represents {@Link User} essence, but only at the time of it's registration in the system. DTO is used only
+ * This DTO represents {@link User} essence, but only at the time of it's registration in the system. DTO is used only
  * to retrieve information about user without his role in the system or profile's status. In other situations it's more
- * convenient to use {@Link UserDTO}.
+ * convenient to use {@link UserDTO}.
  *
  */
 public class RegistrationUserDTO {

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AdminService {
 
-    public static final String ADMIN_NAME = "ADMIN";
+    private static final String ADMIN_NAME = "ADMIN";
 
     @Autowired
     private UserService userService;
