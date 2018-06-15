@@ -4,6 +4,7 @@ import static com.epam.test_generator.api.ApiTokenInserter.requestDataAndToken;
 import static com.epam.test_generator.api.BddGeneratorApi.getProjectSuit;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.epam.http.response.RestResponse;
 import com.epam.test_generator.api.steps.StepBackground;
@@ -90,6 +91,7 @@ public class Suit extends StepBackground {
         assertThat(actualSuitDTO.getDescription(), equalTo(suitUpdateDTO.getDescription()));
         assertThat(actualSuitDTO.getPriority(), equalTo(suitUpdateDTO.getPriority()));
         assertThat(actualSuitDTO.getCreationDate(), equalTo(oldSuitDTO.getCreationDate()));
+        assertTrue(actualSuitDTO.getUpdateDate() >= oldSuitDTO.getUpdateDate());
         assertThat(actualSuitDTO.getDisplayedStatusName(),
             equalTo(oldSuitDTO.getDisplayedStatusName()));
         assertThat(actualSuitDTO.getRowNumber(), equalTo(oldSuitDTO.getRowNumber()));

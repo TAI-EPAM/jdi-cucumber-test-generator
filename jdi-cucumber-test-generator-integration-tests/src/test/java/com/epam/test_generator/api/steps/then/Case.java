@@ -4,6 +4,7 @@ import static com.epam.test_generator.api.ApiTokenInserter.requestDataAndToken;
 import static com.epam.test_generator.api.BddGeneratorApi.getCase;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.epam.http.response.RestResponse;
 import com.epam.test_generator.api.steps.StepBackground;
@@ -102,6 +103,7 @@ public class Case extends StepBackground {
         assertThat(actualCaseDTO.getDescription(), equalTo(caseUpdateDTO.getDescription()));
         assertThat(actualCaseDTO.getPriority(), equalTo(caseUpdateDTO.getPriority()));
         assertThat(actualCaseDTO.getCreationDate(), equalTo(oldCaseDTO.getCreationDate()));
+        assertTrue(actualCaseDTO.getUpdateDate() >= oldCaseDTO.getUpdateDate());
         assertThat(actualCaseDTO.getDisplayedStatusName(),
             equalTo(caseUpdateDTO.getStatus().toString()));
         assertThat(actualCaseDTO.getRowNumber(), equalTo(oldCaseDTO.getRowNumber()));

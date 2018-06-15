@@ -49,7 +49,7 @@ public class CaseDTO {
     private String comment;
 
     public CaseDTO() {
-        creationDate = Instant.now().getEpochSecond();
+        creationDate = Instant.now().toEpochMilli();
         updateDate = creationDate;
     }
 

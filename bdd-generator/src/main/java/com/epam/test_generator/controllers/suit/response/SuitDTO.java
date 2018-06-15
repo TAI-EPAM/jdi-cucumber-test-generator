@@ -50,7 +50,7 @@ public class SuitDTO {
     }
 
     public SuitDTO() {
-        creationDate = Instant.now().getEpochSecond();
+        creationDate = Instant.now().toEpochMilli();
         updateDate = creationDate;
     }
 
