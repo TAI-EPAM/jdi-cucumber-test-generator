@@ -15,6 +15,8 @@ import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -156,6 +158,29 @@ public class SuitService {
         Project project = projectService.getProjectByProjectId(projectId);
         project.removeSuit(suit);
         return suitTransformer.toDto(suit);
+    }
+
+    /**
+     * Removes suit list from a project
+     *
+     * @param projectId id of project
+     * @param removeSuitsIds suit's id list marked for deletion
+     * @return as result we return list of deleted SuitDTO
+     */
+    public List<SuitDTO> removeSuits(long projectId, Long[] removeSuitsIds) {
+        List<Long> currentProjectSuits = projectService.getProjectByProjectId(projectId)
+                                                       .getSuits().stream()
+                                                       .map(Suit::getId)
+                                                       .collect(Collectors.toList());
+
+        if (!currentProjectSuits.containsAll(Arrays.asList(removeSuitsIds))) {
+            throw new BadRequestException("Some of suits aren't related to the project");
+        }
+
+        return Stream.of(removeSuitsIds)
+                     .distinct()
+                     .map(id -> removeSuit(projectId, id))
+                     .collect(Collectors.toList());
     }
 
     public List<SuitDTO> getSuitsFromProject(Long projectId) {

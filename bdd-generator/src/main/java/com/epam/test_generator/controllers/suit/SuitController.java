@@ -152,4 +152,29 @@ public class SuitController {
 
         return new ResponseEntity<>(removedSuitDTO, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "Delete suits from project", nickname = "removeSuits")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK"),
+        @ApiResponse(code = 404, message = "Suit not found"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectId", value = "ID of project",
+            required = true, dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = "removeSuitsIds", value = "IDs of suits to be removed",
+            required = true, dataType = "long", allowMultiple = true, paramType = "body"),
+        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            paramType = "header", dataType = "string", required = true)
+    })
+    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
+    @DeleteMapping
+    public ResponseEntity<List<SuitDTO>> removeSuits(@PathVariable("projectId") long projectId,
+                                                     @RequestBody Long[] removeSuitsIds) {
+        List<SuitDTO> removedSuitDTO = suitService.removeSuits(projectId, removeSuitsIds);
+
+        return new ResponseEntity<>(removedSuitDTO, HttpStatus.OK);
+    }
+
+
 }

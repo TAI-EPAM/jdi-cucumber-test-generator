@@ -276,4 +276,16 @@ public class SuitControllerTest {
 
         verify(suitService).addSuit(anyLong(), any(SuitCreateDTO.class));
     }
+
+    @Test
+    public void removeSuits_Suits_StatusOk() throws Exception {
+        Long[] suitsId = {1L, 3L, 4L};
+
+        mockMvc.perform(delete("/projects/" + SIMPLE_PROJECT_ID + "/suits")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(suitsId)))
+               .andExpect(status().isOk());
+
+        verify(suitService).removeSuits(eq(SIMPLE_PROJECT_ID), eq(suitsId));
+    }
 }
