@@ -52,6 +52,11 @@ git clone https://github.com/TAI-EPAM/jdi-cucumber-test-generator.git
 2) Select "maven projects"->"plugins"->"tomcat7".
 3) Execute "run-war" target. Wait for IDEA to build and deploy .war package. 
 4) Open browser and navigate to "localhost:8080/cucumber/swagger-ui.html#/"
+5) In first start use default login
+
+>The application has one user with role Admin by default.
+>Please use "admin@mail.com" as login and "admin" as password for login.
+>We recomend changing default password for this user.
 
 ## What technologies we used
 

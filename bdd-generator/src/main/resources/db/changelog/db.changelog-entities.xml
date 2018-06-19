@@ -214,4 +214,32 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="Konstantin Bobrov" id="create_default_roles">
+        <insert tableName="ROLE">
+            <column name="NAME" value="ADMIN"/>
+        </insert>
+        <insert tableName="ROLE">
+            <column name="NAME" value="TEST_ENGINEER"/>
+        </insert>
+        <insert tableName="ROLE">
+            <column name="NAME" value="TEST_LEAD"/>
+        </insert>
+        <insert tableName="ROLE">
+            <column name="NAME" value="GUEST"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="Konstantin Bobrov" id="create_default_admin">
+        <insert tableName="USER">
+            <column name="EMAIL" value="admin@mail.com"/>
+            <column name="PASSWORD" value="$2a$10$b8myM0VkLZTkSAgQ2Ijs.e9t.WGvXVnPKtJDQMZ7iJWdZ6uVZRX6u"/>
+            <column name="ROLE_ID" value="1"/>
+            <column name="NAME" value="adminName"/>
+            <column name="SURNAME" value="adminSurname"/>
+            <column name="ATTEMPTS" value="0"/>
+            <column name="LOCKED" value="0"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

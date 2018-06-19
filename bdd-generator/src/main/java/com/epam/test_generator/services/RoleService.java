@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@PropertySource("classpath:roles.properties")
 @Transactional
 @Service
 public class RoleService {
@@ -44,17 +43,5 @@ public class RoleService {
      */
     public List<Role> findAll() {
         return roleDAO.findAll();
-    }
-
-    /**
-     * Returns all roles from properties file in list
-     * @return list of all roles from properties
-     */
-    public List<Role> getRolesFromProperties() {
-        String[] split = environment.getProperty("roles").split(", ");
-        List<String> roleNames = Arrays.asList(split);
-        return roleNames.stream().
-                map(Role::new).
-                collect(Collectors.toList());
     }
 }
