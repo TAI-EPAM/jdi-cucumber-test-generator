@@ -15,7 +15,7 @@ import com.epam.test_generator.services.EmailService;
 import com.epam.test_generator.services.PasswordService;
 import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.UserService;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

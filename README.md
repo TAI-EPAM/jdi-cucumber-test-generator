@@ -11,7 +11,8 @@ Web application for creating and managing automated UI test scenarios and genera
  2. [Target users](#target-users)
  3. [Download](#download-application)
  4. [Run](#run-web-application)
- 5. [What technologies we used](#what-technologies-we-used)
+ 5. [How to run tests](#how-to-run-tests)
+ 6. [What technologies we used](#what-technologies-we-used)
  
 ## Synopsis
 This is a web-application that provides an user interface for testers. One can create and store
@@ -57,6 +58,29 @@ git clone https://github.com/TAI-EPAM/jdi-cucumber-test-generator.git
 >The application has one user with role Admin by default.
 >Please use "admin@mail.com" as login and "admin" as password for login.
 >We recomend changing default password for this user.
+
+## How to run tests
+
+**To run all unit tests you need to enter the following command:**
+
+```text
+mvn clean test -f bdd-generator
+```
+
+**To run integration tests you need to perform the following actions:**
+
+* Install the package into the local repository, for use as a dependency in other projects locally
+```text
+mvn clean install -DskipTests=true
+```
+* Run the application with the integration profile
+```text
+mvn clean spring-boot:run -f bdd-generator -Dspring.profiles.active=integration-tests
+```
+* Run all integration tests
+```text
+mvn clean test -f jdi-cucumber-test-generator-integration-tests -DskipTests=false
+```
 
 ## What technologies we used
 

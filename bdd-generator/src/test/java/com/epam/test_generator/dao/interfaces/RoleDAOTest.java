@@ -1,17 +1,17 @@
 package com.epam.test_generator.dao.interfaces;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 import com.epam.test_generator.entities.Role;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.transaction.Transactional;
-
-import static org.hamcrest.CoreMatchers.*;
 
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)

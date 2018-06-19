@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
     strict = true,
     features = "src/test/resources/com/epam/test_generator/api/crud",
-    plugin = "com.github.kirlionik.cucumberallure.AllureReporter",
     glue = "com.epam.test_generator.api.steps"
 )
 public class RunnerForCrud {

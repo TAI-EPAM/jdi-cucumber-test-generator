@@ -63,13 +63,10 @@ public class TestResultDAOTest {
         Long projectId = save.get(0).getProject().getId();
         assertThat(projectId, is(notNullValue()));
 
-
         testResultDAO.save(extraTestResult);
-
 
         List<TestResult> all = testResultDAO.findAll();
         assertThat(all.size(), is(equalTo(11)));
-
 
         List<TestResult> allByProjectIdOrderByDateDesc =
             testResultDAO.findAllByProjectIdOrderByDateDesc(projectId);

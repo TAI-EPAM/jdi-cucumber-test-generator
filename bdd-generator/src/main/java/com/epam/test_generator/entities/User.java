@@ -2,8 +2,8 @@ package com.epam.test_generator.entities;
 
 
 import com.epam.test_generator.entities.api.UserTrait;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 
