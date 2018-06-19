@@ -1,21 +1,19 @@
 package com.epam.test_generator.dao.interfaces;
 
-import com.epam.test_generator.DatabaseConfigForTests;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+
 import com.epam.test_generator.entities.Token;
+import javax.transaction.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-
+@SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
 public class TokenDAOTest {
 

@@ -52,6 +52,7 @@ public class Project implements
     private List<Suit> suits = new ArrayList<>();
 
     @ManyToMany
+    @JoinTable(name = "PROJECT_USER")
     private Set<User> users = new HashSet<>();
 
     @OneToMany(cascade = {CascadeType.ALL})

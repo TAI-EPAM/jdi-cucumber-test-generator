@@ -1,6 +1,5 @@
 package com.epam.test_generator.dao.interfaces;
 
-import com.epam.test_generator.DatabaseConfigForTests;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import java.util.ArrayList;
@@ -11,11 +10,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {DatabaseConfigForTests.class})
 @Transactional
 public class StepSuggestionDAOTest {
 
