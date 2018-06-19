@@ -49,6 +49,7 @@ public class Project implements
     private String description;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "PROJECT_SUIT")
     private List<Suit> suits = new ArrayList<>();
 
     @ManyToMany

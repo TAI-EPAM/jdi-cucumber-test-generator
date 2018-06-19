@@ -59,6 +59,7 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
     private Set<Tag> tags;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "SUIT_CASE")
     private List<Case> cases = new ArrayList<>();
 
     private Integer rowNumber;

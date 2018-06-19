@@ -3,8 +3,8 @@ package com.epam.test_generator.file_generator;
 
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
-import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.StepType;
 import java.io.File;
 import java.io.IOException;
@@ -14,20 +14,20 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class FileGeneratorTest extends Assert {
-
+    @Autowired
     private FileGenerator fileGenerator;
 
     private SuitDTO suit;
     private List<CaseDTO> cases;
-
-    @Before
-    public void prepareFileGenerator() {
-        fileGenerator = new FileGenerator();
-    }
 
     @Test
     public void generate_SuitWithCases_Success() throws IOException {

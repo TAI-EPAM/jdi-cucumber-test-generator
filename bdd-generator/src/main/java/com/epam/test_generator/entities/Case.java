@@ -46,6 +46,7 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
 
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "CASE_STEP")
     private List<Step> steps;
 
     private ZonedDateTime creationDate;

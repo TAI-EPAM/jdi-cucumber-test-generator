@@ -47,6 +47,7 @@ public class StepSuggestion implements Versionable {
     private Project project;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "STEPSUGGESTION_STEP")
     private List<Step> steps = new ArrayList<>();
 
     public StepSuggestion() {
