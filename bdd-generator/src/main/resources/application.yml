@@ -1,10 +1,21 @@
-spring.datasource.driver-class-name: org.h2.Driver
-spring.datasource.url: jdbc:h2:file:~/h2/app_db
-spring.datasource.username: sa
-spring.datasource.password: sa
-spring.jpa.hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-spring.liquibase.change-log: classpath:db/changelog/db.changelog-master.xml
 spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:~/h2/app_db
+    username: sa
+    password: sa
+  jpa:
+    show_sql: false
+    hibernate.ddl-auto: none
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        event.merge.entity_copy_observer: allow
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    drop-first: false
+    enabled: true
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
