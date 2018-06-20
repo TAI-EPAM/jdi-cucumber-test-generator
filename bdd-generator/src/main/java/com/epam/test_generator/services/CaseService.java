@@ -122,8 +122,6 @@ public class CaseService {
 
         Case updatedCase = caseTransformer.updateFromDto(caseUpdateDTO, caze);
 
-        updatedCase = caseDAO.save(updatedCase);
-
         CaseDTO updatedCaseDTO = caseTransformer.toDto(updatedCase);
 
         caseVersionDAO.save(caze);
@@ -160,7 +158,6 @@ public class CaseService {
             });
 
         removedCases.forEach(suit::removeCase);
-        suitVersionDAO.save(suit);
 
         return caseTransformer.toDtoList(removedCases);
     }
@@ -208,7 +205,6 @@ public class CaseService {
         StateMachine<Status, Event> stateMachine = stateMachineAdapter.restore(cs);
         if (stateMachine.sendEvent(event)) {
             stateMachineAdapter.persist(stateMachine, cs);
-            caseDAO.save(cs);
 
             caseVersionDAO.save(cs);
             suitVersionDAO.save(suitService.getSuit(projectId, suitId));
@@ -237,7 +233,6 @@ public class CaseService {
             }
             caze.setRowNumber(dto.getRowNumber());
             caseVersionDAO.save(caze);
-            caseDAO.save(caze);
         }
 
         suitVersionDAO.save(suit);

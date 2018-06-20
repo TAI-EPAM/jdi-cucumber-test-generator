@@ -122,8 +122,6 @@ public class ProjectService {
         throwExceptionIfProjectIsNotActive(project);
 
         projectTransformer.updateFromDto(projectDTO, project);
-        project.setId(projectId);
-        projectDAO.save(project);
     }
 
     /**
@@ -146,7 +144,6 @@ public class ProjectService {
 
         User user = userService.getUserById(userId);
         project.addUser(user);
-        projectDAO.save(project);
     }
 
     /**
@@ -164,7 +161,6 @@ public class ProjectService {
         throwExceptionIfUserIsNotOnProject(project, user);
 
         project.removeUser(user);
-        projectDAO.save(project);
     }
 
     /**
@@ -177,7 +173,6 @@ public class ProjectService {
         throwExceptionIfProjectIsNotActive(project);
 
         project.deactivate();
-        projectDAO.save(project);
     }
 
 

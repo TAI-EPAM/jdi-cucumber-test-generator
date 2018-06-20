@@ -1,10 +1,7 @@
 package com.epam.test_generator.services;
 
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,7 +15,6 @@ import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
-import com.epam.test_generator.dao.interfaces.UserDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -170,7 +166,8 @@ public class JiraServiceTest {
         when(jiraStory.getPriority()).thenReturn(PRIORITY);
         jiraService.addStoriesToExistedProject(Collections.singletonList(jiraStory), JIRA_PROJECT_KEY);
 
-        verify(projectDAO).save(any(Project.class));
+        verify(projectDAO).findByJiraKey(JIRA_PROJECT_KEY);
+        verify(project).addSuits(anyList());
     }
 
     @Test
@@ -217,10 +214,15 @@ public class JiraServiceTest {
         when(caseDAO.findByJiraKey(anyString())).thenReturn(caze);
         when(jiraSubTask.getJiraKey()).thenReturn(JIRA_KEY);
 
+        when(jiraSubTask.getName()).thenReturn("jiraSubTaskName");
+        when(jiraSubTask.getDescription()).thenReturn("jiraSubTaskDesc");
+
         jiraService.syncFromJira(JIRA_SETTINGS_ID);
 
         verify(suitDAO).save(any(Suit.class));
-        verify(caseDAO).save(any(Case.class));
+        verify(caze).setName(eq("jiraSubTaskName"));
+        verify(caze).setDescription(eq("jiraSubTaskDesc"));
+        verify(caze).setLastJiraSyncDate(any(ZonedDateTime.class));
     }
 
     @Test

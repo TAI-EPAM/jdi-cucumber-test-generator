@@ -186,7 +186,6 @@ public class StepServiceTest {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID)).thenReturn(suit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID,SIMPLE_CASE_ID)).thenReturn(caze);
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
-        when(stepSuggestionDAO.save(any(StepSuggestion.class))).thenReturn(stepSuggestion);
         when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
         when(stepSuggestionService.getStepSuggestion(SIMPLE_PROJECT_ID, newStep)).thenReturn(stepSuggestion);
         StepDTO actualDto = stepService.addStepToCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, newStepDTO);
@@ -221,7 +220,6 @@ public class StepServiceTest {
         when(suitService.getSuit(SIMPLE_PROJECT_ID, 2L)).thenReturn(newSuit);
         when(caseService.getCase(SIMPLE_PROJECT_ID, 2L,3L)).thenReturn(newCase);
         when(stepDAO.save(any(Step.class))).thenReturn(newStep);
-        when(stepSuggestionDAO.save(any(StepSuggestion.class))).thenReturn(stepSuggestion);
         when(stepTransformer.fromDto(any(StepCreateDTO.class))).thenReturn(newStep);
         when(stepSuggestionService.getStepSuggestion(SIMPLE_PROJECT_ID, newStep)).thenReturn(stepSuggestion);
 

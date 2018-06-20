@@ -144,7 +144,7 @@ public class JiraService {
     public Project addStoriesToExistedProject(List<JiraStory> stories, String projectKey) {
         Project project = checkNotNull(projectDAO.findByJiraKey(projectKey));
         project.addSuits(mapJiraStoriesToSuits(stories));
-        return projectDAO.save(project);
+        return project;
     }
 
     private List<Suit> mapJiraStoriesToSuits(List<JiraStory> stories) {
@@ -273,7 +273,6 @@ public class JiraService {
         caze.setDescription(jiraSubTask.getDescription());
         caze.setPriority(getPriority(jiraSubTask.getPriority()));
         caze.setLastJiraSyncDate(ZonedDateTime.now());
-        caseDAO.save(caze);
     }
 
     private Integer getPriority(String priority) {

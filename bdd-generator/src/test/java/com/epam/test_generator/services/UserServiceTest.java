@@ -165,8 +165,6 @@ public class UserServiceTest {
         sut.updateFailureAttempts(USER_ID);
         actualAttempts = sut.updateFailureAttempts(USER_ID);
 
-        verify(userDAO, times(3)).save(any(User.class));
-
         assertEquals(expectedAttempts, actualAttempts);
         assertEquals(expectedAttempts, (long) user.getLoginAttempts());
         assertFalse(user.isLocked());
@@ -184,7 +182,6 @@ public class UserServiceTest {
         when(userDAO.findById(anyLong())).thenReturn(Optional.of(user));
 
         actualAttempts = sut.updateFailureAttempts(USER_ID);
-        verify(userDAO, times(1)).save(any(User.class));
         assertEquals(expectedAttempts, actualAttempts);
         assertTrue(user.isLocked());
     }

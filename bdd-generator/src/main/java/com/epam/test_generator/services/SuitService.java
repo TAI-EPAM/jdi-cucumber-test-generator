@@ -121,7 +121,6 @@ public class SuitService {
         suit.setUpdateDate(now);
         suit.setLastModifiedDate(now);
 
-        suitDAO.save(suit);
         suitVersionDAO.save(suit);
         caseVersionDAO.save(suit.getCases());
 
@@ -225,7 +224,6 @@ public class SuitService {
             suit.setRowNumber(patch.get(suit.getId()));
         }
 
-        suitDAO.saveAll(suits);
         suitVersionDAO.save(suits);
 
         return rowNumberUpdates;

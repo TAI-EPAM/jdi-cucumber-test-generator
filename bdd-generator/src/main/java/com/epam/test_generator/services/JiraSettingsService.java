@@ -39,7 +39,6 @@ public class JiraSettingsService {
         JiraSettings jiraSettings = jiraSettingsDAO.findById(id)
             .orElseThrow(NotFoundException::new);
         jiraSettingsTransformer.updateFromDto(jiraSettingsUpdateDTO, jiraSettings);
-        jiraSettingsDAO.save(jiraSettings);
     }
 
     public List<JiraSettingsDTO> getJiraSettings() {

@@ -145,8 +145,7 @@ public class StepSuggestionService {
             step.setType(stepSuggestion.getType());
         });
         stepDAO.saveAll(stepSuggestion.getSteps());
-        return stepSuggestionTransformer.toDto(
-            stepSuggestionDAO.save(stepSuggestion));
+        return stepSuggestionTransformer.toDto(stepSuggestion);
     }
 
     /**
@@ -162,15 +161,12 @@ public class StepSuggestionService {
         stepSuggestion.getSteps().forEach(step -> stepService.removeStep(projectId, step.getId()));
 
         project.removeStepSuggestion(stepSuggestion);
-
-        projectDAO.save(project);
     }
 
     public void removeSteps(Long projectId, List<Step> steps) {
         steps.forEach(step -> {
             StepSuggestion stepSuggestion = getStepSuggestion(projectId, step);
             stepSuggestion.remove(step);
-            stepSuggestionDAO.save(stepSuggestion);
         });
     }
 

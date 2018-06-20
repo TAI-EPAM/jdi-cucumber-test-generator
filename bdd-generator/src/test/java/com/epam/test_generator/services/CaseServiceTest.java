@@ -244,7 +244,6 @@ public class CaseServiceTest {
     public void update_Case_Success() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findById(anyLong())).thenReturn(Optional.of(caze));
-        when(caseDAO.save(caze)).thenReturn(caze);
         when(caseTransformer.updateFromDto(caseUpdateDTO, caze)).thenReturn(updatedCase);
         when(caseTransformer.toDto(caze)).thenReturn(expectedCaseDTO);
 
@@ -255,7 +254,6 @@ public class CaseServiceTest {
         assertEquals(actualCaseDTO, expectedCaseDTO);
         verify(suitService).getSuit(eq(SIMPLE_PROJECT_ID) , eq(SIMPLE_SUIT_ID));
         verify(caseDAO).findById(eq(SIMPLE_CASE_ID));
-        verify(caseDAO).save(eq(caze));
         verify(caseTransformer).toDto(eq(caze));
         verify(caseVersionDAO).save(eq(caze));
     }

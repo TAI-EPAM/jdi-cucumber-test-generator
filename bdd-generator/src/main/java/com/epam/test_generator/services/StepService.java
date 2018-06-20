@@ -102,7 +102,6 @@ public class StepService {
         suit.updateStatus();
 
         step = stepDAO.save(step);
-        stepSuggestionDAO.save(stepSuggestion);
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
@@ -162,7 +161,6 @@ public class StepService {
         caze.removeStep(step);
         suit.updateStatus();
 
-        stepSuggestionDAO.save(stepSuggestion);
         stepDAO.delete(step);
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);

@@ -160,8 +160,6 @@ public class StepSuggestionServiceTest {
     public void updateStepSuggestion_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
-        when(stepSuggestionDAO.save(any(StepSuggestion.class)))
-            .thenAnswer(a -> a.getArgument(0));
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
         doCallRealMethod().when(stepSuggestionTransformer).updateFromDto(any(), any());
 

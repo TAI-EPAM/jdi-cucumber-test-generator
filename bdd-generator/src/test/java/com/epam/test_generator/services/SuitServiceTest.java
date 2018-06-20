@@ -208,14 +208,12 @@ public class SuitServiceTest {
     public void update_Suit_Success() {
         when(projectService.getProjectByProjectId(SIMPLE_PROJECT_ID)).thenReturn(expectedProject);
         when(suitDAO.findById(anyLong())).thenReturn(Optional.of(expectedSuit));
-        when(suitDAO.save(expectedSuit)).thenReturn(expectedSuit);
         when(suitTransformer.toDto(expectedSuit)).thenReturn(expectedSuitDTO);
 
         suitService.updateSuit(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, suitUpdateDTO);
 
         verify(projectService).getProjectByProjectId(eq(SIMPLE_PROJECT_ID));
         verify(suitDAO).findById(eq(SIMPLE_SUIT_ID));
-        verify(suitDAO).save(eq(expectedSuit));
         verify(suitVersionDAO).save(eq(expectedSuit));
         verify(suitTransformer).toDto(eq(expectedSuit));
     }
@@ -310,7 +308,6 @@ public class SuitServiceTest {
         assertThat(2, is(equalTo(suits.get(1).getRowNumber())));
         assertEquals(rowNumbers, actualUpdatedSuitDTOs);
 
-        verify(suitDAO).saveAll(eq(suits));
         verify(suitVersionDAO).save(eq(suits));
     }
 
