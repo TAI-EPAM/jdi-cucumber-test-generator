@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@PropertySource("classpath:email.messages.properties")
 public class PasswordService {
 
     @Autowired

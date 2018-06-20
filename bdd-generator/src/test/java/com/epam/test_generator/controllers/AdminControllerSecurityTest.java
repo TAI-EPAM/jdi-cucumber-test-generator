@@ -37,10 +37,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class})
 @WebAppConfiguration
+@SpringBootTest
 public class AdminControllerSecurityTest {
 
     private final LoginUserDTO loginUserDTO = new LoginUserDTO();

@@ -6,11 +6,9 @@ import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +16,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 @Service
 @Transactional
-@PropertySource("classpath:email.messages.properties")
 @Profile("!integration-tests")
 public class EmailServiceImpl implements EmailService {
 
@@ -28,9 +25,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private JavaMailSender emailSender;
-
-    @Autowired
-    private JavaMailSenderImpl javaMailSender;
 
     @Autowired
     private TokenService tokenService;
@@ -71,7 +65,7 @@ public class EmailServiceImpl implements EmailService {
         String subject = environment.getProperty("subject.password.message");
         String text = environment.getProperty("reset.password.message");
         text = String.format(text, user.getName(), user.getSurname(), resetUrl,
-            javaMailSender.getUsername());
+            environment.getProperty("spring.mail.username"));
         sendSimpleMessage(user.getEmail(), subject, text);
     }
 
