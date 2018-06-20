@@ -349,7 +349,7 @@ public class CaseServiceTest {
         caseService.getCaseVersions(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID);
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test(expected = NotFoundException.class)
     public void getCaseVersions_CaseDoesNotBelongsToSuit_BadRequestException() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findById(anyLong())).thenReturn(Optional.of(new Case()));
@@ -392,7 +392,7 @@ public class CaseServiceTest {
             .restoreCase(SIMPLE_PROJECT_ID, SIMPLE_SUIT_ID, SIMPLE_CASE_ID, SIMPLE_COMMIT_ID);
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test(expected = NotFoundException.class)
     public void restoreCase_CaseDoesNotBelongsToSuit_BadRequestException() {
         when(suitService.getSuit(anyLong(), anyLong())).thenReturn(suit);
         when(caseDAO.findById(anyLong())).thenReturn(Optional.of(new Case()));

@@ -65,13 +65,8 @@ public class CaseService {
     public Case getCase(Long projectId, Long suitId, Long caseId) {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseDAO.findById(caseId).orElseThrow(NotFoundException::new);
-        if (suit.hasCase(caze)) {
-            return caze;
-        } else {
-            throw new BadRequestException(
-                String.format("Error: suit %s does not have case %s", suit.getName(),
-                    caze.getName()));
-        }
+        throwExceptionIfCaseIsNotInSuit(suit, caze);
+        return caze;
     }
 
     public CaseDTO getCaseDTO(Long projectId, Long suitId, Long caseId) {
@@ -123,11 +118,7 @@ public class CaseService {
 
         Case caze = caseDAO.findById(caseId).orElseThrow(NotFoundException::new);
 
-        if (!suit.hasCase(caze)) {
-            throw new BadRequestException(
-                    String.format("Error: suit %s does not have case %s", suit.getName(),
-                            caze.getName()));
-        }
+        throwExceptionIfCaseIsNotInSuit(suit, caze);
 
         Case updatedCase = caseTransformer.updateFromDto(caseUpdateDTO, caze);
 
@@ -252,5 +243,13 @@ public class CaseService {
         suitVersionDAO.save(suit);
 
         return rowNumberUpdates;
+    }
+
+    private void throwExceptionIfCaseIsNotInSuit(Suit suit, Case caze) {
+        if (!suit.hasCase(caze)) {
+            throw new NotFoundException(
+                String.format("Error: Suit %s does not have case %d", suit.getName(),
+                    caze.getId()));
+        }
     }
 }

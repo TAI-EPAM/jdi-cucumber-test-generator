@@ -14,7 +14,6 @@ import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.util.List;
@@ -191,8 +190,8 @@ public class StepService {
 
     private void throwExceptionIfStepIsNotInCase(Case aCase, Step step) {
         if (!aCase.hasStep(step)) {
-            throw new BadRequestException(
-                String.format("Error: Case %s does not have step %s", aCase.getName(),
+            throw new NotFoundException(
+                String.format("Error: Case %s does not have step %d", aCase.getName(),
                     step.getId()));
         }
     }

@@ -128,7 +128,7 @@ public class SuitController {
                                                                             @RequestBody @Valid ListWrapper<SuitRowNumberUpdateDTO> rowNumberUpdates) {
 
         List<SuitRowNumberUpdateDTO> updatedSuitRowNumberUpdateDTOs = suitService
-            .updateSuitRowNumber(rowNumberUpdates.getList());
+            .updateSuitRowNumber(projectId, rowNumberUpdates.getList());
         return new ResponseEntity<>(updatedSuitRowNumberUpdateDTOs, HttpStatus.OK);
     }
 

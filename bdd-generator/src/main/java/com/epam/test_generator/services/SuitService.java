@@ -67,13 +67,8 @@ public class SuitService {
     public Suit getSuit(long projectId, long suitId) {
         Project project = projectService.getProjectByProjectId(projectId);
         Suit suit = suitDAO.findById(suitId).orElseThrow(NotFoundException::new);
-        if (project.hasSuit(suit)) {
-            return suit;
-        } else {
-            throw new BadRequestException(
-                String.format("Error: project %s does not have suit %s", project.getName(),
-                    suit.getName()));
-        }
+        throwExceptionIfSuitIsNotInProject(project, suit);
+        return suit;
     }
 
     public SuitDTO getSuitDTO(long projectId, long suitId) {
@@ -191,11 +186,12 @@ public class SuitService {
     /**
      * Updates suit's rowNumbers by suit's ids specified in List of SuitRowNumberUpdateDTOs
      *
+     * @param projectId id of project
      * @param rowNumberUpdates List of SuitRowNumberUpdateDTOs
      * @return list of {@link SuitRowNumberUpdateDTO} to check on the frontend
      */
-    public List<SuitRowNumberUpdateDTO> updateSuitRowNumber(List<SuitRowNumberUpdateDTO>
-                                                                rowNumberUpdates) {
+    public List<SuitRowNumberUpdateDTO> updateSuitRowNumber(long projectId,
+                                                            List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
         if (rowNumberUpdates.isEmpty()) {
             throw new BadRequestException("The list has not to be empty");
         }
@@ -221,6 +217,10 @@ public class SuitService {
             throw new BadRequestException(
                 "One or more of the ids is a duplicate or it does not exist in the database");
         }
+
+        Project project = projectService.getProjectByProjectId(projectId);
+        suits.forEach((suit) -> throwExceptionIfSuitIsNotInProject(project, suit));
+
         for (Suit suit : suits) {
             suit.setRowNumber(patch.get(suit.getId()));
         }
@@ -255,5 +255,13 @@ public class SuitService {
         caseVersionDAO.save(suitToRestore.getCases());
 
         return suitTransformer.toDto(restoredSuit);
+    }
+
+    private void throwExceptionIfSuitIsNotInProject(Project project, Suit suit) {
+        if (!project.hasSuit(suit)) {
+            throw new NotFoundException(
+                String.format("Error: Project %s does not have suit %d", project.getName(),
+                    suit.getId()));
+        }
     }
 }
