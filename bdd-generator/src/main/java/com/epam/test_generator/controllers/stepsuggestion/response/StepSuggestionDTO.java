@@ -5,20 +5,16 @@ import com.epam.test_generator.entities.StepType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class StepSuggestionDTO {
 
-    @NotNull
     private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 255)
     private String content;
 
-    @NotNull
     private StepType type;
+
+    private Long version;
 
     private List<StepDTO> steps = new ArrayList<>();
 
@@ -28,20 +24,16 @@ public class StepSuggestionDTO {
         this.type = type;
     }
 
-
-    public StepSuggestionDTO(String content, StepType type) {
-        this.content = content;
-        this.type = type;
-    }
-
     public StepSuggestionDTO() {
     }
 
-    public StepSuggestionDTO(Long id, String content, StepType type, List<StepDTO> steps) {
+    public StepSuggestionDTO(Long id, String content, StepType type, List<StepDTO> steps,
+                             Long version) {
         this.id = id;
         this.content = content;
         this.type = type;
         this.steps = steps;
+        this.version = version;
     }
 
     public Long getId() {
@@ -76,6 +68,14 @@ public class StepSuggestionDTO {
         this.steps = steps;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "StepSuggestionDTO{" +
@@ -83,6 +83,7 @@ public class StepSuggestionDTO {
             ", content='" + content + '\'' +
             ", type=" + type +
             ", steps=" + steps +
+            ", version=" + version +
             '}';
     }
 
@@ -97,12 +98,13 @@ public class StepSuggestionDTO {
         StepSuggestionDTO that = (StepSuggestionDTO) o;
         return Objects.equals(id, that.id) &&
             Objects.equals(content, that.content) &&
-            type == that.type;
+            Objects.equals(type, that.type) &&
+            Objects.equals(version, that.version);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, content, type);
+        return Objects.hash(id, content, type, version);
     }
 }

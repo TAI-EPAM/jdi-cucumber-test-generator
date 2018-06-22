@@ -92,7 +92,9 @@ public class StepSuggestionControllerTest {
         StepSuggestionCreateDTO stepSuggestionCreateDTO = new StepSuggestionCreateDTO();
         stepSuggestionCreateDTO.setContent("content");
         stepSuggestionCreateDTO.setType(StepType.ANY);
-        StepSuggestionDTO stepSuggestionDTO = new StepSuggestionDTO("content", StepType.ANY);
+        StepSuggestionDTO stepSuggestionDTO = new StepSuggestionDTO();
+        stepSuggestionDTO.setContent("content");
+        stepSuggestionDTO.setType(StepType.ANY);
         when(stepSuggestionService.addStepSuggestion(SIMPLE_PROJECT_ID, stepSuggestionCreateDTO))
             .thenReturn(stepSuggestionDTO);
 

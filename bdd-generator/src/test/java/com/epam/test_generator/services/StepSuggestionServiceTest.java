@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -134,6 +135,7 @@ public class StepSuggestionServiceTest {
 
         List<StepSuggestionDTO> expectedDTOs = stepSuggestionDTOS.stream()
             .filter(s -> s.getType().equals(GIVEN))
+            .peek(s -> s.setVersion(0L))
             .collect(Collectors.toList());
         List<StepSuggestionDTO> actualDTOs =
             stepSuggestionService.getStepsSuggestionsByType(PROJECT_ID, GIVEN);
@@ -157,7 +159,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void updateStepSuggestion_Success() {
+    public void updateStepSuggestion_CorrectData_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
@@ -168,11 +170,24 @@ public class StepSuggestionServiceTest {
         updateDTO.setVersion(0L);
 
         StepSuggestionDTO expectedDto = new StepSuggestionDTO(ID_1, CONTENT_2, GIVEN);
+        expectedDto.setVersion(0L);
 
         StepSuggestionDTO actualDto =
             stepSuggestionService.updateStepSuggestion(PROJECT_ID, ID_1, updateDTO);
 
         assertEquals(expectedDto, actualDto);
+    }
+
+    @Test(expected = OptimisticLockingFailureException.class)
+    public void updateStepSuggestion_WrongVersion_OptimisticLockingFailureException() {
+        when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
+        when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
+
+        StepSuggestionUpdateDTO updateDTO = new StepSuggestionUpdateDTO();
+        updateDTO.setContent(CONTENT_2);
+        updateDTO.setVersion(100L);
+
+        stepSuggestionService.updateStepSuggestion(PROJECT_ID, ID_1, updateDTO);
     }
 
     @Test

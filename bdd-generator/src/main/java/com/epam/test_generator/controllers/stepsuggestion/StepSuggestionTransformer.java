@@ -25,7 +25,8 @@ public class StepSuggestionTransformer {
             stepSuggestion.getId(),
             stepSuggestion.getContent(),
             stepSuggestion.getType(),
-            stepDTOs
+            stepDTOs,
+            stepSuggestion.getVersion()
         );
     }
 
