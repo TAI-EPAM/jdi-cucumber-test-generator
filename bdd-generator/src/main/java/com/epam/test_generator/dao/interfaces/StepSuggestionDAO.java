@@ -15,7 +15,8 @@ public interface StepSuggestionDAO extends JpaRepository<StepSuggestion, Long> {
 
     Page<StepSuggestion> findByProject(Project project, Pageable pageable);
 
-    Page<StepSuggestion> findByProjectIdAndContentIgnoreCaseContaining(Long projectId,
-                                                                       String searchString,
-                                                                       Pageable pageable);
+    Page<StepSuggestion> findByProjectIdAndContentIgnoreCaseContainingOrderByLastUsedDateDesc(
+        Long projectId,
+        String searchString,
+        Pageable pageable);
 }

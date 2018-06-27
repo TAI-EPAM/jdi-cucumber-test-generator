@@ -16,6 +16,7 @@ import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.services.exceptions.NotFoundException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,12 +128,9 @@ public class StepService {
         StepSuggestion oldStepSuggestion = stepSuggestionService.getStepSuggestion(projectId, oldStep);
         Step newStep = stepTransformer.updateFromDto(stepUpdateDTO, oldStep);
         StepSuggestion newStepSuggestion = stepSuggestionService.getStepSuggestion(projectId, newStep);
-        stepDAO.save(newStep);
         if(!Objects.equals(oldStepSuggestion, newStepSuggestion)) {
             oldStepSuggestion.remove(oldStep);
             newStepSuggestion.add(newStep);
-            stepSuggestionDAO.save(oldStepSuggestion);
-            stepSuggestionDAO.save(newStepSuggestion);
         }
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
@@ -156,7 +154,6 @@ public class StepService {
         throwExceptionIfStepIsNotInCase(caze, step);
 
         StepSuggestion stepSuggestion = stepSuggestionService.getStepSuggestion(projectId, step);
-
         stepSuggestion.remove(step);
         caze.removeStep(step);
         suit.updateStatus();

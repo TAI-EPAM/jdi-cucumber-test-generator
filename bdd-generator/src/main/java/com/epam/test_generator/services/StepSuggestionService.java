@@ -7,14 +7,15 @@ import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestion
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
-import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.exceptions.AlreadyExistsException;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,13 +223,11 @@ public class StepSuggestionService {
 
         Pageable numberOfReturnedResults = PageRequest.of(pageNumber - 1, pageSize);
         List<StepSuggestion> foundStepsSuggestions = stepSuggestionDAO
-            .findByProjectIdAndContentIgnoreCaseContaining(projectId, searchString,
-                numberOfReturnedResults)
+            .findByProjectIdAndContentIgnoreCaseContainingOrderByLastUsedDateDesc(
+                projectId, searchString, numberOfReturnedResults)
             .getContent();
 
         return stepSuggestionTransformer
             .toDtoList(foundStepsSuggestions);
     }
-
-
 }

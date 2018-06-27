@@ -18,6 +18,8 @@ public class StepSuggestionDTO {
 
     private List<StepDTO> steps = new ArrayList<>();
 
+    private Long lastUsedTime;
+
     public StepSuggestionDTO(Long id, String content, StepType type) {
         this.id = id;
         this.content = content;
@@ -27,11 +29,13 @@ public class StepSuggestionDTO {
     public StepSuggestionDTO() {
     }
 
-    public StepSuggestionDTO(Long id, String content, StepType type, List<StepDTO> steps,
+    public StepSuggestionDTO(Long id, String content, StepType type, Long lastUsedTime,
+                             List<StepDTO> steps,
                              Long version) {
         this.id = id;
         this.content = content;
         this.type = type;
+        this.lastUsedTime = lastUsedTime;
         this.steps = steps;
         this.version = version;
     }
@@ -68,6 +72,14 @@ public class StepSuggestionDTO {
         this.steps = steps;
     }
 
+    public Long getLastUsedTime() {
+        return lastUsedTime;
+    }
+
+    public void setLastUsedTime(Long lastUsedTime) {
+        this.lastUsedTime = lastUsedTime;
+    }
+
     public Long getVersion() {
         return version;
     }
@@ -83,6 +95,7 @@ public class StepSuggestionDTO {
             ", content='" + content + '\'' +
             ", type=" + type +
             ", steps=" + steps +
+            ", lastUsedTime=" + lastUsedTime +
             ", version=" + version +
             '}';
     }

@@ -1,6 +1,7 @@
 package com.epam.test_generator.entities;
 
 import com.epam.test_generator.entities.api.Versionable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -49,6 +50,8 @@ public class StepSuggestion implements Versionable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "STEPSUGGESTION_STEP")
     private List<Step> steps = new ArrayList<>();
+
+    private ZonedDateTime lastUsedDate = ZonedDateTime.now();
 
     public StepSuggestion() {
     }
@@ -111,6 +114,7 @@ public class StepSuggestion implements Versionable {
 
     public void add(Step step) {
         steps.add(step);
+        this.lastUsedDate = ZonedDateTime.now();
     }
 
     public void remove(Step step) {
@@ -123,6 +127,14 @@ public class StepSuggestion implements Versionable {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public ZonedDateTime getLastUsedDate() {
+        return lastUsedDate;
+    }
+
+    public void setLastUsedDate(ZonedDateTime lastUsedDate) {
+        this.lastUsedDate = lastUsedDate;
     }
 
     @Override
@@ -152,6 +164,7 @@ public class StepSuggestion implements Versionable {
             ", type=" + type +
             ", version=" + version +
             ", steps=" + steps +
+            ", lastUsedDate" + lastUsedDate +
             '}';
     }
 }

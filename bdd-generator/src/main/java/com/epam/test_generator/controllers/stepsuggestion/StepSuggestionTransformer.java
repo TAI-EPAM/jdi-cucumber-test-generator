@@ -6,6 +6,7 @@ import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestion
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepSuggestion;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,17 +15,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StepSuggestionTransformer {
+
     @Autowired
     StepTransformer stepTransformer;
 
     public StepSuggestionDTO toDto(StepSuggestion stepSuggestion) {
-        List<StepDTO> stepDTOs = stepSuggestion.getSteps().stream().map(step -> stepTransformer.toDto(step))
-            .collect(Collectors.toList());
+        List<StepDTO> stepDTOs = stepSuggestion.getSteps().stream()
+                                               .map(step -> stepTransformer.toDto(step))
+                                               .collect(Collectors.toList());
 
         return new StepSuggestionDTO(
             stepSuggestion.getId(),
             stepSuggestion.getContent(),
             stepSuggestion.getType(),
+            stepSuggestion.getLastUsedDate().toInstant().toEpochMilli(),
             stepDTOs,
             stepSuggestion.getVersion()
         );
@@ -39,13 +43,20 @@ public class StepSuggestionTransformer {
     }
 
     public void updateFromDto(StepSuggestion stepSuggestion, StepSuggestionUpdateDTO dto) {
+        boolean updated = false;
+
         if (dto.getContent() != null) {
             stepSuggestion.setContent(dto.getContent());
+            updated = true;
         }
 
         if (dto.getType() != null) {
             stepSuggestion.setType(dto.getType());
+            updated = true;
+        }
+
+        if (updated) {
+            stepSuggestion.setLastUsedDate(ZonedDateTime.now());
         }
     }
-
 }

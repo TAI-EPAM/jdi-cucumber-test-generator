@@ -21,6 +21,7 @@ import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -86,6 +87,8 @@ public class StepSuggestionServiceTest {
         expectedStepSuggestion = new StepSuggestion(CONTENT_1, GIVEN);
         expectedStepSuggestion.setId(ID_1);
         expectedStepSuggestion.setVersion(VERSION);
+        expectedStepSuggestion.setLastUsedDate(ZonedDateTime.now());
+
         StepSuggestion stepSuggestion2 = new StepSuggestion(CONTENT_2, WHEN);
         stepSuggestion2.setId(ID_2);
         StepSuggestion stepSuggestion3 = new StepSuggestion(CONTENT_3, WHEN);
@@ -203,8 +206,10 @@ public class StepSuggestionServiceTest {
         List<StepSuggestion> stepSuggestionsList = Arrays.asList(stepSuggestions.toArray(new StepSuggestion[]{}));
         Page<StepSuggestion> stepSuggestionPage = new PageImpl<>(stepSuggestionsList);
 
-        when(stepSuggestionDAO.findByProjectIdAndContentIgnoreCaseContaining(eq(PROJECT_ID),eq(SEARCH_STRING),
-            any(PageRequest.class))).thenReturn(stepSuggestionPage);
+        when(stepSuggestionDAO
+            .findByProjectIdAndContentIgnoreCaseContainingOrderByLastUsedDateDesc(
+                eq(PROJECT_ID), eq(SEARCH_STRING), any(PageRequest.class)))
+            .thenReturn(stepSuggestionPage);
         when(stepSuggestionTransformer.toDtoList(stepSuggestionsList)).thenReturn(stepSuggestionDTOS);
 
         List<StepSuggestionDTO> actualStepsSuggestions = stepSuggestionService
@@ -212,7 +217,9 @@ public class StepSuggestionServiceTest {
 
         assertEquals(stepSuggestionDTOS, actualStepsSuggestions);
 
-        verify(stepSuggestionDAO).findByProjectIdAndContentIgnoreCaseContaining(eq(PROJECT_ID), eq(SEARCH_STRING), any(PageRequest.class));
+        verify(stepSuggestionDAO)
+            .findByProjectIdAndContentIgnoreCaseContainingOrderByLastUsedDateDesc(
+                eq(PROJECT_ID), eq(SEARCH_STRING), any(PageRequest.class));
         verify(stepSuggestionTransformer).toDtoList(stepSuggestionsList);
     }
 
