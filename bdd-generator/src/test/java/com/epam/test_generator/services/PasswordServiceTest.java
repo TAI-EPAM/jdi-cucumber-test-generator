@@ -8,7 +8,6 @@ import com.epam.test_generator.controllers.user.request.PasswordResetDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.TokenMissingException;
-import javax.servlet.http.HttpServletRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,11 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PasswordServiceTest {
-    @Mock
-    private HttpServletRequest request;
 
     @Mock
     private Token token;
@@ -44,18 +42,21 @@ public class PasswordServiceTest {
     @InjectMocks
     private PasswordService sut;
 
+    private UriComponentsBuilder uriComponentsBuilder;
+
     @Before
     public void setUp() {
-        when(request.getScheme()).thenReturn("scheme");
-        when(request.getServerName()).thenReturn("serverName");
-        when(request.getServerPort()).thenReturn(1);
-        when(request.getContextPath()).thenReturn("");
+        uriComponentsBuilder = UriComponentsBuilder.newInstance();
+        uriComponentsBuilder.scheme("scheme");
+        uriComponentsBuilder.host("serverName");
+        uriComponentsBuilder.port(1);
+        uriComponentsBuilder.path("");
         when(token.getTokenUuid()).thenReturn("token");
     }
 
     @Test
     public void createResetUrl_SimpleInputDate_Ok() {
-        String resetUrlExpected = sut.createResetUrl(request, token);
+        String resetUrlExpected = sut.createResetUrl(uriComponentsBuilder, token);
         String resetUrlActual = "scheme://serverName:1/user/validate-reset-token?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);
@@ -63,7 +64,7 @@ public class PasswordServiceTest {
 
     @Test
     public void createConfirmUrl_SimpleInputDate_Ok() {
-        String resetUrlExpected = sut.createConfirmUrl(request, token);
+        String resetUrlExpected = sut.createConfirmUrl(uriComponentsBuilder, token);
         String resetUrlActual = "scheme://serverName:1/user/confirm-email?token=token";
 
         Assert.assertEquals(resetUrlExpected, resetUrlActual);

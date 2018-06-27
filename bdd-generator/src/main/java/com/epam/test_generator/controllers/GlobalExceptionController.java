@@ -6,7 +6,6 @@ import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.AlreadyExistsException;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.BadRoleException;
-import com.epam.test_generator.services.exceptions.IncorrectURI;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.ProjectClosedException;
@@ -121,13 +120,6 @@ public class GlobalExceptionController {
     public ResponseEntity<ErrorDTO> roleUnexist(BadRoleException ex) {
         logger.warn("Access denied: role does not exist", ex);
         return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = {IncorrectURI.class})
-    public ResponseEntity<ErrorDTO> incorrectURI(IncorrectURI ex) {
-        logger.warn("Incorrect URI", ex);
-
-        return new ResponseEntity<>(new ErrorDTO(ex), HttpStatus.I_AM_A_TEAPOT);
     }
 
     @ExceptionHandler(value = AlreadyExistsException.class)

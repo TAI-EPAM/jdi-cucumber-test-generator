@@ -13,8 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -46,11 +45,10 @@ public class EmailServiceTest {
     @Mock
     private User user;
 
-    @Mock
-    private HttpServletRequest request;
-
     @InjectMocks
     private EmailServiceImpl sut;
+
+    private UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
 
     @Before
     public void setUp() {
@@ -62,17 +60,17 @@ public class EmailServiceTest {
     @Test
     public void sendRegistrationMessage_SimpleInputDate_Ok() {
         when(tokenService.createToken(user, EmailService.CONFIRMATION_TIME)).thenReturn(token);
-        when(passwordService.createConfirmUrl(request, token)).thenReturn("confirmUrl");
-        sut.sendRegistrationMessage(user, request);
+        when(passwordService.createConfirmUrl(uriComponentsBuilder, token)).thenReturn("confirmUrl");
+        sut.sendRegistrationMessage(user, uriComponentsBuilder);
         verify(emailSender).send(any(SimpleMailMessage.class));
     }
 
     @Test
     public void sendResetPasswordMessage_SimpleInputDate_Ok() {
         when(tokenService.createToken(user, EmailService.PASSWORD_RESET_TIME)).thenReturn(token);
-        when(passwordService.createResetUrl(request, token)).thenReturn("confirmUrl");
+        when(passwordService.createResetUrl(uriComponentsBuilder, token)).thenReturn("confirmUrl");
 
-        sut.sendResetPasswordMessage(user, request);
+        sut.sendResetPasswordMessage(user, uriComponentsBuilder);
         verify(emailSender).send(any(SimpleMailMessage.class));
 
     }

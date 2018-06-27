@@ -1,7 +1,9 @@
 package com.epam.test_generator.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -41,5 +43,16 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("/WEB-INF/index.html");
         registry.addResourceHandler("swagger-ui.html")
             .addResourceLocations("classpath:/META-INF/resources/");
+    }
+
+    /**
+     * Add filter to spring context. ForwardedHeaderFilter extracts values from
+     * "<code>Forwarded</code>" and "<code>X-Forwarded-*</code>" headers when a client
+     * communicates with the server through a proxy.
+     * @return ForwardedHeaderFilter instance
+     */
+    @Bean
+    public ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
     }
 }

@@ -28,7 +28,6 @@ spring:
             enable: true
     protocol: smtp
 subject.registration.message: Email verification
-site.name: https://www.bddgenerator.com
 registration.message: registration message
 subject.password.message: Reset password
 reset.password.message: password reset message

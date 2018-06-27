@@ -30,7 +30,6 @@ spring:
             enable: true
     protocol: smtp
 subject.registration.message: Email verification
-site.name: https://www.bddgenerator.com
 registration.message: 'Dear, %s %s!\n\
 You registered on the site %s\n\n\
 \
