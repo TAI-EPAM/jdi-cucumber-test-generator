@@ -1,3 +1,4 @@
+@NotImplemented
 Feature: As a test engineer I want to set status for a case
 
   Scenario: In suit with 3 cases with status PASSED change one case's status to FAILED
