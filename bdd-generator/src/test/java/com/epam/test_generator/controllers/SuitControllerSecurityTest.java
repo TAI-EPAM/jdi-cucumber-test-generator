@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.epam.test_generator.config.WebConfig;
 import com.epam.test_generator.config.security.JwtAuthenticationFilter;
 import com.epam.test_generator.controllers.suit.SuitController;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
@@ -26,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -36,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebConfig.class})
 @WebAppConfiguration
 @Transactional
 @SpringBootTest
@@ -126,11 +123,12 @@ public class SuitControllerSecurityTest {
         when(userService.getUserById(anyLong())).thenReturn(validUser);
         when(userService.getUserByEmail(anyString())).thenReturn(validUser);
         when(userService.isSamePasswords(anyString(), anyString())).thenReturn(true);
-        when(projectService.getProjectsByUserId(anyLong())).thenReturn(Lists.newArrayList());
+        when(projectService.getProjectsByUserId(anyLong()))
+            .thenReturn(Lists.newArrayList(project1));
 
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
-        mvc.perform(get("/suits").header("Authorization", token).contentType("application/json"))
+        mvc.perform(get("/projects/" + 1L + "/suits").header("Authorization", token).contentType("application/json"))
             .andExpect(status().isOk());
     }
 
