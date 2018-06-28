@@ -1,13 +1,23 @@
 package com.epam.test_generator.api;
 
+import static com.epam.http.requests.RequestData.requestBody;
+import static com.epam.test_generator.api.ApiTokenInserter.requestBodyAndToken;
+import static com.epam.test_generator.api.ApiTokenInserter.requestDataAndToken;
+import static com.epam.test_generator.api.BddGeneratorApi.addCaseToSuit;
+import static com.epam.test_generator.api.BddGeneratorApi.addUserToProject;
+import static com.epam.test_generator.api.BddGeneratorApi.changeUserRoleUsingPUT;
+import static com.epam.test_generator.api.BddGeneratorApi.getStep;
+import static com.epam.test_generator.api.BddGeneratorApi.loginUsingPOST;
+import static com.epam.test_generator.api.BddGeneratorApi.registerUserAccountUsingPOST;
+
 import com.epam.http.response.RestResponse;
 import com.epam.test_generator.api.container.TestContext;
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
-import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
+import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.controllers.user.request.RegistrationUserDTO;
@@ -16,11 +26,6 @@ import com.epam.test_generator.dto.TokenDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Set;
 import org.springframework.http.HttpStatus;
-
-import static com.epam.http.requests.RequestData.requestBody;
-import static com.epam.test_generator.api.ApiTokenInserter.requestBodyAndToken;
-import static com.epam.test_generator.api.ApiTokenInserter.requestDataAndToken;
-import static com.epam.test_generator.api.BddGeneratorApi.*;
 
 public class RestApiFacade {
 
@@ -77,7 +82,7 @@ public class RestApiFacade {
         testContext.setResponse(response);
     }
 
-    public RestResponse getResponseWithStepFromeContext(){
+    public RestResponse getResponseWithStepFromContext(){
         Long projectId = testContext.getTestDTO(ProjectDTO.class).getId();
         Long suitId = testContext.getTestDTO(SuitDTO.class).getId();
         Long caseId = testContext.getTestDTO(CaseDTO.class).getId();

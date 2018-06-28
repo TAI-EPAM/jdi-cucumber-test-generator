@@ -14,9 +14,9 @@ import static org.mockito.Mockito.when;
 import com.epam.test_generator.controllers.stepsuggestion.StepSuggestionTransformer;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
-import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
+import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.StepSuggestion;
@@ -62,6 +62,9 @@ public class StepSuggestionServiceTest {
 
     @Mock
     private StepSuggestionDAO stepSuggestionDAO;
+
+    @Mock
+    private StepService stepService;
 
     @Mock
     private StepDAO stepDAO;

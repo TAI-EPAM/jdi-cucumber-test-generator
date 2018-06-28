@@ -156,11 +156,9 @@ public class StepSuggestionService {
      */
     public void removeStepSuggestion(Long projectId, Long stepSuggestionId) {
         Project project = checkNotNull(projectDAO.getOne(projectId));
-
         StepSuggestion stepSuggestion =
             getStepSuggestion(projectId, stepSuggestionId);
-        stepSuggestion.getSteps().forEach(step -> stepService.removeStep(projectId, step.getId()));
-
+        stepService.removeStep(stepSuggestion,project);
         project.removeStepSuggestion(stepSuggestion);
     }
 

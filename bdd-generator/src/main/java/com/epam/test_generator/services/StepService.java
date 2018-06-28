@@ -4,9 +4,11 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 import com.epam.test_generator.controllers.step.request.StepCreateDTO;
 import com.epam.test_generator.controllers.step.request.StepUpdateDTO;
+import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Case;
@@ -103,6 +105,7 @@ public class StepService {
         suit.updateStatus();
 
         step = stepDAO.save(step);
+        stepSuggestionDAO.save(stepSuggestion);
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
 
@@ -154,27 +157,25 @@ public class StepService {
         throwExceptionIfStepIsNotInCase(caze, step);
 
         StepSuggestion stepSuggestion = stepSuggestionService.getStepSuggestion(projectId, step);
+
         stepSuggestion.remove(step);
         caze.removeStep(step);
         suit.updateStatus();
 
+        stepSuggestionDAO.save(stepSuggestion);
         stepDAO.delete(step);
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
     }
 
-    public void removeStep(Long projectId, Long stepId) {
-        Project project = checkNotNull(projectService.getProjectByProjectId(projectId));
+    public void removeStep(StepSuggestion stepSuggestion, Project project) {
 
-        for (Suit suit: project.getSuits()) {
-            for (Case caze: suit.getCases()) {
-                for (Step step: caze.getSteps()) {
-                    if(stepId.equals(step.getId())){
-                        caze.removeStep(step);
-                        suit.updateStatus();
-                        stepDAO.delete(step);
-                        caseVersionDAO.save(caze);
-                        suitVersionDAO.save(suit);
+        for (Suit suit : project.getSuits()) {
+            for (Case caze : suit.getCases()) {
+                for (Step step : caze.getSteps()) {
+                    List<Step> suggestionSteps = stepSuggestion.getSteps();
+                    if (suggestionSteps.contains(step)) {
+                        removeStep(project.getId(), suit.getId(), caze.getId(), step.getId());
                         return;
                     }
                 }

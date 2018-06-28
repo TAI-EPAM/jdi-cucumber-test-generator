@@ -44,7 +44,7 @@ public class Step extends StepBackground {
 
     @When("^I get step by id$")
     public void iGetStep() {
-        RestResponse response = restApiFacade.getResponseWithStepFromeContext();
+        RestResponse response = restApiFacade.getResponseWithStepFromContext();
         testContext.setResponse(response);
     }
 

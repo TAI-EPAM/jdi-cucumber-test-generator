@@ -115,7 +115,7 @@ public class Step extends StepBackground {
         RestResponse response = testContext.getResponse();
         assertThat(response.raResponse().getStatusCode(), equalTo(200));
         assertThat(response.raResponse().print(), equalTo(""));
-        RestResponse oldStepResponse = restApiFacade.getResponseWithStepFromeContext();
+        RestResponse oldStepResponse = restApiFacade.getResponseWithStepFromContext();
         assertThat(oldStepResponse.raResponse().getStatusCode(), equalTo(404));
     }
 
