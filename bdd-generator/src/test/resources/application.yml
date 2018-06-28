@@ -1,3 +1,5 @@
+# jwt_secret is a key word to config the right and secure JWT token file
+jwt_secret: iteaky
 spring:
   datasource:
     driver-class-name: org.h2.Driver

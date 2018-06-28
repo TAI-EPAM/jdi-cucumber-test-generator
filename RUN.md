@@ -56,12 +56,18 @@ java -jar deploy/bdd-generator-0.5.0-exec.jar
 * If you want to change some configuration values and don't want to rebuild all project, you can
 create `application.yml` file and put it in the root folder.
 ```yaml
+# jwt_secret is a key word to config the right and secure JWT token file
+jwt_secret: iteaky
 spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:file:~/h2/app_db
     username: sa
     password: sa
+  jenkins:
+    url: http://ecse00100b3d.epam.com:8888
+    login: admin
+    password: admin
   mail:
   	default-encoding: UTF-8
     host: smtp.gmail.com

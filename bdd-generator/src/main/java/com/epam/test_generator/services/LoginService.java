@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application.yml")
 @Transactional(noRollbackFor = UnauthorizedException.class)
 public class LoginService {
 

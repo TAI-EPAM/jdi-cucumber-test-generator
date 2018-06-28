@@ -1,9 +1,15 @@
+# jwt_secret is a key word to config the right and secure JWT token file
+jwt_secret: iteaky
 spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:file:~/h2/app_db
     username: sa
     password: sa
+  jenkins:
+    url: http://ecse00100b3d.epam.com:8888
+    login: admin
+    password: admin
   jpa:
     show_sql: false
     hibernate.ddl-auto: none
