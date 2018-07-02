@@ -85,10 +85,15 @@ spring:
 
 ## Run tests
 ### Unit tests
+**Install the package into the local repository, for use as a dependency in other projects locally**
+
+ ```text
+ mvn clean install -DskipTests=true
+ ```
 **To run all unit tests you need to execute the following command in the console:**
  
  ```text
- mvn clean test -f bdd-generator
+ mvn test -f bdd-generator
  ```
 **You also can run it using IDE (in our case IntellijIdea).**
 
@@ -115,7 +120,7 @@ spring:
  ```
 * Run all tests
 ```text
- mvn clean test -DskipTests=false
+ mvn test -DskipTests=false
  ```
  
  **You also can run it using IDE (in our case IntellijIdea).**
