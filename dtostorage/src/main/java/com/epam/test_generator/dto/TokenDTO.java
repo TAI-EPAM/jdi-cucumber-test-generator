@@ -4,6 +4,8 @@ import javax.validation.constraints.NotNull;
 
 public class TokenDTO {
 
+    public static final String TOKEN_HEADER = "Authorization";
+
     @NotNull
     private String token;
 

@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The PropertyDifferenceDTO uses only in one-way transformation from {@link
- * com.epam.test_generator.pojo.PropertyDifference} to ResponseEntity controller output. This DTO is
+ * The PropertyDifferenceDTO uses only in one-way transformation from
+ * com.epam.test_generator.pojo.PropertyDifference to ResponseEntity controller output. This DTO is
  * used for organisation history of cases' versions. It contains property that have been changed
  * (old and new value of the property). It is basically used in {@link CaseVersionDTO} and {@link
  * com.epam.test_generator.dto.SuitVersionDTO}

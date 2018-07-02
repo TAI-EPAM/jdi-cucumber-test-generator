@@ -3,6 +3,7 @@ package com.epam.test_generator.controllers.jenkins;
 import com.epam.test_generator.controllers.jenkins.request.ExecuteJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.CommonJenkinsJobDTO;
 import com.epam.test_generator.controllers.jenkins.response.ExecutedJenkinsJobDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.services.jenkins.JenkinsJobService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,7 +37,7 @@ public class JenkinsController {
      * @return list of job's names and urls
      */
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping("/jobs")
@@ -50,7 +51,7 @@ public class JenkinsController {
      * @return params of executed job
      */
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @PostMapping("/job/execute")

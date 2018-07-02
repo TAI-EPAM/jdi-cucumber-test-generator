@@ -3,6 +3,7 @@ package com.epam.test_generator.controllers.stepsuggestion;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.StepSuggestionService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -49,7 +50,7 @@ public class StepSuggestionController {
     })
     @ApiImplicitParams({
         @ApiImplicitParam(
-            name = "Authorization",
+            name = TokenDTO.TOKEN_HEADER,
             value = "add here your token",
             paramType = "header",
             dataType = "string",
@@ -104,7 +105,7 @@ public class StepSuggestionController {
         @ApiImplicitParam(name = "stepType",
             value = "Type of step suggestion that we want to return",
             required = true, dataType = "StepType", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
@@ -129,7 +130,7 @@ public class StepSuggestionController {
             dataType = "long", required = true),
         @ApiImplicitParam(name = "stepSuggestionCreateDTO", value = "Added step suggestion object",
             required = true, dataType = "StepSuggestionCreateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -157,7 +158,7 @@ public class StepSuggestionController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepSuggestionUpdateDTO", value = "Updated step suggestion object",
             required = true, dataType = "StepSuggestionUpdateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -186,7 +187,7 @@ public class StepSuggestionController {
             dataType = "long", required = true),
         @ApiImplicitParam(name = "stepSuggestionId", value = "ID of step suggestion to delete",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -205,7 +206,7 @@ public class StepSuggestionController {
         @ApiResponse(code = 400, message = "Invalid input")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true),
         @ApiImplicitParam(name = "text", value = "String for search", paramType = "query",
             dataType = "string", required = true),

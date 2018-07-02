@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.epam.test_generator.config.security.JwtAuthenticationFilter;
 import com.epam.test_generator.controllers.admin.request.UserRoleUpdateDTO;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.AdminService;
@@ -120,7 +121,7 @@ public class AdminControllerSecurityTest {
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(
-            get("/admin/users").header("Authorization", token).contentType("application/json"))
+            get("/admin/users").header(TokenDTO.TOKEN_HEADER, token).contentType("application/json"))
             .andExpect(status().isOk());
     }
 
@@ -135,7 +136,7 @@ public class AdminControllerSecurityTest {
         String token = "Bearer " + loginService.getLoginJWTToken(loginUserDTO);
 
         mvc.perform(
-            get("/admin/users").header("Authorization", "Bearer " + token)
+            get("/admin/users").header(TokenDTO.TOKEN_HEADER, "Bearer " + token)
                 .contentType("application/json"))
             .andExpect(status().isForbidden());
     }
@@ -155,7 +156,7 @@ public class AdminControllerSecurityTest {
 
         String json = new ObjectMapper().writeValueAsString(userRoleUpdateDTO);
 
-        mvc.perform(put("/admin/role").header("Authorization", token).content(json)
+        mvc.perform(put("/admin/role").header(TokenDTO.TOKEN_HEADER, token).content(json)
             .contentType("application/json"))
             .andExpect(status().isOk());
     }
@@ -174,7 +175,7 @@ public class AdminControllerSecurityTest {
 
         String json = new ObjectMapper().writeValueAsString(userRoleUpdateDTO);
 
-        mvc.perform(put("/admin/role").header("Authorization", token).content(json)
+        mvc.perform(put("/admin/role").header(TokenDTO.TOKEN_HEADER, token).content(json)
             .contentType("application/json"))
             .andExpect(status().isBadRequest());
     }
@@ -190,7 +191,7 @@ public class AdminControllerSecurityTest {
 
         String json = new ObjectMapper().writeValueAsString(userRoleUpdateDTO);
 
-        mvc.perform(put("/admin/role").header("Authorization", "Bearer " +
+        mvc.perform(put("/admin/role").header(TokenDTO.TOKEN_HEADER, "Bearer " +
             token).content(json).contentType("application/json"))
             .andExpect(status().isForbidden());
     }

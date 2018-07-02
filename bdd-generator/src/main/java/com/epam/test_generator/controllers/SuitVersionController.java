@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dto.SuitVersionDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.services.SuitService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,7 +38,7 @@ public class SuitVersionController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @GetMapping
@@ -61,7 +62,7 @@ public class SuitVersionController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "commitId", value = "ID of commit to which state you want restore",
             required = true, dataType = "String", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header",
             dataType = "string", required = true)
     })
     @PutMapping("/{commitId:.+}")

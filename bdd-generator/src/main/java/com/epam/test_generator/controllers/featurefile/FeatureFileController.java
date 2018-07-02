@@ -1,8 +1,9 @@
 package com.epam.test_generator.controllers.featurefile;
 
-import com.epam.test_generator.controllers.featurefile.request.FeatureFileDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
+import com.epam.test_generator.entities.request.FeatureFileDTO;
 import com.epam.test_generator.services.IOService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,7 +44,7 @@ public class FeatureFileController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})

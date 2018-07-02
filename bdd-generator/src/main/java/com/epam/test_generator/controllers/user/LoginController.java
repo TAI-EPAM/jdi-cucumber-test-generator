@@ -38,7 +38,7 @@ public class LoginController {
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD", "ROLE_TEST_ENGINEER", "ROLE_GUEST"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token",
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
         paramType = "header", dataType = "string", required = true)
     @GetMapping("/refresh-token")
     public ResponseEntity refreshToken(Authentication authentication) {

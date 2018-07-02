@@ -1,8 +1,6 @@
 package com.epam.test_generator.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 
 /**
@@ -16,14 +14,6 @@ public class ValidationErrorsDTO {
     private List<ValidationErrorDTO> errors;
 
     public ValidationErrorsDTO() {
-    }
-
-    public ValidationErrorsDTO(MethodArgumentNotValidException ex) {
-        type = "Method Argument Not Valid Exception";
-        errors = ex.getBindingResult().getFieldErrors().stream()
-            .map((f) -> new ValidationErrorDTO(f.getObjectName(), f.getField(),
-                f.getDefaultMessage()))
-            .collect(Collectors.toList());
     }
 
     public Boolean getError() {

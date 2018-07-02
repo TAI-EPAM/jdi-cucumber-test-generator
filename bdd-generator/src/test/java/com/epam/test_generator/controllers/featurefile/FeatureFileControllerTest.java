@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epam.test_generator.controllers.GlobalExceptionController;
-import com.epam.test_generator.controllers.featurefile.request.FeatureFileDTO;
+import com.epam.test_generator.entities.request.FeatureFileDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.services.IOService;
 import com.fasterxml.jackson.databind.ObjectMapper;

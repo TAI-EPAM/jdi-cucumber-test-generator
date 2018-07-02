@@ -3,9 +3,7 @@ package com.epam.test_generator.controllers.user.request;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.springframework.stereotype.Component;
 
-@Component
 public class LoginUserDTO {
 
     @NotNull

@@ -4,18 +4,29 @@ import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitUpdateDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.services.SuitService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Allow work with suits of specified project.
@@ -36,7 +47,7 @@ public class SuitController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project with suits",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping
@@ -54,7 +65,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit to return",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @GetMapping("/{suitId}")
@@ -74,7 +85,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitCreateDTO", value = "Added suit object",
             required = true, dataType = "SuitCreateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping
@@ -97,7 +108,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitUpdateDTO", value = "Updated suit object",
             required = true, dataType = "SuitUpdateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PutMapping("/{suitId}")
@@ -120,7 +131,7 @@ public class SuitController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @PutMapping("/row-numbers")
@@ -142,7 +153,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit to delete",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @DeleteMapping("/{suitId}")
@@ -164,7 +175,7 @@ public class SuitController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "removeSuitsIds", value = "IDs of suits to be removed",
             required = true, dataType = "long", allowMultiple = true, paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})

@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers.test.result;
 
 import com.epam.test_generator.controllers.test.result.response.TestResultDTO;
 import com.epam.test_generator.dto.RawSuitResultDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.services.TestResultService;
 import com.epam.test_generator.services.exceptions.BadRequestException;
@@ -15,7 +16,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,7 @@ public class TestResultController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -65,7 +65,7 @@ public class TestResultController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true),
         @ApiImplicitParam(name = "offset", value = "start of range",
             paramType = "query", dataType = "int"),
@@ -105,7 +105,7 @@ public class TestResultController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true),
         @ApiImplicitParam(name = "from", value = "start of range",
             paramType = "query", dataType = "date", required = true),

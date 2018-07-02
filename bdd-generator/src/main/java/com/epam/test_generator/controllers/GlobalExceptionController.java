@@ -2,6 +2,7 @@ package com.epam.test_generator.controllers;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.epam.test_generator.dto.ErrorDTO;
+import com.epam.test_generator.dto.ValidationErrorDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.exceptions.AlreadyExistsException;
 import com.epam.test_generator.services.exceptions.BadRequestException;
@@ -9,6 +10,7 @@ import com.epam.test_generator.services.exceptions.BadRoleException;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.services.exceptions.ProjectClosedException;
+import java.util.stream.Collectors;
 import net.rcarz.jiraclient.JiraException;
 import net.rcarz.jiraclient.RestException;
 import org.slf4j.Logger;
@@ -93,7 +95,14 @@ public class GlobalExceptionController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorsDTO> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException ex) {
-        ValidationErrorsDTO validationErrorsDTO = new ValidationErrorsDTO(ex);
+        ValidationErrorsDTO validationErrorsDTO = new ValidationErrorsDTO();
+        validationErrorsDTO.setType("Method Argument Not Valid Exception");
+
+        validationErrorsDTO.setErrors(ex.getBindingResult().getFieldErrors().stream()
+            .map((f) -> new ValidationErrorDTO(f.getObjectName(), f.getField(),
+                f.getDefaultMessage()))
+            .collect(Collectors.toList()));
+
         logger.warn("Validation Error: invalid arguments entered", ex);
         return new ResponseEntity<>(validationErrorsDTO, HttpStatus.BAD_REQUEST);
     }

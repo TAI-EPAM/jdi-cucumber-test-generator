@@ -4,6 +4,7 @@ import com.epam.test_generator.controllers.project.request.ProjectCreateDTO;
 import com.epam.test_generator.controllers.project.request.ProjectUpdateDTO;
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.ProjectService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,7 +46,7 @@ public class ProjectController {
             response = ProjectDTO.class, responseContainer = "List")
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD", "ROLE_TEST_ENGINEER", "ROLE_GUEST"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     @GetMapping
     public ResponseEntity<List<ProjectDTO>> getUserProjects(Authentication authentication) {
         return new ResponseEntity<>(projectService.getAuthenticatedUserProjects(authentication),
@@ -61,7 +62,7 @@ public class ProjectController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project to return",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD", "ROLE_TEST_ENGINEER", "ROLE_GUEST"})
     @GetMapping("/{projectId}")
@@ -82,7 +83,7 @@ public class ProjectController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectDTO", value = "Create a new project",
             required = true, dataType = "ProjectCreateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN"})
@@ -106,7 +107,7 @@ public class ProjectController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "projectDTO", value = "Updated project object",
             required = true, dataType = "ProjectUpdateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @PutMapping("/{projectId}")
@@ -125,7 +126,7 @@ public class ProjectController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "projectId", value = "ID of project to close",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @DeleteMapping("/{projectId}")
@@ -146,7 +147,7 @@ public class ProjectController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "userId", value = "Id of user to be added",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @PutMapping("/{projectId}/user/{userId}")
@@ -167,7 +168,7 @@ public class ProjectController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "userId", value = "Id of user to be removed",
             required = true, dataType = "Long", paramType = "query"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @DeleteMapping("/{projectId}/user/{userId}")

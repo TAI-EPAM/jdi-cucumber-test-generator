@@ -123,6 +123,11 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.epam.jdi</groupId>
+            <artifactId>dtostorage</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

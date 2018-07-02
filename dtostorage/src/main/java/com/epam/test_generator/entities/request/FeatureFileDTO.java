@@ -1,4 +1,4 @@
-package com.epam.test_generator.controllers.featurefile.request;
+package com.epam.test_generator.entities.request;
 
 import java.util.List;
 import javax.validation.constraints.NotEmpty;

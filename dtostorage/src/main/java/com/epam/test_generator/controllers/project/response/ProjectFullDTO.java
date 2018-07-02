@@ -1,20 +1,17 @@
 package com.epam.test_generator.controllers.project.response;
 
 import com.epam.test_generator.controllers.user.response.UserDTO;
-import com.epam.test_generator.controllers.project.ProjectController;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
-import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.Project;
-import com.epam.test_generator.entities.Suit;
+
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * DTO class, that fully represents {@link Project} entity (all it's fields). This DTO is used only for
- * retrieving Projects from API (see GET method in {@link ProjectController}), because there is no need
- * in container-fields (such as list of {@link Suit} with inner list of {@link Case} etc) for other
+ * DTO class, that fully represents Project entity (all it's fields). This DTO is used only for
+ * retrieving Projects from API (see GET method in ProjectController), because there is no need
+ * in container-fields (such as list of Suit with inner list of Case etc) for other
  * methods (PUT, POST, DELETE) - in this cases usage of {@link ProjectDTO} is more convenient for
  * API's users.
  */

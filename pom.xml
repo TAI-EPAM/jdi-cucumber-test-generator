@@ -16,6 +16,8 @@
     <modules>
         <module>bdd-generator</module>
         <module>jdi-cucumber-test-generator-integration-tests</module>
+        <module>admin-client</module>
+        <module>dtostorage</module>
     </modules>
 
     <groupId>com.epam.jdi</groupId>
@@ -39,6 +41,8 @@
         <jira-client.version>0.5</jira-client.version>
         <cucumber.version>1.2.5</cucumber.version>
         <jdi-http.version>1.1.0</jdi-http.version>
+        <httpclient.version>4.5.5</httpclient.version>
+        <dtostorage.version>0.5.0</dtostorage.version>
 
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -50,8 +54,8 @@
         <dependencies>
             <dependency>
                 <groupId>com.epam.jdi</groupId>
-                <artifactId>bdd-generator</artifactId>
-                <version>${bdd-generator.version}</version>
+                <artifactId>dtostorage</artifactId>
+                <version>${dtostorage.version}</version>
             </dependency>
 
             <dependency>
@@ -152,6 +156,12 @@
                 <groupId>info.cukes</groupId>
                 <artifactId>cucumber-junit</artifactId>
                 <version>${cucumber.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

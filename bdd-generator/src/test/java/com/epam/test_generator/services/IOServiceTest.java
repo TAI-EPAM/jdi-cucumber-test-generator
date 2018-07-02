@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.featurefile.request.FeatureFileDTO;
+import com.epam.test_generator.entities.request.FeatureFileDTO;
 import com.epam.test_generator.controllers.project.ProjectTransformer;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;

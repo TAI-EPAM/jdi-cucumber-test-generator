@@ -2,7 +2,7 @@ package com.epam.test_generator.api.steps.given;
 
 import com.epam.test_generator.api.steps.StepBackground;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.controllers.featurefile.request.FeatureFileDTO;
+import com.epam.test_generator.entities.request.FeatureFileDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
 import cucumber.api.java.en.Given;
