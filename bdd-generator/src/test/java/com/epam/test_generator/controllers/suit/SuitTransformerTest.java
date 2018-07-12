@@ -133,6 +133,7 @@ public class SuitTransformerTest {
         when(caseTransformer.toDtoList(anyList())).thenReturn(CASE_DTOS);
         List<SuitDTO> actualSuitDTOs = suitTransformer.toDtoList(suits);
 
+        actualSuitDTOs.get(0).setCreationDate(suitDto.getCreationDate());
         assertEquals(suitDtos, actualSuitDTOs);
 
         verify(tagTransformer).toDtoSet(anySet());

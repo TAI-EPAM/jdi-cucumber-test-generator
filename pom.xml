@@ -15,7 +15,7 @@
 
     <modules>
         <module>bdd-generator</module>
-        <module>jdi-cucumber-test-generator-integration-tests</module>
+        <module>end-to-end-tests</module>
         <module>admin-client</module>
         <module>dtostorage</module>
     </modules>
@@ -202,8 +202,56 @@
                         <includes>
                             <include>**/*Test</include>
                             <include>**/MainRunner</include>
-                            <skipTests>${skipTests}</skipTests>
                         </includes>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>add-integration-test-sources</id>
+                            <phase>generate-test-sources</phase>
+                            <goals>
+                                <goal>add-test-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/itest/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>add-integration-test-resources</id>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>add-test-resource</goal>
+                            </goals>
+                            <configuration>
+                                <resources>
+                                    <resource>
+                                        <directory>src/itest/resources</directory>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>integration-tests</id>
+                            <goals>
+                                <goal>integration-test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <argLine>${failsafeArgLine}</argLine>
                     </configuration>
                 </plugin>
 
@@ -218,8 +266,23 @@
                                 <goal>prepare-agent</goal>
                             </goals>
                             <configuration>
-                                <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                                <destFile>
+                                    ${project.build.directory}/coverage-reports/jacoco-ut.exec
+                                </destFile>
                                 <propertyName>surefireArgLine</propertyName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>pre-integration-test</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>prepare-agent-integration</goal>
+                            </goals>
+                            <configuration>
+                                <destFile>
+                                    ${project.build.directory}/coverage-reports/jacoco-it.exec
+                                </destFile>
+                                <propertyName>failsafeArgLine</propertyName>
                             </configuration>
                         </execution>
                         <execution>
@@ -229,9 +292,63 @@
                                 <goal>report</goal>
                             </goals>
                             <configuration>
-                                <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                                <dataFile>
+                                    ${project.build.directory}/coverage-reports/jacoco-ut.exec
+                                </dataFile>
                                 <outputDirectory>
                                     ${project.reporting.outputDirectory}/jacoco-ut
+                                </outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>post-integration-test</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>report-integration</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>
+                                    ${project.build.directory}/coverage-reports/jacoco-it.exec
+                                </dataFile>
+                                <outputDirectory>
+                                    ${project.reporting.outputDirectory}/jacoco-it
+                                </outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>merge-result</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>merge</goal>
+                            </goals>
+                            <configuration>
+                                <fileSets>
+                                    <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
+                                        <directory>
+                                            ${project.build.directory}/coverage-reports
+                                        </directory>
+                                        <includes>
+                                            <include>*.exec</include>
+                                        </includes>
+                                    </fileSet>
+                                </fileSets>
+                                <destFile>
+                                    ${project.build.directory}/coverage-reports/jacoco-aggregate.exec
+                                </destFile>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>post-all-tests</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>
+                                    ${project.build.directory}/coverage-reports/jacoco-aggregate.exec
+                                </dataFile>
+                                <outputDirectory>
+                                    ${project.reporting.outputDirectory}/jacoco-aggregate
                                 </outputDirectory>
                             </configuration>
                         </execution>

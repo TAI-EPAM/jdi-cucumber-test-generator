@@ -1,24 +1,25 @@
 package com.epam.test_generator.services;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.epam.test_generator.controllers.user.UserDTOsTransformer;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -45,6 +46,9 @@ public class EmailServiceTest {
     @Mock
     private User user;
 
+    @Spy
+    private UserDTOsTransformer userDTOsTransformer;
+
     @InjectMocks
     private EmailServiceImpl sut;
 
@@ -56,13 +60,14 @@ public class EmailServiceTest {
 
     }
 
-    @Ignore
     @Test
     public void sendRegistrationMessage_SimpleInputDate_Ok() {
         when(tokenService.createToken(user, EmailService.CONFIRMATION_TIME)).thenReturn(token);
         when(passwordService.createConfirmUrl(uriComponentsBuilder, token)).thenReturn("confirmUrl");
+
         sut.sendRegistrationMessage(user, uriComponentsBuilder);
         verify(emailSender).send(any(SimpleMailMessage.class));
+        verify(userDTOsTransformer).toUserDTO(any(User.class));
     }
 
     @Test
