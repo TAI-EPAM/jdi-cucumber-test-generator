@@ -4,6 +4,7 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 import com.epam.test_generator.config.security.AuthenticatedUser;
 import com.epam.test_generator.controllers.project.ProjectTransformer;
+import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.dao.impl.JiraFilterDAO;
 import com.epam.test_generator.dao.impl.JiraProjectDAO;
 import com.epam.test_generator.dao.impl.JiraStoryDAO;
@@ -13,7 +14,6 @@ import com.epam.test_generator.dao.interfaces.ProjectDAO;
 import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
-import com.epam.test_generator.controllers.project.response.ProjectDTO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.RemovedIssue;
@@ -395,9 +395,7 @@ public class JiraService {
     private void createStoryWithSubTasksInJira(Long clientId, Suit suit) {
 
         jiraStoryDAO.createStory(clientId, suit);
-        for (Case cases : suit.getCases()) {
-            jiraSubStoryDAO.createSubStory(clientId, cases);
-        }
+        suit.getCases().forEach(c -> jiraSubStoryDAO.createSubStory(clientId, c));
     }
 
     private Status getStatusFromPropertyDiff(List<PropertyDifference> propertyDifferences) {

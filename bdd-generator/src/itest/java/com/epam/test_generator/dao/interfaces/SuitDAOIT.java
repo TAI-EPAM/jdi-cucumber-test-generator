@@ -95,9 +95,7 @@ public class SuitDAOIT {
         Tag tag = new Tag("tag");
 
         List<Suit> suits = retrieveSuiteList();
-        for (Suit suit : suits) {
-            suit.getTags().add(tag);
-        }
+        suits.forEach(s->s.getTags().add(tag));
 
         List<Suit> savedSuits = suitDAO.saveAll(suits);
 

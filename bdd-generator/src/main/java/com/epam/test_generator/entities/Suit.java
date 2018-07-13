@@ -237,16 +237,10 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
     }
 
     public Case getCaseById(Long id) {
-        Case result = null;
-
-        for (Case caze : cases) {
-            if (caze.getId().equals(id)) {
-                result = caze;
-                break;
-            }
-        }
-
-        return result;
+        return cases.stream()
+            .filter(caze -> Objects.equals(caze.getId(), id))
+            .findFirst()
+            .get();
     }
 
     public ZonedDateTime getUpdateDate() {

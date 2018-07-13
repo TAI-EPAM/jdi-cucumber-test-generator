@@ -4,16 +4,15 @@ import com.epam.test_generator.dto.RawCaseResultDTO;
 import com.epam.test_generator.dto.RawStepResultDTO;
 import com.epam.test_generator.dto.RawSuitResultDTO;
 import com.epam.test_generator.entities.Case;
+import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.results.CaseResult;
 import com.epam.test_generator.entities.results.StepResult;
-import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.entities.results.SuitResult;
 import com.epam.test_generator.entities.results.TestResult;
 import com.epam.test_generator.services.CaseService;
 import com.epam.test_generator.services.ProjectService;
 import com.epam.test_generator.services.StepService;
 import com.epam.test_generator.services.SuitService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,16 +57,10 @@ public class TestResultFactory {
 
     private List<SuitResult> getListOfSuitResultsFrom(Long projectId,
                                                       List<RawSuitResultDTO> suitResultDTOS) {
-
-        List<SuitResult> suitResults = new ArrayList<>();
-
-        for (RawSuitResultDTO rawSuitResultDTO : suitResultDTOS) {
-            SuitResult suitResult = createSuitResultFrom(projectId, rawSuitResultDTO);
-            suitResults.add(suitResult);
-        }
-        return suitResults;
+        return suitResultDTOS.stream()
+            .map(rawSuitResultDto -> createSuitResultFrom(projectId, rawSuitResultDto))
+            .collect(Collectors.toList());
     }
-
 
     private SuitResult createSuitResultFrom(Long projectId, RawSuitResultDTO rawSuitResultDTO) {
 
@@ -85,15 +78,9 @@ public class TestResultFactory {
     private List<CaseResult> getListOfCaseResultsFrom(Long projectId,
                                                       RawSuitResultDTO rawSuitResultDTO) {
 
-        List<CaseResult> caseResults = new ArrayList<>();
-
-        for (RawCaseResultDTO caseResultDTO : rawSuitResultDTO.getCaseResultDTOList()) {
-
-            CaseResult caseResult = createCaseResultFrom(projectId, rawSuitResultDTO.getId(),
-                caseResultDTO);
-            caseResults.add(caseResult);
-        }
-        return caseResults;
+        return rawSuitResultDTO.getCaseResultDTOList().stream()
+            .map(dto -> createCaseResultFrom(projectId, rawSuitResultDTO.getId(), dto))
+            .collect(Collectors.toList());
     }
 
     private CaseResult createCaseResultFrom(Long projectId, long suitId,

@@ -1,7 +1,6 @@
 package com.epam.test_generator.services;
 
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
-import com.epam.test_generator.entities.request.FeatureFileDTO;
 import com.epam.test_generator.controllers.project.ProjectTransformer;
 import com.epam.test_generator.controllers.project.response.ProjectFullDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
@@ -9,6 +8,7 @@ import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.entities.Suit;
+import com.epam.test_generator.entities.request.FeatureFileDTO;
 import com.epam.test_generator.file_generator.FileGenerator;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import java.io.ByteArrayOutputStream;
@@ -94,12 +94,11 @@ public class IOService {
                 throw new NotFoundException();
             }
 
-            for (Long caseId : featureFileDTO.getCaseIds()) {
-                suitDTO.getCases()
-                    .stream()
-                    .filter( c -> c.getId().equals(caseId))
-                    .filter(c -> !c.getSteps().isEmpty())
-                    .findFirst().orElseThrow(NotFoundException::new);
+            boolean allStepsAreEmpty = suitDTO.getCases().stream()
+                .filter(c -> featureFileDTO.getCaseIds().contains(c.getId()))
+                .allMatch(c -> c.getSteps().isEmpty());
+            if (allStepsAreEmpty) {
+                throw new NotFoundException();
             }
         }
     }
