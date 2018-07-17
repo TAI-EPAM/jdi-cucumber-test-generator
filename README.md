@@ -11,6 +11,7 @@ Web application for creating and managing automated UI test scenarios and genera
  2. [Target users](#target-users)
  3. [How to download and run application, tests in various cases](RUN.md)
  4. [What technologies we used](#what-technologies-we-used)
+ 5. [Issues](ISSUES.md)
  
 ## Synopsis
 This is a web-application that provides an user interface for testers. One can create and store
