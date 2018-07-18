@@ -40,7 +40,7 @@ If you don't have a [Maven](https://maven.apache.org/download.cgi) build tool, i
 * To compile, build and run jar file (using java features) execute the following commands:
 ```bash
 mvn clean package -DskipTests=true
-java -jar bdd-generator\target\bdd-generator-0.5.0-exec.jar 
+java -jar bdd-generator\target\bdd-generator-1.0.0-exec.jar 
 ```
 
 * Or you also can run the application using spring-boot plugin:
@@ -60,7 +60,7 @@ If you don't have [JRE](http://www.oracle.com/technetwork/java/javase/downloads/
 * To compile, build and run jar file execute the following commands:
 ```bash
 mvn clean package -DskipTests=true
-java -jar deploy/bdd-generator-0.5.0-exec.jar
+java -jar deploy/bdd-generator-1.0.0-exec.jar
 # Where deploy is home directory of jar file 
 ```
 
@@ -134,7 +134,7 @@ spring:
  ```
 * Run the application with the integration profile
  ```bash
- java -jar -Dspring.profiles.active=integration-tests bdd-generator/target/bdd-generator-0.5.0-exec.jar
+ java -jar -Dspring.profiles.active=integration-tests bdd-generator/target/bdd-generator-1.0.0-exec.jar
  
 # or you can run the application using spring-boot plugin
  mvn clean spring-boot:run -f bdd-generator -Dspring.profiles.active=integration-tests

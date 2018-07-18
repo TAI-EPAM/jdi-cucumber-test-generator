@@ -22,10 +22,11 @@
 
     <groupId>com.epam.jdi</groupId>
     <artifactId>jdi-cucumber-test-generator</artifactId>
-    <version>0.5.0</version>
+    <version>1.0.0</version>
 
     <properties>
-        <bdd-generator.version>0.5.0</bdd-generator.version>
+        <bdd-generator.version>1.0.0</bdd-generator.version>
+        <dtostorage.version>1.0.0</dtostorage.version>
 
         <springfox-swagger2.version>2.7.0</springfox-swagger2.version>
         <springfox-swagger-ui.version>2.7.0</springfox-swagger-ui.version>
@@ -42,7 +43,6 @@
         <cucumber.version>1.2.5</cucumber.version>
         <jdi-http.version>1.1.0</jdi-http.version>
         <httpclient.version>4.5.5</httpclient.version>
-        <dtostorage.version>0.5.0</dtostorage.version>
         <jacoco-maven-plugin>0.8.1</jacoco-maven-plugin>
 
         <maven.compiler.target>1.8</maven.compiler.target>
