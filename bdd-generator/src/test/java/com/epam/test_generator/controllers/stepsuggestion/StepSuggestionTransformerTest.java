@@ -5,12 +5,12 @@ import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestion
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.StepType;
+import java.time.ZonedDateTime;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +38,7 @@ public class StepSuggestionTransformerTest {
         stepSuggestion.setId(ID);
         stepSuggestion.setContent(CONTENT);
         stepSuggestion.setType(STEP_TYPE);
+        stepSuggestion.setLastUsedDate(ZonedDateTime.now());
 
         stepSuggestionDto = new StepSuggestionDTO();
         stepSuggestionDto.setId(ID);

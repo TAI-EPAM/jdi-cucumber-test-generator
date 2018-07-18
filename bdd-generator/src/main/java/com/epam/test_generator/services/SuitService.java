@@ -1,5 +1,7 @@
 package com.epam.test_generator.services;
 
+import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+
 import com.epam.test_generator.controllers.suit.SuitTransformer;
 import com.epam.test_generator.controllers.suit.request.SuitCreateDTO;
 import com.epam.test_generator.controllers.suit.request.SuitRowNumberUpdateDTO;
@@ -10,21 +12,24 @@ import com.epam.test_generator.dao.interfaces.RemovedIssueDAO;
 import com.epam.test_generator.dao.interfaces.SuitDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.dto.SuitVersionDTO;
-import com.epam.test_generator.entities.*;
+import com.epam.test_generator.entities.Project;
+import com.epam.test_generator.entities.RemovedIssue;
+import com.epam.test_generator.entities.Status;
+import com.epam.test_generator.entities.Step;
+import com.epam.test_generator.entities.Suit;
 import com.epam.test_generator.pojo.SuitVersion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.transformers.SuitVersionTransformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
+import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
@@ -65,13 +70,8 @@ public class SuitService {
     public Suit getSuit(long projectId, long suitId) {
         Project project = projectService.getProjectByProjectId(projectId);
         Suit suit = suitDAO.findById(suitId).orElseThrow(NotFoundException::new);
-        if (project.hasSuit(suit)) {
-            return suit;
-        } else {
-            throw new BadRequestException(
-                String.format("Error: project %s does not have suit %s", project.getName(),
-                    suit.getName()));
-        }
+        throwExceptionIfSuitIsNotInProject(project, suit);
+        return suit;
     }
 
     public SuitDTO getSuitDTO(long projectId, long suitId) {
@@ -124,7 +124,6 @@ public class SuitService {
         suit.setUpdateDate(now);
         suit.setLastModifiedDate(now);
 
-        suitDAO.save(suit);
         suitVersionDAO.save(suit);
         caseVersionDAO.save(suit.getCases());
 
@@ -158,6 +157,29 @@ public class SuitService {
         return suitTransformer.toDto(suit);
     }
 
+    /**
+     * Removes suit list from a project
+     *
+     * @param projectId id of project
+     * @param removeSuitsIds suit's id list marked for deletion
+     * @return as result we return list of deleted SuitDTO
+     */
+    public List<SuitDTO> removeSuits(long projectId, Long[] removeSuitsIds) {
+        List<Long> currentProjectSuits = projectService.getProjectByProjectId(projectId)
+                                                       .getSuits().stream()
+                                                       .map(Suit::getId)
+                                                       .collect(Collectors.toList());
+
+        if (!currentProjectSuits.containsAll(Arrays.asList(removeSuitsIds))) {
+            throw new BadRequestException("Some of suits aren't related to the project");
+        }
+
+        return Stream.of(removeSuitsIds)
+                     .distinct()
+                     .map(id -> removeSuit(projectId, id))
+                     .collect(Collectors.toList());
+    }
+
     public List<SuitDTO> getSuitsFromProject(Long projectId) {
         Project project = projectService.getProjectByProjectId(projectId);
         return suitTransformer.toDtoList(project.getSuits());
@@ -166,11 +188,12 @@ public class SuitService {
     /**
      * Updates suit's rowNumbers by suit's ids specified in List of SuitRowNumberUpdateDTOs
      *
+     * @param projectId id of project
      * @param rowNumberUpdates List of SuitRowNumberUpdateDTOs
      * @return list of {@link SuitRowNumberUpdateDTO} to check on the frontend
      */
-    public List<SuitRowNumberUpdateDTO> updateSuitRowNumber(List<SuitRowNumberUpdateDTO>
-                                                                rowNumberUpdates) {
+    public List<SuitRowNumberUpdateDTO> updateSuitRowNumber(long projectId,
+                                                            List<SuitRowNumberUpdateDTO> rowNumberUpdates) {
         if (rowNumberUpdates.isEmpty()) {
             throw new BadRequestException("The list has not to be empty");
         }
@@ -196,11 +219,12 @@ public class SuitService {
             throw new BadRequestException(
                 "One or more of the ids is a duplicate or it does not exist in the database");
         }
-        for (Suit suit : suits) {
-            suit.setRowNumber(patch.get(suit.getId()));
-        }
 
-        suitDAO.saveAll(suits);
+        Project project = projectService.getProjectByProjectId(projectId);
+        suits.forEach((suit) -> throwExceptionIfSuitIsNotInProject(project, suit));
+
+        suits.forEach(suit -> suit.setRowNumber(patch.get(suit.getId())));
+
         suitVersionDAO.save(suits);
 
         return rowNumberUpdates;
@@ -230,5 +254,13 @@ public class SuitService {
         caseVersionDAO.save(suitToRestore.getCases());
 
         return suitTransformer.toDto(restoredSuit);
+    }
+
+    private void throwExceptionIfSuitIsNotInProject(Project project, Suit suit) {
+        if (!project.hasSuit(suit)) {
+            throw new NotFoundException(
+                String.format("Error: Project %s does not have suit %d", project.getName(),
+                    suit.getId()));
+        }
     }
 }

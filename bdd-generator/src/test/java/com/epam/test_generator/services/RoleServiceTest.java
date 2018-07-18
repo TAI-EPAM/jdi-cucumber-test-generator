@@ -67,15 +67,6 @@ public class RoleServiceTest {
         Assert.assertEquals(expectedRoles, availableRoles);
     }
 
-    @Test
-    public void getRolesFromProperties_SimpleRoles_Ok() {
-        when(environment.getProperty(anyString())).thenReturn(ROLES);
-
-        List<Role> allRolesFromProperties = sut.getRolesFromProperties();
-
-        Assert.assertEquals(allRolesFromProperties, availableRoles);
-    }
-
     private void fillAllAvailableRoles(List<Role> availableRoles) {
         List<String> possibleRolesNames = Arrays
             .asList("ADMIN", "TEST_ENGINEER", "TEST_LEAD", "GUEST");

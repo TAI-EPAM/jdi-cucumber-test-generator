@@ -62,7 +62,7 @@ public class CaseVersion {
         this.propertyDifferences = propertyDifferences;
     }
 
-    public void addPropertyDefference(PropertyDifference propertyDifference) {
+    public void addPropertyDifference(PropertyDifference propertyDifference) {
         if (propertyDifferences == null) {
             propertyDifferences = new ArrayList<>();
         }

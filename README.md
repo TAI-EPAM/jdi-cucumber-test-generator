@@ -9,9 +9,9 @@ Web application for creating and managing automated UI test scenarios and genera
  
  1. [Synopsis](#synopsis)
  2. [Target users](#target-users)
- 3. [Download](#download-application)
- 4. [Run](#run-web-application)
- 5. [What technologies we used](#what-technologies-we-used)
+ 3. [How to download and run application, tests in various cases](RUN.md)
+ 4. [What technologies we used](#what-technologies-we-used)
+ 5. [Issues](ISSUES.md)
  
 ## Synopsis
 This is a web-application that provides an user interface for testers. One can create and store
@@ -40,28 +40,13 @@ Software Testing Engineers who need
 * a platform for storing and organizing large number of test scenarios
 * an automated tests reporting and statistics
 
-## Download application
-For downloading application you can use console and clone repository:
-```text
-git clone https://github.com/TAI-EPAM/jdi-cucumber-test-generator.git
-```
-
-## Run web application
-
-1) After downloading you can open project in IntelliJ IDEA. 
-2) Select "maven projects"->"plugins"->"tomcat7".
-3) Execute "run-war" target. Wait for IDEA to build and deploy .war package. 
-4) Open browser and navigate to "localhost:8080/cucumber/swagger-ui.html#/"
-
 ## What technologies we used
 
 ### [Spring](https://spring.io/docs)
-* [Spring MVC](https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html)
-Spring Web MVC is the web framework that provides architecture of pattern Model-View-Controller.
-
-Usage in project:
-
-	Application is build on MVC concept. 
+* [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
+Spring Boot is Spring's convention-over-configuration solution for creating stand-alone, production-grade 
+Spring-based Applications that you can "just run". It is preconfigured with the Spring's "opinionated view"
+of the best configuration and use of the Spring platform and third-party libraries so you can get started with minimum fuss. 
     
 * [StateMachine](https://projects.spring.io/spring-statemachine/)
 Spring StateMachine is a framework for application developers to use state machine concepts with Spring 
@@ -78,6 +63,16 @@ Spring Security easily can be extended to meet custom requirements.
 Usage in project:
 
     Authorization and authentication
+### [Cucumber](https://docs.cucumber.io/)
+Cucumber is a software tool used for testing. It runs automated acceptance tests written in a
+behavior-driven development (BDD) style. Central to the Cucumber BDD approach is its plain language
+parser called Gherkin. It allows expected software behaviors to be specified in a logical language
+that customers can understand. As such, Cucumber allows the execution of feature documentation
+written in business-facing text.
+
+Usage in project:
+
+    For testing REST API.
     
 ### [FreeMaker](https://freemarker.apache.org/docs/index.html)
  FreeMarker™ is a template engine: a Java library to generate text output (HTML web pages, e-mails, configuration files, source code, etc.) based on templates and changing data.
@@ -120,18 +115,6 @@ Tests are very readable and they produce clean verification errors.
 ### [JUnit](http://junit.org/junit5/)
 JUnit is a test framework which uses annotations to identify methods that specify a test.
 
-### [Log4j](https://logging.apache.org/log4j/2.x/index.html)
-Log4j is a reliable, fast and flexible logging framework (APIs) written in Java, 
-which is distributed under the Apache Software License. 
-Log4j is highly configurable through external configuration files at runtime. 
-It views the logging process in terms of levels of priorities and offers mechanisms 
-to direct logging information to a great variety of destinations, 
-such as a database, file, console, etc.
-
-**Usage in project**
-
-* Add logs in the project.
-
 ### [JaVers](https://github.com/javers/javers#guidelines-for-contributors)
 JaVers is the lightweight Java library for auditing changes in your data.
 
@@ -154,11 +137,10 @@ Usage in project:
 
     Generate and work with tokens for autorization.
      
-### [Apache Tomcat Maven Plugin](http://tomcat.apache.org/tomcat-9.0-doc/index.html)
-The Apache Tomcat Maven Plugin provides goals to manipulate WAR projects within the Apache Tomcat servlet container. 
-You can run your War Apache Maven project through Apache Maven without deploying your WAR file to an Apache Tomcat 
-instance.
+### [Spring Boot Maven Plugin](https://docs.spring.io/spring-boot/docs/current/maven-plugin/usage.html)
+The Spring Boot Maven Plugin provides Spring Boot support in Maven, letting you package executable
+jar or war archives and run an application “in-place”.
 
 Usage in project:
 
-    More convinient way to run WAR project.
+    More convinient way to run JAR or WAR project.

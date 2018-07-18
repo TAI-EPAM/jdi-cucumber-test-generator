@@ -3,19 +3,14 @@ package com.epam.test_generator.services;
 import com.epam.test_generator.controllers.user.request.PasswordResetDTO;
 import com.epam.test_generator.entities.Token;
 import com.epam.test_generator.entities.User;
-import com.epam.test_generator.services.exceptions.IncorrectURI;
 import com.epam.test_generator.services.exceptions.TokenMissingException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-@PropertySource("classpath:email.messages.properties")
 public class PasswordService {
 
     @Autowired
@@ -27,12 +22,9 @@ public class PasswordService {
     @Autowired
     private TokenService tokenService;
 
-    @Value("${override.domain:#{null}}")
-    private String OVERRIDE_DOMAIN;
-
     private final static String PASSWORD_RESET_PATH = "/user/validate-reset-token";
     private final static String CONFIRM_ACCOUNT_PATH = "/user/confirm-email";
-    private final static String TOKEN = "token=";
+    private final static String TOKEN_PARAM_NAME = "token";
 
     /**
      * Generates URI path to reset password by user token
@@ -40,8 +32,8 @@ public class PasswordService {
      * @param token user token
      * @return URI path
      */
-    public String createResetUrl(HttpServletRequest request, Token token) {
-        return getSecurityUrl(request, PASSWORD_RESET_PATH, token).toString();
+    public String createResetUrl(UriComponentsBuilder uriComponentsBuilder, Token token) {
+        return getSecurityUrl(uriComponentsBuilder, PASSWORD_RESET_PATH, token).toString();
     }
 
     /**
@@ -50,9 +42,8 @@ public class PasswordService {
      * @param token user token
      * @return URI path
      */
-    public String createConfirmUrl(HttpServletRequest request, Token token) {
-        return getSecurityUrl(request, CONFIRM_ACCOUNT_PATH, token)
-            .toString();
+    public String createConfirmUrl(UriComponentsBuilder uriComponentsBuilder, Token token) {
+        return getSecurityUrl(uriComponentsBuilder, CONFIRM_ACCOUNT_PATH, token).toString();
     }
 
 
@@ -73,20 +64,13 @@ public class PasswordService {
         tokenService.invalidateToken(resetToken);
     }
 
-    private URI getSecurityUrl(HttpServletRequest request, String path, Token token) {
-        try {
-            if (OVERRIDE_DOMAIN == null) {
-                return new URI(request.getScheme(),
-                    null,
-                    request.getServerName(),
-                    request.getServerPort(),
-                    request.getContextPath() + path,
-                    TOKEN + token.getTokenUuid(),
-                    null);
-            }
-            return new URI(OVERRIDE_DOMAIN + path + "?" + TOKEN + token.getTokenUuid());
-        } catch (URISyntaxException e) {
-            throw new IncorrectURI(e.getMessage());
-        }
+    private URI getSecurityUrl(UriComponentsBuilder uriComponentsBuilder, String path,
+                               Token token) {
+        return uriComponentsBuilder
+            .replacePath(path)
+            .replaceQuery("")
+            .queryParam(TOKEN_PARAM_NAME, token.getTokenUuid())
+            .build()
+            .toUri();
     }
 }

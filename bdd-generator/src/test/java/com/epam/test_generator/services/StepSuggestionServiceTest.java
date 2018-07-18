@@ -14,13 +14,14 @@ import static org.mockito.Mockito.when;
 import com.epam.test_generator.controllers.stepsuggestion.StepSuggestionTransformer;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionCreateDTO;
 import com.epam.test_generator.controllers.stepsuggestion.request.StepSuggestionUpdateDTO;
-import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
 import com.epam.test_generator.dao.interfaces.ProjectDAO;
+import com.epam.test_generator.dao.interfaces.StepDAO;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.services.exceptions.BadRequestException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +64,9 @@ public class StepSuggestionServiceTest {
     private StepSuggestionDAO stepSuggestionDAO;
 
     @Mock
+    private StepService stepService;
+
+    @Mock
     private StepDAO stepDAO;
 
     @Mock
@@ -76,7 +81,7 @@ public class StepSuggestionServiceTest {
     private StepSuggestionDTO expectedStepSuggestionDTO;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         expectedStepSuggestionDTO = new StepSuggestionDTO(ID_1, CONTENT_1, GIVEN);
         stepSuggestionDTOS.add(expectedStepSuggestionDTO);
         stepSuggestionDTOS.add(new StepSuggestionDTO(ID_2, CONTENT_2, WHEN));
@@ -85,6 +90,8 @@ public class StepSuggestionServiceTest {
         expectedStepSuggestion = new StepSuggestion(CONTENT_1, GIVEN);
         expectedStepSuggestion.setId(ID_1);
         expectedStepSuggestion.setVersion(VERSION);
+        expectedStepSuggestion.setLastUsedDate(ZonedDateTime.now());
+
         StepSuggestion stepSuggestion2 = new StepSuggestion(CONTENT_2, WHEN);
         stepSuggestion2.setId(ID_2);
         StepSuggestion stepSuggestion3 = new StepSuggestion(CONTENT_3, WHEN);
@@ -97,7 +104,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepsSuggestions_Success() throws Exception {
+    public void getStepsSuggestions_Success() {
         when(project.getStepSuggestions()).thenReturn(stepSuggestions);
         when(stepSuggestionTransformer.toDtoList(any())).thenReturn(stepSuggestionDTOS);
 
@@ -108,7 +115,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepSuggestionDTO_Success() throws Exception {
+    public void getStepSuggestionDTO_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(any())).thenReturn(true);
         when(stepSuggestionTransformer.toDto(any())).thenReturn(expectedStepSuggestionDTO);
@@ -120,7 +127,7 @@ public class StepSuggestionServiceTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void getStepSuggestionDTO_NotFound() throws Exception {
+    public void getStepSuggestionDTO_NotFound() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(false);
 
@@ -128,12 +135,13 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void getStepSuggestionsByType_Success() throws Exception {
+    public void getStepSuggestionsByType_Success() {
         when(project.getStepSuggestions()).thenReturn(stepSuggestions);
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
 
         List<StepSuggestionDTO> expectedDTOs = stepSuggestionDTOS.stream()
             .filter(s -> s.getType().equals(GIVEN))
+            .peek(s -> s.setVersion(0L))
             .collect(Collectors.toList());
         List<StepSuggestionDTO> actualDTOs =
             stepSuggestionService.getStepsSuggestionsByType(PROJECT_ID, GIVEN);
@@ -157,11 +165,9 @@ public class StepSuggestionServiceTest {
     }
 
     @Test
-    public void updateStepSuggestion_Success() throws Exception {
+    public void updateStepSuggestion_CorrectData_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
-        when(stepSuggestionDAO.save(any(StepSuggestion.class)))
-            .thenAnswer(a -> a.getArgument(0));
         when(stepSuggestionTransformer.toDto(any())).thenCallRealMethod();
         doCallRealMethod().when(stepSuggestionTransformer).updateFromDto(any(), any());
 
@@ -170,6 +176,7 @@ public class StepSuggestionServiceTest {
         updateDTO.setVersion(0L);
 
         StepSuggestionDTO expectedDto = new StepSuggestionDTO(ID_1, CONTENT_2, GIVEN);
+        expectedDto.setVersion(0L);
 
         StepSuggestionDTO actualDto =
             stepSuggestionService.updateStepSuggestion(PROJECT_ID, ID_1, updateDTO);
@@ -177,8 +184,20 @@ public class StepSuggestionServiceTest {
         assertEquals(expectedDto, actualDto);
     }
 
+    @Test(expected = OptimisticLockingFailureException.class)
+    public void updateStepSuggestion_WrongVersion_OptimisticLockingFailureException() {
+        when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
+        when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
+
+        StepSuggestionUpdateDTO updateDTO = new StepSuggestionUpdateDTO();
+        updateDTO.setContent(CONTENT_2);
+        updateDTO.setVersion(100L);
+
+        stepSuggestionService.updateStepSuggestion(PROJECT_ID, ID_1, updateDTO);
+    }
+
     @Test
-    public void removeTestSuggestion_Success() throws Exception {
+    public void removeTestSuggestion_Success() {
         when(stepSuggestionDAO.getOne(ID_1)).thenReturn(expectedStepSuggestion);
         when(project.hasStepSuggestion(expectedStepSuggestion)).thenReturn(true);
 
@@ -190,8 +209,10 @@ public class StepSuggestionServiceTest {
         List<StepSuggestion> stepSuggestionsList = Arrays.asList(stepSuggestions.toArray(new StepSuggestion[]{}));
         Page<StepSuggestion> stepSuggestionPage = new PageImpl<>(stepSuggestionsList);
 
-        when(stepSuggestionDAO.findByProjectIdAndContentIgnoreCaseContaining(eq(PROJECT_ID),eq(SEARCH_STRING),
-            any(PageRequest.class))).thenReturn(stepSuggestionPage);
+        when(stepSuggestionDAO
+            .findByProjectIdAndContentIgnoreCaseContainingOrderByLastUsedDateDesc(
+                eq(PROJECT_ID), eq(SEARCH_STRING), any(PageRequest.class)))
+            .thenReturn(stepSuggestionPage);
         when(stepSuggestionTransformer.toDtoList(stepSuggestionsList)).thenReturn(stepSuggestionDTOS);
 
         List<StepSuggestionDTO> actualStepsSuggestions = stepSuggestionService
@@ -199,7 +220,9 @@ public class StepSuggestionServiceTest {
 
         assertEquals(stepSuggestionDTOS, actualStepsSuggestions);
 
-        verify(stepSuggestionDAO).findByProjectIdAndContentIgnoreCaseContaining(eq(PROJECT_ID), eq(SEARCH_STRING), any(PageRequest.class));
+        verify(stepSuggestionDAO)
+            .findByProjectIdAndContentIgnoreCaseContainingOrderByLastUsedDateDesc(
+                eq(PROJECT_ID), eq(SEARCH_STRING), any(PageRequest.class));
         verify(stepSuggestionTransformer).toDtoList(stepSuggestionsList);
     }
 

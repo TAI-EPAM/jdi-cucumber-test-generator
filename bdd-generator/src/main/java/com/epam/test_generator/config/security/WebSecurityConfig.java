@@ -109,7 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Cors configuration
+     * Configure cross origin requests processing
      *
      * @return Built cors configuration.
      */

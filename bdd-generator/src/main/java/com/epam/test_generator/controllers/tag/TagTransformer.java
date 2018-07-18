@@ -4,7 +4,6 @@ import com.epam.test_generator.controllers.tag.request.TagCreateDTO;
 import com.epam.test_generator.controllers.tag.request.TagUpdateDTO;
 import com.epam.test_generator.controllers.tag.response.TagDTO;
 import com.epam.test_generator.entities.Tag;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;

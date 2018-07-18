@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers.stepsuggestion;
 
 import com.epam.test_generator.controllers.stepsuggestion.response.StepSuggestionDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.entities.StepType;
 import com.epam.test_generator.services.DefaultStepSuggestionService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -41,7 +42,7 @@ public class DefaultStepSuggestionController {
     })
     @ApiImplicitParams({
             @ApiImplicitParam(
-                    name = "Authorization",
+                    name = TokenDTO.TOKEN_HEADER,
                     value = "add here your token",
                     paramType = "header",
                     dataType = "string",
@@ -87,7 +88,7 @@ public class DefaultStepSuggestionController {
             @ApiImplicitParam(name = "stepType",
                     value = "Type of step suggestion that we want to return",
                     required = true, dataType = "StepType", paramType = "path"),
-            @ApiImplicitParam(name = "Authorization", value = "add here your token",
+            @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
                 paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
@@ -105,7 +106,7 @@ public class DefaultStepSuggestionController {
         @ApiResponse(code = 400, message = "Invalid input")
     })
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true),
         @ApiImplicitParam(name = "text", value = "String for search", paramType = "query",
             dataType = "string", required = true),

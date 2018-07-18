@@ -54,7 +54,7 @@ public class PropertyDifferenceTransformer {
             Case source = (Case) sourceFieldValue;
             return caseTransformer.toDto(source);
         } else if (sourceFieldValue instanceof ZonedDateTime) {
-            return String.valueOf(((ZonedDateTime) sourceFieldValue).toInstant().getEpochSecond());
+            return String.valueOf(((ZonedDateTime) sourceFieldValue).toInstant().toEpochMilli());
         } else {
             return sourceFieldValue.toString();
         }

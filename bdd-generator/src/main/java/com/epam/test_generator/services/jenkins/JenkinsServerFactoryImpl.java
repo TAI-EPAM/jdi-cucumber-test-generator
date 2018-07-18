@@ -1,9 +1,13 @@
 package com.epam.test_generator.services.jenkins;
 
+import com.epam.test_generator.pojo.JenkinsCredentials;
 import com.offbytwo.jenkins.JenkinsServer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,6 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JenkinsServerFactoryImpl implements JenkinsServerFactory {
+
+    @Resource
+    private Environment environment;
 
     private JenkinsCredentials defaultCredentials;
 
@@ -33,7 +40,10 @@ public class JenkinsServerFactoryImpl implements JenkinsServerFactory {
     @Override
     @PostConstruct
     public void updateCredentials() {
-        this.defaultCredentials = new JenkinsCredentials("http://ecse00100b3d.epam.com:8888", "admin", "admin");
+        this.defaultCredentials = new JenkinsCredentials(
+            environment.getProperty("spring.jenkins.url"),
+            environment.getProperty("spring.jenkins.password"),
+            environment.getProperty("spring.jenkins.login"));
         //TODO consider where we save credentials
     }
 }

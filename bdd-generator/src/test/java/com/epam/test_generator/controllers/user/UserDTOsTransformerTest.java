@@ -39,7 +39,7 @@ public class UserDTOsTransformerTest {
     private UserDTOsTransformer userDTOsTransformer;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(encoder.encode(anyString())).thenReturn(PASSWORD);
         user = new User();
         user.setName(NAME);

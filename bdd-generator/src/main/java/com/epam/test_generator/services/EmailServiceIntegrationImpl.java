@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @Transactional
@@ -26,7 +25,7 @@ public class EmailServiceIntegrationImpl implements EmailService {
     private UserDTOsTransformer userDTOsTransformer;
 
     @Override
-    public UserDTO sendRegistrationMessage(User user, HttpServletRequest request) {
+    public UserDTO sendRegistrationMessage(User user, UriComponentsBuilder uriComponentsBuilder) {
         Token userConformationToken = tokenService.createToken(user, CONFIRMATION_TIME);
         userService.confirmUser(userConformationToken.getTokenUuid());
         return userDTOsTransformer.toUserDTO(user);

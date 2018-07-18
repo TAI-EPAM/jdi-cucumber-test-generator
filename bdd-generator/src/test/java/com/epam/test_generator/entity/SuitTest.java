@@ -1,6 +1,6 @@
 package com.epam.test_generator.entity;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import com.epam.test_generator.entities.Case;
@@ -60,7 +60,7 @@ public class SuitTest {
     @Test
     public void remove_SingleCaseWithStepsFromSuit_ChangesSuitStatusToNotDone(){
         suit.removeCase(caze);
-        assertTrue(Status.NOT_DONE.equals(suit.getStatus()));
+        assertEquals(Status.NOT_DONE, suit.getStatus());
     }
 
 

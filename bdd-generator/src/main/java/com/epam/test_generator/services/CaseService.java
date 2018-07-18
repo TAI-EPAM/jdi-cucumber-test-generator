@@ -4,7 +4,6 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 import com.epam.test_generator.controllers.caze.CaseTransformer;
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
-import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
 import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
@@ -25,17 +24,12 @@ import com.epam.test_generator.services.exceptions.NotFoundException;
 import com.epam.test_generator.state.machine.StateMachineAdapter;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Transactional
 @Service
@@ -43,10 +37,6 @@ public class CaseService {
 
     @Autowired
     private CaseTransformer caseTransformer;
-
-    @Autowired
-    @Qualifier("defaultValidator")
-    private Validator validator;
 
     @Autowired
     private CaseDAO caseDAO;
@@ -72,21 +62,11 @@ public class CaseService {
     @Autowired
     private CaseVersionTransformer caseVersionTransformer;
 
-
-    public List<Case> getCases() {
-        return caseDAO.findAll();
-    }
-
     public Case getCase(Long projectId, Long suitId, Long caseId) {
         Suit suit = suitService.getSuit(projectId, suitId);
         Case caze = caseDAO.findById(caseId).orElseThrow(NotFoundException::new);
-        if (suit.hasCase(caze)) {
-            return caze;
-        } else {
-            throw new BadRequestException(
-                String.format("Error: suit %s does not have case %s", suit.getName(),
-                    caze.getName()));
-        }
+        throwExceptionIfCaseIsNotInSuit(suit, caze);
+        return caze;
     }
 
     public CaseDTO getCaseDTO(Long projectId, Long suitId, Long caseId) {
@@ -123,32 +103,6 @@ public class CaseService {
         return caseTransformer.toDto(caze);
     }
 
-
-    /**
-     * Adds case to existing suit using CaseEditDTO
-     *
-     * @param projectId id of project where to add case
-     * @param suitId id of suit where to add case
-     * @param caseEditDTO case to add
-     * @return {@link CaseDTO} of added case to suit
-     */
-    @Deprecated
-    public CaseDTO addCaseToSuit(Long projectId, Long suitId, CaseEditDTO caseEditDTO)
-        throws MethodArgumentNotValidException {
-        CaseCreateDTO caseDTO = new CaseCreateDTO(caseEditDTO.getName(),
-            caseEditDTO.getDescription(), caseEditDTO.getPriority(), caseEditDTO.getComment(),
-            new HashSet<>());
-
-        BeanPropertyBindingResult beanPropertyBindingResult =
-            new BeanPropertyBindingResult(caseDTO, CaseDTO.class.getSimpleName());
-
-        validator.validate(caseDTO, beanPropertyBindingResult);
-        if (beanPropertyBindingResult.hasErrors()) {
-            throw new MethodArgumentNotValidException(null, beanPropertyBindingResult);
-        }
-        return addCaseToSuit(projectId, suitId, caseDTO);
-    }
-
     /**
      * Updates case info to info specified in CaseUpdateDTO
      *
@@ -164,15 +118,9 @@ public class CaseService {
 
         Case caze = caseDAO.findById(caseId).orElseThrow(NotFoundException::new);
 
-        if (!suit.hasCase(caze)) {
-            throw new BadRequestException(
-                    String.format("Error: suit %s does not have case %s", suit.getName(),
-                            caze.getName()));
-        }
+        throwExceptionIfCaseIsNotInSuit(suit, caze);
 
         Case updatedCase = caseTransformer.updateFromDto(caseUpdateDTO, caze);
-
-        updatedCase = caseDAO.save(updatedCase);
 
         CaseDTO updatedCaseDTO = caseTransformer.toDto(updatedCase);
 
@@ -180,81 +128,6 @@ public class CaseService {
         suitVersionDAO.save(suit);
 
         return updatedCaseDTO;
-    }
-
-    /**
-     * Updates all cases to specified in list of updateCaseDTOs. Method is deprecated and better use
-     * separate methods (updateCase, removeCases and addCaseToSuit) for creating updating and
-     * deleting a case.
-     *
-     * @param projectId id of project where to update cases
-     * @param suitId id of suit where to update cases
-     * @param caseEditDTOS list of cases to update
-     * @return list {@link CaseDTO} with all changed cases
-     */
-    @Deprecated
-    public List<CaseDTO> updateCases(Long projectId, long suitId, List<CaseEditDTO> caseEditDTOS)
-        throws MethodArgumentNotValidException {
-        List<CaseDTO> updatedCases = new ArrayList<>();
-        for (CaseEditDTO caseEditDTO : caseEditDTOS) {
-            switch (caseEditDTO.getAction()) {
-                case DELETE:
-                    if (caseEditDTO.getId() == null) {
-                        throw new BadRequestException("No id in case to remove");
-                    }
-                    updatedCases.add(removeCase(projectId, suitId, caseEditDTO.getId()));
-                    break;
-                case CREATE:
-                    updatedCases.add(addCaseToSuit(projectId, suitId, caseEditDTO));
-                    break;
-                case UPDATE:
-                    if (caseEditDTO.getId() == null) {
-                        throw new BadRequestException("No id in case to update");
-                    }
-                    CaseUpdateDTO caseUpdateDTO = new CaseUpdateDTO(
-                        caseEditDTO.getName(),
-                        caseEditDTO.getDescription(),
-                        caseEditDTO.getPriority(),
-                        caseEditDTO.getStatus(),
-                        caseEditDTO.getComment()
-                    );
-                    CaseDTO updatedCaseDTO = updateCase(projectId, suitId, caseEditDTO.getId(),
-                        caseUpdateDTO);
-                    updatedCases.add(updatedCaseDTO);
-                    break;
-                default:
-                    throw new BadRequestException(
-                        String.format("Wrong action argument: %s", caseEditDTO.getAction()));
-            }
-        }
-
-        return updatedCases;
-    }
-
-    /**
-     * Deletes one case by id
-     *
-     * @param projectId id of project where to delete case
-     * @param suitId id of suit where to delete case
-     * @param caseId id of case to delete
-     * @return removed {@link CaseDTO}
-     */
-    @Deprecated
-    public CaseDTO removeCase(Long projectId, Long suitId, Long caseId) {
-        Suit suit = suitService.getSuit(projectId, suitId);
-
-        Case caze = getCase(projectId, suitId, caseId);
-        stepSuggestionService.removeSteps(projectId, caze.getSteps());
-        suit.removeCase(caze);
-
-        saveIssueToDeleteInJira(caze);
-
-        caseDAO.delete(caze);
-
-        caseVersionDAO.delete(caze);
-        suitVersionDAO.save(suit);
-
-        return caseTransformer.toDto(caze);
     }
 
     /**
@@ -285,7 +158,6 @@ public class CaseService {
             });
 
         removedCases.forEach(suit::removeCase);
-        suitVersionDAO.save(suit);
 
         return caseTransformer.toDtoList(removedCases);
     }
@@ -333,7 +205,6 @@ public class CaseService {
         StateMachine<Status, Event> stateMachine = stateMachineAdapter.restore(cs);
         if (stateMachine.sendEvent(event)) {
             stateMachineAdapter.persist(stateMachine, cs);
-            caseDAO.save(cs);
 
             caseVersionDAO.save(cs);
             suitVersionDAO.save(suitService.getSuit(projectId, suitId));
@@ -362,11 +233,18 @@ public class CaseService {
             }
             caze.setRowNumber(dto.getRowNumber());
             caseVersionDAO.save(caze);
-            caseDAO.save(caze);
         }
 
         suitVersionDAO.save(suit);
 
         return rowNumberUpdates;
+    }
+
+    private void throwExceptionIfCaseIsNotInSuit(Suit suit, Case caze) {
+        if (!suit.hasCase(caze)) {
+            throw new NotFoundException(
+                String.format("Error: Suit %s does not have case %d", suit.getName(),
+                    caze.getId()));
+        }
     }
 }

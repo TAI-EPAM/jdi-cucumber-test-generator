@@ -1,0 +1,59 @@
+# jwt_secret is a key word to config the right and secure JWT token file
+jwt_secret: iteaky
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:~/h2/app_db
+    username: sa
+    password: sa
+  jenkins:
+    url: http://ecse00100b3d.epam.com:8888
+    login: admin
+    password: admin
+  jpa:
+    show_sql: false
+    hibernate.ddl-auto: none
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        event.merge.entity_copy_observer: allow
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    drop-first: false
+    enabled: true
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: cucumbervarificator@gmail.com
+    password: cucumberadmin
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+subject.registration.message: Email verification
+registration.message: 'Dear, %s %s!\n\
+You registered on the site %s\n\n\
+\
+You can start using the service only after your account will be activated.\n\
+In order to activate the account, please follow the link: %s\n\n\
+\
+WARNING! The registration process won''t be completed until you click on the specified link.\n\
+The link is valid for three days from the date of registration. If the link has expired, you should re-register.\n\n\
+\
+You don''t need to reply this email.\n\
+If you haven''t registered on the site - just ignore this letter.'
+subject.password.message: Reset password
+reset.password.message: 'Dear, %s %s!\n\n\
+  \
+You receive this letter because your account was locked after 5 efforts with wrong credentials.\n\
+If you want to unlock your account please follow the next link: %s\n\
+If you have more questions don''t hesitate to write to our support: %s\n\n\
+  \
+Thank you and have a good day.\n\
+Sincerely yours,\n\
+Cucumber test generator team.'

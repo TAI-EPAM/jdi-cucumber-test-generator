@@ -5,7 +5,6 @@ import com.epam.test_generator.entities.api.SuitTrait;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +12,6 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.epam.test_generator.entities.api.Taggable;
-import org.springframework.data.domain.Persistable;
 
 
 /**
@@ -61,6 +59,7 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
     private Set<Tag> tags;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "SUIT_CASE")
     private List<Case> cases = new ArrayList<>();
 
     private Integer rowNumber;
@@ -238,16 +237,10 @@ public class Suit implements SuitTrait, JiraSuitAndCaseTrait, Taggable, Serializ
     }
 
     public Case getCaseById(Long id) {
-        Case result = null;
-
-        for (Case caze : cases) {
-            if (caze.getId().equals(id)) {
-                result = caze;
-                break;
-            }
-        }
-
-        return result;
+        return cases.stream()
+            .filter(caze -> Objects.equals(caze.getId(), id))
+            .findFirst()
+            .get();
     }
 
     public ZonedDateTime getUpdateDate() {

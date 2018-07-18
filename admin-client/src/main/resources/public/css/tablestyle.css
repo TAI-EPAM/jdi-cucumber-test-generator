@@ -1,0 +1,22 @@
+
+table.datatable {
+    margin: 0 auto;
+    border-spacing: 0 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+}
+.datatable th {
+    padding: 10px 20px;
+    border: 2px solid;
+    font-size: 0.9em;
+}
+
+.datatable td {
+
+    vertical-align: middle;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    border:2px solid #000000;
+}
+

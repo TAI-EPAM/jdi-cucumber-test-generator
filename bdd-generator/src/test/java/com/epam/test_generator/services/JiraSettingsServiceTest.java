@@ -96,10 +96,7 @@ public class JiraSettingsServiceTest {
         doCallRealMethod().when(jiraSettingsTransformer).updateFromDto(any(), any());
         jiraSettingsService.updateJiraSettings(JIRA_SETTINGS_ID, jiraSettingsUpdateDTO);
 
-        JiraSettings expectedJiraSettings = new JiraSettings(jiraSettingsUpdateDTO.getUri(),
-            jiraSettingsUpdateDTO.getLogin(), jiraSettingsUpdateDTO.getPassword());
-
-        verify(jiraSettingsDAO).save(eq(expectedJiraSettings));
+        verify(jiraSettingsTransformer).updateFromDto(jiraSettingsUpdateDTO, existedJiraSettings);
     }
 
     @Test(expected = NotFoundException.class)

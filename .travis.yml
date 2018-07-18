@@ -2,6 +2,8 @@ language: java
 jdk: oraclejdk8
 sudo: false
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -f "*/jacoco-aggregate.exec"
+script:
+  - mvn clean verify
 notifications:
   webhooks: https://outlook.office.com/webhook/cd0ca201-9f95-4b1c-9fa3-df32bd0d5f0c@b41b72d0-4e9f-4c26-8a69-f949f367c91d/TravisCI/3501e2733be34d549699b2b4b8424377/ec15efd6-7ce2-4632-8b7d-17557f80646e

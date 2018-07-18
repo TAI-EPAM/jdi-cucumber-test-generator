@@ -9,7 +9,6 @@ import com.epam.test_generator.services.EmailService;
 import com.epam.test_generator.services.PasswordService;
 import com.epam.test_generator.services.TokenService;
 import com.epam.test_generator.services.UserService;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Allows to register a new user, confirm his email to activate the account and change the
@@ -43,10 +43,10 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseEntity<UserDTO> registerUserAccount(@RequestBody @Valid RegistrationUserDTO registrationUserDTO,
-                                                       HttpServletRequest request) {
+                                                       UriComponentsBuilder uriComponentsBuilder) {
 
         User user = userService.createUser(registrationUserDTO);
-        UserDTO userDTO = emailService.sendRegistrationMessage(user, request);
+        UserDTO userDTO = emailService.sendRegistrationMessage(user, uriComponentsBuilder);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
@@ -59,11 +59,11 @@ public class UserController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity passwordForgot(@RequestBody EmailDTO email,
-                                         HttpServletRequest request) throws Exception {
+                                         UriComponentsBuilder uriComponentsBuilder) {
 
         User user = userService.getUserByEmail(email.getEmail());
         userService.checkUserExist(user);
-        emailService.sendResetPasswordMessage(user, request);
+        emailService.sendResetPasswordMessage(user, uriComponentsBuilder);
 
         return new ResponseEntity(HttpStatus.OK);
     }

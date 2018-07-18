@@ -36,7 +36,6 @@ import org.springframework.data.domain.Pageable;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultStepSuggestionServiceTest {
 
-    private static final long SIMPLE_AUTOCOMPLETE_ID = 1L;
     private static final long SIMPLE_STEP_SUGGESTION_ID = 1L;
     private static final int PAGE_SIZE = 1;
     private static final String SEARCH_STRING = "text";

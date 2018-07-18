@@ -119,7 +119,6 @@ public class UserService {
 
         if (user != null) {
             user.updateFailureLoginAttempts(MAX_ATTEMPTS);
-            userDAO.save(user);
             return user.getLoginAttempts();
         }
 
@@ -135,7 +134,6 @@ public class UserService {
         User user = getUserById(userId);
         if (user != null) {
             user.resetLoginAttempts();
-            userDAO.save(user);
         }
     }
 
@@ -148,7 +146,6 @@ public class UserService {
     public void updatePassword(String password, String email) {
         User byEmail = checkUserExist(userDAO.findByEmail(email));
         byEmail.updatePassword(password);
-        userDAO.save(byEmail);
     }
 
     public User checkUserExist(User user) {

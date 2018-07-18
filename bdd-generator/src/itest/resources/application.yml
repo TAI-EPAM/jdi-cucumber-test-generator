@@ -1,0 +1,35 @@
+# jwt_secret is a key word to config the right and secure JWT token file
+jwt_secret: iteaky
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+  jpa:
+    show_sql: false
+    hibernate.ddl-auto: none
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        event.merge.entity_copy_observer: log
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+subject.registration.message: Email verification
+registration.message: registration message
+subject.password.message: Reset password
+reset.password.message: password reset message

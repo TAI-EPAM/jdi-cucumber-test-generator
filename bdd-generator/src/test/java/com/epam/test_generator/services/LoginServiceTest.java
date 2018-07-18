@@ -1,7 +1,7 @@
 package com.epam.test_generator.services;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -12,7 +12,6 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.entities.User;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
-import javax.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoginServiceTest {
@@ -43,9 +43,6 @@ public class LoginServiceTest {
     private Environment environment;
 
     @Mock
-    private HttpServletRequest request;
-
-    @Mock
     private LoginUserDTO loginUserDTO;
 
     @Mock
@@ -53,6 +50,8 @@ public class LoginServiceTest {
 
     @InjectMocks
     private LoginService sut;
+
+    private UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
 
     @Before
     public void setUp() {
@@ -81,14 +80,14 @@ public class LoginServiceTest {
 
     @Test(expected = UnauthorizedException.class)
     public void checkPassword_NotExistedUser_Exception() {
-        sut.checkPassword(loginUserDTO,request);
+        sut.checkPassword(loginUserDTO,uriComponentsBuilder);
     }
 
     @Test(expected = UnauthorizedException.class)
     public void checkPassword_IncorrectPassword_Exception() {
         when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
-        sut.checkPassword(loginUserDTO, request);
+        sut.checkPassword(loginUserDTO, uriComponentsBuilder);
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -97,7 +96,7 @@ public class LoginServiceTest {
 
         when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
-        sut.checkPassword(loginUserDTO, request);
+        sut.checkPassword(loginUserDTO, uriComponentsBuilder);
     }
 
     @Test(expected = UnauthorizedException.class)
@@ -107,7 +106,7 @@ public class LoginServiceTest {
 
         when(loginUserDTO.getEmail()).thenReturn(EMAIL);
         when(userService.getUserByEmail(any())).thenReturn(user);
-        sut.checkPassword(loginUserDTO,request);
+        sut.checkPassword(loginUserDTO,uriComponentsBuilder);
 
         verify(userService,times(1)).updateFailureAttempts(anyLong());
         verify(userService,never()).invalidateAttempts(any());
@@ -120,7 +119,7 @@ public class LoginServiceTest {
         when(userService.getUserByEmail(any())).thenReturn(user);
         when(userService.isSamePasswords(loginUserDTO.getPassword(), user.getPassword()))
             .thenReturn(true);
-        sut.checkPassword(loginUserDTO,request);
+        sut.checkPassword(loginUserDTO,uriComponentsBuilder);
         sut.getLoginJWTToken(loginUserDTO);
 
         verify(userService,never()).updateFailureAttempts(any());

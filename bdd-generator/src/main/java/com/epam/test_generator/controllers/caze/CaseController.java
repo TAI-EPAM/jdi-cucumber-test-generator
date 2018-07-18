@@ -1,11 +1,11 @@
 package com.epam.test_generator.controllers.caze;
 
 import com.epam.test_generator.controllers.caze.request.CaseCreateDTO;
-import com.epam.test_generator.controllers.caze.request.CaseEditDTO;
 import com.epam.test_generator.controllers.caze.request.CaseRowNumberUpdateDTO;
 import com.epam.test_generator.controllers.caze.request.CaseUpdateDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
 import com.epam.test_generator.controllers.suit.response.SuitDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.dto.wrapper.ListWrapper;
 import com.epam.test_generator.entities.Event;
@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +32,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 /**
  * Handle cases in specified suit.
  */
@@ -58,7 +57,7 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains cases",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
 
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
@@ -82,7 +81,7 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case to return",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping("/{caseId}")
@@ -107,7 +106,7 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
             @ApiImplicitParam(name = "caseCreateDTO", value = "Added case object",
                     required = true, dataType = "CaseCreateDTO", paramType = "body"),
-            @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+            @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @ResponseStatus(HttpStatus.CREATED)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -135,7 +134,7 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseUpdateDTO", value = "Updated case object",
             required = true, dataType = "CaseUpdateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
@@ -150,59 +149,6 @@ public class CaseController {
         return new ResponseEntity<>(caseDto, HttpStatus.OK);
     }
 
-    @Deprecated
-    @ApiOperation(value = "Update, create or delete list of cases", nickname = "updateCases")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "OK", response = Long.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request"),
-        @ApiResponse(code = 404, message = "Some of Suits/cases not found")
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectId", value = "ID of project",
-            required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "suitId", value = "ID of suit to operate cases",
-            required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
-            paramType = "header", dataType = "string", required = true)
-    })
-    @PutMapping
-    public ResponseEntity<List<CaseDTO>> updateCases(@PathVariable("projectId") long projectId,
-                                                  @PathVariable("suitId") long suitId,
-                                                  @RequestBody @Valid ListWrapper<CaseEditDTO> editDTOList)
-        throws MethodArgumentNotValidException {
-
-        List<CaseDTO> updatedCasesDTO = caseService.updateCases(projectId, suitId,
-            editDTOList.getList());
-
-        return new ResponseEntity<>(updatedCasesDTO, HttpStatus.OK);
-    }
-
-    @Deprecated
-    @ApiOperation(value = "Delete case by id", nickname = "removeCase")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "OK"),
-        @ApiResponse(code = 400, message = "Suit doesn't contain the case"),
-        @ApiResponse(code = 404, message = "Suit/Case not found")
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectId", value = "ID of project",
-            required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
-            required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "caseId", value = "ID of case to delete",
-            required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
-    })
-    @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
-    @DeleteMapping("/{caseId}")
-    public ResponseEntity<CaseDTO> removeCase(@PathVariable("projectId") long projectId,
-                                           @PathVariable("suitId") long suitId,
-                                           @PathVariable("caseId") long caseId) {
-        CaseDTO removedCaseDTO = caseService.removeCase(projectId, suitId, caseId);
-
-        return new ResponseEntity<>(removedCaseDTO, HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Delete cases from suit", nickname = "removeCases")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
@@ -215,8 +161,8 @@ public class CaseController {
         @ApiImplicitParam(name = "suitId", value = "ID of suit which contains the case",
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "removeCaseIds", value = "IDs of cases to be removed",
-            required = true, dataType = "Long[]", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+            required = true, dataType = "long", allowMultiple = true, paramType = "body"),
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @DeleteMapping
@@ -251,7 +197,7 @@ public class CaseController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "event", value = "Name of event to be performed",
             required = true, dataType = "String", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PutMapping("/{caseId}/events/{event}")
@@ -271,10 +217,10 @@ public class CaseController {
         @ApiResponse(code = 400, message = "Invalid input", response = ValidationErrorsDTO.class),
         @ApiResponse(code = 404, message = "Case not found")
     })
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PutMapping("/row-numbers")
-    public ResponseEntity<List<CaseRowNumberUpdateDTO>> updatecaseRowNumber
+    public ResponseEntity<List<CaseRowNumberUpdateDTO>> updateCaseRowNumber
         (@PathVariable("projectId") long projectId,
          @PathVariable("suitId") long suitId,
          @RequestBody @Valid ListWrapper<CaseRowNumberUpdateDTO> rowNumberUpdates) {

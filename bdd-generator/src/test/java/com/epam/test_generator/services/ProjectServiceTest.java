@@ -31,10 +31,8 @@ import com.epam.test_generator.services.exceptions.ProjectClosedException;
 import com.epam.test_generator.services.exceptions.UnauthorizedException;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -341,13 +339,12 @@ public class ProjectServiceTest {
     public void update_Project_Success() {
         when(projectDAO.findById(SIMPLE_PROJECT_ID)).thenReturn(Optional.of(simpleProject1));
         projectService.updateProject(SIMPLE_PROJECT_ID, projectUpdateDTO);
-        verify(projectDAO).save(simpleProject1);
+        verify(projectTransformer).updateFromDto(projectUpdateDTO, simpleProject1);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateProject_InvalidProjectId_NotFound() {
         projectService.updateProject(PROJECT_ID, projectUpdateDTO);
-        verify(projectDAO).save(simpleProject1);
     }
 
     @Test
@@ -372,7 +369,6 @@ public class ProjectServiceTest {
         assertFalse(simpleProject1.getUsers().contains(simpleUser1));
         projectService.addUserToProject(SIMPLE_PROJECT_ID, SIMPLE_USER_ID);
         assertTrue(simpleProject1.getUsers().contains(simpleUser1));
-        verify(projectDAO).save(simpleProject1);
     }
 
     @Test(expected = NotFoundException.class)
@@ -396,7 +392,6 @@ public class ProjectServiceTest {
         assertTrue(simpleProject1.getUsers().contains(simpleUser1));
         projectService.removeUserFromProject(SIMPLE_PROJECT_ID, SIMPLE_USER_ID);
         assertFalse(simpleProject1.getUsers().contains(simpleUser1));
-        verify(projectDAO).save(simpleProject1);
     }
 
     @Test (expected = NotFoundException.class)
@@ -420,7 +415,6 @@ public class ProjectServiceTest {
         assertTrue(simpleProject1.isActive());
         projectService.closeProject(SIMPLE_PROJECT_ID);
         assertFalse(simpleProject1.isActive());
-        verify(projectDAO).save(simpleProject1);
     }
 
     @Test(expected = NotFoundException.class)

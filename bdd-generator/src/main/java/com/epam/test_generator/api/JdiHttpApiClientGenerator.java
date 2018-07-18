@@ -19,7 +19,7 @@ import static io.restassured.http.ContentType.JSON;
  */
 public class JdiHttpApiClientGenerator {
 
-    public static final String API_CLASS_NAME = "com.epam.test_generator.api.BddGeneratorApi";
+    public static final String API_CLASS_NAME = "BddGeneratorApi";
     private static final String API_PACKAGE_NAME = "com.epam.test_generator.api";
 
     private static final Logger logger = LoggerFactory.getLogger(JdiHttpApiClientGenerator.class);

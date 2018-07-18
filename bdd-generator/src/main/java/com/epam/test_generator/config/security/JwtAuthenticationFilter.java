@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Role;
 import com.epam.test_generator.entities.User;
@@ -57,7 +58,7 @@ public abstract class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws ServletException, IOException {
 
-        String token = Optional.ofNullable(request.getHeader("Authorization"))
+        String token = Optional.ofNullable(request.getHeader(TokenDTO.TOKEN_HEADER))
             .filter(a -> a.startsWith("Bearer "))
             .map(a -> a.replaceAll("^Bearer ", ""))
             .orElseGet(() -> request.getParameter("token"));

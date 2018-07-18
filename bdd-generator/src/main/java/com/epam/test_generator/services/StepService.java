@@ -4,9 +4,11 @@ import static com.epam.test_generator.services.utils.UtilsService.checkNotNull;
 
 import com.epam.test_generator.controllers.step.request.StepCreateDTO;
 import com.epam.test_generator.controllers.step.request.StepUpdateDTO;
+import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.dao.interfaces.CaseVersionDAO;
 import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.StepDAO;
+import com.epam.test_generator.dao.interfaces.StepSuggestionDAO;
 import com.epam.test_generator.dao.interfaces.SuitVersionDAO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
 import com.epam.test_generator.entities.Case;
@@ -14,9 +16,9 @@ import com.epam.test_generator.entities.Project;
 import com.epam.test_generator.entities.Step;
 import com.epam.test_generator.entities.StepSuggestion;
 import com.epam.test_generator.entities.Suit;
-import com.epam.test_generator.services.exceptions.BadRequestException;
 import com.epam.test_generator.controllers.step.StepTransformer;
 import com.epam.test_generator.services.exceptions.NotFoundException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,12 +131,9 @@ public class StepService {
         StepSuggestion oldStepSuggestion = stepSuggestionService.getStepSuggestion(projectId, oldStep);
         Step newStep = stepTransformer.updateFromDto(stepUpdateDTO, oldStep);
         StepSuggestion newStepSuggestion = stepSuggestionService.getStepSuggestion(projectId, newStep);
-        stepDAO.save(newStep);
         if(!Objects.equals(oldStepSuggestion, newStepSuggestion)) {
             oldStepSuggestion.remove(oldStep);
             newStepSuggestion.add(newStep);
-            stepSuggestionDAO.save(oldStepSuggestion);
-            stepSuggestionDAO.save(newStepSuggestion);
         }
         caseVersionDAO.save(caze);
         suitVersionDAO.save(suit);
@@ -169,18 +168,14 @@ public class StepService {
         suitVersionDAO.save(suit);
     }
 
-    public void removeStep(Long projectId, Long stepId) {
-        Project project = checkNotNull(projectService.getProjectByProjectId(projectId));
+    public void removeStep(StepSuggestion stepSuggestion, Project project) {
 
-        for (Suit suit: project.getSuits()) {
-            for (Case caze: suit.getCases()) {
-                for (Step step: caze.getSteps()) {
-                    if(stepId.equals(step.getId())){
-                        caze.removeStep(step);
-                        suit.updateStatus();
-                        stepDAO.delete(step);
-                        caseVersionDAO.save(caze);
-                        suitVersionDAO.save(suit);
+        for (Suit suit : project.getSuits()) {
+            for (Case caze : suit.getCases()) {
+                for (Step step : caze.getSteps()) {
+                    List<Step> suggestionSteps = stepSuggestion.getSteps();
+                    if (suggestionSteps.contains(step)) {
+                        removeStep(project.getId(), suit.getId(), caze.getId(), step.getId());
                         return;
                     }
                 }
@@ -191,8 +186,8 @@ public class StepService {
 
     private void throwExceptionIfStepIsNotInCase(Case aCase, Step step) {
         if (!aCase.hasStep(step)) {
-            throw new BadRequestException(
-                String.format("Error: Case %s does not have step %s", aCase.getName(),
+            throw new NotFoundException(
+                String.format("Error: Case %s does not have step %d", aCase.getName(),
                     step.getId()));
         }
     }

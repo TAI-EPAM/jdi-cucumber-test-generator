@@ -1,16 +1,15 @@
 package com.epam.test_generator.controllers.version.caze;
 
-import com.epam.test_generator.controllers.version.caze.response.CaseVersionDTO;
 import com.epam.test_generator.controllers.caze.response.CaseDTO;
+import com.epam.test_generator.controllers.version.caze.response.CaseVersionDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.services.CaseService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +42,7 @@ public class CaseVersionController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             required = true, dataType = "string", paramType = "header")
     })
     @GetMapping
@@ -71,7 +70,7 @@ public class CaseVersionController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "commitId", value = "ID of commit to which state you want restore",
             required = true, dataType = "String", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token",
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
             required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/{commitId:.+}")

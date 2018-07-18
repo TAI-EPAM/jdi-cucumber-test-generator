@@ -1,6 +1,7 @@
 package com.epam.test_generator.controllers;
 
 import com.epam.test_generator.controllers.project.response.ProjectDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.pojo.JiraFilter;
 import com.epam.test_generator.pojo.JiraProject;
 import com.epam.test_generator.pojo.JiraStory;
@@ -34,7 +35,7 @@ public class JiraController {
 
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token",
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
         paramType = "header", dataType = "string", required = true)
     @GetMapping("/jira-settings/{jiraSettingsId}/jira-filters")
     public ResponseEntity<List<JiraFilter>> getFilters(
@@ -43,7 +44,7 @@ public class JiraController {
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     @GetMapping("/jira-settings/{jiraSettingsId}/projects")
     public ResponseEntity<List<JiraProject>> getProjects(@PathVariable("jiraSettingsId") Long id) {
 
@@ -53,7 +54,7 @@ public class JiraController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @ApiImplicitParams({
         @ApiImplicitParam(name = "jiraKey", value = "Key of project", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @GetMapping("/jira-settings/{jiraSettingsId}/project/{jiraKey}/stories")
     public ResponseEntity<List<JiraStory>> getAllStories(
@@ -67,7 +68,7 @@ public class JiraController {
 
     @Deprecated
     @Secured({"ROLE_ADMIN"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     @PostMapping("/jira-settings/{jiraSettingsId}/project/{jiraKey}")
     public ResponseEntity<String> createProjectWithAttFromJira(
         @PathVariable("jiraKey") String jiraProjectKey,
@@ -80,7 +81,7 @@ public class JiraController {
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header",
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header",
             dataType = "string", required = true)
     @PostMapping("/jira-settings/{jiraSettingsId}/project-by-filters/{jiraKey}")
     public ResponseEntity<ProjectDTO> createProjectByFilters(
@@ -98,7 +99,7 @@ public class JiraController {
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
     @ApiImplicitParams({
         @ApiImplicitParam(name = "jiraKey", value = "Key of project", required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @PostMapping("/project/{jiraKey}/suits")
     public ResponseEntity<String> createStoriesForProject(
@@ -111,7 +112,7 @@ public class JiraController {
 
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     @PutMapping("/jira-settings/{jiraSettingsId}/import")
     public ResponseEntity<String> syncFromJira(@PathVariable("jiraSettingsId") Long id) {
         jiraService.syncFromJira(id);
@@ -119,7 +120,7 @@ public class JiraController {
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     @PutMapping("/jira-settings/{jiraSettingsId}/export")
     public ResponseEntity<String> syncToJira(@PathVariable("jiraSettingsId") Long id) {
 

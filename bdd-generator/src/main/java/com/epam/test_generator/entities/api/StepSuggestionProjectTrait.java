@@ -24,10 +24,9 @@ public interface StepSuggestionProjectTrait {
      *
      * @param defaultStepSuggestions list of {@link DefaultStepSuggestion}
      */
-    default void addStepSuggestions(@NotNull List<DefaultStepSuggestion> defaultStepSuggestions){
+    default void addStepSuggestions(@NotNull List<DefaultStepSuggestion> defaultStepSuggestions) {
         getStepSuggestions().addAll(
-            defaultStepSuggestions
-                .stream()
+            defaultStepSuggestions.stream()
                 .map(StepSuggestion::new)
                 .collect(Collectors.toList()
                 ));

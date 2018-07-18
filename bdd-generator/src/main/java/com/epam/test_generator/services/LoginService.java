@@ -12,15 +12,15 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application.yml")
 @Transactional(noRollbackFor = UnauthorizedException.class)
 public class LoginService {
 
@@ -53,7 +53,7 @@ public class LoginService {
     }
 
 
-    public void checkPassword(LoginUserDTO loginUserDTO, HttpServletRequest request) {
+    public void checkPassword(LoginUserDTO loginUserDTO, UriComponentsBuilder uriComponentsBuilder) {
         User user = userService.getUserByEmail(loginUserDTO.getEmail());
         if (user == null) {
             throw new UnauthorizedException(
@@ -67,7 +67,7 @@ public class LoginService {
         if (!(userService.isSamePasswords(loginUserDTO.getPassword(), user.getPassword()))) {
             int attempts = userService.updateFailureAttempts(user.getId());
             if (user.isLocked()) {
-                emailService.sendResetPasswordMessage(user, request);
+                emailService.sendResetPasswordMessage(user, uriComponentsBuilder);
                 throw new UnauthorizedException(String.format(
                     "Incorrect password entered %s times. User account has been locked!" +
                         " Mail for reset your password was send on your email.", attempts));

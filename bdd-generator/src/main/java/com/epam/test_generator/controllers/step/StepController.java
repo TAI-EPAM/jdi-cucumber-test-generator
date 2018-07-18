@@ -4,6 +4,7 @@ package com.epam.test_generator.controllers.step;
 import com.epam.test_generator.controllers.step.request.StepCreateDTO;
 import com.epam.test_generator.controllers.step.request.StepUpdateDTO;
 import com.epam.test_generator.controllers.step.response.StepDTO;
+import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.dto.ValidationErrorsDTO;
 import com.epam.test_generator.services.StepService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -49,7 +50,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "caseId", value = "ID of case which contains steps",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping
@@ -75,7 +76,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepId", value = "ID of step to return",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD", "ROLE_GUEST"})
     @GetMapping("/{stepId}")
@@ -104,7 +105,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepCreateDTO", value = "Added step object",
             required = true, dataType = "StepCreateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PostMapping
@@ -135,7 +136,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepUpdateDTO", value = "Updated step object",
             required = true, dataType = "StepUpdateDTO", paramType = "body"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @PutMapping("/{stepId}")
@@ -148,7 +149,7 @@ public class StepController {
     }
 
 
-    @ApiOperation(value = "Delete step by id", nickname = "removeCase")
+    @ApiOperation(value = "Delete step by id", nickname = "removeStep")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK"),
         @ApiResponse(code = 404, message = "Suit/Case/Step not found")
@@ -162,7 +163,7 @@ public class StepController {
             required = true, dataType = "long", paramType = "path"),
         @ApiImplicitParam(name = "stepId", value = "ID of step to delete",
             required = true, dataType = "long", paramType = "path"),
-        @ApiImplicitParam(name = "Authorization", value = "add here your token", paramType = "header", dataType = "string", required = true)
+        @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token", paramType = "header", dataType = "string", required = true)
     })
     @Secured({"ROLE_ADMIN", "ROLE_TEST_ENGINEER", "ROLE_TEST_LEAD"})
     @DeleteMapping("/{stepId}")

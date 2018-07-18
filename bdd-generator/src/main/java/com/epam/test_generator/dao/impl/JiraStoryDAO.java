@@ -82,7 +82,6 @@ public class JiraStoryDAO {
             throw new JiraRuntimeException(e.getMessage(), e);
         }
         suit.setLastJiraSyncDate(ZonedDateTime.now());
-        suitDAO.save(suit);
     }
 
 
@@ -111,7 +110,6 @@ public class JiraStoryDAO {
             suit.setJiraKey(issue.getKey());
             suit.setJiraProjectKey(issue.getProject().getKey());
             suit.setLastJiraSyncDate(ZonedDateTime.now());
-            suitDAO.save(suit);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
         }

@@ -1,0 +1,10 @@
+server:
+  port: 8090
+
+jira.api.url: http://localhost:8080/admin/jira-settings
+login.api.url: http://localhost:8080/login
+create.project.api.url: http://localhost:8080/projects
+admin.projects.api.url: http://localhost:8080/admin/projects
+users.api.url: http://localhost:8080/admin/users
+role.api.url: http://localhost:8080/admin/role
+block.api.url: http://localhost:8080/admin/user

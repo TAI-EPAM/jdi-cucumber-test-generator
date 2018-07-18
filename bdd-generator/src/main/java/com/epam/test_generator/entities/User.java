@@ -2,14 +2,14 @@ package com.epam.test_generator.entities;
 
 
 import com.epam.test_generator.entities.api.UserTrait;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 
 /**
  * This class represents user essence. User is a person who uses system. Besides simple fields like personal information,
- * data for log in and status it includes {@Link Role}. One user can have only one role. Role represents set of
+ * data for log in and status it includes {@link Role}. One user can have only one role. Role represents set of
  * privileges for users of current role.
  */
 @Entity

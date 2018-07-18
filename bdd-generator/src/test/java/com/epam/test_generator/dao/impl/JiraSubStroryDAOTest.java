@@ -5,9 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.epam.test_generator.dao.interfaces.JiraSettingsDAO;
 import com.epam.test_generator.entities.Case;
-import com.epam.test_generator.entities.JiraSettings;
 import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraSubTask;
 import com.epam.test_generator.services.exceptions.JiraRuntimeException;
@@ -40,9 +38,6 @@ public class JiraSubStroryDAOTest {
     @Mock
     private JiraClientFactory jiraClientFactory;
 
-    @Mock
-    private JiraSettingsDAO jiraSettingsDAO;
-
     @InjectMocks
     private JiraSubStoryDAO jiraSubStroryDAO;
 
@@ -53,10 +48,6 @@ public class JiraSubStroryDAOTest {
     @Before
     public void setUp() {
         when(jiraClientFactory.getJiraClient(anyLong())).thenReturn(client);
-        JiraSettings jiraSettings = new JiraSettings();
-        jiraSettings.setLogin("login");
-        jiraSettings.setPassword("password");
-        jiraSettings.setUri("jira_uri");
     }
 
     @Test

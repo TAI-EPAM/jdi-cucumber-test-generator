@@ -26,8 +26,8 @@ public class CaseTransformer {
         if (caze.getSteps() != null) {
             caseDTO.setSteps(stepTransformer.toDtoList(caze.getSteps()));
         }
-        caseDTO.setCreationDate(caze.getCreationDate().toInstant().getEpochSecond());
-        caseDTO.setUpdateDate(caze.getUpdateDate().toInstant().getEpochSecond());
+        caseDTO.setCreationDate(caze.getCreationDate().toInstant().toEpochMilli());
+        caseDTO.setUpdateDate(caze.getUpdateDate().toInstant().toEpochMilli());
         caseDTO.setPriority(caze.getPriority());
         if (caze.getTags() != null) {
             caseDTO.setTags(tagTransformer.toDtoSet(caze.getTags()));

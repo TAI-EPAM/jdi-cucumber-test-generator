@@ -1,6 +1,5 @@
 package com.epam.test_generator.dao.impl;
 
-import com.epam.test_generator.dao.interfaces.CaseDAO;
 import com.epam.test_generator.entities.Case;
 import com.epam.test_generator.entities.factory.JiraClientFactory;
 import com.epam.test_generator.pojo.JiraSubTask;
@@ -19,9 +18,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JiraSubStoryDAO {
-
-    @Autowired
-    private CaseDAO caseDAO;
 
     @Autowired
     private JiraClientFactory jiraClientFactory;
@@ -60,7 +56,6 @@ public class JiraSubStoryDAO {
                 .field(Field.DESCRIPTION, caze.getDescription())
                 .execute();
             caze.setLastJiraSyncDate(ZonedDateTime.now());
-            caseDAO.save(caze);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
         }
@@ -79,7 +74,6 @@ public class JiraSubStoryDAO {
             caze.setJiraProjectKey(execute.getProject().getKey());
             caze.setJiraParentKey(execute.getParent().getKey());
             caze.setLastJiraSyncDate(ZonedDateTime.now());
-            caseDAO.save(caze);
         } catch (JiraException e) {
             throw new JiraRuntimeException(e.getMessage(), e);
         }

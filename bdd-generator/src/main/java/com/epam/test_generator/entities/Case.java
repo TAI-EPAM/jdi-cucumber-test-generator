@@ -5,7 +5,6 @@ import com.epam.test_generator.entities.api.JiraSuitAndCaseTrait;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +12,6 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.epam.test_generator.entities.api.Taggable;
-import org.springframework.data.domain.Persistable;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
 
@@ -48,6 +46,7 @@ public class Case implements CaseTrait, JiraSuitAndCaseTrait, Taggable, Serializ
 
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "CASE_STEP")
     private List<Step> steps;
 
     private ZonedDateTime creationDate;

@@ -5,7 +5,6 @@ import com.epam.test_generator.controllers.user.request.LoginUserDTO;
 import com.epam.test_generator.dto.TokenDTO;
 import com.epam.test_generator.services.LoginService;
 import io.swagger.annotations.ApiImplicitParam;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 /**
@@ -30,15 +30,15 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody @Valid LoginUserDTO userDTO,
-                                          HttpServletRequest request) {
-        loginService.checkPassword(userDTO, request);
+                                          UriComponentsBuilder uriComponentsBuilder) {
+        loginService.checkPassword(userDTO, uriComponentsBuilder);
         String token = loginService.getLoginJWTToken(userDTO);
 
         return new ResponseEntity<>(new TokenDTO(token), HttpStatus.OK);
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_TEST_LEAD", "ROLE_TEST_ENGINEER", "ROLE_GUEST"})
-    @ApiImplicitParam(name = "Authorization", value = "add here your token",
+    @ApiImplicitParam(name = TokenDTO.TOKEN_HEADER, value = "add here your token",
         paramType = "header", dataType = "string", required = true)
     @GetMapping("/refresh-token")
     public ResponseEntity refreshToken(Authentication authentication) {
